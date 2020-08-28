@@ -63,25 +63,6 @@ public:
 /// @brief Type of pointers to contexts.
 typedef boost::shared_ptr<PgSqlLeaseContext> PgSqlLeaseContextPtr;
 
-/// @brief PostgreSQL Lease Context Pool
-///
-/// This class provides a pool of contexts.
-/// The manager will use this class to handle available contexts.
-/// There is only one ContextPool per manager per back-end, which is created
-/// and destroyed by the respective manager factory class.
-class PgSqlLeaseContextPool {
-public:
-
-    /// @brief The vector of available contexts.
-    std::vector<PgSqlLeaseContextPtr> pool_;
-
-    /// @brief The mutex to protect pool access.
-    std::mutex mutex_;
-};
-
-/// @brief Type of pointers to context pools.
-typedef boost::shared_ptr<PgSqlLeaseContextPool> PgSqlLeaseContextPoolPtr;
-
 /// @brief PostgreSQL Lease Manager
 ///
 /// This class provides the \ref isc::dhcp::LeaseMgr interface to the PostgreSQL
@@ -931,9 +912,6 @@ private:
 
     /// @brief The parameters
     db::DatabaseConnection::ParameterMap parameters_;
-
-    /// @brief The pool of contexts
-    PgSqlLeaseContextPoolPtr pool_;
 
     /// @brief Timer name used to register database reconnect timer.
     std::string timer_name_;
