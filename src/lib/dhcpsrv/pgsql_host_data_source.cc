@@ -1600,9 +1600,6 @@ public:
 
     /// @brief Timer name used to register database reconnect timer.
     std::string timer_name_;
-
-    /// @brief Manager context
-    PgSqlHostContextPtr ctx_;
 };
 
 namespace {
@@ -2169,7 +2166,7 @@ PgSqlHostDataSource::PgSqlHostContextAlloc::PgSqlHostContextAlloc(
         ctx.reset();
         return;
     }
-    if (!ctx || !mgr_.ctx_) {
+    if (!ctx) {
         ctx = mgr_.createContext();
     }
     ctx_ = ctx;
@@ -2203,7 +2200,7 @@ PgSqlHostDataSourceImpl::PgSqlHostDataSourceImpl(const DatabaseConnection::Param
     }
 
     // Get a context
-    ctx_ = PgSqlHostDataSource::PgSqlHostContextAlloc(*this).ctx_;
+    PgSqlHostDataSource::PgSqlHostContextAlloc(*this);
 }
 
 // Create context.
@@ -2541,8 +2538,7 @@ PgSqlHostDataSource::getParameters() const {
 void
 PgSqlHostDataSource::add(const HostPtr& host) {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);
@@ -2600,8 +2596,7 @@ bool
 PgSqlHostDataSource::del(const SubnetID& subnet_id,
                          const asiolink::IOAddress& addr) {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);
@@ -2629,8 +2624,7 @@ PgSqlHostDataSource::del4(const SubnetID& subnet_id,
                           const uint8_t* identifier_begin,
                           const size_t identifier_len) {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);
@@ -2656,8 +2650,7 @@ PgSqlHostDataSource::del6(const SubnetID& subnet_id,
                           const uint8_t* identifier_begin,
                           const size_t identifier_len) {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);
@@ -2682,8 +2675,7 @@ PgSqlHostDataSource::getAll(const Host::IdentifierType& identifier_type,
                             const uint8_t* identifier_begin,
                             const size_t identifier_len) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2704,8 +2696,7 @@ PgSqlHostDataSource::getAll(const Host::IdentifierType& identifier_type,
 ConstHostCollection
 PgSqlHostDataSource::getAll4(const SubnetID& subnet_id) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2723,8 +2714,7 @@ PgSqlHostDataSource::getAll4(const SubnetID& subnet_id) const {
 ConstHostCollection
 PgSqlHostDataSource::getAll6(const SubnetID& subnet_id) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2742,8 +2732,7 @@ PgSqlHostDataSource::getAll6(const SubnetID& subnet_id) const {
 ConstHostCollection
 PgSqlHostDataSource::getAllbyHostname(const std::string& hostname) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2762,8 +2751,7 @@ ConstHostCollection
 PgSqlHostDataSource::getAllbyHostname4(const std::string& hostname,
                                        const SubnetID& subnet_id) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2785,8 +2773,7 @@ ConstHostCollection
 PgSqlHostDataSource::getAllbyHostname6(const std::string& hostname,
                                        const SubnetID& subnet_id) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2810,8 +2797,7 @@ PgSqlHostDataSource::getPage4(const SubnetID& subnet_id,
                               uint64_t lower_host_id,
                               const HostPageSize& page_size) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2840,8 +2826,7 @@ PgSqlHostDataSource::getPage6(const SubnetID& subnet_id,
                               uint64_t lower_host_id,
                               const HostPageSize& page_size) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2919,8 +2904,7 @@ PgSqlHostDataSource::getPage6(size_t& /*source_index*/,
 ConstHostCollection
 PgSqlHostDataSource::getAll4(const asiolink::IOAddress& address) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -2941,8 +2925,7 @@ PgSqlHostDataSource::get4(const SubnetID& subnet_id,
                           const uint8_t* identifier_begin,
                           const size_t identifier_len) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     return (impl_->getHost(ctx, subnet_id, identifier_type, identifier_begin, identifier_len,
                            PgSqlHostDataSourceImpl::GET_HOST_SUBID4_DHCPID,
@@ -2953,8 +2936,7 @@ ConstHostPtr
 PgSqlHostDataSource::get4(const SubnetID& subnet_id,
                           const asiolink::IOAddress& address) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     if (!address.isV4()) {
         isc_throw(BadValue, "PgSqlHostDataSource::get4(id, address) - "
@@ -3016,8 +2998,7 @@ PgSqlHostDataSource::get6(const SubnetID& subnet_id,
                           const uint8_t* identifier_begin,
                           const size_t identifier_len) const {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     return (impl_->getHost(ctx, subnet_id, identifier_type, identifier_begin, identifier_len,
                            PgSqlHostDataSourceImpl::GET_HOST_SUBID6_DHCPID,
@@ -3033,8 +3014,7 @@ PgSqlHostDataSource::get6(const asiolink::IOAddress& prefix,
     }
 
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -3067,8 +3047,7 @@ PgSqlHostDataSource::get6(const SubnetID& subnet_id,
     }
 
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // Set up the WHERE clause value
     PsqlBindArrayPtr bind_array(new PsqlBindArray());
@@ -3126,8 +3105,7 @@ std::string
 PgSqlHostDataSource::getName() const {
     std::string name = "";
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     try {
         name = ctx->conn_.getParameter("name");
@@ -3151,8 +3129,7 @@ PgSqlHostDataSource::getVersion() const {
 void
 PgSqlHostDataSource::commit() {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);
@@ -3162,8 +3139,7 @@ PgSqlHostDataSource::commit() {
 void
 PgSqlHostDataSource::rollback() {
     // Get a context
-    PgSqlHostContextAlloc get_context(*impl_);
-    PgSqlHostContextPtr ctx = get_context.ctx_;
+    PgSqlHostContextPtr ctx = PgSqlHostContextAlloc(*impl_).ctx_;
 
     // If operating in read-only mode, throw exception.
     impl_->checkReadOnly(ctx);

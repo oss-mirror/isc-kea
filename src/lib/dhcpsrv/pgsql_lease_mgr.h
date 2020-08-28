@@ -916,9 +916,6 @@ private:
 
     /// @brief Timer name used to register database reconnect timer.
     std::string timer_name_;
-
-    /// @brief Manager context
-    PgSqlLeaseContextPtr ctx_;
 };
 
 }  // namespace dhcp
