@@ -532,7 +532,9 @@ public:
         /// or creates a new one.
         ///
         /// @param mgr A parent instance
-        PgSqlHostContextAlloc(PgSqlHostDataSourceImpl& mgr);
+        /// @param reset Flag which resets thread context
+        PgSqlHostContextAlloc(const PgSqlHostDataSourceImpl& mgr,
+                              bool reset = false);
 
         /// @brief Destructor
         ///

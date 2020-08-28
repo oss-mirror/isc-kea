@@ -931,7 +931,8 @@ private:
         /// or creates a new one.
         ///
         /// @param mgr A parent instance
-        MySqlLeaseContextAlloc(const MySqlLeaseMgr& mgr);
+        /// @param reset Flag which resets thread context
+        MySqlLeaseContextAlloc(const MySqlLeaseMgr& mgr, bool reset = false);
 
         /// @brief Destructor
         ///
@@ -956,6 +957,9 @@ private:
 
     /// @brief Timer name used to register database reconnect timer.
     std::string timer_name_;
+
+    /// @brief Manager context
+    MySqlLeaseContextPtr ctx_;
 };
 
 }  // namespace dhcp

@@ -1600,6 +1600,9 @@ public:
 
     /// @brief Timer name used to register database reconnect timer.
     std::string timer_name_;
+
+    /// @brief Manager context
+    PgSqlHostContextPtr ctx_;
 };
 
 namespace {
@@ -2159,9 +2162,16 @@ PgSqlHostContext::PgSqlHostContext(const DatabaseConnection::ParameterMap& param
 // PgSqlHostContextAlloc Constructor and Destructor
 
 PgSqlHostDataSource::PgSqlHostContextAlloc::PgSqlHostContextAlloc(
-    PgSqlHostDataSourceImpl& mgr) : ctx_(), mgr_(mgr) {
+    const PgSqlHostDataSourceImpl& mgr, bool reset) : ctx_(), mgr_(mgr) {
 
-    thread_local PgSqlHostContextPtr ctx = mgr_.createContext();
+    thread_local PgSqlHostContextPtr ctx;
+    if (reset) {
+        ctx.reset();
+        return;
+    }
+    if (!ctx || !mgr_.ctx_) {
+        ctx = mgr_.createContext();
+    }
     ctx_ = ctx;
 }
 
@@ -2191,6 +2201,9 @@ PgSqlHostDataSourceImpl::PgSqlHostDataSourceImpl(const DatabaseConnection::Param
                       << " found version: " << db_version.first << "."
                       << db_version.second);
     }
+
+    // Get a context
+    ctx_ = PgSqlHostDataSource::PgSqlHostContextAlloc(*this).ctx_;
 }
 
 // Create context.
@@ -2234,6 +2247,7 @@ PgSqlHostDataSourceImpl::createContext() const {
 }
 
 PgSqlHostDataSourceImpl::~PgSqlHostDataSourceImpl() {
+    PgSqlHostDataSource::PgSqlHostContextAlloc(*this, true);
 }
 
 bool
