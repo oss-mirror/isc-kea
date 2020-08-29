@@ -1176,23 +1176,15 @@ PgSqlLeaseContext::PgSqlLeaseContext(const DatabaseConnection::ParameterMap& par
     : conn_(parameters, io_service_accessor, db_reconnect_callback) {
 }
 
-// PgSqlLeaseContextAlloc Constructor and Destructor
-
-PgSqlLeaseMgr::PgSqlLeaseContextAlloc::PgSqlLeaseContextAlloc(
-    const PgSqlLeaseMgr& mgr, bool reset) : ctx_(), mgr_(mgr) {
-
+PgSqlLeaseContextPtr
+PgSqlLeaseMgr::handlePgSqlLeaseContext(bool reset) const {
     thread_local PgSqlLeaseContextPtr ctx;
     if (reset) {
         ctx.reset();
-        return;
+    } else if (!ctx) {
+        ctx = createContext();
     }
-    if (!ctx) {
-        ctx = mgr_.createContext();
-    }
-    ctx_ = ctx;
-}
-
-PgSqlLeaseMgr::PgSqlLeaseContextAlloc::~PgSqlLeaseContextAlloc() {
+    return (ctx);
 }
 
 // PgSqlLeaseMgr Constructor and Destructor
@@ -1218,11 +1210,11 @@ PgSqlLeaseMgr::PgSqlLeaseMgr(const DatabaseConnection::ParameterMap& parameters)
     }
 
     // Get a context
-    PgSqlLeaseContextAlloc(*this);
+    handlePgSqlLeaseContext();
 }
 
 PgSqlLeaseMgr::~PgSqlLeaseMgr() {
-    PgSqlLeaseContextAlloc(*this, true);
+    handlePgSqlLeaseContext(true);
 }
 
 bool
@@ -1367,7 +1359,7 @@ PgSqlLeaseMgr::addLease(const Lease4Ptr& lease) {
         .arg(lease->addr_.toText());
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     PsqlBindArray bind_array;
     ctx->exchange4_->createBindForSend(lease, bind_array);
@@ -1387,7 +1379,7 @@ PgSqlLeaseMgr::addLease(const Lease6Ptr& lease) {
         .arg(lease->type_);
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     PsqlBindArray bind_array;
     ctx->exchange6_->createBindForSend(lease, bind_array);
@@ -1488,7 +1480,7 @@ PgSqlLeaseMgr::getLease4(const IOAddress& addr) const {
     Lease4Ptr result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_ADDR, bind_array, result);
 
@@ -1514,7 +1506,7 @@ PgSqlLeaseMgr::getLease4(const HWAddr& hwaddr) const {
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_HWADDR, bind_array, result);
 
@@ -1545,7 +1537,7 @@ PgSqlLeaseMgr::getLease4(const HWAddr& hwaddr, SubnetID subnet_id) const {
     Lease4Ptr result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_HWADDR_SUBID, bind_array, result);
 
@@ -1567,7 +1559,7 @@ PgSqlLeaseMgr::getLease4(const ClientId& clientid) const {
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_CLIENTID, bind_array, result);
 
@@ -1594,7 +1586,7 @@ PgSqlLeaseMgr::getLease4(const ClientId& clientid, SubnetID subnet_id) const {
     Lease4Ptr result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_CLIENTID_SUBID, bind_array, result);
 
@@ -1617,7 +1609,7 @@ PgSqlLeaseMgr::getLeases4(SubnetID subnet_id) const {
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_SUBID, bind_array, result);
 
@@ -1639,7 +1631,7 @@ PgSqlLeaseMgr::getLeases4(const std::string& hostname) const {
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_HOSTNAME, bind_array, result);
 
@@ -1656,7 +1648,7 @@ PgSqlLeaseMgr::getLeases4() const {
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4, bind_array, result);
 
@@ -1692,7 +1684,7 @@ PgSqlLeaseMgr::getLeases4(const IOAddress& lower_bound_address,
     Lease4Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_PAGE, bind_array, result);
 
@@ -1721,7 +1713,7 @@ PgSqlLeaseMgr::getLease6(Lease::Type lease_type,
     Lease6Ptr result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLease(ctx, GET_LEASE6_ADDR, bind_array, result);
 
@@ -1754,7 +1746,7 @@ PgSqlLeaseMgr::getLeases6(Lease::Type lease_type, const DUID& duid,
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_DUID_IAID, bind_array, result);
 
@@ -1792,7 +1784,7 @@ PgSqlLeaseMgr::getLeases6(Lease::Type lease_type, const DUID& duid,
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_DUID_IAID_SUBID, bind_array, result);
 
@@ -1815,7 +1807,7 @@ PgSqlLeaseMgr::getLeases6(SubnetID subnet_id) const {
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_SUBID, bind_array, result);
 
@@ -1835,7 +1827,7 @@ PgSqlLeaseMgr::getLeases6(const DUID& duid) const {
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     // query to fetch the data
     getLeaseCollection(ctx, GET_LEASE6_DUID, bind_array, result);
@@ -1858,7 +1850,7 @@ PgSqlLeaseMgr::getLeases6(const std::string& hostname) const {
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_HOSTNAME, bind_array, result);
 
@@ -1875,7 +1867,7 @@ PgSqlLeaseMgr::getLeases6() const {
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6, bind_array, result);
 
@@ -1918,7 +1910,7 @@ PgSqlLeaseMgr::getLeases6(const IOAddress& lower_bound_address,
     Lease6Collection result;
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_PAGE, bind_array, result);
 
@@ -1964,7 +1956,7 @@ PgSqlLeaseMgr::getExpiredLeasesCommon(LeaseCollection& expired_leases,
     bind_array.add(limit_str);
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     // Retrieve leases from the database.
     getLeaseCollection(ctx, statement_index, bind_array, expired_leases);
@@ -2011,7 +2003,7 @@ PgSqlLeaseMgr::updateLease4(const Lease4Ptr& lease) {
         .arg(lease->addr_.toText());
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     // Create the BIND array for the data being updated
     PsqlBindArray bind_array;
@@ -2041,7 +2033,7 @@ PgSqlLeaseMgr::updateLease6(const Lease6Ptr& lease) {
         .arg(lease->type_);
 
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     // Create the BIND array for the data being updated
     PsqlBindArray bind_array;
@@ -2066,7 +2058,7 @@ uint64_t
 PgSqlLeaseMgr::deleteLeaseCommon(StatementIndex stindex,
                                  PsqlBindArray& bind_array) {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     PgSqlResult r(PQexecPrepared(ctx->conn_, tagged_statements[stindex].name,
                                  tagged_statements[stindex].nbparams,
@@ -2184,7 +2176,7 @@ PgSqlLeaseMgr::deleteExpiredReclaimedLeasesCommon(const uint32_t secs,
 LeaseStatsQueryPtr
 PgSqlLeaseMgr::startLeaseStatsQuery4() {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[ALL_LEASE4_STATS],
@@ -2196,7 +2188,7 @@ PgSqlLeaseMgr::startLeaseStatsQuery4() {
 LeaseStatsQueryPtr
 PgSqlLeaseMgr::startSubnetLeaseStatsQuery4(const SubnetID& subnet_id) {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[SUBNET_LEASE4_STATS],
@@ -2210,7 +2202,7 @@ LeaseStatsQueryPtr
 PgSqlLeaseMgr::startSubnetRangeLeaseStatsQuery4(const SubnetID& first_subnet_id,
                                                 const SubnetID& last_subnet_id) {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[SUBNET_RANGE_LEASE4_STATS],
@@ -2224,7 +2216,7 @@ PgSqlLeaseMgr::startSubnetRangeLeaseStatsQuery4(const SubnetID& first_subnet_id,
 LeaseStatsQueryPtr
 PgSqlLeaseMgr::startLeaseStatsQuery6() {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[ALL_LEASE6_STATS],
@@ -2236,7 +2228,7 @@ PgSqlLeaseMgr::startLeaseStatsQuery6() {
 LeaseStatsQueryPtr
 PgSqlLeaseMgr::startSubnetLeaseStatsQuery6(const SubnetID& subnet_id) {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[SUBNET_LEASE6_STATS],
@@ -2250,7 +2242,7 @@ LeaseStatsQueryPtr
 PgSqlLeaseMgr::startSubnetRangeLeaseStatsQuery6(const SubnetID& first_subnet_id,
                                                 const SubnetID& last_subnet_id) {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     LeaseStatsQueryPtr query(new PgSqlLeaseStatsQuery(ctx->conn_,
                                                       tagged_statements[SUBNET_RANGE_LEASE6_STATS],
@@ -2274,7 +2266,7 @@ PgSqlLeaseMgr::wipeLeases6(const SubnetID& /*subnet_id*/) {
 std::string
 PgSqlLeaseMgr::getName() const {
     // Get a context
-    PgSqlLeaseContextPtr ctx = PgSqlLeaseContextAlloc(*this).ctx_;
+    PgSqlLeaseContextPtr ctx = handlePgSqlLeaseContext();
 
     std::string name = "";
     try {

@@ -1742,23 +1742,15 @@ MySqlLeaseContext::MySqlLeaseContext(const DatabaseConnection::ParameterMap& par
     : conn_(parameters, io_service_accessor, db_reconnect_callback) {
 }
 
-// MySqlLeaseContextAlloc Constructor and Destructor
-
-MySqlLeaseMgr::MySqlLeaseContextAlloc::MySqlLeaseContextAlloc(
-    const MySqlLeaseMgr& mgr, bool reset) : ctx_(), mgr_(mgr) {
-
+MySqlLeaseContextPtr
+MySqlLeaseMgr::handleMySqlLeaseContext(bool reset) const {
     thread_local MySqlLeaseContextPtr ctx;
     if (reset) {
         ctx.reset();
-        return;
+    } else if (!ctx) {
+        ctx = createContext();
     }
-    if (!ctx) {
-        ctx = mgr_.createContext();
-    }
-    ctx_ = ctx;
-}
-
-MySqlLeaseMgr::MySqlLeaseContextAlloc::~MySqlLeaseContextAlloc() {
+    return (ctx);
 }
 
 // MySqlLeaseMgr Constructor and Destructor
@@ -1784,11 +1776,11 @@ MySqlLeaseMgr::MySqlLeaseMgr(const DatabaseConnection::ParameterMap& parameters)
     }
 
     // Get a context
-    MySqlLeaseContextAlloc(*this);
+    handleMySqlLeaseContext();
 }
 
 MySqlLeaseMgr::~MySqlLeaseMgr() {
-    MySqlLeaseContextAlloc(*this, true);
+    handleMySqlLeaseContext(true);
 }
 
 bool
@@ -1930,7 +1922,7 @@ MySqlLeaseMgr::addLease(const Lease4Ptr& lease) {
         .arg(lease->addr_.toText());
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Create the MYSQL_BIND array for the lease
     std::vector<MYSQL_BIND> bind = ctx->exchange4_->createBindForSend(lease);
@@ -1952,7 +1944,7 @@ MySqlLeaseMgr::addLease(const Lease6Ptr& lease) {
         .arg(lease->type_);
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Create the MYSQL_BIND array for the lease
     std::vector<MYSQL_BIND> bind = ctx->exchange6_->createBindForSend(lease);
@@ -2118,7 +2110,7 @@ MySqlLeaseMgr::getLease4(const IOAddress& addr) const {
     Lease4Ptr result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_ADDR, inbind, result);
 
@@ -2158,7 +2150,7 @@ MySqlLeaseMgr::getLease4(const HWAddr& hwaddr) const {
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_HWADDR, inbind, result);
 
@@ -2203,7 +2195,7 @@ MySqlLeaseMgr::getLease4(const HWAddr& hwaddr, SubnetID subnet_id) const {
     Lease4Ptr result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_HWADDR_SUBID, inbind, result);
 
@@ -2238,7 +2230,7 @@ MySqlLeaseMgr::getLease4(const ClientId& clientid) const {
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_CLIENTID, inbind, result);
 
@@ -2278,7 +2270,7 @@ MySqlLeaseMgr::getLease4(const ClientId& clientid, SubnetID subnet_id) const {
     Lease4Ptr result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLease(ctx, GET_LEASE4_CLIENTID_SUBID, inbind, result);
 
@@ -2303,7 +2295,7 @@ MySqlLeaseMgr::getLeases4(SubnetID subnet_id) const {
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_SUBID, inbind, result);
 
@@ -2328,7 +2320,7 @@ MySqlLeaseMgr::getLeases4(const std::string& hostname) const {
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_HOSTNAME, inbind, result);
 
@@ -2342,7 +2334,7 @@ MySqlLeaseMgr::getLeases4() const {
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4, 0, result);
 
@@ -2383,7 +2375,7 @@ MySqlLeaseMgr::getLeases4(const IOAddress& lower_bound_address,
     Lease4Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE4_PAGE, inbind, result);
 
@@ -2419,7 +2411,7 @@ MySqlLeaseMgr::getLease6(Lease::Type lease_type,
     Lease6Ptr result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLease(ctx, GET_LEASE6_ADDR, inbind, result);
 
@@ -2481,7 +2473,7 @@ MySqlLeaseMgr::getLeases6(Lease::Type lease_type, const DUID& duid,
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_DUID_IAID, inbind, result);
 
@@ -2530,7 +2522,7 @@ MySqlLeaseMgr::getLeases6(Lease::Type lease_type, const DUID& duid,
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_DUID_IAID_SUBID, inbind, result);
 
@@ -2555,7 +2547,7 @@ MySqlLeaseMgr::getLeases6(SubnetID subnet_id) const {
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_SUBID, inbind, result);
 
@@ -2569,7 +2561,7 @@ MySqlLeaseMgr::getLeases6() const {
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6, 0, result);
 
@@ -2597,7 +2589,7 @@ MySqlLeaseMgr::getLeases6(const DUID& duid) const {
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_DUID, inbind, result);
 
@@ -2622,7 +2614,7 @@ MySqlLeaseMgr::getLeases6(const std::string& hostname) const {
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_HOSTNAME, inbind, result);
 
@@ -2672,7 +2664,7 @@ MySqlLeaseMgr::getLeases6(const IOAddress& lower_bound_address,
     Lease6Collection result;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     getLeaseCollection(ctx, GET_LEASE6_PAGE, inbind, result);
 
@@ -2726,7 +2718,7 @@ MySqlLeaseMgr::getExpiredLeasesCommon(LeaseCollection& expired_leases,
     inbind[2].is_unsigned = MLM_TRUE;
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Get the data
     getLeaseCollection(ctx, statement_index, inbind, expired_leases);
@@ -2780,7 +2772,7 @@ MySqlLeaseMgr::updateLease4(const Lease4Ptr& lease) {
         .arg(lease->addr_.toText());
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Create the MYSQL_BIND array for the data being updated
     std::vector<MYSQL_BIND> bind = ctx->exchange4_->createBindForSend(lease);
@@ -2822,7 +2814,7 @@ MySqlLeaseMgr::updateLease6(const Lease6Ptr& lease) {
         .arg(lease->type_);
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Create the MYSQL_BIND array for the data being updated
     std::vector<MYSQL_BIND> bind = ctx->exchange6_->createBindForSend(lease);
@@ -2870,7 +2862,7 @@ MySqlLeaseMgr::deleteLeaseCommon(StatementIndex stindex,
                                  MYSQL_BIND* bind) {
 
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     // Bind the input parameters to the statement
     int status = mysql_stmt_bind_param(ctx->conn_.statements_[stindex], bind);
@@ -3019,7 +3011,7 @@ MySqlLeaseMgr::deleteExpiredReclaimedLeasesCommon(const uint32_t secs,
 LeaseStatsQueryPtr
 MySqlLeaseMgr::startLeaseStatsQuery4() {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       ALL_LEASE4_STATS,
@@ -3031,7 +3023,7 @@ MySqlLeaseMgr::startLeaseStatsQuery4() {
 LeaseStatsQueryPtr
 MySqlLeaseMgr::startSubnetLeaseStatsQuery4(const SubnetID& subnet_id) {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       SUBNET_LEASE4_STATS,
@@ -3045,7 +3037,7 @@ LeaseStatsQueryPtr
 MySqlLeaseMgr::startSubnetRangeLeaseStatsQuery4(const SubnetID& first_subnet_id,
                                                 const SubnetID& last_subnet_id) {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       SUBNET_RANGE_LEASE4_STATS,
@@ -3059,7 +3051,7 @@ MySqlLeaseMgr::startSubnetRangeLeaseStatsQuery4(const SubnetID& first_subnet_id,
 LeaseStatsQueryPtr
 MySqlLeaseMgr::startLeaseStatsQuery6() {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       ALL_LEASE6_STATS,
@@ -3071,7 +3063,7 @@ MySqlLeaseMgr::startLeaseStatsQuery6() {
 LeaseStatsQueryPtr
 MySqlLeaseMgr::startSubnetLeaseStatsQuery6(const SubnetID& subnet_id) {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       SUBNET_LEASE6_STATS,
@@ -3085,7 +3077,7 @@ LeaseStatsQueryPtr
 MySqlLeaseMgr::startSubnetRangeLeaseStatsQuery6(const SubnetID& first_subnet_id,
                                                 const SubnetID& last_subnet_id) {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     LeaseStatsQueryPtr query(new MySqlLeaseStatsQuery(ctx->conn_,
                                                       SUBNET_RANGE_LEASE6_STATS,
@@ -3111,7 +3103,7 @@ MySqlLeaseMgr::wipeLeases6(const SubnetID& /*subnet_id*/) {
 std::string
 MySqlLeaseMgr::getName() const {
     // Get a context
-    MySqlLeaseContextPtr ctx = MySqlLeaseContextAlloc(*this).ctx_;
+    MySqlLeaseContextPtr ctx = handleMySqlLeaseContext();
 
     std::string name = "";
     try {
