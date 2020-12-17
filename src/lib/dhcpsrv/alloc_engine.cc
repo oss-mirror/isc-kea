@@ -616,11 +616,28 @@ AllocEngine::findReservation(ClientContext6& ctx) {
     // more host identifier types in use than subnets within a shared network.
     // As it breaks RADIUS use of host caching this can be disabled by the
     // host manager.
-    const bool use_single_query = network &&
-        !HostMgr::instance().getDisableSingleQuery() &&
+
+    // Can not always call getAll6 because RADIUS does not support it.
+    // This is covered by the 'disabled' flag below.
+    // While the performance is acceptable for RADIUS and CfgHosts, doing
+    // network->getAllSubnets()->size() * ctx.host_identifiers_.size() for
+    // db backends is suboptimal, as getAll6 is supported (when 'disabled' flag
+    // is not set).
+    // This results in
+    // network->getAllSubnets()->size() * ctx.host_identifiers_.size() number of
+    // roundtrips when 'disabled' is set vs network->getAllSubnets()->size()
+    // number of roundtrips when 'disabled' is not set.
+    // To note that if RADIUS is used, all queries to db backends will use
+    // suboptimal case which calls:
+    // get6(subnet->getID(), id_pair.first, &id_pair.second[0],
+    //      id_pair.second.size());
+    const bool disabled = HostMgr::instance().getDisableSingleQuery();
+    const bool use_single_query_for_identifiers = network && !disabled &&
         (network->getAllSubnets()->size() > ctx.host_identifiers_.size());
 
-    if (use_single_query) {
+    if (use_single_query_for_identifiers) {
+        // The number of host identifiers < number of subnets and RADIUS is not
+        // used, so we should query by host identifiers.
         for (const IdentifierPair& id_pair : ctx.host_identifiers_) {
             ConstHostCollection hosts = HostMgr::instance().getAll(id_pair.first,
                                                                    &id_pair.second[0],
@@ -629,7 +646,7 @@ AllocEngine::findReservation(ClientContext6& ctx) {
             // belong to subnets outside of the shared network. We'll need
             // to eliminate them.
             for (auto host = hosts.begin(); host != hosts.end(); ++host) {
-                if ((*host)->getIPv6SubnetID()) {
+                if ((*host)->getIPv6SubnetID() > 0) {
                     host_map[(*host)->getIPv6SubnetID()] = *host;
                 }
             }
@@ -645,18 +662,60 @@ AllocEngine::findReservation(ClientContext6& ctx) {
             subnet->getReservationsInSubnet()) {
             // Iterate over configured identifiers in the order of preference
             // and try to use each of them to search for the reservations.
+            ConstHostCollection subnet_hosts;
+            if (!use_single_query_for_identifiers && !disabled) {
+                // Can not call
+                // get6(subnet->getID(), id_pair.first,
+                //      &id_pair.second[0], id_pair.second.size());
+                // because this would result in:
+                // network->getAllSubnets()->size() * ctx.host_identifiers_.size()
+                // roundtrips and queries in db in worst case.
+                // The network->getAllSubnets()->size() is caused by:
+                // while (subnet) {...}
+                // and ctx.host_identifiers_.size() is caused by:
+                // for (const IdentifierPair& id_pair : ctx.host_identifiers_) {...}
+                // below, so we'll just filter the result of getAll6(subnet id)
+                // by host identifiers.
+                subnet_hosts = HostMgr::instance().getAll6(subnet->getID());
+            }
             for (const IdentifierPair& id_pair : ctx.host_identifiers_) {
-                if (use_single_query) {
+                if (use_single_query_for_identifiers) {
+                    // The number of host identifiers < number of subnets or
+                    // getAll(id_pair.first, &id_pair.second[0],
+                    //        id_pair.second.size())
+                    // is supported so we need to filter by current subnet id.
                     if (host_map.count(subnet->getID()) > 0) {
                         ctx.hosts_[subnet->getID()] = host_map[subnet->getID()];
+                        break;
                     }
 
                 } else {
-                    // Attempt to find a host using a specified identifier.
-                    ConstHostPtr host = HostMgr::instance().get6(subnet->getID(),
-                                                                 id_pair.first,
-                                                                 &id_pair.second[0],
-                                                                 id_pair.second.size());
+                    // The number of host identifiers > number of subnets or we
+                    // use RADIUS so we need to filter by host identifiers.
+                    ConstHostPtr host;
+                    if (disabled) {
+                        // Attempt to find a host using a specified identifier.
+                        // Worst case is when RADIUS is used:
+                        // network->getAllSubnets()->size() * ctx.host_identifiers_.size()
+                        // roundtrips
+                        host = HostMgr::instance().get6(subnet->getID(),
+                                                        id_pair.first,
+                                                        &id_pair.second[0],
+                                                        id_pair.second.size());
+                    } else {
+                        // Then RADIUS is not used, we filter getAll6(subnet id)
+                        // by host identifiers.
+                        for (auto current : subnet_hosts) {
+                            if (current->getIdentifierType() != id_pair.first) {
+                                continue;
+                            }
+                            if (current->getIdentifier() != id_pair.second) {
+                                continue;
+                            }
+                            host = current;
+                            break;
+                        }
+                    }
                     // If we found matching host for this subnet.
                     if (host) {
                         ctx.hosts_[subnet->getID()] = host;
@@ -664,7 +723,6 @@ AllocEngine::findReservation(ClientContext6& ctx) {
                     }
                 }
             }
-
         }
 
         // We need to get to the next subnet if this is a shared network. If it
@@ -3365,11 +3423,28 @@ AllocEngine::findReservation(ClientContext4& ctx) {
     // more host identifier types in use than subnets within a shared network.
     // As it breaks RADIUS use of host caching this can be disabled by the
     // host manager.
-    const bool use_single_query = network &&
-        !HostMgr::instance().getDisableSingleQuery() &&
+
+    // Can not always call getAll4 because RADIUS does not support it.
+    // This is covered by the 'disabled' flag below.
+    // While the performance is acceptable for RADIUS and CfgHosts, doing
+    // network->getAllSubnets()->size() * ctx.host_identifiers_.size() for
+    // db backends is suboptimal, as getAll4 is supported (when 'disabled' flag
+    // is not set).
+    // This results in
+    // network->getAllSubnets()->size() * ctx.host_identifiers_.size() number of
+    // roundtrips when 'disabled' is set vs network->getAllSubnets()->size()
+    // number of roundtrips when 'disabled' is not set.
+    // To note that if RADIUS is used, all queries to db backends will use
+    // suboptimal case which calls:
+    // get4(subnet->getID(), id_pair.first, &id_pair.second[0],
+    //      id_pair.second.size());
+    const bool disabled = HostMgr::instance().getDisableSingleQuery();
+    const bool use_single_query_for_identifiers = network && !disabled &&
         (network->getAllSubnets()->size() > ctx.host_identifiers_.size());
 
-    if (use_single_query) {
+    if (use_single_query_for_identifiers) {
+        // The number of host identifiers < number of subnets and RADIUS is not
+        // used, so we should query by host identifiers.
         for (const IdentifierPair& id_pair : ctx.host_identifiers_) {
             ConstHostCollection hosts = HostMgr::instance().getAll(id_pair.first,
                                                                    &id_pair.second[0],
@@ -3389,24 +3464,65 @@ AllocEngine::findReservation(ClientContext4& ctx) {
     while (subnet) {
 
         // Only makes sense to get reservations if the client has access
-        // to the class.
+        // to the class and host reservations are enabled for this subnet.
         if (subnet->clientSupported(ctx.query_->getClasses()) &&
             subnet->getReservationsInSubnet()) {
             // Iterate over configured identifiers in the order of preference
             // and try to use each of them to search for the reservations.
+            ConstHostCollection subnet_hosts;
+            if (!use_single_query_for_identifiers && !disabled) {
+                // Can not call
+                // get4(subnet->getID(), id_pair.first,
+                //      &id_pair.second[0], id_pair.second.size());
+                // because this would result in:
+                // network->getAllSubnets()->size() * ctx.host_identifiers_.size()
+                // roundtrips and queries in db in worst case.
+                // The network->getAllSubnets()->size() is caused by:
+                // while (subnet) {...}
+                // and ctx.host_identifiers_.size() is caused by:
+                // for (const IdentifierPair& id_pair : ctx.host_identifiers_) {...}
+                // below, so we'll just filter the result of getAll4(subnet id)
+                // by host identifiers.
+                subnet_hosts = HostMgr::instance().getAll4(subnet->getID());
+            }
             for (const IdentifierPair& id_pair : ctx.host_identifiers_) {
-                if (use_single_query) {
+                if (use_single_query_for_identifiers) {
+                    // The number of host identifiers < number of subnets or
+                    // getAll(id_pair.first, &id_pair.second[0],
+                    //        id_pair.second.size())
+                    // is supported so we need to filter by current subnet id.
                     if (host_map.count(subnet->getID()) > 0) {
                         ctx.hosts_[subnet->getID()] = host_map[subnet->getID()];
                         break;
                     }
 
                 } else {
-                    // Attempt to find a host using a specified identifier.
-                    ConstHostPtr host = HostMgr::instance().get4(subnet->getID(),
-                                                                 id_pair.first,
-                                                                 &id_pair.second[0],
-                                                                 id_pair.second.size());
+                    // The number of host identifiers > number of subnets or we
+                    // use RADIUS so we need to filter by host identifiers.
+                    ConstHostPtr host;
+                    if (disabled) {
+                        // Attempt to find a host using a specified identifier.
+                        // Worst case is when RADIUS is used:
+                        // network->getAllSubnets()->size() * ctx.host_identifiers_.size()
+                        // roundtrips
+                        host = HostMgr::instance().get4(subnet->getID(),
+                                                        id_pair.first,
+                                                        &id_pair.second[0],
+                                                        id_pair.second.size());
+                    } else {
+                        // Then RADIUS is not used, we filter getAll4(subnet id)
+                        // by host identifiers.
+                        for (auto current : subnet_hosts) {
+                            if (current->getIdentifierType() != id_pair.first) {
+                                continue;
+                            }
+                            if (current->getIdentifier() != id_pair.second) {
+                                continue;
+                            }
+                            host = current;
+                            break;
+                        }
+                    }
                     // If we found matching host for this subnet.
                     if (host) {
                         ctx.hosts_[subnet->getID()] = host;
