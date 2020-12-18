@@ -458,10 +458,9 @@ TEST_F(SrvConfigTest, configuredGlobals) {
     SrvConfig conf(32);
 
     // The map of configured globals should be empty.
-    ConstElementPtr srv_globals = conf.getConfiguredGlobals();
+    ConstCfgGlobalsPtr srv_globals = conf.getConfiguredGlobals();
     ASSERT_TRUE(srv_globals);
-    ASSERT_EQ(Element::map, srv_globals->getType());
-    ASSERT_TRUE(srv_globals->mapValue().empty());
+    ASSERT_TRUE(srv_globals->valuesMap().empty());
 
     // Attempting to extract globals from a non-map should throw.
     ASSERT_THROW(conf.extractConfiguredGlobals(Element::create(777)), isc::BadValue);
@@ -485,12 +484,10 @@ TEST_F(SrvConfigTest, configuredGlobals) {
 
     // Now see if the extract was correct.
     srv_globals = conf.getConfiguredGlobals();
-    ASSERT_TRUE(srv_globals);
-    ASSERT_EQ(Element::map, srv_globals->getType());
-    ASSERT_FALSE(srv_globals->mapValue().empty());
+    ASSERT_FALSE(srv_globals->valuesMap().empty());
 
     // Maps and lists should be excluded.
-    auto globals = srv_globals->mapValue();
+    auto globals = srv_globals->valuesMap();
     for (auto global = globals.begin(); global != globals.end(); ++global) {
         if (global->first == "astring") {
             ASSERT_EQ(Element::string, global->second->getType());
@@ -1073,8 +1070,8 @@ TEST_F(SrvConfigTest, mergeGlobals4) {
     ASSERT_NO_THROW(expected_globals = Element::fromJSON(exp_globals))
                     << "exp_globals didn't parse, test is broken";
 
-    EXPECT_TRUE(isEquivalent(expected_globals, cfg_to.getConfiguredGlobals()));
-
+    EXPECT_TRUE(isEquivalent(expected_globals,
+			     cfg_to.getConfiguredGlobals()->toElement()));
 }
 
 // This test verifies that globals from one SrvConfig
@@ -1146,7 +1143,8 @@ TEST_F(SrvConfigTest, mergeGlobals6) {
     ASSERT_NO_THROW(expected_globals = Element::fromJSON(exp_globals))
                     << "exp_globals didn't parse, test is broken";
 
-    EXPECT_TRUE(isEquivalent(expected_globals, cfg_to.getConfiguredGlobals()));
+    EXPECT_TRUE(isEquivalent(expected_globals,
+			     cfg_to.getConfiguredGlobals()->toElement()));
 
 }
 
@@ -1321,7 +1319,7 @@ TEST_F(SrvConfigTest, getDdnsParamsTest4) {
     // In order to take advantage of the dynamic inheritance of global
     // parameters to a subnet we need to set a callback function for each
     // subnet to allow for fetching global parameters.
-    subnet1->setFetchGlobalsFn([conf]() -> ConstElementPtr {
+    subnet1->setFetchGlobalsFn([conf]() -> ConstCfgGlobalsPtr {
         return (conf.getConfiguredGlobals());
     });
 
@@ -1338,7 +1336,7 @@ TEST_F(SrvConfigTest, getDdnsParamsTest4) {
     // In order to take advantage of the dynamic inheritance of global
     // parameters to a subnet we need to set a callback function for each
     // subnet to allow for fetching global parameters.
-    subnet2->setFetchGlobalsFn([conf]() -> ConstElementPtr {
+    subnet2->setFetchGlobalsFn([conf]() -> ConstCfgGlobalsPtr {
         return (conf.getConfiguredGlobals());
     });
 
@@ -1481,7 +1479,7 @@ TEST_F(SrvConfigTest, getDdnsParamsTest6) {
     // In order to take advantage of the dynamic inheritance of global
     // parameters to a subnet we need to set a callback function for each
     // subnet to allow for fetching global parameters.
-    subnet1->setFetchGlobalsFn([conf]() -> ConstElementPtr {
+    subnet1->setFetchGlobalsFn([conf]() -> ConstCfgGlobalsPtr {
         return (conf.getConfiguredGlobals());
     });
 
@@ -1498,7 +1496,7 @@ TEST_F(SrvConfigTest, getDdnsParamsTest6) {
     // In order to take advantage of the dynamic inheritance of global
     // parameters to a subnet we need to set a callback function for each
     // subnet to allow for fetching global parameters.
-    subnet2->setFetchGlobalsFn([conf]() -> ConstElementPtr {
+    subnet2->setFetchGlobalsFn([conf]() -> ConstCfgGlobalsPtr {
         return (conf.getConfiguredGlobals());
     });
 

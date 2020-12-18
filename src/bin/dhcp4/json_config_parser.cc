@@ -606,7 +606,8 @@ configureDhcp4Server(Dhcpv4Srv& server, isc::data::ConstElementPtr config_set,
                 (config_pair.first == "subnet4") ||
                 (config_pair.first == "shared-networks") ||
                 (config_pair.first == "reservations") ||
-                (config_pair.first == "config-control")) {
+                (config_pair.first == "config-control") ||
+                (config_pair.first == "loggers")) {
                 continue;
             }
 
@@ -643,7 +644,6 @@ configureDhcp4Server(Dhcpv4Srv& server, isc::data::ConstElementPtr config_set,
                  (config_pair.first == "t2-percent") ||
                  (config_pair.first == "cache-threshold") ||
                  (config_pair.first == "cache-max-age") ||
-                 (config_pair.first == "loggers") ||
                  (config_pair.first == "hostname-char-set") ||
                  (config_pair.first == "hostname-char-replacement") ||
                  (config_pair.first == "ddns-send-updates") ||
