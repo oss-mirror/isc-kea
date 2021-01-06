@@ -1348,7 +1348,8 @@ m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
 if test "x$enable_shell" != xno -o "x$enable_generate_docs" != xno; then
 # If kea-shell is enabled, we really need python. 2.7 or anything newer will do.
 # We try to find 3.x first. If not found, we can do with 2.7.
-  AM_PATH_PYTHON([2.7])
+### Gave up on python 2.x!
+  AM_PATH_PYTHON([3.2])
 
   AC_ARG_WITH(site-packages,
            AC_HELP_STRING([--with-site-packages],
@@ -1624,6 +1625,12 @@ AC_CONFIG_FILES([Makefile
                  src/bin/perfdhcp/Makefile
                  src/bin/perfdhcp/tests/Makefile
                  src/bin/perfdhcp/tests/testdata/Makefile
+                 src/bin/secure_shell/Makefile
+                 src/bin/secure_shell/kea-secure-shell
+                 src/bin/secure_shell/tests/Makefile
+                 src/bin/secure_shell/tests/basic_auth_tests.sh
+                 src/bin/secure_shell/tests/shell_process_tests.sh
+                 src/bin/secure_shell/tests/shell_unittest.py
                  src/bin/shell/Makefile
                  src/bin/shell/kea-shell
                  src/bin/shell/tests/Makefile
@@ -1789,6 +1796,10 @@ AC_CONFIG_COMMANDS([permissions], [
            chmod +x src/bin/dhcp6/tests/dhcp6_process_tests.sh
            chmod +x src/bin/keactrl/keactrl
            chmod +x src/bin/keactrl/tests/keactrl_tests.sh
+	   chmod +x src/bin/secure_shell/kea-secure-shell
+	   chmod +x src/bin/secure_shell/tests/basic_auth_tests.sh
+	   chmod +x src/bin/secure_shell/tests/shell_process_tests.sh
+	   chmod +x src/bin/secure_shell/tests/shell_unittest.py
            chmod +x src/bin/shell/kea-shell
            chmod +x src/bin/shell/tests/shell_process_tests.sh
            chmod +x src/bin/shell/tests/shell_unittest.py

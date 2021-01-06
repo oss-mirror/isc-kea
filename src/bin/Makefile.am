@@ -6,7 +6,7 @@ SUBDIRS += perfdhcp
 endif
 
 if KEA_SHELL
-SUBDIRS += shell
+SUBDIRS += shell secure_shell
 endif
 
 if HAVE_SYSREPO

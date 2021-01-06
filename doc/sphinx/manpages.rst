@@ -23,6 +23,7 @@ Manual Pages
    man/kea-admin.8
    man/kea-dhcp-ddns.8
    man/kea-lfc.8
+   man/kea-secure-shell.8
    man/kea-shell.8
    man/kea-netconf.8
    man/perfdhcp.8

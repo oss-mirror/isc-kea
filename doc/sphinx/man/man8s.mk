@@ -5,6 +5,7 @@ man8s += $(sphinxbuilddir)/man/kea-dhcp6.8
 man8s += $(sphinxbuilddir)/man/kea-dhcp-ddns.8
 man8s += $(sphinxbuilddir)/man/kea-lfc.8
 man8s += $(sphinxbuilddir)/man/kea-netconf.8
+man8s += $(sphinxbuilddir)/man/kea-secure-shell.8
 man8s += $(sphinxbuilddir)/man/kea-shell.8
 man8s += $(sphinxbuilddir)/man/keactrl.8
 man8s += $(sphinxbuilddir)/man/perfdhcp.8
