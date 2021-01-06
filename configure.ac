@@ -1796,10 +1796,10 @@ AC_CONFIG_COMMANDS([permissions], [
            chmod +x src/bin/dhcp6/tests/dhcp6_process_tests.sh
            chmod +x src/bin/keactrl/keactrl
            chmod +x src/bin/keactrl/tests/keactrl_tests.sh
-	   chmod +x src/bin/secure_shell/kea-secure-shell
-	   chmod +x src/bin/secure_shell/tests/basic_auth_tests.sh
-	   chmod +x src/bin/secure_shell/tests/shell_process_tests.sh
-	   chmod +x src/bin/secure_shell/tests/shell_unittest.py
+           chmod +x src/bin/secure_shell/kea-secure-shell
+           chmod +x src/bin/secure_shell/tests/basic_auth_tests.sh
+           chmod +x src/bin/secure_shell/tests/shell_process_tests.sh
+           chmod +x src/bin/secure_shell/tests/shell_unittest.py
            chmod +x src/bin/shell/kea-shell
            chmod +x src/bin/shell/tests/shell_process_tests.sh
            chmod +x src/bin/shell/tests/shell_unittest.py
