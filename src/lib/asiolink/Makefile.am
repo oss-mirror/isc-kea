@@ -42,7 +42,7 @@ libkea_asiolink_la_SOURCES += unix_domain_socket_endpoint.h
 libkea_asiolink_la_CXXFLAGS = $(AM_CXXFLAGS)
 libkea_asiolink_la_CPPFLAGS = $(AM_CPPFLAGS)
 libkea_asiolink_la_LIBADD  = $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
-libkea_asiolink_la_LIBADD += $(BOOST_LIBS) $(CRYPTO_LIBS) -lssl
+libkea_asiolink_la_LIBADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 
 # Specify the headers for copying into the installation directory tree.
 libkea_asiolink_includedir = $(pkgincludedir)/asiolink

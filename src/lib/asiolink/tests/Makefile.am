@@ -9,6 +9,28 @@ if USE_STATIC_LINK
 AM_LDFLAGS = -static
 endif
 
+EXTRA_DIST  =
+EXTRA_DIST += ca/0c7eedb9.0
+EXTRA_DIST += ca/3071e5ff.0
+EXTRA_DIST += ca/ad950210.0
+EXTRA_DIST += ca/d3d11a5f.0
+EXTRA_DIST += ca/doc
+EXTRA_DIST += ca/ext-addr-conf.cnf
+EXTRA_DIST += ca/ext-conf.cnf
+EXTRA_DIST += ca/kea-ca.crt
+EXTRA_DIST += ca/kea-ca.key
+EXTRA_DIST += ca/kea-client.crt
+EXTRA_DIST += ca/kea-client.csr
+EXTRA_DIST += ca/kea-client.key
+EXTRA_DIST += ca/kea-client.p12
+EXTRA_DIST += ca/kea-server-addr.crt
+EXTRA_DIST += ca/kea-server-addr.csr
+EXTRA_DIST += ca/kea-server.crt
+EXTRA_DIST += ca/kea-server.csr
+EXTRA_DIST += ca/kea-server.key
+EXTRA_DIST += ca/server-addr-conf.cnf
+EXTRA_DIST += ca/server-conf.cnf
+
 CLEANFILES = *.gcno *.gcda test-socket
 
 TESTS_ENVIRONMENT = \
@@ -43,7 +65,7 @@ run_unittests_LDADD += $(top_builddir)/src/lib/log/libkea-log.la
 run_unittests_LDADD += $(top_builddir)/src/lib/util/unittests/libutil_unittests.la
 run_unittests_LDADD += $(top_builddir)/src/lib/util/libkea-util.la
 run_unittests_LDADD += $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
-run_unittests_LDADD += $(LOG4CPLUS_LIBS) $(BOOST_LIBS) $(CRYPTO_LIBS) -lssl
+run_unittests_LDADD += $(LOG4CPLUS_LIBS) $(BOOST_LIBS) $(CRYPTO_LIBS)
 run_unittests_LDADD += $(GTEST_LDADD)
 
 run_unittests_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS) $(GTEST_LDFLAGS)

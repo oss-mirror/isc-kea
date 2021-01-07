@@ -150,11 +150,11 @@ public:
     /// will be called.
     /// @param callback Callback function for the asyncAccept.
     explicit Acceptor(IOService& io_service,
-		      ssl::context context,
-		      TestTLSAcceptor& acceptor,
+                      ssl::context& context,
+                      TestTLSAcceptor& acceptor,
                       const TLSAcceptorCallback& callback)
-        : socket_(io_service, std::move(context)), acceptor_(acceptor),
-	  callback_(callback) {
+        : socket_(io_service, context), acceptor_(acceptor),
+          callback_(callback) {
     }
 
     /// @brief Destructor.
@@ -258,9 +258,8 @@ public:
     void accept() {
         TLSAcceptorCallback cb = std::bind(&TLSAcceptorTest::acceptHandler,
                                            this, ph::_1);
-	AcceptorPtr conn(new Acceptor(io_service_,
-				      ssl::context(ssl::context::method::tls),
-				      acceptor_, cb));
+        ssl::context ctx(ssl::context::method::tls);
+        AcceptorPtr conn(new Acceptor(io_service_, ctx, acceptor_, cb));
         connections_.push_back(conn);
         connections_.back()->accept();
     }

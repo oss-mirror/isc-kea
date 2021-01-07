@@ -35,102 +35,135 @@
 namespace isc {
 namespace asiolink {
 
-/// \brief Type of TLS streams.
+/// @brief Type of TLS streams.
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> TLSStream;
 
-/// \brief The \c TLSSocket class is a concrete derived class of \c IOAsioSocket
+/// @brief The @c TLSSocket class is a concrete derived class of @c IOAsioSocket
 /// that represents a TLS socket.
 ///
-/// \param C Callback type
+/// @param C Callback type
 template <typename C>
 class TLSSocket : public IOAsioSocket<C> {
 private:
-    /// \brief Class is non-copyable
+    /// @brief Class is non-copyable
     TLSSocket(const TLSSocket&);
     TLSSocket& operator=(const TLSSocket&);
 
 public:
 
-    /// \brief Constructor from an ASIO TLS stream.
+    /// @brief Constructor from an ASIO TLS stream.
     ///
-    /// \param stream The ASIO representation of the TLS stream.  It is assumed
+    /// @param stream The ASIO representation of the TLS stream.  It is assumed
     ///        that the caller will open and close the stream, so these
     ///        operations are a no-op for that stream.
     TLSSocket(TLSStream& stream);
 
-    /// \brief Constructor
+    /// @brief Constructor
     ///
     /// Used when the TLSSocket is being asked to manage its own internal
     /// socket.  In this case, the open() and close() methods are used.
     ///
-    /// \param service I/O Service object used to manage the socket.
-    /// \param context TLS context.
-    TLSSocket(IOService& service, boost::asio::ssl::context context);
+    /// @param service I/O Service object used to manage the socket.
+    /// @param context TLS context.
+    TLSSocket(IOService& service, boost::asio::ssl::context& context);
 
-    /// \brief Destructor
+    /// @brief Destructor
     virtual ~TLSSocket();
 
-    /// \brief Return file descriptor of underlying socket
+    /// @brief Return file descriptor of underlying socket
     virtual int getNative() const {
         return (socket_.native_handle());
     }
 
-    /// \brief Return protocol of socket
+    /// @brief Return protocol of socket
     virtual int getProtocol() const {
         return (IPPROTO_TCP);
     }
 
-    /// \brief Is "open()" synchronous?
+    /// @brief Is "open()" synchronous?
     ///
     /// Indicates that the opening of a TLS socket is asynchronous.
     virtual bool isOpenSynchronous() const {
         return (false);
     }
 
-    /// \brief Checks if the connection is usable.
+    /// @brief Checks if the connection is usable.
     ///
     /// The connection is usable if the socket is open and the peer has not
     /// closed its connection.
     ///
-    /// \return true if the connection is usable.
+    /// @return true if the connection is usable.
     bool isUsable() const {
-        return (socket_.is_open());
+        // If the socket is open it doesn't mean that it is still usable. The connection
+        // could have been closed on the other end. We have to check if we can still
+        // use this socket.
+        if (socket_.is_open()) {
+            // Remember the current non blocking setting.
+            const bool non_blocking_orig = socket_.non_blocking();
+            // Set the socket to non blocking mode. We're going to test if the socket
+            // returns would_block status on the attempt to read from it.
+            socket_.non_blocking(true);
+
+            int fd = getNative();
+            char data[2];
+
+            // Use receive with message peek flag to avoid removing
+            // the data awaiting to be read.
+            int err = 0;
+            if (recv(getNative(), data, sizeof(data), MSG_PEEK) < 0) {
+                err = errno;
+            }
+
+            // Revert the original non_blocking flag on the socket.
+            socket_.non_blocking(non_blocking_orig);
+
+            // If the connection is alive we'd typically get would_block status code.
+            // If there are any data that haven't been read we may also get success
+            // status. We're guessing that try_again may also be returned by some
+            // implementations in some situations. Any other error code indicates a
+            // problem with the connection so we assume that the connection has been
+            // closed.
+            return ((err == 0) || (err == EAGAIN) || (err == EWOULDBLOCK));
+        }
+
+        return (false);
     }
 
-    /// \brief Open Socket
+    /// @brief Open Socket
     ///
     /// Opens the TLS socket.  This is an asynchronous operation, completion of
     /// which will be signalled via a call to the callback function.
     ///
-    /// \param endpoint Endpoint to which the socket will connect.
-    /// \param callback Callback object.
+    /// @param endpoint Endpoint to which the socket will connect.
+    /// @param callback Callback object.
     virtual void open(const IOEndpoint* endpoint, C& callback);
 
-    /// \brief Perform Handshake
+    /// @brief Perform Handshake
     ///
     /// Perform the TLS handshake. This is an asynchronous operation,
     /// completion of which will be signalled via a call to the callback
     /// function.
     ///
-    /// \param callback Callback object.
-    virtual void handshake(C& callback);
+    /// @param server True for the server side, false for the client side.
+    /// @param callback Callback object.
+    virtual void handshake(bool server, C& callback);
 
-    /// \brief Send Asynchronously
+    /// @brief Send Asynchronously
     ///
     /// Calls the underlying socket's async_send() method to send a packet of
     /// data asynchronously to the remote endpoint.  The callback will be called
     /// on completion.
     ///
-    /// \param data Data to send
-    /// \param length Length of data to send
-    /// \param endpoint Target of the send. (Unused for a TLS socket because
+    /// @param data Data to send
+    /// @param length Length of data to send
+    /// @param endpoint Target of the send. (Unused for a TLS socket because
     ///        that was determined when the connection was opened.)
-    /// \param callback Callback object.
-    /// \throw BufferTooLarge on attempt to send a buffer larger than 64kB.
+    /// @param callback Callback object.
+    /// @throw BufferTooLarge on attempt to send a buffer larger than 64kB.
     virtual void asyncSend(const void* data, size_t length,
                            const IOEndpoint* endpoint, C& callback);
 
-    /// \brief Send Asynchronously without count.
+    /// @brief Send Asynchronously without count.
     ///
     /// This variant of the method sends data over the TLS socket without
     /// preceding the data with a data count. Eventually, we should migrate
@@ -138,57 +171,64 @@ public:
     /// classes using the count. Once this migration is done, the existing
     /// virtual method should be replaced by this method.
     ///
-    /// \param data Data to send
-    /// \param length Length of data to send
-    /// \param callback Callback object.
-    /// \throw BufferTooLarge on attempt to send a buffer larger than 64kB.
+    /// @param data Data to send
+    /// @param length Length of data to send
+    /// @param callback Callback object.
+    /// @throw BufferTooLarge on attempt to send a buffer larger than 64kB.
     void asyncSend(const void* data, size_t length, C& callback);
 
-    /// \brief Receive Asynchronously
+    /// @brief Receive Asynchronously
     ///
     /// Calls the underlying socket's async_receive() method to read a packet
     /// of data from a remote endpoint.  Arrival of the data is signalled via a
     /// call to the callback function.
     ///
-    /// \param data Buffer to receive incoming message
-    /// \param length Length of the data buffer
-    /// \param offset Offset into buffer where data is to be put
-    /// \param endpoint Source of the communication
-    /// \param callback Callback object
+    /// @param data Buffer to receive incoming message
+    /// @param length Length of the data buffer
+    /// @param offset Offset into buffer where data is to be put
+    /// @param endpoint Source of the communication
+    /// @param callback Callback object
     virtual void asyncReceive(void* data, size_t length, size_t offset,
                               IOEndpoint* endpoint, C& callback);
 
-    /// \brief Process received data packet
+    /// @brief Process received data packet
     ///
     /// See the description of IOAsioSocket::receiveComplete for a complete
     /// description of this method.
     ///
-    /// \param staging Pointer to the start of the staging buffer.
-    /// \param length Amount of data in the staging buffer.
-    /// \param cumulative Amount of data received before the staging buffer is
+    /// @param staging Pointer to the start of the staging buffer.
+    /// @param length Amount of data in the staging buffer.
+    /// @param cumulative Amount of data received before the staging buffer is
     ///        processed.
-    /// \param offset Unused.
-    /// \param expected unused.
-    /// \param outbuff Output buffer.  Data in the staging buffer is be copied
+    /// @param offset Unused.
+    /// @param expected unused.
+    /// @param outbuff Output buffer.  Data in the staging buffer is be copied
     ///        to this output buffer in the call.
     ///
-    /// \return Always true
+    /// @return Always true
     virtual bool processReceivedData(const void* staging, size_t length,
                                      size_t& cumulative, size_t& offset,
                                      size_t& expected,
                                      isc::util::OutputBufferPtr& outbuff);
 
-    /// \brief Cancel I/O On Socket
+    /// @brief Cancel I/O On Socket
     virtual void cancel();
 
-    /// \brief Close socket
+    /// @brief Close socket
     virtual void close();
 
-    /// \brief Returns reference to the underlying ASIO socket.
+    /// @brief Returns reference to the underlying ASIO socket.
     ///
-    /// \return Reference to underlying ASIO socket.
+    /// @return Reference to underlying ASIO socket.
     virtual TLSStream::lowest_layer_type& getASIOSocket() const {
         return (socket_);
+    }
+
+    /// @brief Returns reference to the underlying ASIO stream.
+    ///
+    /// @return Reference to underlying ASIO stream.
+    virtual TLSStream& getASIOStream() const {
+        return (stream_);
     }
 
 private:
@@ -196,13 +236,13 @@ private:
     /// handles the case where a stream is passed to the TLSSocket on
     /// construction, or where it is asked to manage its own stream.
 
-    /// \brief Pointer to own stream
+    /// @brief Pointer to own stream
     TLSStream* stream_ptr_;
 
-    /// \brief TLS stream
+    /// @brief TLS stream
     TLSStream& stream_;
 
-    /// \brief Underlying TCP socket.
+    /// @brief Underlying TCP socket.
     TLSStream::lowest_layer_type& socket_;
 
     /// TODO: Remove temporary buffer
@@ -219,7 +259,7 @@ private:
     /// the data was discounted as that would lead to two callbacks which would
     /// cause problems with the stackless coroutine code.
 
-    /// \brief Send buffer
+    /// @brief Send buffer
     isc::util::OutputBufferPtr send_buffer_;
 };
 
@@ -236,7 +276,7 @@ TLSSocket<C>::TLSSocket(TLSStream& stream) :
 
 template <typename C>
 TLSSocket<C>::TLSSocket(IOService& service,
-                        boost::asio::ssl::context context) :
+                        boost::asio::ssl::context& context) :
     stream_ptr_(new TLSStream(service.get_io_service(), context)),
     stream_(*stream_ptr_), socket_(stream_.lowest_layer()), send_buffer_()
 {
@@ -257,13 +297,20 @@ TLSSocket<C>::open(const IOEndpoint* endpoint, C& callback) {
     // If socket is open on this end but has been closed by the peer,
     // we need to reconnect.
     if (socket_.is_open() && !isUsable()) {
-        close();
+        socket_.close();
     }
 
     // Ignore opens on already-open socket.  Don't throw a failure because
     // of uncertainties as to what precedes whan when using asynchronous I/O.
     // At also allows us a treat a passed-in socket as a self-managed socket.
     if (!socket_.is_open()) {
+        if (endpoint->getFamily() == AF_INET) {
+            socket_.open(boost::asio::ip::tcp::v4());
+        }
+        else {
+            socket_.open(boost::asio::ip::tcp::v6());
+        }
+
         // Set options on the socket:
 
         // Reuse address - allow the socket to bind to a port even if the port
@@ -288,14 +335,19 @@ TLSSocket<C>::open(const IOEndpoint* endpoint, C& callback) {
 // Perform the handshake.
 
 template <typename C> void
-TLSSocket<C>::handshake(C& callback) {
+TLSSocket<C>::handshake(bool server, C& callback) {
     if (!socket_.is_open()) {
         isc_throw(SocketNotOpen, "attempt to prefrom handshake on "
                   "a TLS socket that is not open");
     }
 
-    stream_.async_handshake(boost::asio::ssl::stream_base::client, callback);
-} 
+    using namespace boost::asio::ssl;
+    if (server) {
+        stream_.async_handshake(stream_base::server, callback);
+    } else {
+        stream_.async_handshake(stream_base::client, callback);
+    }
+}
 
 // Send a message.  Should never do this if the socket is not open, so throw
 // an exception if this is the case.

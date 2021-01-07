@@ -56,10 +56,11 @@ public:
     /// \brief Operations the server is doing
     enum Operation {
         ACCEPT = 0,     ///< accept() was issued
-        OPEN = 1,       /// Client connected to server
-        READ = 2,       ///< Asynchronous read completed
-        WRITE = 3,      ///< Asynchronous write completed
-        NONE = 4        ///< "Not set" state
+        OPEN = 1,       ///< Client connected to server
+        HANDSHAKE = 2,  ///< TLS handshake completed
+        READ = 3,       ///< Asynchronous read completed
+        WRITE = 4,      ///< Asynchronous write completed
+        NONE = 5        ///< "Not set" state
     };
 
     /// \brief Minimum size of buffers
@@ -190,10 +191,10 @@ private:
 // from the remote end is equal to the value in the count field plus two bytes
 // for the count field itself.
 //
-// \param socket Socket on which the server is reading data
+// \param stream Stream on which the server is reading data
 // \param server_cb Structure in which server data is held.
 void
-serverRead(tcp::socket& socket, TLSCallback& server_cb) {
+serverRead(TLSStream& stream, TLSCallback& server_cb) {
 
     // As we may need to read multiple times, keep a count of the cumulative
     // amount of data read and do successive reads into the appropriate part
@@ -207,7 +208,7 @@ serverRead(tcp::socket& socket, TLSCallback& server_cb) {
     while (!complete) {
 
         // Read block of data and update cumulative amount of data received.
-        server_cb.length() = socket.receive(
+        server_cb.length() = boost::asio::read(stream,
             boost::asio::buffer(server_cb.data() + server_cb.cumulative(),
                 TLSCallback::MIN_SIZE - server_cb.cumulative()));
         server_cb.cumulative() += server_cb.length();
@@ -218,7 +219,7 @@ serverRead(tcp::socket& socket, TLSCallback& server_cb) {
             server_cb.expected() = readUint16(server_cb.data(), server_cb.length());
             if ((server_cb.expected() + 2) == server_cb.cumulative()) {
 
-                // Amount of data read from socket equals the size of the
+                // Amount of data read from stream equals the size of the
                 // message (as indicated in the first two bytes of the message)
                 // plus the size of the count field.  Therefore we have received
                 // all the data.
@@ -235,8 +236,8 @@ TEST(TLSSocket, processReceivedData) {
     const uint16_t PACKET_SIZE = 16382;     // Amount of "real" data in the buffer
 
     IOService               service;        // Used to instantiate socket
-    TLSSocket<TLSCallback>  test(service,   // Socket under test
-				 ssl::context(ssl::context::method::tls));
+    ssl::context            context(ssl::context::method::tls);
+    TLSSocket<TLSCallback>  test(service, context);    // Socket under test
     uint8_t                 inbuff[PACKET_SIZE + 2];   // Buffer to check
     OutputBufferPtr         outbuff(new OutputBuffer(16));
                                             // Where data is put
@@ -312,8 +313,10 @@ TEST(TLSSocket, sequenceTest) {
     IOService   service;                    // Service object for async control
 
     // The client - the TLSSocket being tested
-    TLSSocket<TLSCallback>  client(service, // Socket under test
-				   ssl::context(ssl::context::method::tls));
+    ssl::context client_ctx(ssl::context::method::tls);
+    TLSSocket<TLSCallback> client(service, client_ctx);
+                                            // Socket under test
+    // ssl::context(ssl::context::method::tls));
     TLSCallback client_cb("Client");        // Async I/O callback function
     TCPEndpoint client_remote_endpoint;     // Where client receives message from
     OutputBufferPtr client_buffer(new OutputBuffer(128));
@@ -326,8 +329,9 @@ TEST(TLSSocket, sequenceTest) {
     TCPEndpoint server_endpoint(server_address, SERVER_PORT);
                                             // Endpoint describing server
     TCPEndpoint server_remote_endpoint;     // Address where server received message from
-    tcp::socket server_socket(service.get_io_service());
-                                            // Socket used for server
+    ssl::context server_ctx(ssl::context::method::tls);
+    TLSStream   server(service.get_io_service(), server_ctx);
+                                            // Stream used for server
 
     // Step 1.  Create the connection between the client and the server.  Set
     // up the server to accept incoming connections and have the client open
@@ -340,18 +344,25 @@ TEST(TLSSocket, sequenceTest) {
     tcp::acceptor acceptor(service.get_io_service(),
                             tcp::endpoint(tcp::v4(), SERVER_PORT));
     acceptor.set_option(tcp::acceptor::reuse_address(true));
-    acceptor.async_accept(server_socket, server_cb);
+    acceptor.async_accept(server.lowest_layer(), server_cb);
+
+    std::cerr << "accepted\n";
 
     // Set up client - connect to the server.
     client_cb.queued() = TLSCallback::OPEN;
     client_cb.called() = TLSCallback::NONE;
     client_cb.setCode(43);  // Some error
     EXPECT_FALSE(client.isOpenSynchronous());
+    std::cerr << "opening\n";
     client.open(&server_endpoint, client_cb);
+
+    std::cerr << "opened\n";
 
     // Run the open and the accept callback and check that they ran.
     service.run_one();
+    std::cerr << "run_one\n";
     service.run_one();
+    std::cerr << "run_one\n";
 
     EXPECT_EQ(TLSCallback::ACCEPT, server_cb.called());
     EXPECT_EQ(0, server_cb.getCode());
@@ -375,14 +386,20 @@ TEST(TLSSocket, sequenceTest) {
     client_cb.queued() = TLSCallback::WRITE;
     client_cb.setCode(143);  // Arbitrary number
     client_cb.length() = 0;
+    std::cerr << "sending\n";
     client.asyncSend(OUTBOUND_DATA, sizeof(OUTBOUND_DATA), &server_endpoint, client_cb);
+
+    std::cerr << "sent\n";
 
     // Wait for the client callback to complete. (Must do this first on
     // Solaris: if we do the synchronous read first, the test hangs.)
     service.run_one();
+    std::cerr << "run_one\n";
 
     // Synchronously read the data from the server.;
-    serverRead(server_socket, server_cb);
+    std::cerr << "reading\n";
+    serverRead(server, server_cb);
+    std::cerr << "read\n";
 
     // Check the client state
     EXPECT_EQ(TLSCallback::WRITE, client_cb.called());
@@ -409,8 +426,9 @@ TEST(TLSSocket, sequenceTest) {
     writeUint16(sizeof(INBOUND_DATA), server_cb.data(), TLSCallback::MIN_SIZE);
     copy(INBOUND_DATA, (INBOUND_DATA + sizeof(INBOUND_DATA) - 1),
         (server_cb.data() + 2));
-    server_socket.async_send(boost::asio::buffer(server_cb.data(),
-                                          (sizeof(INBOUND_DATA) + 2)),
+    boost::asio::async_write(server,
+                             boost::asio::buffer(server_cb.data(),
+                                                 (sizeof(INBOUND_DATA) + 2)),
                              server_cb);
 
     // Have the client read asynchronously.
@@ -513,5 +531,5 @@ TEST(TLSSocket, sequenceTest) {
 
     // Close client and server.
     EXPECT_NO_THROW(client.close());
-    EXPECT_NO_THROW(server_socket.close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
 }
