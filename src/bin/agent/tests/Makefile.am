@@ -1,21 +1,13 @@
-SHTESTS =
-# The test of dynamic reconfiguration based on signals will work only
-# if we are using file based configuration approach.
-SHTESTS += ca_process_tests.sh
+SUBDIRS = .
 
-noinst_SCRIPTS = ca_process_tests.sh
+# Shell tests
+SHTESTS = ca_process_tests.sh
+
+# Don't install tests.
+noinst_SCRIPTS = $(SHTESTS)
 
 EXTRA_DIST  = ca_process_tests.sh.in
 EXTRA_DIST += testdata/get_config.json
-
-# test using command-line arguments, so use check-local target instead of TESTS
-check-local:
-	for shtest in $(SHTESTS) ; do \
-	echo Running test: $$shtest ; \
-	export KEA_LOCKFILE_DIR=$(abs_top_builddir); \
-	export KEA_PIDFILE_DIR=$(abs_top_builddir); \
-	${SHELL} $(abs_builddir)/$$shtest || exit ; \
-	done
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib
 AM_CPPFLAGS += -I$(top_srcdir)/src/bin -I$(top_builddir)/src/bin
@@ -25,11 +17,12 @@ AM_CPPFLAGS += -DINSTALL_PROG=\"$(abs_top_srcdir)/install-sh\"
 AM_CPPFLAGS += -DCFG_EXAMPLES=\"$(abs_top_srcdir)/doc/examples/agent\"
 AM_CPPFLAGS += -DSYNTAX_FILE=\"$(abs_srcdir)/../agent_parser.yy\"
 
-CLEANFILES = $(builddir)/interfaces.txt $(builddir)/logger_lockfile
-
-DISTCLEANFILES  = ca_process_tests.sh tls_ca_process_tests.sh
-DISTCLEANFILES += test_data_files_config.h test_basic_auth_libraries.h
+# Test files are created by `./configure` so only clean them when running
+# `make distclean`, but not on `make clean`.
+DISTCLEANFILES = $(SHTESTS)
+DISTCLEANFILES += test_basic_auth_libraries.h
 DISTCLEANFILES += test_callout_libraries.h
+DISTCLEANFILES += test_data_files_config.h
 
 AM_CXXFLAGS = $(KEA_CXXFLAGS)
 
@@ -40,7 +33,10 @@ endif
 TESTS_ENVIRONMENT = \
         $(LIBTOOL) --mode=execute $(VALGRIND_COMMAND)
 
-TESTS =
+# Run tests on `make check`.
+check_SCRIPTS = $(SHTESTS)
+TESTS = $(SHTESTS)
+
 if HAVE_GTEST
 
 noinst_LTLIBRARIES = libcallout.la libbasicauth.la

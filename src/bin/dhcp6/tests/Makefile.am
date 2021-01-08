@@ -1,20 +1,11 @@
-SHTESTS =
-# The test of dynamic reconfiguration based on signals will work only
-# if we are using file based configuration approach.
-SHTESTS += dhcp6_process_tests.sh
+# Shell tests
+SHTESTS = dhcp6_process_tests.sh
 
-noinst_SCRIPTS = dhcp6_process_tests.sh
+# Don't install tests.
+noinst_SCRIPTS = $(SHTESTS)
 
-EXTRA_DIST = dhcp6_process_tests.sh.in get_config_unittest.cc.skel
-
-# test using command-line arguments, so use check-local target instead of TESTS
-check-local:
-	for shtest in $(SHTESTS) ; do \
-	echo Running test: $$shtest ; \
-	export KEA_LOCKFILE_DIR=$(abs_top_builddir); \
-	export KEA_PIDFILE_DIR=$(abs_top_builddir); \
-	${SHELL} $(abs_builddir)/$$shtest || exit ; \
-	done
+# Other files that need to be added to the tarball
+EXTRA_DIST = get_config_unittest.cc.skel
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib
 AM_CPPFLAGS += -I$(top_srcdir)/src/bin -I$(top_builddir)/src/bin
@@ -26,11 +17,6 @@ AM_CPPFLAGS += -DINSTALL_PROG=\"$(abs_top_srcdir)/install-sh\"
 AM_CPPFLAGS += -DCFG_EXAMPLES=\"$(abs_top_srcdir)/doc/examples/kea6\"
 AM_CPPFLAGS += -DSYNTAX_FILE=\"$(abs_srcdir)/../dhcp6_parser.yy\"
 AM_CPPFLAGS += -DKEA_LFC_EXECUTABLE=\"$(abs_top_builddir)/src/bin/lfc/kea-lfc\"
-
-CLEANFILES  = $(builddir)/logger_lockfile
-CLEANFILES += $(builddir)/load_marker.txt $(builddir)/unload_marker.txt
-CLEANFILES += $(builddir)/test_leases.csv.*
-CLEANFILES += *.json *.log
 
 DISTCLEANFILES = dhcp6_process_tests.sh marker_file.h
 DISTCLEANFILES += test_data_files_config.h test_libraries.h
@@ -44,7 +30,10 @@ endif
 TESTS_ENVIRONMENT = \
         $(LIBTOOL) --mode=execute $(VALGRIND_COMMAND)
 
-TESTS =
+# Run tests on `make check`.
+check_SCRIPTS = $(SHTESTS)
+TESTS = $(SHTESTS)
+
 if HAVE_GTEST
 # Build shared libraries for testing. The libtool way to create a shared library
 # is to specify "-avoid-version -export-dynamic -module" in the library LDFLAGS

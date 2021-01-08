@@ -1,18 +1,13 @@
+# Shell tests
 SHTESTS = netconf_tests.sh
 
-noinst_SCRIPTS = netconf_tests.sh
+# Don't install tests.
+noinst_SCRIPTS = $(SHTESTS)
 
-EXTRA_DIST = netconf_tests.sh.in
+# Test files are created by `./configure` so only clean them when running
+# `make distclean`, but not on `make clean`.
+DISTCLEANFILES = $(SHTESTS)
 
-# test using command-line arguments, so use check-local target instead of TESTS
-check-local:
-	for shtest in $(SHTESTS) ; do \
-	echo Running test: $$shtest ; \
-	export KEA_LOCKFILE_DIR=$(abs_top_builddir); \
-	export KEA_PIDFILE_DIR=$(abs_top_builddir); \
-	${SHELL} $(abs_builddir)/$$shtest || exit ; \
-	done
-
-CLEANFILES = *.json *.log
-
-DISTCLEANFILES = netconf_tests.sh
+# Run tests on `make check`.
+check_SCRIPTS = $(SHTESTS)
+TESTS = $(SHTESTS)

@@ -1,21 +1,13 @@
-SHTESTS =
-# The test of dynamic reconfiguration based on signals will work only
-# if we are using file based configuration approach.
-SHTESTS += d2_process_tests.sh
+# Shell tests
+SHTESTS = d2_process_tests.sh
 
-noinst_SCRIPTS = d2_process_tests.sh
+# Don't install tests.
+noinst_SCRIPTS = $(SHTESTS)
 
-EXTRA_DIST  = d2_process_tests.sh.in
-EXTRA_DIST += testdata/d2_cfg_tests.json testdata/get_config.json
-
-# test using command-line arguments, so use check-local target instead of TESTS
-check-local:
-	for shtest in $(SHTESTS) ; do \
-	echo Running test: $$shtest ; \
-	export KEA_LOCKFILE_DIR=$(abs_top_builddir); \
-	export KEA_PIDFILE_DIR=$(abs_top_builddir); \
-	${SHELL} $(abs_builddir)/$$shtest || exit ; \
-	done
+# Other files that need to be added to the tarball
+EXTRA_DIST  =
+EXTRA_DIST += testdata/d2_cfg_tests.json
+EXTRA_DIST += testdata/get_config.json
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib
 AM_CPPFLAGS += -I$(top_srcdir)/src/bin -I$(top_builddir)/src/bin
@@ -27,7 +19,10 @@ AM_CPPFLAGS += -DSYNTAX_FILE=\"$(abs_srcdir)/../d2_parser.yy\"
 
 CLEANFILES = $(builddir)/interfaces.txt $(builddir)/logger_lockfile
 
-DISTCLEANFILES = d2_process_tests.sh test_data_files_config.h
+# Test files are created by `./configure` so only clean them when running
+# `make distclean`, but not on `make clean`.
+DISTCLEANFILES = $(SHTESTS)
+DISTCLEANFILES = test_data_files_config.h
 
 AM_CXXFLAGS = $(KEA_CXXFLAGS)
 
@@ -38,7 +33,10 @@ endif
 TESTS_ENVIRONMENT = \
         $(LIBTOOL) --mode=execute $(VALGRIND_COMMAND)
 
-TESTS =
+# Run tests on `make check`.
+check_SCRIPTS = $(SHTESTS)
+TESTS = $(SHTESTS)
+
 if HAVE_GTEST
 
 TESTS += d2_unittests
