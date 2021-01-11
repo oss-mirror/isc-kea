@@ -40,6 +40,10 @@ using namespace std;
 
 namespace {
 
+inline string CA(const string& filename) {
+    return (string(TEST_CA_DIR) + "/" + filename);
+}
+
 const char SERVER_ADDRESS[] = "127.0.0.1";
 const unsigned short SERVER_PORT = 5303;
 
@@ -208,9 +212,9 @@ serverRead(TLSStream& stream, TLSCallback& server_cb) {
     while (!complete) {
 
         // Read block of data and update cumulative amount of data received.
-        server_cb.length() = boost::asio::read(stream,
+        server_cb.length() = stream.read_some(
             boost::asio::buffer(server_cb.data() + server_cb.cumulative(),
-                TLSCallback::MIN_SIZE - server_cb.cumulative()));
+                                TLSCallback::MIN_SIZE - server_cb.cumulative()));
         server_cb.cumulative() += server_cb.length();
 
         // If we have read at least two bytes, we can work out how much we
@@ -314,6 +318,11 @@ TEST(TLSSocket, sequenceTest) {
 
     // The client - the TLSSocket being tested
     ssl::context client_ctx(ssl::context::method::tls);
+    client_ctx.load_verify_file(CA("kea-ca.crt"));
+    client_ctx.use_certificate_file(CA("kea-client.crt"),
+                                    ssl::context::file_format::pem);
+    client_ctx.use_private_key_file(CA("kea-client.key"),
+                                    ssl::context::file_format::pem);
     TLSSocket<TLSCallback> client(service, client_ctx);
                                             // Socket under test
     // ssl::context(ssl::context::method::tls));
@@ -330,6 +339,11 @@ TEST(TLSSocket, sequenceTest) {
                                             // Endpoint describing server
     TCPEndpoint server_remote_endpoint;     // Address where server received message from
     ssl::context server_ctx(ssl::context::method::tls);
+    server_ctx.load_verify_file(CA("kea-ca.crt"));
+    server_ctx.use_certificate_file(CA("kea-server.crt"),
+                                    ssl::context::file_format::pem);
+    server_ctx.use_private_key_file(CA("kea-server.key"),
+                                    ssl::context::file_format::pem);
     TLSStream   server(service.get_io_service(), server_ctx);
                                             // Stream used for server
 
@@ -342,28 +356,22 @@ TEST(TLSSocket, sequenceTest) {
     server_cb.called() = TLSCallback::NONE;
     server_cb.setCode(42);  // Some error
     tcp::acceptor acceptor(service.get_io_service(),
-                            tcp::endpoint(tcp::v4(), SERVER_PORT));
+                           tcp::endpoint(tcp::v4(), SERVER_PORT));
     acceptor.set_option(tcp::acceptor::reuse_address(true));
     acceptor.async_accept(server.lowest_layer(), server_cb);
-
-    std::cerr << "accepted\n";
 
     // Set up client - connect to the server.
     client_cb.queued() = TLSCallback::OPEN;
     client_cb.called() = TLSCallback::NONE;
     client_cb.setCode(43);  // Some error
     EXPECT_FALSE(client.isOpenSynchronous());
-    std::cerr << "opening\n";
     client.open(&server_endpoint, client_cb);
 
-    std::cerr << "opened\n";
-
     // Run the open and the accept callback and check that they ran.
-    service.run_one();
-    std::cerr << "run_one\n";
-    service.run_one();
-    std::cerr << "run_one\n";
-
+    while ((server_cb.called() == TLSCallback::NONE) ||
+           (client_cb.called() == TLSCallback::NONE)) {
+        service.run_one();
+    }
     EXPECT_EQ(TLSCallback::ACCEPT, server_cb.called());
     EXPECT_EQ(0, server_cb.getCode());
 
@@ -378,6 +386,27 @@ TEST(TLSSocket, sequenceTest) {
             << " as a result of async_connect, got " << client_cb.getCode();
     }
 
+    // Perform handshake.
+    client_cb.queued() = TLSCallback::HANDSHAKE;
+    client_cb.called() = TLSCallback::NONE;
+    client_cb.setCode(43);  // Some error
+    client.handshake(false, client_cb);
+
+    server_cb.queued() = TLSCallback::HANDSHAKE;
+    server_cb.called() = TLSCallback::NONE;
+    server_cb.setCode(42);  // Some error
+    server.async_handshake(ssl::stream_base::server, server_cb);
+
+    while ((server_cb.called() == TLSCallback::NONE) ||
+           (client_cb.called() == TLSCallback::NONE)) {
+        service.run_one();
+    }
+    EXPECT_EQ(TLSCallback::HANDSHAKE, client_cb.called());
+    EXPECT_EQ(0, client_cb.getCode());
+
+    EXPECT_EQ(TLSCallback::HANDSHAKE, server_cb.called());
+    EXPECT_EQ(0, server_cb.getCode());
+
     // Step 2.  Get the client to write to the server asynchronously.  The
     // server will loop reading the data synchronously.
 
@@ -386,20 +415,16 @@ TEST(TLSSocket, sequenceTest) {
     client_cb.queued() = TLSCallback::WRITE;
     client_cb.setCode(143);  // Arbitrary number
     client_cb.length() = 0;
-    std::cerr << "sending\n";
     client.asyncSend(OUTBOUND_DATA, sizeof(OUTBOUND_DATA), &server_endpoint, client_cb);
-
-    std::cerr << "sent\n";
 
     // Wait for the client callback to complete. (Must do this first on
     // Solaris: if we do the synchronous read first, the test hangs.)
-    service.run_one();
-    std::cerr << "run_one\n";
+    while (client_cb.called() == TLSCallback::NONE) {
+        service.run_one();
+    }
 
     // Synchronously read the data from the server.;
-    std::cerr << "reading\n";
     serverRead(server, server_cb);
-    std::cerr << "read\n";
 
     // Check the client state
     EXPECT_EQ(TLSCallback::WRITE, client_cb.called());
@@ -466,11 +491,12 @@ TEST(TLSSocket, sequenceTest) {
 
         // Has the server run?
         if (!server_complete) {
-            if (server_cb.called() == server_cb.queued()) {
+            if (server_cb.called() != TLSCallback::NONE) {
 
                 // Yes.  Check that the send completed successfully and that
                 // all the data that was expected to have been sent was in fact
                 // sent.
+                EXPECT_EQ(TLSCallback::WRITE, server_cb.called());
                 EXPECT_EQ(0, server_cb.getCode());
                 EXPECT_EQ((sizeof(INBOUND_DATA) + 2), server_cb.length());
                 server_complete = true;
@@ -480,7 +506,7 @@ TEST(TLSSocket, sequenceTest) {
         // Has the client run?
         if (!client_complete) {
 
-            if (client_cb.called() != client_cb.queued()) {
+            if (client_cb.called() == TLSCallback::NONE) {
                 // No. Run the service another time.
                 continue;
             }
@@ -499,7 +525,7 @@ TEST(TLSSocket, sequenceTest) {
                                                          client_buffer);
 
             // If the data is not complete, queue another read.
-            if (! client_complete) {
+            if (!client_complete) {
                 client_cb.called() = TLSCallback::NONE;
                 client_cb.queued() = TLSCallback::READ;
                 client_cb.length() = 0;

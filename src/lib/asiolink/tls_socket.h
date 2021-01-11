@@ -306,8 +306,7 @@ TLSSocket<C>::open(const IOEndpoint* endpoint, C& callback) {
     if (!socket_.is_open()) {
         if (endpoint->getFamily() == AF_INET) {
             socket_.open(boost::asio::ip::tcp::v4());
-        }
-        else {
+        } else {
             socket_.open(boost::asio::ip::tcp::v6());
         }
 
@@ -337,7 +336,7 @@ TLSSocket<C>::open(const IOEndpoint* endpoint, C& callback) {
 template <typename C> void
 TLSSocket<C>::handshake(bool server, C& callback) {
     if (!socket_.is_open()) {
-        isc_throw(SocketNotOpen, "attempt to prefrom handshake on "
+        isc_throw(SocketNotOpen, "attempt to preform handshake on "
                   "a TLS socket that is not open");
     }
 
@@ -379,9 +378,9 @@ template <typename C> void
 TLSSocket<C>::asyncSend(const void* data, size_t length,
                         const IOEndpoint*, C& callback)
 {
-    if (socket_.is_open()) {
+    if (!socket_.is_open()) {
         isc_throw(SocketNotOpen,
-            "attempt to send on a TLS socket that is not open");
+                  "attempt to send on a TLS socket that is not open");
     }
 
     // Need to copy the data into a temporary buffer and precede it with
@@ -414,7 +413,7 @@ template <typename C> void
 TLSSocket<C>::asyncReceive(void* data, size_t length, size_t offset,
                            IOEndpoint* endpoint, C& callback)
 {
-    if (socket_.is_open()) {
+    if (!socket_.is_open()) {
         isc_throw(SocketNotOpen,
                   "attempt to receive from a TLS socket that is not open");
     }
@@ -440,13 +439,12 @@ TLSSocket<C>::asyncReceive(void* data, size_t length, size_t offset,
     if (offset >= length) {
         isc_throw(BufferOverflow, "attempt to read into area beyond end of "
                   "TCP receive buffer");
-        }
+    }
     void* buffer_start =
         static_cast<void*>(static_cast<uint8_t*>(data) + offset);
 
     // ... and kick off the read.
-    boost::asio::async_read(stream_,
-                            boost::asio::buffer(buffer_start, length - offset),
+    stream_.async_read_some(boost::asio::buffer(buffer_start, length - offset),
                             callback);
 }
 
@@ -506,7 +504,8 @@ TLSSocket<C>::processReceivedData(const void* staging, size_t length,
 
         // Still need data in the output packet.  Copy what we can from the
         // staging buffer to the output buffer.
-        size_t copy_amount = std::min(expected - outbuff->getLength(), data_length);
+        size_t copy_amount = std::min(expected - outbuff->getLength(),
+                                      data_length);
         outbuff->writeData(data, copy_amount);
     }
 
