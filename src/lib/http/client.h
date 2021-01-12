@@ -12,6 +12,7 @@
 #include <http/url.h>
 #include <http/request.h>
 #include <http/response.h>
+#include <boost/asio/ssl.hpp>
 #include <boost/shared_ptr.hpp>
 #include <functional>
 #include <string>
@@ -59,7 +60,7 @@ class HttpClientImpl;
 /// a request by trying to read from the socket (with message peeking). If
 /// the socket is usable the client uses it to transmit the request.
 ///
-/// This classes exposes the underlying TCP socket's descriptor for each
+/// This classes exposes the underlying TLS socket's descriptor for each
 /// connection via connect and close callbacks.  This is done to permit the
 /// sockets to be monitored for IO readiness by external code that's something
 /// other than boost::asio (e.g.select() or epoll()), and would thus otherwise
@@ -93,16 +94,24 @@ public:
     /// Returned boolean value indicates whether the client should continue
     /// connecting to the server (if true) or not (false).
     /// It is passed the IO error code along with the native socket handle of
-    /// the connection's TCP socket.  The passed socket descriptor may be used
+    /// the connection's TLS socket.  The passed socket descriptor may be used
     /// to monitor the readiness of the events via select() or epoll().
     ///
     /// @note Beware that the IO error code can be set to "in progress"
     /// so a not null error code does not always mean the connect failed.
     typedef std::function<bool(const boost::system::error_code&, const int)> ConnectHandler;
 
+    /// @brief Optional handler invoked when client performs the TLS handshake
+    /// with the server.
+    ///
+    /// Returned boolean value indicates whether the client should continue
+    /// connecting to the server (if true) or not (false).
+    /// @note The second argument is not used.
+    typedef std::function<bool(const boost::system::error_code&, const int)> HandshakeHandler;
+
     /// @brief Optional handler invoked when client closes the connection to the server.
     ///
-    /// It is passed the native socket handler of the connection's TCP socket.
+    /// It is passed the native socket handler of the connection's TLS socket.
     typedef std::function<void(const int)> CloseHandler;
 
     /// @brief Constructor.
@@ -122,7 +131,7 @@ public:
     ///
     /// The existing connection is tested before it is used for the new
     /// transaction by attempting to read (with message peeking) from the open
-    /// TCP socket. If the read attempt is successful, the client will transmit
+    /// TLS socket. If the read attempt is successful, the client will transmit
     /// the HTTP request to the server using this connection. It is possible
     /// that the server closes the connection between the connection test and
     /// sending the request. In such case, an error will be returned and the
@@ -166,6 +175,7 @@ public:
     /// callback can be used to recognize this condition.
     ///
     /// @param url URL where the request should be send.
+    /// @param context TLS context.
     /// @param request Pointer to the object holding a request.
     /// @param response Pointer to the object where response should be stored.
     /// @param request_callback Pointer to the user callback function invoked
@@ -173,11 +183,14 @@ public:
     /// @param request_timeout Timeout for the transaction in milliseconds.
     /// @param connect_callback Optional callback invoked when the client
     /// connects to the server.
+    /// @param handshake_callback Optional callback invoked when the client
+    /// performs the TLS handshake with the server.
     /// @param close_callback Optional callback invoked when the client
     /// closes the connection to the server.
     ///
     /// @throw HttpClientError If invalid arguments were provided.
     void asyncSendRequest(const Url& url,
+                          boost::asio::ssl::context& context,
                           const HttpRequestPtr& request,
                           const HttpResponsePtr& response,
                           const RequestHandler& request_callback,
@@ -185,6 +198,8 @@ public:
                           RequestTimeout(10000),
                           const ConnectHandler& connect_callback =
                           ConnectHandler(),
+                          const HandshakeHandler& handshake_callback =
+                          HandshakeHandler(),
                           const CloseHandler& close_callback =
                           CloseHandler());
 
