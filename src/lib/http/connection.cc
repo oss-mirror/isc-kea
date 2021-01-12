@@ -64,6 +64,7 @@ SocketCallback::operator()(boost::system::error_code ec, size_t length) {
 
 HttpConnection::HttpConnection(asiolink::IOService& io_service,
                                HttpAcceptor& acceptor,
+                               boost::asio::ssl::context& context,
                                HttpConnectionPool& connection_pool,
                                const HttpResponseCreatorPtr& response_creator,
                                const HttpAcceptorCallback& callback,
@@ -72,7 +73,8 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
     : request_timer_(io_service),
       request_timeout_(request_timeout),
       idle_timeout_(idle_timeout),
-      socket_(io_service),
+      context_(context),
+      socket_(io_service, context),
       acceptor_(acceptor),
       connection_pool_(connection_pool),
       response_creator_(response_creator),
@@ -113,7 +115,7 @@ HttpConnection::asyncAccept() {
         acceptor_.asyncAccept(socket_, cb);
 
     } catch (const std::exception& ex) {
-        isc_throw(HttpConnectionError, "unable to start accepting TCP "
+        isc_throw(HttpConnectionError, "unable to start accepting TLS "
                   "connections: " << ex.what());
     }
 }
@@ -427,7 +429,5 @@ HttpConnection::getRemoteEndpointAddressAsText() const {
     return ("(unknown address)");
 }
 
-
 } // end of namespace isc::http
 } // end of namespace isc
-

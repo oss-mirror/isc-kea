@@ -230,8 +230,9 @@ public:
     /// @brief Constructor.
     ///
     /// @param io_service IO service to be used by the connection.
-    /// @param acceptor Reference to the TCP acceptor object used to listen for
+    /// @param acceptor Reference to the TLS acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
@@ -242,6 +243,7 @@ public:
     /// closed by the server.
     HttpConnection(asiolink::IOService& io_service,
                    HttpAcceptor& acceptor,
+                   boost::asio::ssl::context& context,
                    HttpConnectionPool& connection_pool,
                    const HttpResponseCreatorPtr& response_creator,
                    const HttpAcceptorCallback& callback,
@@ -364,10 +366,13 @@ protected:
     /// by the server.
     long idle_timeout_;
 
-    /// @brief Socket used by this connection.
-    asiolink::TCPSocket<SocketCallback> socket_;
+    /// @brief TLS context.
+    boost::asio::ssl::context& context_;
 
-    /// @brief Reference to the TCP acceptor used to accept new connections.
+    /// @brief Socket used by this connection.
+    asiolink::TLSSocket<SocketCallback> socket_;
+
+    /// @brief Reference to the TLS acceptor used to accept new connections.
     HttpAcceptor& acceptor_;
 
     /// @brief Connection pool holding this connection.
@@ -377,7 +382,7 @@ protected:
     /// HTTP responses.
     HttpResponseCreatorPtr response_creator_;
 
-    /// @brief External TCP acceptor callback.
+    /// @brief External TLS acceptor callback.
     HttpAcceptorCallback acceptor_callback_;
 };
 

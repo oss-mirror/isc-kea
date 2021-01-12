@@ -21,6 +21,7 @@
 using namespace isc::asiolink;
 using namespace isc::http;
 using namespace isc::http::test;
+using namespace boost::asio;
 
 namespace {
 
@@ -116,13 +117,17 @@ public:
 // This test verifies that connections can be added to the pool and removed.
 TEST_F(HttpConnectionPoolTest, startStop) {
     // Create two distinct connections.
+    ssl::context context1(ssl::context::method::tls);
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               context1,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
+    ssl::context context2(ssl::context::method::tls);
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               context2,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
@@ -156,13 +161,17 @@ TEST_F(HttpConnectionPoolTest, startStop) {
 
 // Check that all connections can be remove with a single call.
 TEST_F(HttpConnectionPoolTest, stopAll) {
+    ssl::context context1(ssl::context::method::tls);
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               context1,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
+    ssl::context context2(ssl::context::method::tls);
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               context2,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
@@ -182,13 +191,17 @@ TEST_F(HttpConnectionPoolTest, stopAll) {
 
 // Check that stopping non-existing connection is no-op.
 TEST_F(HttpConnectionPoolTest, stopInvalid) {
+    ssl::context context1(ssl::context::method::tls);
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               context1,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
+    ssl::context context2(ssl::context::method::tls);
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               context2,
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),

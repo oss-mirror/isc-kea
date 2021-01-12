@@ -30,6 +30,7 @@
 #include <sstream>
 #include <string>
 
+using namespace boost::asio;
 using namespace boost::asio::ip;
 using namespace isc::asiolink;
 using namespace isc::data;
@@ -209,11 +210,12 @@ public:
     HttpListenerImplCustom(IOService& io_service,
                            const IOAddress& server_address,
                            const unsigned short server_port,
+                           ssl::context& context,
                            const HttpResponseCreatorFactoryPtr& creator_factory,
                            const long request_timeout,
                            const long idle_timeout)
         : HttpListenerImpl(io_service, server_address, server_port,
-                           creator_factory, request_timeout,
+                           context, creator_factory, request_timeout,
                            idle_timeout) {
     }
 
@@ -227,6 +229,7 @@ protected:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Reference to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
@@ -239,8 +242,10 @@ protected:
     /// @return Pointer to the created connection.
     virtual HttpConnectionPtr createConnection(const HttpResponseCreatorPtr& response_creator,
                                                const HttpAcceptorCallback& callback) {
+        ssl::context context(ssl::context::method::tls);
         HttpConnectionPtr
-            conn(new HttpConnectionType(io_service_, acceptor_, connections_,
+            conn(new HttpConnectionType(io_service_, acceptor_,
+                                        context, connections_,
                                         response_creator, callback,
                                         request_timeout_, idle_timeout_));
         return (conn);
@@ -263,6 +268,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
+    /// @param context TLS context.
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -276,16 +282,18 @@ public:
     HttpListenerCustom(IOService& io_service,
                        const IOAddress& server_address,
                        const unsigned short server_port,
+                       ssl::context& context,
                        const HttpResponseCreatorFactoryPtr& creator_factory,
                        const HttpListener::RequestTimeout& request_timeout,
                        const HttpListener::IdleTimeout& idle_timeout)
-        : HttpListener(io_service, server_address, server_port, creator_factory,
+        : HttpListener(io_service, server_address, server_port,
+                       context, creator_factory,
                        request_timeout, idle_timeout) {
         // Replace the default implementation with the customized version
         // using the custom derivation of the HttpConnection.
         impl_.reset(new HttpListenerImplCustom<HttpConnectionType>
                     (io_service, server_address, server_port,
-                     creator_factory, request_timeout.value_,
+                     context, creator_factory, request_timeout.value_,
                      idle_timeout.value_));
     }
 };
@@ -300,6 +308,7 @@ public:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Reference to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
@@ -310,12 +319,13 @@ public:
     /// closed by the server.
     HttpConnectionLongWriteBuffer(IOService& io_service,
                                   HttpAcceptor& acceptor,
+                                  ssl::context& context,
                                   HttpConnectionPool& connection_pool,
                                   const HttpResponseCreatorPtr& response_creator,
                                   const HttpAcceptorCallback& callback,
                                   const long request_timeout,
                                   const long idle_timeout)
-        : HttpConnection(io_service, acceptor, connection_pool,
+        : HttpConnection(io_service, acceptor, context, connection_pool,
                          response_creator, callback, request_timeout,
                          idle_timeout) {
     }
@@ -345,6 +355,7 @@ public:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Reference to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
@@ -355,12 +366,13 @@ public:
     /// closed by the server.
     HttpConnectionTransactionChange(IOService& io_service,
                                     HttpAcceptor& acceptor,
+                                    ssl::context& context,
                                     HttpConnectionPool& connection_pool,
                                     const HttpResponseCreatorPtr& response_creator,
                                     const HttpAcceptorCallback& callback,
                                     const long request_timeout,
                                     const long idle_timeout)
-        : HttpConnection(io_service, acceptor, connection_pool,
+        : HttpConnection(io_service, acceptor, context, connection_pool,
                          response_creator, callback, request_timeout,
                          idle_timeout) {
     }
@@ -385,7 +397,6 @@ public:
     }
 };
 
-
 /// @brief Entity which can connect to the HTTP server endpoint.
 class TestHttpClient : public boost::noncopyable {
 public:
@@ -396,8 +407,10 @@ public:
     /// connect() to connect to the server.
     ///
     /// @param io_service IO service to be stopped on error.
-    explicit TestHttpClient(IOService& io_service)
-        : io_service_(io_service.get_io_service()), socket_(io_service_),
+    /// @param context TLS context.
+    explicit TestHttpClient(IOService& io_service, ssl::context& context)
+        : io_service_(io_service.get_io_service()),
+          stream_(io_service_, context),
           buf_(), response_() {
     }
 
@@ -414,7 +427,7 @@ public:
     void startRequest(const std::string& request) {
         tcp::endpoint endpoint(address::from_string(SERVER_ADDRESS),
                                SERVER_PORT);
-        socket_.async_connect(endpoint,
+        stream_.lowest_layer().async_connect(endpoint,
         [this, request](const boost::system::error_code& ec) {
             if (ec) {
                 // One would expect that async_connect wouldn't return
@@ -446,9 +459,10 @@ public:
     ///
     /// @param request part of the HTTP request to be sent.
     void sendPartialRequest(std::string request) {
-        socket_.async_send(boost::asio::buffer(request.data(), request.size()),
-                           [this, request](const boost::system::error_code& ec,
-                                           std::size_t bytes_transferred) mutable {
+        boost::asio::async_write(stream_,
+                boost::asio::buffer(request.data(), request.size()),
+                [this, request](const boost::system::error_code& ec,
+                                std::size_t bytes_transferred) mutable {
             if (ec) {
                 if (ec.value() == boost::asio::error::operation_aborted) {
                     return;
@@ -487,7 +501,7 @@ public:
 
     /// @brief Receive response from the server.
     void receivePartialResponse() {
-        socket_.async_read_some(boost::asio::buffer(buf_.data(), buf_.size()),
+        stream_.async_read_some(boost::asio::buffer(buf_.data(), buf_.size()),
                                 [this](const boost::system::error_code& ec,
                                        std::size_t bytes_transferred) {
             if (ec) {
@@ -536,18 +550,18 @@ public:
     /// @return true if the TCP connection is open.
     bool isConnectionAlive() {
         // Remember the current non blocking setting.
-        const bool non_blocking_orig = socket_.non_blocking();
+        const bool non_blocking_orig = stream_.lowest_layer().non_blocking();
         // Set the socket to non blocking mode. We're going to test if the socket
         // returns would_block status on the attempt to read from it.
-        socket_.non_blocking(true);
+        stream_.lowest_layer().non_blocking(true);
 
         // We need to provide a buffer for a call to read.
         char data[2];
         boost::system::error_code ec;
-        boost::asio::read(socket_, boost::asio::buffer(data, sizeof(data)), ec);
+        boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
 
         // Revert the original non_blocking flag on the socket.
-        socket_.non_blocking(non_blocking_orig);
+        stream_.lowest_layer().non_blocking(non_blocking_orig);
 
         // If the connection is alive we'd typically get would_block status code.
         // If there are any data that haven't been read we may also get success
@@ -569,18 +583,18 @@ public:
     /// @return true if the TCP connection is closed.
     bool isConnectionClosed() {
         // Remember the current non blocking setting.
-        const bool non_blocking_orig = socket_.non_blocking();
+        const bool non_blocking_orig = stream_.lowest_layer().non_blocking();
         // Set the socket to blocking mode. We're going to test if the socket
         // returns eof status on the attempt to read from it.
-        socket_.non_blocking(false);
+        stream_.lowest_layer().non_blocking(false);
 
         // We need to provide a buffer for a call to read.
         char data[2];
         boost::system::error_code ec;
-        boost::asio::read(socket_, boost::asio::buffer(data, sizeof(data)), ec);
+        boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
 
         // Revert the original non_blocking flag on the socket.
-        socket_.non_blocking(non_blocking_orig);
+        stream_.lowest_layer().non_blocking(non_blocking_orig);
 
         // If the connection is closed we'd typically get eof status code.
         return (ec.value() == boost::asio::error::eof);
@@ -588,7 +602,7 @@ public:
 
     /// @brief Close connection.
     void close() {
-        socket_.close();
+        stream_.lowest_layer().close();
     }
 
     std::string getResponse() const {
@@ -601,7 +615,7 @@ private:
     boost::asio::io_service& io_service_;
 
     /// @brief A socket used for the connection.
-    boost::asio::ip::tcp::socket socket_;
+    ssl::stream<tcp::socket> stream_;
 
     /// @brief Buffer into which response is written.
     std::array<char, 8192> buf_;
@@ -644,7 +658,8 @@ public:
     ///
     /// @param request String containing the HTTP request to be sent.
     void startRequest(const std::string& request) {
-        TestHttpClientPtr client(new TestHttpClient(io_service_));
+        ssl::context context(ssl::context::method::tls);
+        TestHttpClientPtr client(new TestHttpClient(io_service_, context));
         clients_.push_back(client);
         clients_.back()->startRequest(request);
     }
@@ -704,7 +719,9 @@ public:
                             const HttpVersion& expected_version) {
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
-        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+        ssl::context context(ssl::context::method::tls);
+        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
+                              SERVER_PORT, context,
                               factory_, HttpListener::RequestTimeout(1000),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT));
         ASSERT_NO_THROW(listener.start());
@@ -755,9 +772,11 @@ public:
             "{ }";
 
         // Use custom listener and the specialized connection object.
+        ssl::context context(ssl::context::method::tls);
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     context, factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
         ASSERT_NO_THROW(listener.start());
@@ -799,8 +818,10 @@ TEST_F(HttpListenerTest, listen) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     ASSERT_EQ(SERVER_ADDRESS, listener.getLocalAddress().toText());
@@ -829,8 +850,10 @@ TEST_F(HttpListenerTest, keepAlive) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -877,8 +900,10 @@ TEST_F(HttpListenerTest, persistentConnection) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -928,8 +953,10 @@ TEST_F(HttpListenerTest, keepAliveTimeout) {
         "{ }";
 
     // Specify the idle timeout of 500ms.
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
     ASSERT_NO_THROW(listener.start());
@@ -984,8 +1011,10 @@ TEST_F(HttpListenerTest, persistentConnectionTimeout) {
         "{ }";
 
     // Specify the idle timeout of 500ms.
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
     ASSERT_NO_THROW(listener.start());
@@ -1039,8 +1068,10 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
         "Content-Length: 12\r\n\r\n"
         "{ \"a\": abc }";
 
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -1083,8 +1114,10 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
 
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpListenerTest, startTwice) {
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1099,8 +1132,10 @@ TEST_F(HttpListenerTest, badRequest) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     ASSERT_NO_THROW(startRequest(request));
@@ -1120,8 +1155,10 @@ TEST_F(HttpListenerTest, badRequest) {
 // This test verifies that NULL pointer can't be specified for the
 // HttpResponseCreatorFactory.
 TEST_F(HttpListenerTest, invalidFactory) {
+    ssl::context context(ssl::context::method::tls);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, HttpResponseCreatorFactoryPtr(),
+                              SERVER_PORT, context,
+                              HttpResponseCreatorFactoryPtr(),
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
@@ -1130,8 +1167,10 @@ TEST_F(HttpListenerTest, invalidFactory) {
 // This test verifies that the timeout of 0 can't be specified for the
 // Request Timeout.
 TEST_F(HttpListenerTest, invalidRequestTimeout) {
+    ssl::context context(ssl::context::method::tls);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, factory_, HttpListener::RequestTimeout(0),
+                              SERVER_PORT, context, factory_,
+                              HttpListener::RequestTimeout(0),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
 }
@@ -1139,8 +1178,9 @@ TEST_F(HttpListenerTest, invalidRequestTimeout) {
 // This test verifies that the timeout of 0 can't be specified for the
 // idle persistent connection timeout.
 TEST_F(HttpListenerTest, invalidIdleTimeout) {
+    ssl::context context(ssl::context::method::tls);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, factory_,
+                              SERVER_PORT, context, factory_,
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(0)),
                  HttpListenerError);
@@ -1159,8 +1199,9 @@ TEST_F(HttpListenerTest, addressInUse) {
 
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
+    ssl::context context(ssl::context::method::tls);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                          SERVER_PORT + 1, factory_,
+                          SERVER_PORT + 1, context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1212,14 +1253,20 @@ public:
     /// @brief Constructor.
     HttpClientTest()
         : HttpListenerTest(),
+          context1_(ssl::context::method::tls),
+          context2_(ssl::context::method::tls),
+          context3_(ssl::context::method::tls),
           listener_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                    factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                    context1_, factory_,
+                    HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                     HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener2_(io_service_, IOAddress(IPV6_SERVER_ADDRESS), SERVER_PORT + 1,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     context2_, factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener3_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT + 2,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     context3_, factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(SHORT_IDLE_TIMEOUT)) {
         MultiThreadingMgr::instance().setMode(false);
     }
@@ -1964,6 +2011,15 @@ public:
         int close_cnt_;
     };
 
+    /// @brietf TLS context for the first listener.
+    ssl::context context1_;
+
+    /// @brietf TLS context for the second listener.
+    ssl::context context2_;
+
+    /// @brietf TLS context for the third listener.
+    ssl::context context3_;
+
     /// @brief Instance of the listener used in the tests.
     HttpListener listener_;
 
@@ -1973,7 +2029,6 @@ public:
     /// @brief Instance of the third listener used in the tests (with short idle
     /// timeout).
     HttpListener listener3_;
-
 };
 
 // Test that two consecutive requests can be sent over the same (persistent)

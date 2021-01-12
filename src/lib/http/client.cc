@@ -8,7 +8,7 @@
 
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/interval_timer.h>
-#include <asiolink/tcp_socket.h>
+#include <asiolink/tls_socket.h>
 #include <http/client.h>
 #include <http/http_log.h>
 #include <http/http_messages.h>

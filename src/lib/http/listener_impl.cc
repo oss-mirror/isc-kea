@@ -1,4 +1,4 @@
-// Copyright (C) 2019-2020 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2019-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -19,10 +19,11 @@ namespace http {
 HttpListenerImpl::HttpListenerImpl(IOService& io_service,
                                    const asiolink::IOAddress& server_address,
                                    const unsigned short server_port,
+                                   boost::asio::ssl::context& context,
                                    const HttpResponseCreatorFactoryPtr& creator_factory,
                                    const long request_timeout,
                                    const long idle_timeout)
-    : io_service_(io_service), acceptor_(io_service),
+    : io_service_(io_service), context_(context), acceptor_(io_service),
       endpoint_(), connections_(),
       creator_factory_(creator_factory),
       request_timeout_(request_timeout), idle_timeout_(idle_timeout) {
@@ -107,7 +108,7 @@ HttpConnectionPtr
 HttpListenerImpl::createConnection(const HttpResponseCreatorPtr& response_creator,
                                    const HttpAcceptorCallback& callback) {
     HttpConnectionPtr
-        conn(new HttpConnection(io_service_, acceptor_, connections_,
+        conn(new HttpConnection(io_service_, acceptor_, context_, connections_,
                                 response_creator, callback,
                                 request_timeout_, idle_timeout_));
     return (conn);
