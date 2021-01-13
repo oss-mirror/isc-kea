@@ -12,6 +12,7 @@ extern const isc::log::MessageID HTTP_BAD_CLIENT_REQUEST_RECEIVED;
 extern const isc::log::MessageID HTTP_BAD_CLIENT_REQUEST_RECEIVED_DETAILS;
 extern const isc::log::MessageID HTTP_BAD_SERVER_RESPONSE_RECEIVED;
 extern const isc::log::MessageID HTTP_BAD_SERVER_RESPONSE_RECEIVED_DETAILS;
+extern const isc::log::MessageID HTTP_CLIENT_HANDSHAKE_START;
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_AUTHORIZED;
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_BAD_AUTH_HEADER;
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_NOT_AUTHORIZED;

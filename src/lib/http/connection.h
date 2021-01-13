@@ -237,7 +237,8 @@ public:
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
@@ -246,7 +247,8 @@ public:
                    boost::asio::ssl::context& context,
                    HttpConnectionPool& connection_pool,
                    const HttpResponseCreatorPtr& response_creator,
-                   const HttpAcceptorCallback& callback,
+                   const HttpAcceptorCallback& acceptor_callback,
+                   const HttpAcceptorCallback& handshake_callback,
                    const long request_timeout,
                    const long idle_timeout);
 
@@ -258,11 +260,17 @@ public:
     /// @brief Asynchronously accepts new connection.
     ///
     /// When the connection is established successfully, the timeout timer is
-    /// setup and the asynchronous read from the socket is started.
+    /// setup and the asynchronous handshake with the client is started.
     void asyncAccept();
 
     /// @brief Closes the socket.
     void close();
+
+    /// @brief Asynchronously performs TLS handshake.
+    ///
+    /// When the handshake is performed successfully, the asynchronous read
+    /// from the socket is started.
+    void doHandshake();
 
     /// @brief Starts asynchronous read from the socket.
     ///
@@ -303,10 +311,19 @@ protected:
     ///
     /// It invokes external (supplied via constructor) acceptor callback. If
     /// the acceptor is not opened it returns immediately. If the connection
-    /// is accepted successfully the @ref HttpConnection::doRead is called.
+    /// is accepted successfully the @ref HttpConnection::doHandshake is
+    /// called.
     ///
     /// @param ec Error code.
     void acceptorCallback(const boost::system::error_code& ec);
+
+    /// @brief Local callback invoked when TLS handshake is performed.
+    ///
+    /// If the handshake is performed successfully the @ref
+    /// HttpConnection::doRead is called.
+    ///
+    /// @param ec Error code.
+    void handshakeCallback(const boost::system::error_code& ec);
 
     /// @brief Callback invoked when new data is received over the socket.
     ///
@@ -384,6 +401,9 @@ protected:
 
     /// @brief External TLS acceptor callback.
     HttpAcceptorCallback acceptor_callback_;
+
+    /// @brief External TLS handshake callback.
+    HttpAcceptorCallback handshake_callback_;
 };
 
 } // end of namespace isc::http

@@ -67,7 +67,8 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
                                boost::asio::ssl::context& context,
                                HttpConnectionPool& connection_pool,
                                const HttpResponseCreatorPtr& response_creator,
-                               const HttpAcceptorCallback& callback,
+                               const HttpAcceptorCallback& acceptor_callback,
+                               const HttpAcceptorCallback& handshake_callback,
                                const long request_timeout,
                                const long idle_timeout)
     : request_timer_(io_service),
@@ -78,7 +79,8 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
       acceptor_(acceptor),
       connection_pool_(connection_pool),
       response_creator_(response_creator),
-      acceptor_callback_(callback) {
+      acceptor_callback_(acceptor_callback),
+      handshake_callback_(handshake_callback) {
 }
 
 HttpConnection::~HttpConnection() {
@@ -117,6 +119,23 @@ HttpConnection::asyncAccept() {
     } catch (const std::exception& ex) {
         isc_throw(HttpConnectionError, "unable to start accepting TLS "
                   "connections: " << ex.what());
+    }
+}
+
+void
+HttpConnection::doHandshake() {
+    // Create instance of the callback. It is safe to pass the local instance
+    // of the callback, because the underlying boost functions make copies
+    // as needed.
+    SocketCallback cb(std::bind(&HttpConnection::handshakeCallback,
+                                shared_from_this(),
+                                ph::_1)); // error
+    try {
+        socket_.handshake(true, cb);
+
+    } catch (const std::exception& ex) {
+        isc_throw(HttpConnectionError, "unable to perform TLS handshake: "
+                  << ex.what());
     }
 }
 
@@ -207,11 +226,28 @@ HttpConnection::acceptorCallback(const boost::system::error_code& ec) {
 
     if (!ec) {
         LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
-                  HTTP_REQUEST_RECEIVE_START)
+                  HTTP_CLIENT_HANDSHAKE_START)
             .arg(getRemoteEndpointAddressAsText())
             .arg(static_cast<unsigned>(request_timeout_/1000));
 
         setupRequestTimer();
+        doHandshake();
+    }
+}
+
+void
+HttpConnection::handshakeCallback(const boost::system::error_code& ec) {
+    if (ec) {
+        stopThisConnection();
+    }
+
+    handshake_callback_(ec);
+
+    if (!ec) {
+        LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
+                  HTTP_REQUEST_RECEIVE_START)
+            .arg(getRemoteEndpointAddressAsText());
+
         doRead();
     }
 }

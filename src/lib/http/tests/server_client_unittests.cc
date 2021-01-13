@@ -30,6 +30,8 @@
 #include <sstream>
 #include <string>
 
+#include "tls_context.h"
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 using namespace isc::asiolink;
@@ -234,19 +236,24 @@ protected:
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     ///
     /// @return Pointer to the created connection.
-    virtual HttpConnectionPtr createConnection(const HttpResponseCreatorPtr& response_creator,
-                                               const HttpAcceptorCallback& callback) {
+    virtual HttpConnectionPtr
+    createConnection(const HttpResponseCreatorPtr& response_creator,
+                     const HttpAcceptorCallback& acceptor_callback,
+                     const HttpAcceptorCallback& handshake_callback) {
         ssl::context context(ssl::context::method::tls);
+        client_setup(context);
         HttpConnectionPtr
             conn(new HttpConnectionType(io_service_, acceptor_,
                                         context, connections_,
-                                        response_creator, callback,
+                                        response_creator,
+                                        acceptor_callback, handshake_callback,
                                         request_timeout_, idle_timeout_));
         return (conn);
     }
@@ -313,7 +320,8 @@ public:
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
@@ -322,11 +330,13 @@ public:
                                   ssl::context& context,
                                   HttpConnectionPool& connection_pool,
                                   const HttpResponseCreatorPtr& response_creator,
-                                  const HttpAcceptorCallback& callback,
+                                  const HttpAcceptorCallback& acceptor_callback,
+                                  const HttpAcceptorCallback& handshake_callback,
                                   const long request_timeout,
                                   const long idle_timeout)
         : HttpConnection(io_service, acceptor, context, connection_pool,
-                         response_creator, callback, request_timeout,
+                         response_creator, acceptor_callback,
+                         handshake_callback, request_timeout,
                          idle_timeout) {
     }
 
@@ -360,7 +370,8 @@ public:
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
@@ -369,11 +380,13 @@ public:
                                     ssl::context& context,
                                     HttpConnectionPool& connection_pool,
                                     const HttpResponseCreatorPtr& response_creator,
-                                    const HttpAcceptorCallback& callback,
+                                    const HttpAcceptorCallback& acceptor_callback,
+                                    const HttpAcceptorCallback& handshake_callback,
                                     const long request_timeout,
                                     const long idle_timeout)
         : HttpConnection(io_service, acceptor, context, connection_pool,
-                         response_creator, callback, request_timeout,
+                         response_creator, acceptor_callback,
+                         handshake_callback, request_timeout,
                          idle_timeout) {
     }
 
@@ -444,7 +457,16 @@ public:
                     return;
                 }
             }
-            sendRequest(request);
+            stream_.async_handshake(ssl::stream_base::client,
+            [this, request](const boost::system::error_code& ec) {
+                if (ec) {
+                    ADD_FAILURE() << "error occurred during handshake: "
+                                  << ec.message();
+                    io_service_.stop();
+                    return;
+                }
+                sendRequest(request);
+            });
         });
     }
 
@@ -556,9 +578,12 @@ public:
         stream_.lowest_layer().non_blocking(true);
 
         // We need to provide a buffer for a call to read.
+        int fd = stream_.lowest_layer().native_handle();
         char data[2];
-        boost::system::error_code ec;
-        boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
+        int err = 0;
+        if (recv(fd, data, sizeof(data), MSG_PEEK) < 0) {
+            err = errno;
+        }
 
         // Revert the original non_blocking flag on the socket.
         stream_.lowest_layer().non_blocking(non_blocking_orig);
@@ -569,8 +594,7 @@ public:
         // implementations in some situations. Any other error code indicates a
         // problem with the connection so we assume that the connection has been
         // closed.
-        return (!ec || (ec.value() == boost::asio::error::try_again) ||
-                (ec.value() == boost::asio::error::would_block));
+        return ((err == 0) || (err == EAGAIN) || (err == EWOULDBLOCK));
     }
 
     /// @brief Checks if the TCP connection is already closed.
@@ -589,15 +613,20 @@ public:
         stream_.lowest_layer().non_blocking(false);
 
         // We need to provide a buffer for a call to read.
+        int fd = stream_.lowest_layer().native_handle();
         char data[2];
-        boost::system::error_code ec;
-        boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
+        int err = 0;
+        int cc = recv(fd, data, sizeof(data), MSG_PEEK);
+        if (cc < 0) {
+            err = errno;
+        }
 
         // Revert the original non_blocking flag on the socket.
         stream_.lowest_layer().non_blocking(non_blocking_orig);
 
-        // If the connection is closed we'd typically get eof status code.
-        return (ec.value() == boost::asio::error::eof);
+        // If the connection is closed we'd typically get nothing or
+        // a connection reset error.
+        return ((cc == 0) || (err == ECONNRESET));
     }
 
     /// @brief Close connection.
@@ -659,6 +688,7 @@ public:
     /// @param request String containing the HTTP request to be sent.
     void startRequest(const std::string& request) {
         ssl::context context(ssl::context::method::tls);
+        client_setup(context);
         TestHttpClientPtr client(new TestHttpClient(io_service_, context));
         clients_.push_back(client);
         clients_.back()->startRequest(request);
@@ -720,6 +750,7 @@ public:
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
         ssl::context context(ssl::context::method::tls);
+        server_setup(context);
         HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, context,
                               factory_, HttpListener::RequestTimeout(1000),
@@ -773,6 +804,7 @@ public:
 
         // Use custom listener and the specialized connection object.
         ssl::context context(ssl::context::method::tls);
+        server_setup(context);
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                      context, factory_,
@@ -819,6 +851,7 @@ TEST_F(HttpListenerTest, listen) {
         "{ }";
 
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -851,6 +884,7 @@ TEST_F(HttpListenerTest, keepAlive) {
         "{ }";
 
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -901,6 +935,7 @@ TEST_F(HttpListenerTest, persistentConnection) {
         "{ }";
 
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -954,6 +989,7 @@ TEST_F(HttpListenerTest, keepAliveTimeout) {
 
     // Specify the idle timeout of 500ms.
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1012,6 +1048,7 @@ TEST_F(HttpListenerTest, persistentConnectionTimeout) {
 
     // Specify the idle timeout of 500ms.
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1069,6 +1106,7 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
         "{ \"a\": abc }";
 
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1115,6 +1153,7 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpListenerTest, startTwice) {
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1133,6 +1172,7 @@ TEST_F(HttpListenerTest, badRequest) {
         "{ }";
 
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1156,6 +1196,7 @@ TEST_F(HttpListenerTest, badRequest) {
 // HttpResponseCreatorFactory.
 TEST_F(HttpListenerTest, invalidFactory) {
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, context,
                               HttpResponseCreatorFactoryPtr(),
@@ -1168,6 +1209,7 @@ TEST_F(HttpListenerTest, invalidFactory) {
 // Request Timeout.
 TEST_F(HttpListenerTest, invalidRequestTimeout) {
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, context, factory_,
                               HttpListener::RequestTimeout(0),
@@ -1179,6 +1221,7 @@ TEST_F(HttpListenerTest, invalidRequestTimeout) {
 // idle persistent connection timeout.
 TEST_F(HttpListenerTest, invalidIdleTimeout) {
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, context, factory_,
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1200,6 +1243,7 @@ TEST_F(HttpListenerTest, addressInUse) {
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
     ssl::context context(ssl::context::method::tls);
+    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                           SERVER_PORT + 1, context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
@@ -1269,6 +1313,9 @@ public:
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(SHORT_IDLE_TIMEOUT)) {
         MultiThreadingMgr::instance().setMode(false);
+        server_setup(context1_);
+        server_setup(context2_);
+        server_setup(context3_);
     }
 
     /// @brief Destructor.
@@ -1322,6 +1369,7 @@ public:
 
         // Initiate request to the server.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
@@ -1337,6 +1385,7 @@ public:
 
         // Initiate another request to the destination.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2, request2, response2,
@@ -1346,7 +1395,9 @@ public:
             if (++resp_num > 1) {
                 io_service_.stop();
             }
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Actually trigger the requests. The requests should be handlded by the
@@ -1383,6 +1434,7 @@ public:
 
         // Create a request to the first server.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
@@ -1398,6 +1450,7 @@ public:
 
         // Create a request to the second server.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(url2, context2, request2, response2,
@@ -1439,6 +1492,7 @@ public:
 
         // Create the first request.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1, request1, response1,
@@ -1462,6 +1516,7 @@ public:
 
         // Create another request.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2, request2, response2,
@@ -1494,6 +1549,7 @@ public:
 
         // Create the request.
         ssl::context context(ssl::context::method::tls);
+        client_setup(context);
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(url, context, request, response,
@@ -1526,6 +1582,7 @@ public:
         // a request that holds a JSON parameter requesting a specific
         // content type.
         ssl::context context(ssl::context::method::tls);
+        client_setup(context);
         PostHttpRequestJsonPtr request = createRequest("requested-content-type",
                                                        "text/html");
         HttpResponseJsonPtr response(new HttpResponseJson());
@@ -1564,6 +1621,7 @@ public:
         // (although well formed) response. The client will be waiting for the
         // rest of the response to be provided and will eventually time out.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("partial-response", true);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         // This value will be set to true if the connection close callback is
@@ -1596,6 +1654,7 @@ public:
 
         // Create another request after the timeout. It should be handled ok.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 1);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(
@@ -1628,6 +1687,7 @@ public:
         unsigned cb_num = 0;
 
         ssl::context context(ssl::context::method::tls);
+        client_setup(context);
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(
@@ -1659,6 +1719,7 @@ public:
 
         // Create another request after the timeout. It should be handled ok.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         ASSERT_NO_THROW(client.asyncSendRequest(
                 url, context2, request, response,
                 [this, &cb_num](const boost::system::error_code& /*ec*/,
@@ -1704,6 +1765,7 @@ public:
 
         // Generate first request.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
 
@@ -1726,6 +1788,7 @@ public:
 
         if (queue_two_requests) {
             ssl::context context2(ssl::context::method::tls);
+            client_setup(context2);
             PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
             HttpResponseJsonPtr response2(new HttpResponseJson());
             ASSERT_NO_THROW(client.asyncSendRequest(
@@ -1753,6 +1816,7 @@ public:
         // Now try to send another request to make sure that the client
         // is healthy.
         ssl::context context3(ssl::context::method::tls);
+        client_setup(context3);
         PostHttpRequestJsonPtr request3 = createRequest("sequence", 3);
         HttpResponseJsonPtr response3(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(
@@ -1786,6 +1850,7 @@ public:
 
         // Initiate request to the server.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
@@ -1810,6 +1875,7 @@ public:
 
         // Initiate another request to the destination.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         ASSERT_NO_THROW(client.asyncSendRequest(
@@ -1883,6 +1949,7 @@ public:
 
         // Initiate request to the server.
         ssl::context context1(ssl::context::method::tls);
+        client_setup(context1);
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
@@ -1951,6 +2018,7 @@ public:
         // Now let's do another request to the destination to verify that
         // we'll reopen the connection without issue.
         ssl::context context2(ssl::context::method::tls);
+        client_setup(context2);
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         resp_num = 0;

@@ -123,6 +123,7 @@ TEST_F(HttpConnectionPoolTest, startStop) {
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
+                                               HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     ssl::context context2(ssl::context::method::tls);
@@ -130,6 +131,7 @@ TEST_F(HttpConnectionPoolTest, startStop) {
                                                context2,
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
@@ -167,6 +169,7 @@ TEST_F(HttpConnectionPoolTest, stopAll) {
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
+                                               HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     ssl::context context2(ssl::context::method::tls);
@@ -174,6 +177,7 @@ TEST_F(HttpConnectionPoolTest, stopAll) {
                                                context2,
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
@@ -197,6 +201,7 @@ TEST_F(HttpConnectionPoolTest, stopInvalid) {
                                                connection_pool_,
                                                response_creator_,
                                                HttpAcceptorCallback(),
+                                               HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     ssl::context context2(ssl::context::method::tls);
@@ -204,6 +209,7 @@ TEST_F(HttpConnectionPoolTest, stopInvalid) {
                                                context2,
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));

@@ -89,6 +89,11 @@ protected:
     /// @param ec Error code passed to the handler. This is currently ignored.
     void acceptHandler(const boost::system::error_code& ec);
 
+    /// @brief Callback invoked when the TLS handshake is performed.
+    ///
+    /// @param ec Error code passed to the handler. This is currently ignored.
+    void handshakeHandler(const boost::system::error_code& ec);
+
     /// @brief Creates an instance of the @c HttpConnection.
     ///
     /// This method is virtual so as it can be overridden when customized
@@ -96,11 +101,13 @@ protected:
     ///
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     ///
     /// @return Pointer to the created connection.
     virtual HttpConnectionPtr createConnection(const HttpResponseCreatorPtr& response_creator,
-                                               const HttpAcceptorCallback& callback);
+                                               const HttpAcceptorCallback& acceptor_callback,
+                                               const HttpAcceptorCallback& handshake_callback);
 
     /// @brief Reference to the IO service.
     asiolink::IOService& io_service_;

@@ -104,11 +104,9 @@ public:
             // returns would_block status on the attempt to read from it.
             socket_.non_blocking(true);
 
-            int fd = getNative();
-            char data[2];
-
             // Use receive with message peek flag to avoid removing
             // the data awaiting to be read.
+            char data[2];
             int err = 0;
             if (recv(getNative(), data, sizeof(data), MSG_PEEK) < 0) {
                 err = errno;
