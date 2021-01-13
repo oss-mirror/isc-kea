@@ -33,7 +33,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
-    /// @param context TLS context.
+    /// @param get_context Get TLS context function.
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -47,7 +47,7 @@ public:
     HttpListenerImpl(asiolink::IOService& io_service,
                      const asiolink::IOAddress& server_address,
                      const unsigned short server_port,
-                     boost::asio::ssl::context& context,
+                     const GetTlsContext& get_context,
                      const HttpResponseCreatorFactoryPtr& creator_factory,
                      const long request_timeout,
                      const long idle_timeout);
@@ -112,8 +112,8 @@ protected:
     /// @brief Reference to the IO service.
     asiolink::IOService& io_service_;
 
-    /// @brief Reference to the TLS context.
-    boost::asio::ssl::context& context_;
+    /// @brief Get TLS context function.
+    GetTlsContext get_context_;
 
     /// @brief Acceptor instance.
     HttpAcceptor acceptor_;

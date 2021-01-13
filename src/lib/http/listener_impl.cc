@@ -19,12 +19,12 @@ namespace http {
 HttpListenerImpl::HttpListenerImpl(IOService& io_service,
                                    const asiolink::IOAddress& server_address,
                                    const unsigned short server_port,
-                                   boost::asio::ssl::context& context,
+                                   const GetTlsContext& get_context,
                                    const HttpResponseCreatorFactoryPtr& creator_factory,
                                    const long request_timeout,
                                    const long idle_timeout)
-    : io_service_(io_service), context_(context), acceptor_(io_service),
-      endpoint_(), connections_(),
+    : io_service_(io_service), get_context_(get_context),
+      acceptor_(io_service), endpoint_(), connections_(),
       creator_factory_(creator_factory),
       request_timeout_(request_timeout), idle_timeout_(idle_timeout) {
     // Try creating an endpoint. This may cause exceptions.
@@ -116,8 +116,9 @@ HttpConnectionPtr
 HttpListenerImpl::createConnection(const HttpResponseCreatorPtr& response_creator,
                                    const HttpAcceptorCallback& acceptor_callback,
                                    const HttpAcceptorCallback& handshake_callback) {
+    boost::asio::ssl::context context = get_context_();
     HttpConnectionPtr
-        conn(new HttpConnection(io_service_, acceptor_, context_,
+        conn(new HttpConnection(io_service_, acceptor_, context,
                                 connections_, response_creator,
                                 acceptor_callback, handshake_callback,
                                 request_timeout_, idle_timeout_));

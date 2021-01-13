@@ -4,15 +4,14 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#ifndef HTTP_TLS_CONTEXT_H
-#define HTTP_TLS_CONTEXT_H
+#ifndef CA_TLS_CONTEXT_H
+#define CA_TLS_CONTEXT_H
 
 #include <boost/asio/ssl/context.hpp>
 #include <string>
 
 namespace isc {
-namespace http {
-namespace test {
+namespace agent {
 
 /// @brief Adds the CA path to a filename.
 ///
@@ -44,8 +43,7 @@ void client_setup(boost::asio::ssl::context& context) {
                                  boost::asio::ssl::context::file_format::pem);
 }
 
-} // namespace test
-} // namespace http
+} // namespace agent
 } // namespace isc
 
 #endif

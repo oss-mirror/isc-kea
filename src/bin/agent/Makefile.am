@@ -2,7 +2,8 @@ SUBDIRS = . tests
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib
 AM_CPPFLAGS += -I$(top_srcdir)/src/bin -I$(top_builddir)/src/bin
-AM_CPPFLAGS += $(BOOST_INCLUDES)
+AM_CPPFLAGS += $(BOOST_INCLUDES) $(CRYPTO_CFLAGS) $(CRYPTO_INCLUDES)
+AM_CPPFLAGS += -DTEST_CA_DIR=\"$(srcdir)/../../lib/asiolink/tests/ca\"
 AM_CXXFLAGS = $(KEA_CXXFLAGS)
 
 if USE_STATIC_LINK
@@ -31,6 +32,7 @@ libagent_la_SOURCES += simple_parser.cc simple_parser.h
 libagent_la_SOURCES += parser_context.cc parser_context.h parser_context_decl.h
 libagent_la_SOURCES += agent_lexer.ll location.hh position.hh stack.hh
 libagent_la_SOURCES += ca_messages.h ca_messages.cc
+libagent_la_SOURCES += tls_context.h
 EXTRA_DIST += ca_messages.mes
 EXTRA_DIST += agent_lexer.ll
 EXTRA_DIST += agent_parser.yy

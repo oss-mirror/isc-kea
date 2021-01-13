@@ -1,4 +1,4 @@
-// Copyright (C) 2016-2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2016-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,18 +10,19 @@
 #include <agent/ca_controller.h>
 #include <agent/ca_response_creator_factory.h>
 #include <agent/ca_log.h>
+#include <agent/tls_context.h>
 #include <asiolink/io_address.h>
 #include <asiolink/io_error.h>
 #include <cc/command_interpreter.h>
 #include <config/timeouts.h>
 #include <boost/pointer_cast.hpp>
 
+using namespace boost::asio;
 using namespace isc::asiolink;
 using namespace isc::config;
 using namespace isc::data;
 using namespace isc::http;
 using namespace isc::process;
-
 
 namespace isc {
 namespace agent {
@@ -148,7 +149,7 @@ CtrlAgentProcess::configure(isc::data::ConstElementPtr config_set,
             // prepared to accept incoming connection.
             HttpListenerPtr http_listener
                 (new HttpListener(*getIoService(), server_address,
-                                  server_port, rcf,
+                                  server_port, getServerTlsContext, rcf,
                                   HttpListener::RequestTimeout(TIMEOUT_AGENT_RECEIVE_COMMAND),
                                   HttpListener::IdleTimeout(TIMEOUT_AGENT_IDLE_CONNECTION_TIMEOUT)));
 

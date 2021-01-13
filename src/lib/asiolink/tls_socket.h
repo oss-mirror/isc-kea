@@ -525,6 +525,7 @@ TLSSocket<C>::cancel() {
 
 template <typename C> void
 TLSSocket<C>::close() {
+    static_cast<void>(::SSL_clear(stream_.native_handle()));
     if (socket_.is_open() && stream_ptr_) {
         socket_.close();
     }

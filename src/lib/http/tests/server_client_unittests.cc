@@ -212,12 +212,12 @@ public:
     HttpListenerImplCustom(IOService& io_service,
                            const IOAddress& server_address,
                            const unsigned short server_port,
-                           ssl::context& context,
+                           const GetTlsContext& get_context,
                            const HttpResponseCreatorFactoryPtr& creator_factory,
                            const long request_timeout,
                            const long idle_timeout)
         : HttpListenerImpl(io_service, server_address, server_port,
-                           context, creator_factory, request_timeout,
+                           get_context, creator_factory, request_timeout,
                            idle_timeout) {
     }
 
@@ -275,7 +275,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
-    /// @param context TLS context.
+    /// @param get_context Get TLS context function.
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -289,18 +289,18 @@ public:
     HttpListenerCustom(IOService& io_service,
                        const IOAddress& server_address,
                        const unsigned short server_port,
-                       ssl::context& context,
+                       const GetTlsContext& get_context,
                        const HttpResponseCreatorFactoryPtr& creator_factory,
                        const HttpListener::RequestTimeout& request_timeout,
                        const HttpListener::IdleTimeout& idle_timeout)
         : HttpListener(io_service, server_address, server_port,
-                       context, creator_factory,
+                       get_context, creator_factory,
                        request_timeout, idle_timeout) {
         // Replace the default implementation with the customized version
         // using the custom derivation of the HttpConnection.
         impl_.reset(new HttpListenerImplCustom<HttpConnectionType>
                     (io_service, server_address, server_port,
-                     context, creator_factory, request_timeout.value_,
+                     get_context, creator_factory, request_timeout.value_,
                      idle_timeout.value_));
     }
 };
@@ -749,10 +749,8 @@ public:
                             const HttpVersion& expected_version) {
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
-        ssl::context context(ssl::context::method::tls);
-        server_setup(context);
         HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context,
+                              SERVER_PORT, getServerTlsContext,
                               factory_, HttpListener::RequestTimeout(1000),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT));
         ASSERT_NO_THROW(listener.start());
@@ -803,11 +801,9 @@ public:
             "{ }";
 
         // Use custom listener and the specialized connection object.
-        ssl::context context(ssl::context::method::tls);
-        server_setup(context);
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                     context, factory_,
+                     getServerTlsContext, factory_,
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -850,10 +846,8 @@ TEST_F(HttpListenerTest, listen) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -883,10 +877,8 @@ TEST_F(HttpListenerTest, keepAlive) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -934,10 +926,8 @@ TEST_F(HttpListenerTest, persistentConnection) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -988,10 +978,8 @@ TEST_F(HttpListenerTest, keepAliveTimeout) {
         "{ }";
 
     // Specify the idle timeout of 500ms.
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -1047,10 +1035,8 @@ TEST_F(HttpListenerTest, persistentConnectionTimeout) {
         "{ }";
 
     // Specify the idle timeout of 500ms.
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -1105,10 +1091,8 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
         "Content-Length: 12\r\n\r\n"
         "{ \"a\": abc }";
 
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -1152,10 +1136,8 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
 
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpListenerTest, startTwice) {
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1171,10 +1153,8 @@ TEST_F(HttpListenerTest, badRequest) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
+                          getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1195,10 +1175,8 @@ TEST_F(HttpListenerTest, badRequest) {
 // This test verifies that NULL pointer can't be specified for the
 // HttpResponseCreatorFactory.
 TEST_F(HttpListenerTest, invalidFactory) {
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context,
+                              SERVER_PORT, getServerTlsContext,
                               HttpResponseCreatorFactoryPtr(),
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
@@ -1208,10 +1186,8 @@ TEST_F(HttpListenerTest, invalidFactory) {
 // This test verifies that the timeout of 0 can't be specified for the
 // Request Timeout.
 TEST_F(HttpListenerTest, invalidRequestTimeout) {
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context, factory_,
+                              SERVER_PORT, getServerTlsContext, factory_,
                               HttpListener::RequestTimeout(0),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
@@ -1220,10 +1196,8 @@ TEST_F(HttpListenerTest, invalidRequestTimeout) {
 // This test verifies that the timeout of 0 can't be specified for the
 // idle persistent connection timeout.
 TEST_F(HttpListenerTest, invalidIdleTimeout) {
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context, factory_,
+                              SERVER_PORT, getServerTlsContext, factory_,
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(0)),
                  HttpListenerError);
@@ -1242,10 +1216,8 @@ TEST_F(HttpListenerTest, addressInUse) {
 
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
-    ssl::context context(ssl::context::method::tls);
-    server_setup(context);
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                          SERVER_PORT + 1, context, factory_,
+                          SERVER_PORT + 1, getServerTlsContext, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1297,25 +1269,19 @@ public:
     /// @brief Constructor.
     HttpClientTest()
         : HttpListenerTest(),
-          context1_(ssl::context::method::tls),
-          context2_(ssl::context::method::tls),
-          context3_(ssl::context::method::tls),
           listener_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                    context1_, factory_,
+                    getServerTlsContext, factory_,
                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                     HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener2_(io_service_, IOAddress(IPV6_SERVER_ADDRESS), SERVER_PORT + 1,
-                     context2_, factory_,
+                     getServerTlsContext, factory_,
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener3_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT + 2,
-                     context3_, factory_,
+                     getServerTlsContext, factory_,
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(SHORT_IDLE_TIMEOUT)) {
         MultiThreadingMgr::instance().setMode(false);
-        server_setup(context1_);
-        server_setup(context2_);
-        server_setup(context3_);
     }
 
     /// @brief Destructor.
@@ -1380,7 +1346,9 @@ public:
             if (++resp_num > 1) {
                 io_service_.stop();
             }
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Initiate another request to the destination.
@@ -1445,7 +1413,9 @@ public:
             if (++resp_num > 1) {
                 io_service_.stop();
             }
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Create a request to the second server.
@@ -1460,7 +1430,9 @@ public:
             if (++resp_num > 1) {
                 io_service_.stop();
             }
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Actually trigger the requests.
@@ -1499,7 +1471,9 @@ public:
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
             io_service_.stop();
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Run the IO service until the response is received.
@@ -1523,13 +1497,15 @@ public:
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
             io_service_.stop();
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
         }));
 
         // Actually trigger the second request.
         ASSERT_NO_THROW(runIOService());
 
-        // Make sire that the server has responded.
+        // Make sure that the server has responded.
         ASSERT_TRUE(response2);
         ConstElementPtr sequence2 = response2->getJsonElement("sequence");
         ASSERT_TRUE(sequence2);
@@ -1592,7 +1568,9 @@ public:
                    const std::string& parsing_error) {
             io_service_.stop();
             // There should be no IO error (answer from the server is received).
-            EXPECT_FALSE(ec);
+            if (ec) {
+                ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+            }
             // The response object is NULL because it couldn't be finalized.
             EXPECT_FALSE(response);
             // The message parsing error should be returned.
@@ -1864,8 +1842,9 @@ public:
                 if (++resp_num > 1) {
                     io_service_.stop();
                 }
-
-                EXPECT_FALSE(ec);
+                if (ec) {
+                  ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+                }
             },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
@@ -1886,7 +1865,9 @@ public:
                 if (++resp_num > 1) {
                     io_service_.stop();
                 }
-                EXPECT_FALSE(ec);
+                if (ec) {
+                    ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+                }
             },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
@@ -1982,7 +1963,9 @@ public:
                 EXPECT_EQ(0, monitor.close_cnt_);
                 ASSERT_EQ(monitor.registered_fd_, orig_fd);
 
-                EXPECT_FALSE(ec);
+                if (ec) {
+                    ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+                }
             },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
@@ -2049,7 +2032,9 @@ public:
                 EXPECT_EQ(1, monitor.close_cnt_);
                 ASSERT_EQ(monitor.registered_fd_, orig_fd);
 
-                EXPECT_FALSE(ec);
+                if (ec) {
+                    ADD_FAILURE() << "asyncSendRequest failed: " << ec.message();
+                }
             },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
@@ -2141,15 +2126,6 @@ public:
         /// @brief Tracks how many times the close callback is invoked.
         int close_cnt_;
     };
-
-    /// @brietf TLS context for the first listener.
-    ssl::context context1_;
-
-    /// @brietf TLS context for the second listener.
-    ssl::context context2_;
-
-    /// @brietf TLS context for the third listener.
-    ssl::context context3_;
 
     /// @brief Instance of the listener used in the tests.
     HttpListener listener_;
