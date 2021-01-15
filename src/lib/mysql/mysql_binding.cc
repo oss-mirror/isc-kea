@@ -242,7 +242,7 @@ MySqlBinding::convertToDatabaseTime(const time_t cltt,
 
     // Convert to broken-out time
     struct tm expire_tm;
-    (void) localtime_r(&expire_time, &expire_tm);
+    (void) gmtime_r(&expire_time, &expire_tm);
 
     // Place in output expire structure.
     expire.year = expire_tm.tm_year + 1900;
@@ -257,22 +257,12 @@ MySqlBinding::convertToDatabaseTime(const time_t cltt,
 
 void
 MySqlBinding::convertFromDatabaseTime(const MYSQL_TIME& expire,
-                                 uint32_t valid_lifetime,
-                                 time_t& cltt) {
-    // Copy across fields from MYSQL_TIME structure.
-    struct tm expire_tm;
-    memset(&expire_tm, 0, sizeof(expire_tm));
-
-    expire_tm.tm_year = expire.year - 1900;
-    expire_tm.tm_mon = expire.month - 1;
-    expire_tm.tm_mday = expire.day;
-    expire_tm.tm_hour = expire.hour;
-    expire_tm.tm_min = expire.minute;
-    expire_tm.tm_sec = expire.second;
-    expire_tm.tm_isdst = -1;    // Let the system work out about DST
-
-    // Convert to local time
-    cltt = mktime(&expire_tm) - valid_lifetime;
+                                      uint32_t valid_lifetime,
+                                      time_t& cltt) {
+    // Convert to UTC time.
+    ptime const& database_time(convertFromDatabaseTime(expire));
+    static ptime const epoch(boost::gregorian::date(1970, 1, 1));
+    cltt = time_t((database_time - epoch).total_seconds()) - valid_lifetime;
 }
 
 ptime
