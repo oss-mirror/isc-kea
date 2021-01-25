@@ -11,7 +11,6 @@ Kea shell unittest (python part)
 """
 
 import unittest
-import sys
 from base64 import b64encode
 
 from kea_conn import CARequest
@@ -151,30 +150,20 @@ class CARequestUnitTest(unittest.TestCase):
         bpassword = password.encode('utf-8')
         secret = b':'.join((buser, bpassword))
         self.assertEqual(b'foo:bar', secret)
-        if sys.version_info[0] == 3:
-            auth = b64encode(secret).strip().decode('ascii')
-        else:
-            auth = b64encode(secret).strip().encode('ascii')
+        auth = b64encode(secret).strip().decode('ascii')
         self.assertEqual('Zm9vOmJhcg==', auth)
 
     def test_auth_unicode(self):
         """
         This test check if the basic HTTP authentication uses UTF-8 encoding.
         """
-        if sys.version_info[0] == 3:
-            user = 'libert\xe9'
-            password = '\xe9galit\xe9'
-        else:
-            user = u'libert\xe9'
-            password = u'\xe9galit\xe9'
+        user = 'libert\xe9'
+        password = '\xe9galit\xe9'
         buser = user.encode('utf-8')
         bpassword = password.encode('utf-8')
         secret = b':'.join((buser, bpassword))
         self.assertEqual(b'libert\xc3\xa9:\xc3\xa9galit\xc3\xa9', secret)
-        if sys.version_info[0] == 3:
-            auth = b64encode(secret).strip().decode('ascii')
-        else:
-            auth = b64encode(secret).strip().encode('ascii')
+        auth = b64encode(secret).strip().decode('ascii')
         self.assertEqual('bGliZXJ0w6k6w6lnYWxpdMOp', auth)
 
     def test_header_auth(self):

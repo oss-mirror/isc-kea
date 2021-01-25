@@ -1369,7 +1369,8 @@ m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
 if test "x$enable_shell" != xno -o "x$enable_generate_docs" != xno; then
 # If kea-shell is enabled, we really need python. 2.7 or anything newer will do.
 # We try to find 3.x first. If not found, we can do with 2.7.
-  AM_PATH_PYTHON([2.7])
+### Gave up on python 2.x!
+  AM_PATH_PYTHON([3.2])
 
   AC_ARG_WITH(site-packages,
            AC_HELP_STRING([--with-site-packages],
