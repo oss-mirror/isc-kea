@@ -84,8 +84,7 @@ shell_command_test() {
     test_name=${1}  # Test name
     auth=${2}       # Authentication
     cmd=${3}        # Command to be sent
-    exp_result=${4} # Expected result
-    exp_rsp=${5}    # Expected response
+    exp_rsp=${4}    # Expected response
 
     # Setup phase: start CA.
 
@@ -138,14 +137,7 @@ shell_command_test() {
         run_kea_shell
 
     # Check the exit code
-    if [ "${exp_result}" = "fail" ]; then
-        if [ "${EXIT_CODE}" -eq 0 ]; then
-            echo "ERROR:" \
-            "kea-shell returned ${EXIT_CODE} exit code, expected 1."
-        else
-            echo "kea-shell returned ${EXIT_CODE} exit code as expected."
-        fi
-    elif [ "${EXIT_CODE}" -ne 0 ]; then
+    if [ "${EXIT_CODE}" -ne 0 ]; then
         echo "ERROR:" \
         "kea-shell returned ${EXIT_CODE} exit code, expected 0."
     else
@@ -189,11 +181,11 @@ shell_command_test() {
     test_finish 0
 }
 
-shell_command_test "shell.no-auth" "" "list-commands" "fail" \
-    "Failed to run: HTTP Error 401: Unauthorized"
+shell_command_test "shell.no-auth" "" "list-commands" \
+    "{ \"result\": 401, \"text\": \"Unauthorized\" }"
 shell_command_test "shell.bad-auth" \
-    "--auth-user foo --auth-password bar" "list-commands" "fail" \
-    "Failed to run: HTTP Error 401: Unauthorized"
+    "--auth-user foo --auth-password bar" "list-commands" \
+    "{ \"result\": 401, \"text\": \"Unauthorized\" }"
 shell_command_test "shell.authorized" \
-    "--auth-user pet --auth-password meow" "list-commands" "" \
+    "--auth-user pet --auth-password meow" "list-commands" \
     "[ { \"arguments\": [ \"build-report\", \"config-get\", \"config-reload\", \"config-set\", \"config-test\", \"config-write\", \"list-commands\", \"shutdown\", \"status-get\", \"version-get\" ], \"result\": 0 } ]"

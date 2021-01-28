@@ -18,7 +18,7 @@ import requests
 
 sys.path.append('@PKGPYTHONDIR@')
 
-from kea_conn import CARequest # CAResponse
+from kea_conn import CARequest, CAResponse
 
 def send_to_control_agent(params):
     """ Sends a request to Control Agent, receives a response and returns it."""
