@@ -471,22 +471,12 @@ TEST(TLSTest, certRequired) {
 // Test if the certificate authority can be loaded.
 TEST(TLSTest, loadCAFile) {
     string ca(string(TEST_CA_DIR) + "/kea-ca.crt");
-<<<<<<< HEAD
-<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCaFile(ca));
-=======
-    TlsContext ctx(TlsRole::CLIENT);
-=======
-    TestTlsContext ctx(TlsRole::CLIENT);
->>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
-    ASSERT_NO_THROW(ctx.loadCaFile(ca));
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that no certificate authority gives an error.
 TEST(TLSTest, loadNoCAFile) {
-<<<<<<< HEAD
     Expecteds exps;
     // Botan error.
     exps.addThrow("I/O error: DataSource: Failure opening file /no-such-file");
@@ -500,12 +490,6 @@ TEST(TLSTest, loadNoCAFile) {
     if (Expecteds::displayErrMsg()) {
         std::cout << exps.getErrMsg() << "\n";
     }
-=======
-    string ca("/no-such-file");
-    TestTlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
-                     "No such file or directory");
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 #ifdef WITH_BOTAN
@@ -533,17 +517,8 @@ TEST(TLSTest, loadTrustedSelfCAFile) {
 // Test that a directory can be loaded.
 TEST(TLSTest, loadCAPath) {
     string ca(TEST_CA_DIR);
-<<<<<<< HEAD
-<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCaPath(ca));
-=======
-    TlsContext ctx(TlsRole::CLIENT);
-=======
-    TestTlsContext ctx(TlsRole::CLIENT);
->>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
-    ASSERT_NO_THROW(ctx.loadCaPath(ca));
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that a certificate is wanted.
@@ -568,22 +543,12 @@ TEST(TLSTest, loadKeyCA) {
 // Test if the end entity certificate can be loaded.
 TEST(TLSTest, loadCertFile) {
     string cert(string(TEST_CA_DIR) + "/kea-client.crt");
-<<<<<<< HEAD
-<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCertFile(cert));
-=======
-    TlsContext ctx(TlsRole::CLIENT);
-=======
-    TestTlsContext ctx(TlsRole::CLIENT);
->>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
-    ASSERT_NO_THROW(ctx.loadCertFile(cert));
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that no end entity certificate gives an error.
 TEST(TLSTest, loadNoCertFile) {
-<<<<<<< HEAD
     Expecteds exps;
     // Botan error.
     exps.addThrow("I/O error: DataSource: Failure opening file /no-such-file");
@@ -597,26 +562,10 @@ TEST(TLSTest, loadNoCertFile) {
     if (Expecteds::displayErrMsg()) {
         std::cout << exps.getErrMsg() << "\n";
     }
-=======
-    string cert("/no-such-file");
-<<<<<<< HEAD
-    TlsContext ctx(TlsRole::CLIENT);
-<<<<<<< HEAD
-    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
-                     "No such file or directory");
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
-=======
->>>>>>> [#1661] Checkpoint: context done, todo stream
-=======
-    TestTlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
-                     "No such file or directory");
->>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
 }
 
 // Test that a certificate is wanted.
 TEST(TLSTest, loadCsrCertFile) {
-<<<<<<< HEAD
     Expecteds exps;
     // Botan error.
     exps.addThrow("Expected a certificate, got 'CERTIFICATE REQUEST'");
@@ -630,33 +579,17 @@ TEST(TLSTest, loadCsrCertFile) {
     if (Expecteds::displayErrMsg()) {
         std::cout << exps.getErrMsg() << "\n";
     }
-=======
-    string cert(string(TEST_CA_DIR) + "/kea-client.csr");
-    TestTlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
-                     "no start line");
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test if the private key can be loaded.
 TEST(TLSTest, loadKeyFile) {
     string key(string(TEST_CA_DIR) + "/kea-client.key");
-<<<<<<< HEAD
-<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadKeyFile(key));
-=======
-    TlsContext ctx(TlsRole::CLIENT);
-=======
-    TestTlsContext ctx(TlsRole::CLIENT);
->>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
-    ASSERT_NO_THROW(ctx.loadKeyFile(key));
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that no private key gives an error.
 TEST(TLSTest, loadNoKeyFile) {
-<<<<<<< HEAD
     Expecteds exps;
     // Botan error.
     exps.addThrow("I/O error: DataSource: Failure opening file /no-such-file");
@@ -672,17 +605,10 @@ TEST(TLSTest, loadNoKeyFile) {
     if (Expecteds::displayErrMsg()) {
         std::cout << exps.getErrMsg() << "\n";
     }
-=======
-    string key("/no-such-file");
-    TestTlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
-                     "No such file or directory");
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that a private key is wanted.
 TEST(TLSTest, loadCertKeyFile) {
-<<<<<<< HEAD
     Expecteds exps;
     // Botan error.
     string botan_error = "PKCS #8 private key decoding failed with PKCS #8: ";
@@ -700,12 +626,6 @@ TEST(TLSTest, loadCertKeyFile) {
     if (Expecteds::displayErrMsg()) {
         std::cout << exps.getErrMsg() << "\n";
     }
-=======
-    string key(string(TEST_CA_DIR) + "/kea-client.crt");
-    TestTlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
-                     "no start line");
->>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
 
 // Test that the certificate and private key must match.
