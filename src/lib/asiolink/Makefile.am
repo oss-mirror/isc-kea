@@ -17,6 +17,7 @@ libkea_asiolink_la_LDFLAGS += $(CRYPTO_LDFLAGS)
 libkea_asiolink_la_SOURCES  = asiolink.h
 libkea_asiolink_la_SOURCES += asio_wrapper.h
 libkea_asiolink_la_SOURCES += addr_utilities.cc addr_utilities.h
+libkea_asiolink_la_SOURCES += crypto_tls.h
 libkea_asiolink_la_SOURCES += dummy_io_cb.h
 libkea_asiolink_la_SOURCES += interval_timer.cc interval_timer.h
 libkea_asiolink_la_SOURCES += io_acceptor.h
@@ -37,6 +38,13 @@ libkea_asiolink_la_SOURCES += unix_domain_socket.cc unix_domain_socket.h
 libkea_asiolink_la_SOURCES += unix_domain_socket_acceptor.h
 libkea_asiolink_la_SOURCES += unix_domain_socket_endpoint.h
 
+if HAVE_BOTAN
+libkea_asiolink_la_SOURCES += botan_tls.cc botan_tls.h
+endif
+if HAVE_OPENSSL
+libkea_asiolink_la_SOURCES += openssl_tls.cc openssl_tls.h
+endif
+
 # Note: the ordering matters: -Wno-... must follow -Wextra (defined in
 # KEA_CXXFLAGS)
 libkea_asiolink_la_CXXFLAGS = $(AM_CXXFLAGS)
@@ -50,6 +58,7 @@ libkea_asiolink_include_HEADERS = \
 	addr_utilities.h \
 	asio_wrapper.h \
 	asiolink.h \
+	crypto_tls.h \
 	dummy_io_cb.h \
 	interval_timer.h \
 	io_acceptor.h \
@@ -69,3 +78,11 @@ libkea_asiolink_include_HEADERS = \
 	unix_domain_socket.h \
 	unix_domain_socket_acceptor.h \
 	unix_domain_socket_endpoint.h
+
+if HAVE_BOTAN
+libkea_asiolink_include_HEADERS += botan_tls.h
+endif
+
+if HAVE_OPENSSL
+libkea_asiolink_include_HEADERS += openssl_tls.h
+endif
