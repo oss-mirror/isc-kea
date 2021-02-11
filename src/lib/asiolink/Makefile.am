@@ -1,7 +1,7 @@
 SUBDIRS = . testutils tests
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib
-AM_CPPFLAGS += $(BOOST_INCLUDES)
+AM_CPPFLAGS += $(BOOST_INCLUDES) $(CRYPTO_CFLAGS) $(CRYPTO_INCLUDES)
 
 AM_CXXFLAGS = $(KEA_CXXFLAGS) -Wno-non-virtual-dtor
 
@@ -12,6 +12,7 @@ CLEANFILES = *.gcno *.gcda
 lib_LTLIBRARIES = libkea-asiolink.la
 
 libkea_asiolink_la_LDFLAGS = -no-undefined -version-info 23:0:0
+libkea_asiolink_la_LDFLAGS += $(CRYPTO_LDFLAGS)
 
 libkea_asiolink_la_SOURCES  = asiolink.h
 libkea_asiolink_la_SOURCES += asio_wrapper.h
@@ -41,7 +42,7 @@ libkea_asiolink_la_SOURCES += unix_domain_socket_endpoint.h
 libkea_asiolink_la_CXXFLAGS = $(AM_CXXFLAGS)
 libkea_asiolink_la_CPPFLAGS = $(AM_CPPFLAGS)
 libkea_asiolink_la_LIBADD  = $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
-libkea_asiolink_la_LIBADD += $(BOOST_LIBS)
+libkea_asiolink_la_LIBADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 
 # Specify the headers for copying into the installation directory tree.
 libkea_asiolink_includedir = $(pkgincludedir)/asiolink
