@@ -20,7 +20,8 @@ namespace isc {
 namespace asiolink {
 
 OpenSslTlsContext::OpenSslTlsContext(TlsRole role)
-    : TlsContext(role), cert_required_(true), context_(context::method::tls) {
+    : TlsContextBase(role), cert_required_(true),
+      context_(context::method::tls) {
 }
 
 OpenSslTlsContext&

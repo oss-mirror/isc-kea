@@ -10,6 +10,7 @@
 #include <cryptolink/cryptolink.h>
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace isc {
 namespace asiolink {
@@ -20,15 +21,15 @@ namespace asiolink {
 enum TlsRole { CLIENT, SERVER };
 
 /// @brief TLS context base class.
-class TlsContext : private boost::noncopyable {
+class TlsContextBase : private boost::noncopyable {
 public:
     /// @brief Destructor.
-    virtual ~TlsContext() { }
+    virtual ~TlsContextBase() { }
 
     /// @brief Create a fresh context.
     ///
     /// @param role The TLS role client or server.
-    explicit TlsContext(TlsRole role) : role_(role) { }
+    explicit TlsContextBase(TlsRole role) : role_(role) { }
 
     /// @brief Set the peer certificate requirement mode.
     ///

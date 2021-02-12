@@ -15,7 +15,7 @@ namespace isc {
 namespace asiolink {
 
 /// @brief OpenSSL TLS context.
-class OpenSslTlsContext : public TlsContext {
+class OpenSslTlsContext : public TlsContextBase {
 public:
 
     /// @brief Destructor.
@@ -71,6 +71,14 @@ protected:
     /// @brief Boost ASIO SSL object.
     boost::asio::ssl::context context_;
 };
+
+/// @brief Define TlsContext as being OpenSslTlsContext.
+typedef OpenSslTlsContext TlsContext;
+
+/// @brief The type of shared pointers to TlsContext objects.
+///
+/// @note Not clear we need shared pointers but they covers more use cases...
+typedef boost::shared_ptr<TlsContext> TlsContextPtr;
 
 } // namespace asiolink
 } // namespace isc
