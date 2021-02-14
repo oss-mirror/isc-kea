@@ -472,10 +472,14 @@ TEST(TLSTest, certRequired) {
 TEST(TLSTest, loadCAFile) {
     string ca(string(TEST_CA_DIR) + "/kea-ca.crt");
 <<<<<<< HEAD
+<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCaFile(ca));
 =======
     TlsContext ctx(TlsRole::CLIENT);
+=======
+    TestTlsContext ctx(TlsRole::CLIENT);
+>>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
     ASSERT_NO_THROW(ctx.loadCaFile(ca));
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
@@ -498,7 +502,7 @@ TEST(TLSTest, loadNoCAFile) {
     }
 =======
     string ca("/no-such-file");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
                      "No such file or directory");
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
@@ -530,10 +534,14 @@ TEST(TLSTest, loadTrustedSelfCAFile) {
 TEST(TLSTest, loadCAPath) {
     string ca(TEST_CA_DIR);
 <<<<<<< HEAD
+<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCaPath(ca));
 =======
     TlsContext ctx(TlsRole::CLIENT);
+=======
+    TestTlsContext ctx(TlsRole::CLIENT);
+>>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
     ASSERT_NO_THROW(ctx.loadCaPath(ca));
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
@@ -561,10 +569,14 @@ TEST(TLSTest, loadKeyCA) {
 TEST(TLSTest, loadCertFile) {
     string cert(string(TEST_CA_DIR) + "/kea-client.crt");
 <<<<<<< HEAD
+<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadCertFile(cert));
 =======
     TlsContext ctx(TlsRole::CLIENT);
+=======
+    TestTlsContext ctx(TlsRole::CLIENT);
+>>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
     ASSERT_NO_THROW(ctx.loadCertFile(cert));
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
@@ -587,6 +599,7 @@ TEST(TLSTest, loadNoCertFile) {
     }
 =======
     string cert("/no-such-file");
+<<<<<<< HEAD
     TlsContext ctx(TlsRole::CLIENT);
 <<<<<<< HEAD
     EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
@@ -594,6 +607,11 @@ TEST(TLSTest, loadNoCertFile) {
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 =======
 >>>>>>> [#1661] Checkpoint: context done, todo stream
+=======
+    TestTlsContext ctx(TlsRole::CLIENT);
+    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
+                     "No such file or directory");
+>>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
 }
 
 // Test that a certificate is wanted.
@@ -614,7 +632,7 @@ TEST(TLSTest, loadCsrCertFile) {
     }
 =======
     string cert(string(TEST_CA_DIR) + "/kea-client.csr");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
                      "no start line");
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
@@ -624,10 +642,14 @@ TEST(TLSTest, loadCsrCertFile) {
 TEST(TLSTest, loadKeyFile) {
     string key(string(TEST_CA_DIR) + "/kea-client.key");
 <<<<<<< HEAD
+<<<<<<< HEAD
     TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_NO_THROW(ctx.loadKeyFile(key));
 =======
     TlsContext ctx(TlsRole::CLIENT);
+=======
+    TestTlsContext ctx(TlsRole::CLIENT);
+>>>>>>> [#1661] Checkpoint: did asiolink (but need more UTs)
     ASSERT_NO_THROW(ctx.loadKeyFile(key));
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
 }
@@ -652,7 +674,7 @@ TEST(TLSTest, loadNoKeyFile) {
     }
 =======
     string key("/no-such-file");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "No such file or directory");
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
@@ -680,7 +702,7 @@ TEST(TLSTest, loadCertKeyFile) {
     }
 =======
     string key(string(TEST_CA_DIR) + "/kea-client.crt");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "no start line");
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
