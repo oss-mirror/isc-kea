@@ -7,11 +7,13 @@
 #include <config.h>
 
 #include <asiolink/asio_wrapper.h>
+#include <asiolink/io_service.h>
 #include <asiolink/crypto_tls.h>
 #include <asiolink/botan_tls.h>
 #include <asiolink/openssl_tls.h>
 #include <testutils/gtest_utils.h>
 
+#include <boost/scoped_ptr.hpp>
 #include <gtest/gtest.h>
 
 #include <string>
@@ -149,4 +151,34 @@ TEST(TLSTest, loadCertKeyFile) {
     TlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "no start line");
+}
+
+// Test that the certificate and private key must match.
+TEST(TLSTest, loadMismatch) {
+    string cert(string(TEST_CA_DIR) + "/kea-server.crt");
+    TlsContext ctx(TlsRole::SERVER);
+    EXPECT_NO_THROW(ctx.loadCertFile(cert));
+    string key(string(TEST_CA_DIR) + "/kea-client.key");
+    // In fact OpenSSL checks only RSA key values...
+    // The explicit check function is SSL_CTX_check_private_key.
+    EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
+                     "key values mismatch");
+}
+
+// Define a callback class.
+namespace { // anonymous namespace.
+class Callback {
+public:
+    // Callback function.
+    void operator()(boost::system::error_code ec) { }
+};
+} // end of anonymous namespace.
+
+// Test if we can get a stream.
+TEST(TLSTest, stream) {
+    IOService service;
+    TlsContextPtr ctx;
+    ASSERT_NO_THROW(ctx.reset(new TlsContext(TlsRole::CLIENT)));
+    boost::scoped_ptr<TlsStream<Callback> > st;
+    ASSERT_NO_THROW(st.reset(new TlsStream<Callback>(service, ctx)));
 }

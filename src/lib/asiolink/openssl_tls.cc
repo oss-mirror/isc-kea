@@ -8,6 +8,7 @@
 
 #ifdef WITH_OPENSSL
 
+#include <asiolink/asio_wrapper.h>
 #include <asiolink/crypto_tls.h>
 #include <asiolink/openssl_tls.h>
 
@@ -19,7 +20,7 @@ using namespace isc::cryptolink;
 namespace isc {
 namespace asiolink {
 
-OpenSslTlsContext::OpenSslTlsContext(TlsRole role)
+TlsContext::TlsContext(TlsRole role)
     : TlsContextBase(role), cert_required_(true),
       context_(context::method::tls) {
     // Not leave the verify mode to OpenSSL default.
@@ -27,18 +28,18 @@ OpenSslTlsContext::OpenSslTlsContext(TlsRole role)
 }
 
 boost::asio::ssl::context&
-OpenSslTlsContext::getContext() {
+TlsContext::getContext() {
     ::SSL_CTX_up_ref(context_.native_handle());
     return (context_);
 }
 
 ::SSL_CTX*
-OpenSslTlsContext::getNativeContext() {
+TlsContext::getNativeContext() {
     return (context_.native_handle());
 }
 
 void
-OpenSslTlsContext::setCertRequired(bool cert_required) {
+TlsContext::setCertRequired(bool cert_required) {
     cert_required_ = cert_required;
     error_code ec;
     int mode = verify_peer | verify_fail_if_no_peer_cert;
@@ -52,12 +53,12 @@ OpenSslTlsContext::setCertRequired(bool cert_required) {
 }
 
 bool
-OpenSslTlsContext::getCertRequired() const {
+TlsContext::getCertRequired() const {
     return (cert_required_);
 }
 
 void
-OpenSslTlsContext::loadCaFile(const std::string& ca_file) {
+TlsContext::loadCaFile(const std::string& ca_file) {
     error_code ec;
     context_.load_verify_file(ca_file, ec);
     if (ec) {
@@ -66,7 +67,7 @@ OpenSslTlsContext::loadCaFile(const std::string& ca_file) {
 }
 
 void
-OpenSslTlsContext::loadCaPath(const std::string& ca_path) {
+TlsContext::loadCaPath(const std::string& ca_path) {
     error_code ec;
     context_.add_verify_path(ca_path, ec);
     if (ec) {
@@ -75,7 +76,7 @@ OpenSslTlsContext::loadCaPath(const std::string& ca_path) {
 }
 
 void
-OpenSslTlsContext::loadCertFile(const std::string& cert_file) {
+TlsContext::loadCertFile(const std::string& cert_file) {
     error_code ec;
     context_.use_certificate_chain_file(cert_file, ec);
     if (ec) {
@@ -84,7 +85,7 @@ OpenSslTlsContext::loadCertFile(const std::string& cert_file) {
 }
 
 void
-OpenSslTlsContext::loadKeyFile(const std::string& key_file) {
+TlsContext::loadKeyFile(const std::string& key_file) {
     error_code ec;
     context_.use_private_key_file(key_file, context::file_format::pem, ec);
     if (ec) {

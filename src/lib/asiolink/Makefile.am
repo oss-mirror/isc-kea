@@ -32,6 +32,8 @@ libkea_asiolink_la_SOURCES += process_spawn.h process_spawn.cc
 libkea_asiolink_la_SOURCES += tcp_acceptor.h
 libkea_asiolink_la_SOURCES += tcp_endpoint.h
 libkea_asiolink_la_SOURCES += tcp_socket.h
+libkea_asiolink_la_SOURCES += tls_acceptor.h
+libkea_asiolink_la_SOURCES += tls_socket.h
 libkea_asiolink_la_SOURCES += udp_endpoint.h
 libkea_asiolink_la_SOURCES += udp_socket.h
 libkea_asiolink_la_SOURCES += unix_domain_socket.cc unix_domain_socket.h
@@ -73,6 +75,8 @@ libkea_asiolink_include_HEADERS = \
 	tcp_acceptor.h \
 	tcp_endpoint.h \
 	tcp_socket.h \
+	tls_acceptor.h \
+	tls_socket.h \
 	udp_endpoint.h \
 	udp_socket.h \
 	unix_domain_socket.h \
