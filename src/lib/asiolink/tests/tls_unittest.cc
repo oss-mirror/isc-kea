@@ -103,14 +103,14 @@ TEST(TLSTest, certRequired) {
 // Test if the certificate authority can be loaded.
 TEST(TLSTest, loadCAFile) {
     string ca(string(TEST_CA_DIR) + "/kea-ca.crt");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     ASSERT_NO_THROW(ctx.loadCaFile(ca));
 }
 
 // Test that no certificate authority gives an error.
 TEST(TLSTest, loadNoCAFile) {
     string ca("/no-such-file");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
                      "No such file or directory");
 }
@@ -126,7 +126,7 @@ TEST(TLSTest, loadCAPath) {
 // Test that a directory can be loaded.
 TEST(TLSTest, loadCAPath) {
     string ca(TEST_CA_DIR);
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     ASSERT_NO_THROW(ctx.loadCaPath(ca));
 }
 #endif
@@ -146,20 +146,22 @@ TEST(TLSTest, loadKeyCA) {
 // Test if the end entity certificate can be loaded.
 TEST(TLSTest, loadCertFile) {
     string cert(string(TEST_CA_DIR) + "/kea-client.crt");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     ASSERT_NO_THROW(ctx.loadCertFile(cert));
 }
 
 // Test that no end entity certificate gives an error.
 TEST(TLSTest, loadNoCertFile) {
     string cert("/no-such-file");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
+    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
+                     "No such file or directory");
 }
 
 // Test that a certificate is wanted.
 TEST(TLSTest, loadCsrCertFile) {
     string cert(string(TEST_CA_DIR) + "/kea-client.csr");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
                      "no start line");
 }
@@ -167,14 +169,14 @@ TEST(TLSTest, loadCsrCertFile) {
 // Test if the private key can be loaded.
 TEST(TLSTest, loadKeyFile) {
     string key(string(TEST_CA_DIR) + "/kea-client.key");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     ASSERT_NO_THROW(ctx.loadKeyFile(key));
 }
 
 // Test that no private key gives an error.
 TEST(TLSTest, loadNoKeyFile) {
     string key("/no-such-file");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "No such file or directory");
 }
@@ -182,7 +184,7 @@ TEST(TLSTest, loadNoKeyFile) {
 // Test that a private key is wanted.
 TEST(TLSTest, loadCertKeyFile) {
     string key(string(TEST_CA_DIR) + "/kea-client.crt");
-    TlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "no start line");
 }
