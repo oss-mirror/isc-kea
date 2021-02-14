@@ -588,9 +588,12 @@ TEST(TLSTest, loadNoCertFile) {
 =======
     string cert("/no-such-file");
     TlsContext ctx(TlsRole::CLIENT);
+<<<<<<< HEAD
     EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
                      "No such file or directory");
 >>>>>>> [#1661] Checkpoint: reorganized context hierarchy
+=======
+>>>>>>> [#1661] Checkpoint: context done, todo stream
 }
 
 // Test that a certificate is wanted.
