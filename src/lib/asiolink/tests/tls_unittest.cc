@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <config.h>
+
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/crypto_tls.h>
 #include <asiolink/botan_tls.h>
@@ -33,12 +34,38 @@ TEST(TLSTest, serverContext) {
 
 // Test if the cert required flag is handled as expected.
 TEST(TLSTest, certRequired) {
+    auto check = [] (TlsContext& ctx) -> bool {
+#ifdef WITH_BOTAN
+        // Implement it.
+        return (ctx.getCertRequired());
+#else // WITH_OPENSSL
+        ::SSL_CTX* ssl_ctx = ctx.getNativeContext();
+        if (!ssl_ctx) {
+            ADD_FAILURE() << "null SSL_CTX";
+            return (false);
+        }
+        int mode = SSL_CTX_get_verify_mode(ssl_ctx);
+        switch (mode) {
+        case SSL_VERIFY_NONE:
+            return (false);
+        case (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT):
+            return (true);
+        default:
+            ADD_FAILURE() << "unknown ssl_verify_mode: " << mode;
+            return (false);
+        }
+#endif
+    };
+
     TlsContext ctx(TlsRole::CLIENT);
     EXPECT_TRUE(ctx.getCertRequired());
+    EXPECT_TRUE(check(ctx));
     ASSERT_NO_THROW(ctx.setCertRequired(false));
     EXPECT_FALSE(ctx.getCertRequired());
+    EXPECT_FALSE(check(ctx));
     ASSERT_NO_THROW(ctx.setCertRequired(true));
     EXPECT_TRUE(ctx.getCertRequired());
+    EXPECT_TRUE(check(ctx));
 }
 
 // Test if the certificate authority can be loaded.
@@ -49,14 +76,21 @@ TEST(TLSTest, loadCAFile) {
 }
 
 // Test that no certificate authority gives an error.
-TEST(TLSTest, loadNoCA) {
+TEST(TLSTest, loadNoCAFile) {
     string ca("/no-such-file");
     TlsContext ctx(TlsRole::CLIENT);
     EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
                      "No such file or directory");
 }
 
-#ifdef WITH_OPENSSL
+#ifdef WITH_BOTAH
+// Test that a directory can't be loaded with Botan.
+TEST(TLSTest, loadCAPath) {
+    string ca(TEST_CA_DIR);
+    TlsContext ctx(TlsRole::CLIENT);
+    EXPECT_THROW(ctx.loadCaPath(ca), NotImplemented);
+}
+#else // WITH_OPENSSL
 // Test that a directory can be loaded.
 TEST(TLSTest, loadCAPath) {
     string ca(TEST_CA_DIR);
@@ -84,8 +118,6 @@ TEST(TLSTest, loadCertFile) {
 TEST(TLSTest, loadNoCertFile) {
     string cert("/no-such-file");
     TlsContext ctx(TlsRole::CLIENT);
-    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
-                     "No such file or directory");
 }
 
 // Test that a certificate is wanted.

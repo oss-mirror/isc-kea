@@ -26,11 +26,17 @@ public:
     /// @param role The TLS role client or server.
     explicit OpenSslTlsContext(TlsRole role);
 
-    /// @param Clone the context.
+    /// @brief Return a reference to the underlying context.
     ///
     /// Boost ASIO uses a move constructor which "eats" the context,
     /// this updates the OpenSSL reference count so the object is not freed.
-    virtual OpenSslTlsContext& clone();
+    boost::asio::ssl::context& getContext();
+
+    /// @brief Return the pointer to the SSL_CTX object.
+    ///
+    /// Currently used only for tests. Please note that since OpenSSL 1.1
+    /// The SSL_CTX type is not fully publicly defined.
+    ::SSL_CTX* getNativeContext();
 
     /// @brief Set the peer certificate requirement mode.
     ///
@@ -65,7 +71,7 @@ public:
     virtual void loadKeyFile(const std::string& key_file);
 
 protected:
-    /// @brief Cached cert_required value (no get function in OpenSSL).
+    /// @brief Cached cert_required value.
     bool cert_required_;
 
     /// @brief Boost ASIO SSL object.

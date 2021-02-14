@@ -22,12 +22,19 @@ namespace asiolink {
 OpenSslTlsContext::OpenSslTlsContext(TlsRole role)
     : TlsContextBase(role), cert_required_(true),
       context_(context::method::tls) {
+    // Not leave the verify mode to OpenSSL default.
+    setCertRequired(true);
 }
 
-OpenSslTlsContext&
-OpenSslTlsContext::clone() {
-    SSL_CTX_up_ref(context_.native_handle());
-    return (*this);
+boost::asio::ssl::context&
+OpenSslTlsContext::getContext() {
+    ::SSL_CTX_up_ref(context_.native_handle());
+    return (context_);
+}
+
+::SSL_CTX*
+OpenSslTlsContext::getNativeContext() {
+    return (context_.native_handle());
 }
 
 void
