@@ -108,12 +108,20 @@ public:
     /// @brief Constructor.
     ///
     /// @param io_service IO service to be used for the connection.
+<<<<<<< HEAD
     /// @param tls_context TLS context to be used for the connection.
+=======
+    /// @param context TLS context to be used for the connection.
+>>>>>>> [#1661] HTTP code half done
     /// @param conn_pool Back pointer to the connection pool to which this
     /// connection belongs.
     /// @param url URL associated with this connection.
     explicit Connection(IOService& io_service,
+<<<<<<< HEAD
                         const TlsContextPtr& tls_context,
+=======
+                        const TlsContextPtr& context,
+>>>>>>> [#1661] HTTP code half done
                         const ConnectionPoolPtr& conn_pool,
                         const Url& url);
 
@@ -380,11 +388,17 @@ private:
     /// @brief URL for this connection.
     Url url_;
 
+<<<<<<< HEAD
     /// @brief TCP socket to be used for this connection.
     std::unique_ptr<TCPSocket<SocketCallback> > tcp_socket_;
 
     /// @brief TLS socket to be used for this connection.
     std::unique_ptr<TLSSocket<SocketCallback> > tls_socket_;
+=======
+    /// @brief Socket to be used for this connection.
+    TCPSocket<SocketCallback> socket_;
+    ////// change this
+>>>>>>> [#1661] HTTP code half done
 
     /// @brief Interval timer used for detecting request timeouts.
     IntervalTimer timer_;
@@ -469,7 +483,11 @@ public:
     /// in progress for the given URL. Otherwise, the request is queued.
     ///
     /// @param url Destination where the request should be sent.
+<<<<<<< HEAD
     /// @param tls_context TLS context to be used for the connection.
+=======
+    /// @param context TLS context to be used for the connection.
+>>>>>>> [#1661] HTTP code half done
     /// @param request Pointer to the request to be sent to the server.
     /// @param response Pointer to the object into which the response should be
     /// stored.
@@ -484,7 +502,11 @@ public:
     /// @param close_callback Pointer to the user callback to be invoked when the
     /// client closes the connection to the server.
     void queueRequest(const Url& url,
+<<<<<<< HEAD
                       const TlsContextPtr& tls_context,
+=======
+                      const TlsContextPtr& context,
+>>>>>>> [#1661] HTTP code half done
                       const HttpRequestPtr& request,
                       const HttpResponsePtr& response,
                       const long request_timeout,
@@ -494,12 +516,20 @@ public:
                       const HttpClient::CloseHandler& close_callback) {
         if (MultiThreadingMgr::instance().getMode()) {
             std::lock_guard<std::mutex> lk(mutex_);
+<<<<<<< HEAD
             return (queueRequestInternal(url, tls_context, request, response,
+=======
+            return (queueRequestInternal(url, context, request, response,
+>>>>>>> [#1661] HTTP code half done
                                          request_timeout, request_callback,
                                          connect_callback, handshake_callback,
                                          close_callback));
         } else {
+<<<<<<< HEAD
             return (queueRequestInternal(url, tls_context, request, response,
+=======
+            return (queueRequestInternal(url, context, request, response,
+>>>>>>> [#1661] HTTP code half done
                                          request_timeout, request_callback,
                                          connect_callback, handshake_callback,
                                          close_callback));
@@ -585,7 +615,11 @@ private:
     /// This method should be called in a thread safe context.
     ///
     /// @param url Destination where the request should be sent.
+<<<<<<< HEAD
     /// @param tls_context TLS context to be used for the connection.
+=======
+    /// @param context TLS context to be used for the connection.
+>>>>>>> [#1661] HTTP code half done
     /// @param request Pointer to the request to be sent to the server.
     /// @param response Pointer to the object into which the response should be
     /// stored.
@@ -600,7 +634,11 @@ private:
     /// @param close_callback Pointer to the user callback to be invoked when the
     /// client closes the connection to the server.
     void queueRequestInternal(const Url& url,
+<<<<<<< HEAD
                               const TlsContextPtr& tls_context,
+=======
+                              const TlsContextPtr& context,
+>>>>>>> [#1661] HTTP code half done
                               const HttpRequestPtr& request,
                               const HttpResponsePtr& response,
                               const long request_timeout,
@@ -630,7 +668,11 @@ private:
             // There is no connection with this destination yet. Let's create
             // it and start the transaction.
             ConnectionPtr conn(new Connection(io_service_,
+<<<<<<< HEAD
                                               tls_context,
+=======
+                                              context,
+>>>>>>> [#1661] HTTP code half done
                                               shared_from_this(),
                                               url));
             conn->doTransaction(request, response, request_timeout,
@@ -786,6 +828,7 @@ private:
 };
 
 Connection::Connection(IOService& io_service,
+<<<<<<< HEAD
                        const TlsContextPtr& tls_context,
                        const ConnectionPoolPtr& conn_pool,
                        const Url& url)
@@ -799,6 +842,16 @@ Connection::Connection(IOService& io_service,
         tls_socket_.reset(new asiolink::TLSSocket<SocketCallback>(io_service,
                                                                   tls_context));
     }
+=======
+                       const TlsContextPtr& context,
+                       const ConnectionPoolPtr& conn_pool,
+                       const Url& url)
+    : conn_pool_(conn_pool), url_(url), socket_(io_service), timer_(io_service),
+      current_request_(), current_response_(), parser_(), current_callback_(),
+      buf_(), input_buf_(), current_transid_(0), close_callback_(),
+      started_(false) {
+    ////// to finish
+>>>>>>> [#1661] HTTP code half done
 }
 
 Connection::~Connection() {
@@ -1117,19 +1170,26 @@ Connection::scheduleTimer(const long request_timeout) {
 
 void
 Connection::doHandshake(const uint64_t transid) {
+<<<<<<< HEAD
     // Skip the handshake if the socket is not a TLS one.
     if (!tls_socket_) {
         doSend(transid);
         return;
     }
 
+=======
+>>>>>>> [#1661] HTTP code half done
     SocketCallback socket_cb(std::bind(&Connection::handshakeCallback,
                                        shared_from_this(),
                                        handshake_callback_,
                                        transid,
                                        ph::_1));
     try {
+<<<<<<< HEAD
        tls_socket_->handshake(socket_cb);
+=======
+        ////////socket_.handshake(false, socket_cb);
+>>>>>>> [#1661] HTTP code half done
 
     } catch (...) {
         terminate(boost::asio::error::not_connected);
@@ -1233,13 +1293,24 @@ Connection::connectCallback(HttpClient::ConnectHandler connect_callback,
         terminate(ec);
 
     } else {
+<<<<<<< HEAD
         // Start the TLS handshake asynchronously.
         doHandshake(transid);
+=======
+        /////////// insert doHandshake(transid); here
+
+        // Start sending the request asynchronously.
+        doSend(transid);
+>>>>>>> [#1661] HTTP code half done
     }
 }
 
 void
+<<<<<<< HEAD
 Connection::handshakeCallback(HttpClient::ConnectHandler handshake_callback,
+=======
+Connection::handshakeCallback(HttpClient::ConnectHandler connect_callback,
+>>>>>>> [#1661] HTTP code half done
                               const uint64_t transid,
                               const boost::system::error_code& ec) {
     if (checkPrematureTimeout(transid)) {
@@ -1247,6 +1318,7 @@ Connection::handshakeCallback(HttpClient::ConnectHandler handshake_callback,
     }
 
     // Run user defined handshake callback if specified.
+<<<<<<< HEAD
     if (handshake_callback) {
         // If the user defined callback indicates that the connection
         // should not be continued.
@@ -1257,6 +1329,13 @@ Connection::handshakeCallback(HttpClient::ConnectHandler handshake_callback,
         } else {
             // Should never reach this point.
             std::cerr << "internal error: can't find TLS socket\n";
+=======
+    if (handshake_callback_) {
+        // If the user defined callback indicates that the connection
+        // should not be continued.
+        if (!handshake_callback_(ec, socket_.getNative())) {
+            return;
+>>>>>>> [#1661] HTTP code half done
         }
     }
 
@@ -1426,7 +1505,11 @@ HttpClient::HttpClient(IOService& io_service)
 
 void
 HttpClient::asyncSendRequest(const Url& url,
+<<<<<<< HEAD
                              const TlsContextPtr& tls_context,
+=======
+                             const TlsContextPtr& context,
+>>>>>>> [#1661] HTTP code half done
                              const HttpRequestPtr& request,
                              const HttpResponsePtr& response,
                              const HttpClient::RequestHandler& request_callback,
@@ -1454,7 +1537,11 @@ HttpClient::asyncSendRequest(const Url& url,
         isc_throw(HttpClientError, "callback for HTTP transaction must not be null");
     }
 
+<<<<<<< HEAD
     impl_->conn_pool_->queueRequest(url, tls_context, request, response,
+=======
+    impl_->conn_pool_->queueRequest(url, context, request, response,
+>>>>>>> [#1661] HTTP code half done
                                     request_timeout.value_,
                                     request_callback, connect_callback,
                                     handshake_callback, close_callback);
