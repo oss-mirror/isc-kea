@@ -102,12 +102,14 @@ public:
 
     /// @brief Constructor.
     HttpConnectionPoolTest()
-        : io_service_(), acceptor_(io_service_), connection_pool_(),
+        : io_service_(),
+          acceptor_(new HttpAcceptor(io_service_)),
+          connection_pool_(),
           response_creator_(new TestHttpResponseCreator()) {
     }
 
     IOService io_service_;                      ///< IO service.
-    HttpAcceptor acceptor_;                     ///< Test acceptor.
+    HttpAcceptorPtr acceptor_;                  ///< Test acceptor.
     HttpConnectionPool connection_pool_;        ///< Test connection pool.
     HttpResponseCreatorPtr response_creator_;   ///< Test response creator.
 
@@ -117,14 +119,18 @@ public:
 TEST_F(HttpConnectionPoolTest, startStop) {
     // Create two distinct connections.
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
@@ -157,14 +163,18 @@ TEST_F(HttpConnectionPoolTest, startStop) {
 // Check that all connections can be remove with a single call.
 TEST_F(HttpConnectionPoolTest, stopAll) {
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
@@ -183,14 +193,18 @@ TEST_F(HttpConnectionPoolTest, stopAll) {
 // Check that stopping non-existing connection is no-op.
 TEST_F(HttpConnectionPoolTest, stopInvalid) {
     HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
     HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
+                                               TlsContextPtr(),
                                                connection_pool_,
                                                response_creator_,
+                                               HttpAcceptorCallback(),
                                                HttpAcceptorCallback(),
                                                CONN_REQUEST_TIMEOUT,
                                                CONN_IDLE_TIMEOUT));
