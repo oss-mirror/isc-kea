@@ -7,6 +7,7 @@
 #include <config.h>
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/interval_timer.h>
+#include <asiolink/tls_acceptor.h>
 #include <cc/data.h>
 #include <http/client.h>
 #include <http/http_types.h>
@@ -209,11 +210,12 @@ public:
     HttpListenerImplCustom(IOService& io_service,
                            const IOAddress& server_address,
                            const unsigned short server_port,
+                           const TlsContextPtr& context,
                            const HttpResponseCreatorFactoryPtr& creator_factory,
                            const long request_timeout,
                            const long idle_timeout)
         : HttpListenerImpl(io_service, server_address, server_port,
-                           creator_factory, request_timeout,
+                           context, creator_factory, request_timeout,
                            idle_timeout) {
     }
 
@@ -225,23 +227,28 @@ protected:
     /// connections are to be used, e.g. in case of unit testing.
     ///
     /// @param io_service IO service to be used by the connection.
-    /// @param acceptor Reference to the TCP acceptor object used to listen for
+    /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     ///
     /// @return Pointer to the created connection.
     virtual HttpConnectionPtr createConnection(const HttpResponseCreatorPtr& response_creator,
-                                               const HttpAcceptorCallback& callback) {
+                                               const HttpAcceptorCallback& acceptor_callback,
+                                               const HttpAcceptorCallback& handshake_callback) {
         HttpConnectionPtr
-            conn(new HttpConnectionType(io_service_, acceptor_, connections_,
-                                        response_creator, callback,
+            conn(new HttpConnectionType(io_service_, acceptor_,
+                                        context_, connections_,
+                                        response_creator,
+                                        acceptor_callback, handshake_callback,
                                         request_timeout_, idle_timeout_));
         return (conn);
     }
@@ -263,6 +270,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
+    /// @param context TLS context.
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -276,16 +284,18 @@ public:
     HttpListenerCustom(IOService& io_service,
                        const IOAddress& server_address,
                        const unsigned short server_port,
+                       const TlsContextPtr& context,
                        const HttpResponseCreatorFactoryPtr& creator_factory,
                        const HttpListener::RequestTimeout& request_timeout,
                        const HttpListener::IdleTimeout& idle_timeout)
-        : HttpListener(io_service, server_address, server_port, creator_factory,
+        : HttpListener(io_service, server_address, server_port,
+                       context, creator_factory,
                        request_timeout, idle_timeout) {
         // Replace the default implementation with the customized version
         // using the custom derivation of the HttpConnection.
         impl_.reset(new HttpListenerImplCustom<HttpConnectionType>
                     (io_service, server_address, server_port,
-                     creator_factory, request_timeout.value_,
+                     context, creator_factory, request_timeout.value_,
                      idle_timeout.value_));
     }
 };
@@ -298,25 +308,30 @@ public:
     /// @brief Constructor.
     ///
     /// @param io_service IO service to be used by the connection.
-    /// @param acceptor Reference to the TCP acceptor object used to listen for
+    /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     HttpConnectionLongWriteBuffer(IOService& io_service,
-                                  HttpAcceptor& acceptor,
+                                  const HttpAcceptorPtr& acceptor,
+                                  const TlsContextPtr& context,
                                   HttpConnectionPool& connection_pool,
                                   const HttpResponseCreatorPtr& response_creator,
-                                  const HttpAcceptorCallback& callback,
+                                  const HttpAcceptorCallback& acceptor_callback,
+                                  const HttpAcceptorCallback& handshake_callback,
                                   const long request_timeout,
                                   const long idle_timeout)
-        : HttpConnection(io_service, acceptor, connection_pool,
-                         response_creator, callback, request_timeout,
+        : HttpConnection(io_service, acceptor, context, connection_pool,
+                         response_creator, acceptor_callback,
+                         handshake_callback, request_timeout,
                          idle_timeout) {
     }
 
@@ -343,25 +358,30 @@ public:
     /// @brief Constructor.
     ///
     /// @param io_service IO service to be used by the connection.
-    /// @param acceptor Reference to the TCP acceptor object used to listen for
+    /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
+    /// @param context TLS context.
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param callback Callback invoked when new connection is accepted.
+    /// @param acceptor_callback Callback invoked when new connection is accepted.
+    /// @param handshake_callback Callback invoked when TLS handshake is performed.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     HttpConnectionTransactionChange(IOService& io_service,
-                                    HttpAcceptor& acceptor,
+                                    const HttpAcceptorPtr& acceptor,
+                                    const TlsContextPtr& context,
                                     HttpConnectionPool& connection_pool,
                                     const HttpResponseCreatorPtr& response_creator,
-                                    const HttpAcceptorCallback& callback,
+                                    const HttpAcceptorCallback& acceptor_callback,
+                                    const HttpAcceptorCallback& handshake_callback,
                                     const long request_timeout,
                                     const long idle_timeout)
-        : HttpConnection(io_service, acceptor, connection_pool,
-                         response_creator, callback, request_timeout,
+        : HttpConnection(io_service, acceptor, context, connection_pool,
+                         response_creator, acceptor_callback,
+                         handshake_callback, request_timeout,
                          idle_timeout) {
     }
 
@@ -704,7 +724,9 @@ public:
                             const HttpVersion& expected_version) {
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
-        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+        TlsContextPtr context;
+        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
+                              SERVER_PORT, context,
                               factory_, HttpListener::RequestTimeout(1000),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT));
         ASSERT_NO_THROW(listener.start());
@@ -755,9 +777,11 @@ public:
             "{ }";
 
         // Use custom listener and the specialized connection object.
+        TlsContextPtr context;
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     context, factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
         ASSERT_NO_THROW(listener.start());
@@ -799,8 +823,10 @@ TEST_F(HttpListenerTest, listen) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     ASSERT_EQ(SERVER_ADDRESS, listener.getLocalAddress().toText());
@@ -829,8 +855,10 @@ TEST_F(HttpListenerTest, keepAlive) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -877,8 +905,10 @@ TEST_F(HttpListenerTest, persistentConnection) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -927,9 +957,11 @@ TEST_F(HttpListenerTest, keepAliveTimeout) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
     ASSERT_NO_THROW(listener.start());
@@ -983,9 +1015,11 @@ TEST_F(HttpListenerTest, persistentConnectionTimeout) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
     ASSERT_NO_THROW(listener.start());
@@ -1039,8 +1073,10 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
         "Content-Length: 12\r\n\r\n"
         "{ \"a\": abc }";
 
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
     ASSERT_NO_THROW(listener.start());
@@ -1083,8 +1119,10 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
 
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpListenerTest, startTwice) {
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1099,8 +1137,10 @@ TEST_F(HttpListenerTest, badRequest) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
+    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                          context, factory_,
+                          HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
     ASSERT_NO_THROW(startRequest(request));
@@ -1120,8 +1160,10 @@ TEST_F(HttpListenerTest, badRequest) {
 // This test verifies that NULL pointer can't be specified for the
 // HttpResponseCreatorFactory.
 TEST_F(HttpListenerTest, invalidFactory) {
+    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, HttpResponseCreatorFactoryPtr(),
+                              SERVER_PORT, context,
+                              HttpResponseCreatorFactoryPtr(),
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
@@ -1130,8 +1172,10 @@ TEST_F(HttpListenerTest, invalidFactory) {
 // This test verifies that the timeout of 0 can't be specified for the
 // Request Timeout.
 TEST_F(HttpListenerTest, invalidRequestTimeout) {
+    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, factory_, HttpListener::RequestTimeout(0),
+                              SERVER_PORT, context, factory_,
+                              HttpListener::RequestTimeout(0),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
 }
@@ -1139,8 +1183,9 @@ TEST_F(HttpListenerTest, invalidRequestTimeout) {
 // This test verifies that the timeout of 0 can't be specified for the
 // idle persistent connection timeout.
 TEST_F(HttpListenerTest, invalidIdleTimeout) {
+    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, factory_,
+                              SERVER_PORT, context, factory_,
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(0)),
                  HttpListenerError);
@@ -1157,10 +1202,11 @@ TEST_F(HttpListenerTest, addressInUse) {
     acceptor.open(endpoint.protocol());
     acceptor.bind(endpoint);
 
+    TlsContextPtr context;
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                          SERVER_PORT + 1, factory_,
+                          SERVER_PORT + 1, context, factory_,
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1213,13 +1259,16 @@ public:
     HttpClientTest()
         : HttpListenerTest(),
           listener_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                    factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                    TlsContextPtr(), factory_,
+                    HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                     HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener2_(io_service_, IOAddress(IPV6_SERVER_ADDRESS), SERVER_PORT + 1,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     TlsContextPtr(), factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT)),
           listener3_(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT + 2,
-                     factory_, HttpListener::RequestTimeout(REQUEST_TIMEOUT),
+                     TlsContextPtr(), factory_,
+                     HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(SHORT_IDLE_TIMEOUT)) {
         MultiThreadingMgr::instance().setMode(false);
     }
@@ -1274,10 +1323,12 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1288,9 +1339,11 @@ public:
         }));
 
         // Initiate another request to the destination.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1333,10 +1386,12 @@ public:
         Url url2("http://[::1]:18124");
 
         // Create a request to the first server.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
-        ASSERT_NO_THROW(client.asyncSendRequest(url1, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url1, context1,
+                                                request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1347,9 +1402,11 @@ public:
         }));
 
         // Create a request to the second server.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url2, request2, response2,
+        ASSERT_NO_THROW(client.asyncSendRequest(url2, context2,
+                                                request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1387,9 +1444,11 @@ public:
         Url url("http://127.0.0.1:18125");
 
         // Create the first request.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
             io_service_.stop();
@@ -1409,9 +1468,11 @@ public:
         ASSERT_NO_THROW(runIOService(SHORT_IDLE_TIMEOUT * 2));
 
         // Create another request.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                request2, response2,
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
             io_service_.stop();
@@ -1440,9 +1501,11 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Create the request.
+        TlsContextPtr context;
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request, response,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context,
+                                                request, response,
             [this](const boost::system::error_code& ec,
                    const HttpResponsePtr&,
                    const std::string&) {
@@ -1467,6 +1530,7 @@ public:
         // Specify the URL of the server.
         Url url("http://127.0.0.1:18123");
 
+        TlsContextPtr context;
         // The response is going to be malformed in such a way that it holds
         // an invalid content type. We affect the content type by creating
         // a request that holds a JSON parameter requesting a specific
@@ -1474,7 +1538,8 @@ public:
         PostHttpRequestJsonPtr request = createRequest("requested-content-type",
                                                        "text/html");
         HttpResponseJsonPtr response(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request, response,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context,
+                                                request, response,
             [this](const boost::system::error_code& ec,
                    const HttpResponsePtr& response,
                    const std::string& parsing_error) {
@@ -1505,6 +1570,7 @@ public:
 
         unsigned cb_num = 0;
 
+        TlsContextPtr context1;
         // Create the request which asks the server to generate a partial
         // (although well formed) response. The client will be waiting for the
         // rest of the response to be provided and will eventually time out.
@@ -1513,7 +1579,8 @@ public:
         // This value will be set to true if the connection close callback is
         // invoked upon time out.
         auto connection_closed = false;
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [this, &cb_num](const boost::system::error_code& ec,
                             const HttpResponsePtr& response,
                             const std::string&) {
@@ -1526,7 +1593,10 @@ public:
                 EXPECT_TRUE(ec.value() == boost::asio::error::timed_out);
                 // There should be no response returned.
                 EXPECT_FALSE(response);
-            }, HttpClient::RequestTimeout(100), HttpClient::ConnectHandler(),
+            },
+            HttpClient::RequestTimeout(100),
+            HttpClient::ConnectHandler(),
+            HttpClient::HandshakeHandler(),
             [&connection_closed](const int) {
                 // This callback is called when the connection gets closed
                 // by the client.
@@ -1535,16 +1605,18 @@ public:
         );
 
         // Create another request after the timeout. It should be handled ok.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 1);
         HttpResponseJsonPtr response2(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
-                        [this, &cb_num](const boost::system::error_code& /*ec*/,
-                                        const HttpResponsePtr&,
-                                        const std::string&) {
-            if (++cb_num > 1) {
-                io_service_.stop();
-            }
-        }));
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                request2, response2,
+            [this, &cb_num](const boost::system::error_code& /*ec*/,
+                            const HttpResponsePtr&,
+                            const std::string&) {
+                if (++cb_num > 1) {
+                    io_service_.stop();
+                }
+            }));
 
         // Actually trigger the requests.
         ASSERT_NO_THROW(runIOService());
@@ -1565,9 +1637,11 @@ public:
 
         unsigned cb_num = 0;
 
+        TlsContextPtr context;
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request, response,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context,
+                                                request, response,
             [this, &cb_num](const boost::system::error_code& ec,
                             const HttpResponsePtr& response,
                             const std::string&) {
@@ -1593,14 +1667,15 @@ public:
         }));
 
         // Create another request after the timeout. It should be handled ok.
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request, response,
-                        [this, &cb_num](const boost::system::error_code& /*ec*/,
-                                        const HttpResponsePtr&,
-                                        const std::string&) {
-            if (++cb_num > 1) {
-                io_service_.stop();
-            }
-        }));
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context,
+                                                request, response,
+            [this, &cb_num](const boost::system::error_code& /*ec*/,
+                            const HttpResponsePtr&,
+                            const std::string&) {
+                if (++cb_num > 1) {
+                    io_service_.stop();
+                }
+            }));
 
         // Actually trigger the requests.
         ASSERT_NO_THROW(runIOService());
@@ -1636,12 +1711,14 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Generate first request.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
 
         // Use very short timeout to make sure that it occurs before we actually
         // run the transaction.
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [](const boost::system::error_code& ec,
                const HttpResponsePtr& response,
                const std::string&) {
@@ -1655,9 +1732,11 @@ public:
         }, HttpClient::RequestTimeout(1)));
 
         if (queue_two_requests) {
+            TlsContextPtr context2;
             PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
             HttpResponseJsonPtr response2(new HttpResponseJson());
-            ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
+            ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                    request2, response2,
                 [](const boost::system::error_code& ec,
                    const HttpResponsePtr& response,
                    const std::string&) {
@@ -1680,9 +1759,11 @@ public:
 
         // Now try to send another request to make sure that the client
         // is healthy.
+        TlsContextPtr context3;
         PostHttpRequestJsonPtr request3 = createRequest("sequence", 3);
         HttpResponseJsonPtr response3(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request3, response3,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context3,
+                                                request3, response3,
                          [this](const boost::system::error_code& ec,
                                 const HttpResponsePtr&,
                                 const std::string&) {
@@ -1711,12 +1792,14 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
         ExternalMonitor monitor;
 
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1728,13 +1811,16 @@ public:
         },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
+            std::bind(&ExternalMonitor::handshakeHandler, &monitor, ph::_1, ph::_2),
             std::bind(&ExternalMonitor::closeHandler, &monitor, ph::_1)
         ));
 
         // Initiate another request to the destination.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1745,6 +1831,7 @@ public:
         },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
+            std::bind(&ExternalMonitor::handshakeHandler, &monitor, ph::_1, ph::_2),
             std::bind(&ExternalMonitor::closeHandler, &monitor, ph::_1)
         ));
 
@@ -1802,12 +1889,14 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
+        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
         ExternalMonitor monitor;
 
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request1, response1,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
+                                                request1, response1,
             [this, &client, &resp_num, &monitor](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1832,6 +1921,7 @@ public:
         },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
+            std::bind(&ExternalMonitor::handshakeHandler, &monitor, ph::_1, ph::_2),
             std::bind(&ExternalMonitor::closeHandler, &monitor, ph::_1)
         ));
 
@@ -1862,10 +1952,12 @@ public:
 
         // Now let's do another request to the destination to verify that
         // we'll reopen the connection without issue.
+        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         resp_num = 0;
-        ASSERT_NO_THROW(client.asyncSendRequest(url, request2, response2,
+        ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
+                                                request2, response2,
             [this, &client, &resp_num, &monitor](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
                               const std::string&) {
@@ -1890,6 +1982,7 @@ public:
         },
             HttpClient::RequestTimeout(10000),
             std::bind(&ExternalMonitor::connectHandler, &monitor, ph::_1, ph::_2),
+            std::bind(&ExternalMonitor::handshakeHandler, &monitor, ph::_1, ph::_2),
             std::bind(&ExternalMonitor::closeHandler, &monitor, ph::_1)
         ));
 
@@ -1922,7 +2015,9 @@ public:
     public:
         /// @brief Constructor
         ExternalMonitor()
-            : registered_fd_(-1), connect_cnt_(0), close_cnt_(0) {};
+            : registered_fd_(-1), connect_cnt_(0), handshake_cnt_(0),
+              close_cnt_(0) {
+        }
 
         /// @brief Connect callback handler
         /// @param ec Error status of the ASIO connect
@@ -1938,6 +2033,15 @@ public:
                 return (false);
             }
 
+            // ec indicates an error, return true, so that error can be handled
+            // by Connection logic.
+            return (true);
+        }
+
+        /// @brief Handshake callback handler
+        /// @param ec Error status of the ASIO connect
+        bool handshakeHandler(const boost::system::error_code& ec, int) {
+            ++handshake_cnt_;
             // ec indicates an error, return true, so that error can be handled
             // by Connection logic.
             return (true);
@@ -1959,6 +2063,9 @@ public:
 
         /// @brief Tracks how many times the connect callback is invoked.
         int connect_cnt_;
+
+        /// @brief Tracks how many times the handshake callback is invoked.
+        int handshake_cnt_;
 
         /// @brief Tracks how many times the close callback is invoked.
         int close_cnt_;
