@@ -562,6 +562,7 @@ public:
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
 <<<<<<< HEAD
+<<<<<<< HEAD
         HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, TlsContextPtr(),
 =======
@@ -569,6 +570,10 @@ public:
         HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
+                              SERVER_PORT, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                               factory_, HttpListener::RequestTimeout(1000),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT));
         ASSERT_NO_THROW(listener.start());
@@ -619,14 +624,17 @@ public:
             "{ }";
 
         // Use custom listener and the specialized connection object.
-        TlsContextPtr context;
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                      TlsContextPtr(), factory_,
 =======
                      context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                     TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -669,13 +677,16 @@ TEST_F(HttpListenerTest, listen) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -705,13 +716,16 @@ TEST_F(HttpListenerTest, keepAlive) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -759,13 +773,16 @@ TEST_F(HttpListenerTest, persistentConnection) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -815,14 +832,17 @@ TEST_F(HttpListenerTest, keepAliveTimeout) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -877,14 +897,17 @@ TEST_F(HttpListenerTest, persistentConnectionTimeout) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -939,13 +962,16 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
         "Content-Length: 12\r\n\r\n"
         "{ \"a\": abc }";
 
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -989,13 +1015,16 @@ TEST_F(HttpListenerTest, persistentConnectionBadBody) {
 
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpListenerTest, startTwice) {
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1011,13 +1040,16 @@ TEST_F(HttpListenerTest, badRequest) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-    TlsContextPtr context;
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
+<<<<<<< HEAD
 <<<<<<< HEAD
                           TlsContextPtr(), factory_,
 =======
                           context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1038,13 +1070,16 @@ TEST_F(HttpListenerTest, badRequest) {
 // This test verifies that NULL pointer can't be specified for the
 // HttpResponseCreatorFactory.
 TEST_F(HttpListenerTest, invalidFactory) {
-    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
+<<<<<<< HEAD
 <<<<<<< HEAD
                               SERVER_PORT, TlsContextPtr(),
 =======
                               SERVER_PORT, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+                              SERVER_PORT, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpResponseCreatorFactoryPtr(),
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
@@ -1054,13 +1089,16 @@ TEST_F(HttpListenerTest, invalidFactory) {
 // This test verifies that the timeout of 0 can't be specified for the
 // Request Timeout.
 TEST_F(HttpListenerTest, invalidRequestTimeout) {
-    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
+<<<<<<< HEAD
 <<<<<<< HEAD
                               SERVER_PORT, TlsContextPtr(), factory_,
 =======
                               SERVER_PORT, context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                              SERVER_PORT, TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpListener::RequestTimeout(0),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
@@ -1069,13 +1107,16 @@ TEST_F(HttpListenerTest, invalidRequestTimeout) {
 // This test verifies that the timeout of 0 can't be specified for the
 // idle persistent connection timeout.
 TEST_F(HttpListenerTest, invalidIdleTimeout) {
-    TlsContextPtr context;
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
+<<<<<<< HEAD
 <<<<<<< HEAD
                               SERVER_PORT, TlsContextPtr(), factory_,
 =======
                               SERVER_PORT, context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                              SERVER_PORT, TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(0)),
                  HttpListenerError);
@@ -1092,15 +1133,18 @@ TEST_F(HttpListenerTest, addressInUse) {
     acceptor.open(endpoint.protocol());
     acceptor.bind(endpoint);
 
-    TlsContextPtr context;
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
+<<<<<<< HEAD
 <<<<<<< HEAD
                           SERVER_PORT + 1, TlsContextPtr(), factory_,
 =======
                           SERVER_PORT + 1, context, factory_,
 >>>>>>> [#1661] HTTP code half done
+=======
+                          SERVER_PORT + 1, TlsContextPtr(), factory_,
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     EXPECT_THROW(listener.start(), HttpListenerError);
@@ -1217,15 +1261,18 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1237,14 +1284,17 @@ public:
         }));
 
         // Initiate another request to the destination.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1288,15 +1338,18 @@ public:
         Url url2("http://[::1]:18124");
 
         // Create a request to the first server.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url1, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url1, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url1, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1308,14 +1361,17 @@ public:
         }));
 
         // Create a request to the second server.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url2, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url2, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url2, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1354,14 +1410,17 @@ public:
         Url url("http://127.0.0.1:18125");
 
         // Create the first request.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
@@ -1382,14 +1441,17 @@ public:
         ASSERT_NO_THROW(runIOService(SHORT_IDLE_TIMEOUT * 2));
 
         // Create another request.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
         HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this](const boost::system::error_code& ec, const HttpResponsePtr&,
                    const std::string&) {
@@ -1419,14 +1481,17 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Create the request.
-        TlsContextPtr context;
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request, response,
             [this](const boost::system::error_code& ec,
                    const HttpResponsePtr&,
@@ -1452,7 +1517,6 @@ public:
         // Specify the URL of the server.
         Url url("http://127.0.0.1:18123");
 
-        TlsContextPtr context;
         // The response is going to be malformed in such a way that it holds
         // an invalid content type. We affect the content type by creating
         // a request that holds a JSON parameter requesting a specific
@@ -1461,10 +1525,14 @@ public:
                                                        "text/html");
         HttpResponseJsonPtr response(new HttpResponseJson());
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request, response,
             [this](const boost::system::error_code& ec,
                    const HttpResponsePtr& response,
@@ -1496,7 +1564,6 @@ public:
 
         unsigned cb_num = 0;
 
-        TlsContextPtr context1;
         // Create the request which asks the server to generate a partial
         // (although well formed) response. The client will be waiting for the
         // rest of the response to be provided and will eventually time out.
@@ -1506,10 +1573,14 @@ public:
         // invoked upon time out.
         auto connection_closed = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this, &cb_num](const boost::system::error_code& ec,
                             const HttpResponsePtr& response,
@@ -1535,14 +1606,17 @@ public:
         );
 
         // Create another request after the timeout. It should be handled ok.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 1);
         HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this, &cb_num](const boost::system::error_code& /*ec*/,
                             const HttpResponsePtr&,
@@ -1571,14 +1645,17 @@ public:
 
         unsigned cb_num = 0;
 
-        TlsContextPtr context;
         PostHttpRequestJsonPtr request = createRequest("sequence", 1);
         HttpResponseJsonPtr response(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request, response,
             [this, &cb_num](const boost::system::error_code& ec,
                             const HttpResponsePtr& response,
@@ -1606,10 +1683,14 @@ public:
 
         // Create another request after the timeout. It should be handled ok.
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request, response,
             [this, &cb_num](const boost::system::error_code& /*ec*/,
                             const HttpResponsePtr&,
@@ -1653,17 +1734,20 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Generate first request.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1);
         HttpResponseJsonPtr response1(new HttpResponseJson());
 
         // Use very short timeout to make sure that it occurs before we actually
         // run the transaction.
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [](const boost::system::error_code& ec,
                const HttpResponsePtr& response,
@@ -1678,14 +1762,17 @@ public:
         }, HttpClient::RequestTimeout(1)));
 
         if (queue_two_requests) {
-            TlsContextPtr context2;
             PostHttpRequestJsonPtr request2 = createRequest("sequence", 2);
             HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
             ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
             ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+            ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                     request2, response2,
                 [](const boost::system::error_code& ec,
                    const HttpResponsePtr& response,
@@ -1709,14 +1796,17 @@ public:
 
         // Now try to send another request to make sure that the client
         // is healthy.
-        TlsContextPtr context3;
         PostHttpRequestJsonPtr request3 = createRequest("sequence", 3);
         HttpResponseJsonPtr response3(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context3,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request3, response3,
                          [this](const boost::system::error_code& ec,
                                 const HttpResponsePtr&,
@@ -1746,17 +1836,20 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
         ExternalMonitor monitor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1774,14 +1867,17 @@ public:
         ));
 
         // Initiate another request to the destination.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this, &resp_num](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1851,17 +1947,20 @@ public:
         Url url("http://127.0.0.1:18123");
 
         // Initiate request to the server.
-        TlsContextPtr context1;
         PostHttpRequestJsonPtr request1 = createRequest("sequence", 1, version);
         HttpResponseJsonPtr response1(new HttpResponseJson());
         unsigned resp_num = 0;
         ExternalMonitor monitor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context1,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request1, response1,
             [this, &client, &resp_num, &monitor](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1918,15 +2017,18 @@ public:
 
         // Now let's do another request to the destination to verify that
         // we'll reopen the connection without issue.
-        TlsContextPtr context2;
         PostHttpRequestJsonPtr request2 = createRequest("sequence", 2, version);
         HttpResponseJsonPtr response2(new HttpResponseJson());
         resp_num = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
         ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
 =======
         ASSERT_NO_THROW(client.asyncSendRequest(url, context2,
 >>>>>>> [#1661] HTTP code half done
+=======
+        ASSERT_NO_THROW(client.asyncSendRequest(url, TlsContextPtr(),
+>>>>>>> [#1661] Checkpoint: split server/client UTs
                                                 request2, response2,
             [this, &client, &resp_num, &monitor](const boost::system::error_code& ec,
                               const HttpResponsePtr&,
@@ -1986,11 +2088,15 @@ public:
         /// @brief Constructor
         ExternalMonitor()
 <<<<<<< HEAD
+<<<<<<< HEAD
             : registered_fd_(-1), connect_cnt_(0), close_cnt_(0) {
 =======
             : registered_fd_(-1), connect_cnt_(0), handshake_cnt_(0),
               close_cnt_(0) {
 >>>>>>> [#1661] HTTP code half done
+=======
+            : registered_fd_(-1), connect_cnt_(0), close_cnt_(0) {
+>>>>>>> [#1661] Checkpoint: split server/client UTs
         }
 
         /// @brief Connect callback handler
@@ -2019,8 +2125,12 @@ public:
             ADD_FAILURE() << "handshake callback handler is called";
 =======
         bool handshakeHandler(const boost::system::error_code& ec, int) {
+<<<<<<< HEAD
             ++handshake_cnt_;
 >>>>>>> [#1661] HTTP code half done
+=======
+            ADD_FAILURE() << "handshake callback handler is called";
+>>>>>>> [#1661] Checkpoint: split server/client UTs
             // ec indicates an error, return true, so that error can be handled
             // by Connection logic.
             return (true);
@@ -2042,9 +2152,6 @@ public:
 
         /// @brief Tracks how many times the connect callback is invoked.
         int connect_cnt_;
-
-        /// @brief Tracks how many times the handshake callback is invoked.
-        int handshake_cnt_;
 
         /// @brief Tracks how many times the close callback is invoked.
         int close_cnt_;
