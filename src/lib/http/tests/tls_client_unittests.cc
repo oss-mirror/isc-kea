@@ -1183,12 +1183,12 @@ TEST_F(HttpsClientTest, multipleDestinationsMultiThreading) {
 }
 
 // Test that idle connection can be resumed for second request.
-TEST_F(HttpsClientTest, idleConnection) {
+TEST_F(HttpsClientTest, DISABLED_idleConnection) {
     ASSERT_NO_FATAL_FAILURE(testIdleConnection());
 }
 
 // Test that idle connection can be resumed for second request.
-TEST_F(HttpsClientTest, idleConnectionMultiThreading) {
+TEST_F(HttpsClientTest, DISABLED_idleConnectionMultiThreading) {
     MultiThreadingMgr::instance().setMode(true);
     ASSERT_NO_FATAL_FAILURE(testIdleConnection());
 }
