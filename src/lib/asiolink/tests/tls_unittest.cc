@@ -11,13 +11,18 @@
 #include <asiolink/crypto_tls.h>
 #include <asiolink/botan_tls.h>
 #include <asiolink/openssl_tls.h>
+#include <asiolink/tcp_endpoint.h>
+#include <asiolink/testutils/test_tls.h>
 #include <testutils/gtest_utils.h>
 
 #include <boost/scoped_ptr.hpp>
 #include <gtest/gtest.h>
 
 #include <string>
+#include <vector>
 
+using namespace boost::asio;
+using namespace boost::asio::ip;
 using namespace isc::asiolink;
 using namespace isc::cryptolink;
 using namespace std;
@@ -170,7 +175,7 @@ namespace { // anonymous namespace.
 class Callback {
 public:
     // Callback function.
-    void operator()(boost::system::error_code ec) { }
+    void operator()(const boost::system::error_code& ec) { }
 };
 } // end of anonymous namespace.
 
@@ -181,4 +186,102 @@ TEST(TLSTest, stream) {
     ASSERT_NO_THROW(ctx.reset(new TlsContext(TlsRole::CLIENT)));
     boost::scoped_ptr<TlsStream<Callback> > st;
     ASSERT_NO_THROW(st.reset(new TlsStream<Callback>(service, ctx)));
+}
+
+namespace { // anonymous namespace.
+/// @brief Local server address used for testing.
+const char SERVER_ADDRESS[] = "127.0.0.1";
+
+/// @brief Local server port used for testing.
+const unsigned short SERVER_PORT = 18123;
+} // end of anonymous namespace.
+
+// Test what happens when handshake is forgotten.
+TEST(TLSTest, noHandshake) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    bool accepted(false);
+    boost::system::error_code accept_ec;
+    acceptor.async_accept(server.lowest_layer(),
+        [&accepted, &accept_ec] (const boost::system::error_code& ec) {
+            accepted = true;
+            accept_ec = ec;
+        });
+
+    // Client part.
+    TlsContextPtr client_ctx;
+    test::configClient(client_ctx);
+    TlsStream<Callback> client(service, client_ctx);
+
+    // Connect to.
+    bool connected(false);
+    boost::system::error_code connect_ec;
+    client.lowest_layer().open(tcp::v4());
+    client.lowest_layer().async_connect(server_ep,
+        [&connected, &connect_ec] (const boost::system::error_code& ec) {
+            connected = true;
+            connect_ec = ec;
+        });
+
+    // Run accept and connect.
+    while (!accepted && !connected) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_ec) {
+        FAIL() << "accept error " << accept_ec.value()
+               << " '" << accept_ec.message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_ec && (connect_ec.value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_ec.value()
+               << " '" << connect_ec.message() << "'";
+    }
+
+    // Send on the client.
+    char send_buf[] = "some text...";
+    bool sent(false);
+    boost::system::error_code send_ec;
+    async_write(client, boost::asio::buffer(send_buf),
+        [&sent, &send_ec] (const boost::system::error_code& ec,
+                           size_t) {
+            sent = true;
+            send_ec = ec;
+        });
+    while (!sent) {
+        service.run_one();
+    }
+    EXPECT_TRUE(send_ec);
+    EXPECT_EQ("uninitialized", send_ec.message());
+
+    // Receive on the server.
+    vector<char> receive_buf(64);
+    bool received(false);
+    boost::system::error_code receive_ec;
+    server.async_read_some(boost::asio::buffer(receive_buf),
+        [&received, &receive_ec] (const boost::system::error_code& ec,
+                                  size_t) {
+            received = true;
+            receive_ec = ec;
+        });
+    while (!received) {
+        service.run_one();
+    }
+    EXPECT_TRUE(receive_ec);
+    EXPECT_EQ("uninitialized", receive_ec.message());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
 }
