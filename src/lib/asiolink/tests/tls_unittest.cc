@@ -172,11 +172,78 @@ TEST(TLSTest, loadMismatch) {
 
 // Define a callback class.
 namespace { // anonymous namespace.
+
+/// @brief Local server address used for testing.
+const char SERVER_ADDRESS[] = "127.0.0.1";
+
+/// @brief Local server port used for testing.
+const unsigned short SERVER_PORT = 18123;
+
+/// @brief Class of test callbacks.
 class Callback {
 public:
-    // Callback function.
-    void operator()(const boost::system::error_code& ec) { }
+    /// @brief State part.
+    class State {
+    public:
+        /// @brief Constructor.
+        State() : called_(false), error_code_() {
+        }
+
+        /// @brief Destructor.
+        virtual ~State() {
+        }
+
+        /// @brief Called flag.
+        ///
+        /// Initialized to false, set to true when the callback is called.
+        bool called_;
+
+        /// @brief Last error code.
+        boost::system::error_code error_code_;
+    };
+
+    /// @brief Constructor.
+    ///
+    /// Used to shared pointer to state to allow the callback object to
+    /// be copied keeping the state member values.
+    Callback() : state_(new State()) {
+    }
+
+    /// @brief Destructor.
+    virtual ~Callback() {
+    }
+
+    /// @brief Callback function (one argument).
+    ///
+    /// @parame ec Boost completion code.
+    void operator()(const boost::system::error_code& ec) {
+        state_->called_ = true;
+        state_->error_code_ = ec;
+    }
+
+    /// @brief Callback function (two arguments).
+    ///
+    /// @parame ec Boost completion code.
+    void operator()(const boost::system::error_code& ec, size_t) {
+        state_->called_ = true;
+        state_->error_code_ = ec;
+    }
+
+    /// @brief Get called value.
+    inline bool getCalled() const {
+        return (state_->called_);
+    }
+
+    /// @brief Get error code.
+    inline const boost::system::error_code& getCode() const {
+        return (state_->error_code_);
+    }
+
+protected:
+    /// @brief Pointer to state.
+    boost::shared_ptr<State> state_;
 };
+
 } // end of anonymous namespace.
 
 // Test if we can get a stream.
@@ -189,11 +256,6 @@ TEST(TLSTest, stream) {
 }
 
 namespace { // anonymous namespace.
-/// @brief Local server address used for testing.
-const char SERVER_ADDRESS[] = "127.0.0.1";
-
-/// @brief Local server port used for testing.
-const unsigned short SERVER_PORT = 18123;
 } // end of anonymous namespace.
 
 // Test what happens when handshake is forgotten.
@@ -210,13 +272,8 @@ TEST(TLSTest, noHandshake) {
                                           SERVER_PORT));
     tcp::acceptor acceptor(service.get_io_service(), server_ep);
     acceptor.set_option(tcp::acceptor::reuse_address(true));
-    bool accepted(false);
-    boost::system::error_code accept_ec;
-    acceptor.async_accept(server.lowest_layer(),
-        [&accepted, &accept_ec] (const boost::system::error_code& ec) {
-            accepted = true;
-            accept_ec = ec;
-        });
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
 
     // Client part.
     TlsContextPtr client_ctx;
@@ -224,64 +281,436 @@ TEST(TLSTest, noHandshake) {
     TlsStream<Callback> client(service, client_ctx);
 
     // Connect to.
-    bool connected(false);
-    boost::system::error_code connect_ec;
     client.lowest_layer().open(tcp::v4());
-    client.lowest_layer().async_connect(server_ep,
-        [&connected, &connect_ec] (const boost::system::error_code& ec) {
-            connected = true;
-            connect_ec = ec;
-        });
+    Callback connect_cb;
+    client.lowest_layer().async_connect(server_ep, connect_cb);
 
     // Run accept and connect.
-    while (!accepted && !connected) {
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
         service.run_one();
     }
 
     // Verify the error codes.
-    if (accept_ec) {
-        FAIL() << "accept error " << accept_ec.value()
-               << " '" << accept_ec.message() << "'";
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
     }
     // Possible EINPROGRESS for the client.
-    if (connect_ec && (connect_ec.value() != EINPROGRESS)) {
-        FAIL() << "connect error " << connect_ec.value()
-               << " '" << connect_ec.message() << "'";
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
     }
 
     // Send on the client.
     char send_buf[] = "some text...";
-    bool sent(false);
-    boost::system::error_code send_ec;
-    async_write(client, boost::asio::buffer(send_buf),
-        [&sent, &send_ec] (const boost::system::error_code& ec,
-                           size_t) {
-            sent = true;
-            send_ec = ec;
-        });
-    while (!sent) {
+    Callback send_cb;
+    async_write(client, boost::asio::buffer(send_buf), send_cb);
+    while (!send_cb.getCalled()) {
         service.run_one();
     }
-    EXPECT_TRUE(send_ec);
-    EXPECT_EQ("uninitialized", send_ec.message());
+    EXPECT_TRUE(send_cb.getCode());
+    EXPECT_EQ("uninitialized", send_cb.getCode().message());
 
     // Receive on the server.
     vector<char> receive_buf(64);
-    bool received(false);
-    boost::system::error_code receive_ec;
-    server.async_read_some(boost::asio::buffer(receive_buf),
-        [&received, &receive_ec] (const boost::system::error_code& ec,
-                                  size_t) {
-            received = true;
-            receive_ec = ec;
-        });
-    while (!received) {
+    Callback receive_cb;
+    server.async_read_some(boost::asio::buffer(receive_buf), receive_cb);
+    while (!receive_cb.getCalled()) {
         service.run_one();
     }
-    EXPECT_TRUE(receive_ec);
-    EXPECT_EQ("uninitialized", receive_ec.message());
+    EXPECT_TRUE(receive_cb.getCode());
+    EXPECT_EQ("uninitialized", receive_cb.getCode().message());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
     EXPECT_NO_THROW(server.lowest_layer().close());
 }
+
+// Test what happens when the server was not configured.
+TEST(TLSTest, serverNotConfigured) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx(new TlsContext(TlsRole::SERVER));
+    // Skip config.
+    TlsStream<Callback> server(service, server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part.
+    TlsContextPtr client_ctx;
+    test::configClient(client_ctx);
+    TlsStream<Callback> client(service, client_ctx);
+
+    // Connect to.
+    client.lowest_layer().open(tcp::v4());
+    Callback connect_cb;
+    client.lowest_layer().async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform TLS handshakes.
+    Callback server_cb;
+    server.handshake(server_cb);
+    Callback client_cb;
+    client.handshake(client_cb);
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    EXPECT_EQ("no shared cipher", server_cb.getCode().message());
+    EXPECT_TRUE(client_cb.getCode());
+    EXPECT_EQ("sslv3 alert handshake failure", client_cb.getCode().message());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
+// Test what happens when the client was not configured.
+TEST(TLSTest, clientNotConfigured) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+    test::configServer(server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part.
+    TlsContextPtr client_ctx(new TlsContext(TlsRole::CLIENT));
+    // Skip config.
+    TlsStream<Callback> client(service, client_ctx);
+
+    // Connect to.
+    client.lowest_layer().open(tcp::v4());
+    Callback connect_cb;
+    client.lowest_layer().async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform TLS handshakes.
+    Callback server_cb;
+    server.async_handshake(ssl::stream_base::server, server_cb);
+    Callback client_cb;
+    client.async_handshake(ssl::stream_base::client, client_cb);
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    EXPECT_EQ("tlsv1 alert unknown ca", server_cb.getCode().message());
+    EXPECT_TRUE(client_cb.getCode());
+    EXPECT_EQ("certificate verify failed", client_cb.getCode().message());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
+// Test what happens when the client is HTTP (vs HTTPS).
+TEST(TLSTest, clientHTTPnoS) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+    test::configServer(server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part.
+    tcp::socket client(service.get_io_service());
+
+    // Connect to.
+    client.open(tcp::v4());
+    Callback connect_cb;
+    client.async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform server TLS handshake.
+    Callback server_cb;
+    server.async_handshake(ssl::stream_base::server, server_cb);
+
+    // Client sending a HTTP GET.
+    char send_buf[] = "GET / HTTP/1.1\r\n";
+    Callback client_cb;
+    client.async_send(boost::asio::buffer(send_buf), client_cb);
+
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    EXPECT_EQ("http request", server_cb.getCode().message());
+    EXPECT_FALSE(client_cb.getCode());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
+// Test what happens when the client does not use HTTP nor HTTP.
+TEST(TLSTest, unknownClient) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+    test::configServer(server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part.
+    tcp::socket client(service.get_io_service());
+
+    // Connect to.
+    client.open(tcp::v4());
+    Callback connect_cb;
+    client.async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform server TLS handshake.
+    Callback server_cb;
+    server.async_handshake(ssl::stream_base::server, server_cb);
+
+    // Client sending something which is not a TLS ClientHello.
+    char send_buf[] = "hello my server...";
+    Callback client_cb;
+    client.async_send(boost::asio::buffer(send_buf), client_cb);
+
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    EXPECT_EQ("wrong version number", server_cb.getCode().message());
+    EXPECT_FALSE(client_cb.getCode());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
+// Test what happens when the client uses a certificate from another CA.
+TEST(TLSTest, anotherClient) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+    test::configServer(server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part using a certificate signed by another CA.
+    TlsContextPtr client_ctx;
+    test::configOther(client_ctx);
+    TlsStream<Callback> client(service, client_ctx);
+
+    // Connect to.
+    client.lowest_layer().open(tcp::v4());
+    Callback connect_cb;
+    client.lowest_layer().async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform TLS handshakes.
+    Callback server_cb;
+    server.async_handshake(ssl::stream_base::server, server_cb);
+    Callback client_cb;
+    client.async_handshake(ssl::stream_base::client, client_cb);
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    // Full error is:
+    // error 20 at 0 depth lookup:unable to get local issuer certificate
+    EXPECT_EQ("certificate verify failed", server_cb.getCode().message());
+    EXPECT_FALSE(client_cb.getCode());
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
+// Test what happens when the client uses a self-signed certificate.
+TEST(TLSTest, selfSigned) {
+    IOService service;
+
+    // Server part.
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
+    TlsStream<Callback> server(service, server_ctx);
+    test::configServer(server_ctx);
+
+    // Accept a client.
+    tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
+                                          SERVER_PORT));
+    tcp::acceptor acceptor(service.get_io_service(), server_ep);
+    acceptor.set_option(tcp::acceptor::reuse_address(true));
+    Callback accept_cb;
+    acceptor.async_accept(server.lowest_layer(), accept_cb);
+
+    // Client part using a self-signed certificate.
+    TlsContextPtr client_ctx;
+    test::configSelf(client_ctx);
+    TlsStream<Callback> client(service, client_ctx);
+
+    // Connect to.
+    client.lowest_layer().open(tcp::v4());
+    Callback connect_cb;
+    client.lowest_layer().async_connect(server_ep, connect_cb);
+
+    // Run accept and connect.
+    while (!accept_cb.getCalled() || !connect_cb.getCalled()) {
+        service.run_one();
+    }
+
+    // Verify the error codes.
+    if (accept_cb.getCode()) {
+        FAIL() << "accept error " << accept_cb.getCode().value()
+               << " '" << accept_cb.getCode().message() << "'";
+    }
+    // Possible EINPROGRESS for the client.
+    if (connect_cb.getCode() &&
+        (connect_cb.getCode().value() != EINPROGRESS)) {
+        FAIL() << "connect error " << connect_cb.getCode().value()
+               << " '" << connect_cb.getCode().message() << "'";
+    }
+
+    // Perform TLS handshakes.
+    Callback server_cb;
+    server.async_handshake(ssl::stream_base::server, server_cb);
+    Callback client_cb;
+    client.async_handshake(ssl::stream_base::client, client_cb);
+    while (!server_cb.getCalled() || !client_cb.getCalled()) {
+        service.run_one();
+    }
+    EXPECT_TRUE(server_cb.getCode());
+    // Full error is:
+    // error 18 at 0 depth lookup:self signed certificate
+    EXPECT_EQ("certificate verify failed", server_cb.getCode().message());
+    EXPECT_FALSE(client_cb.getCode());
+
+    // Used when adding other error cases.
+#if 0
+    cerr << "server: '" << server_cb.getCode().message() << "'\n";
+    cerr << "client: '" << client_cb.getCode().message() << "'\n";
+#endif
+
+    // Close client and server.
+    EXPECT_NO_THROW(client.lowest_layer().close());
+    EXPECT_NO_THROW(server.lowest_layer().close());
+}
+
