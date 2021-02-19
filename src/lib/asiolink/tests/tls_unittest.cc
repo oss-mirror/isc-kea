@@ -704,6 +704,7 @@ TEST(TLSTest, configureError) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ////////////////////////////////////////////////////////////////////////
 //                      Basic handshake failures                      //
 ////////////////////////////////////////////////////////////////////////
@@ -744,6 +745,8 @@ TEST(TLSTest, configure) {
     EXPECT_FALSE(ctx);
 }
 
+=======
+>>>>>>> [#1661] Covered LibreSSL
 // Define a callback class.
 namespace { // anonymous namespace.
 >>>>>>> [#1661] Fixed rebase
