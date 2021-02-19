@@ -400,9 +400,13 @@ protected:
     void idleTimeoutCallback();
 
     /// @brief Shuts down current connection.
+<<<<<<< HEAD
     ///
     /// Copied from the next method @ref stopThisConnection
     void shutdownConnection();
+=======
+    void shutdownThisConnection();
+>>>>>>> [#1661] Added shutdown
 
     /// @brief Stops current connection.
     void stopThisConnection();
@@ -425,9 +429,14 @@ protected:
 =======
     asiolink::TlsContextPtr context_;
 
+<<<<<<< HEAD
     /// @brief Timeout after which the persistent HTTP connection is closed
     /// by the server.
 >>>>>>> [#1661] HTTP code half done
+=======
+    /// @brief Timeout after which the persistent HTTP connection is shut
+    /// down by the server.
+>>>>>>> [#1661] Added shutdown
     long idle_timeout_;
 
     /// @brief TCP socket used by this connection.
