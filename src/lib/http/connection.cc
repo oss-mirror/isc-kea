@@ -118,7 +118,11 @@ HttpConnection::shutdown() {
         // Create instance of the callback to close the socket.
         SocketCallback cb(std::bind(&HttpConnection::shutdownCallback,
                                     shared_from_this(),
+<<<<<<< HEAD
                                     ph::_1)); // error_code
+=======
+                                    ph::_1)); // error
+>>>>>>> [#1661] Added shutdown
         tls_socket_->shutdown(cb);
         return;
     }
@@ -142,7 +146,11 @@ HttpConnection::close() {
 }
 
 void
+<<<<<<< HEAD
 HttpConnection::shutdownConnection() {
+=======
+HttpConnection::shutdownThisConnection() {
+>>>>>>> [#1661] Added shutdown
     try {
         LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_BASIC,
                   HTTP_CONNECTION_SHUTDOWN)

@@ -38,10 +38,14 @@ public:
     /// @param connection Pointer to the new connection.
     void start(const HttpConnectionPtr& connection);
 
+<<<<<<< HEAD
     /// @brief Removes a connection from the pool and shutdown it.
     ///
     /// Shutdown is specific to TLS and is a first part of graceful close (note it is
     /// NOT the same as TCP shutdown system call).
+=======
+    /// @brief Removes a connection them from the pool and shutdown it..
+>>>>>>> [#1661] Added shutdown
     ///
     /// @note if the TLS connection stalls e.g. the peer does not try I/O
     /// on it the connection has to be explicitly stopped.
@@ -49,7 +53,11 @@ public:
     /// @param connection Pointer to the connection.
     void shutdown(const HttpConnectionPtr& connection);
 
+<<<<<<< HEAD
     /// @brief Removes a connection from the pool and stops it.
+=======
+    /// @brief Removes a connection them from the pool and stops it.
+>>>>>>> [#1661] Added shutdown
     ///
     /// @param connection Pointer to the connection.
     void stop(const HttpConnectionPtr& connection);
