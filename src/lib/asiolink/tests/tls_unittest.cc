@@ -125,6 +125,8 @@ TEST(TLSTest, loadCertFile) {
 TEST(TLSTest, loadNoCertFile) {
     string cert("/no-such-file");
     TlsContext ctx(TlsRole::CLIENT);
+    EXPECT_THROW_MSG(ctx.loadCertFile(cert), LibraryError,
+                     "No such file or directory");
 }
 
 // Test that a certificate is wanted.
@@ -168,6 +170,42 @@ TEST(TLSTest, loadMismatch) {
     // The explicit check function is SSL_CTX_check_private_key.
     EXPECT_THROW_MSG(ctx.loadKeyFile(key), LibraryError,
                      "key values mismatch");
+}
+
+// Test the configure class method.
+TEST(TLSTest, configure) {
+    TlsContextPtr ctx;
+    string ca(string(TEST_CA_DIR) + "/kea-ca.crt");
+    string cert(string(TEST_CA_DIR) + "/kea-client.crt");
+    string key(string(TEST_CA_DIR) + "/kea-client.key");
+    EXPECT_NO_THROW(TlsContext::configure(ctx, TlsRole::CLIENT,
+                                          ca, cert, key, true));
+    ASSERT_TRUE(ctx);
+    EXPECT_EQ(TlsRole::CLIENT, ctx->getRole());
+    EXPECT_TRUE(ctx->getCertRequired());
+
+#ifdef WITH_OPENSSL
+    // Retry using the directory and the server.
+    ca = TEST_CA_DIR;
+    cert = string(TEST_CA_DIR) + "/kea-server.crt";
+    key = string(TEST_CA_DIR) + "/kea-server.key";
+    EXPECT_NO_THROW(TlsContext::configure(ctx, TlsRole::SERVER,
+                                          ca, cert, key, false));
+    ASSERT_TRUE(ctx);
+    EXPECT_EQ(TlsRole::SERVER, ctx->getRole());
+    EXPECT_FALSE(ctx->getCertRequired());
+
+#endif
+
+    // The error case.
+    cert = "/no-such-file";
+    key = string(TEST_CA_DIR) + "/kea-client.key";
+    EXPECT_THROW_MSG(TlsContext::configure(ctx, TlsRole::CLIENT,
+                                           ca, cert, key, true),
+                     LibraryError,
+                     "No such file or directory");
+    // The context is reseted on errors.
+    EXPECT_FALSE(ctx);
 }
 
 // Define a callback class.

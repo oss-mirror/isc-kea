@@ -15,6 +15,7 @@
 #include <asiolink/io_service.h>
 #include <asiolink/tcp_endpoint.h>
 #include <asiolink/tls_socket.h>
+#include <asiolink/testutils/test_tls.h>
 #include <util/buffer.h>
 #include <util/io_utilities.h>
 
@@ -39,10 +40,6 @@ using namespace isc::asiolink;
 using namespace std;
 
 namespace {
-
-inline string CA(const string& filename) {
-    return (string(TEST_CA_DIR) + "/" + filename);
-}
 
 const char SERVER_ADDRESS[] = "127.0.0.1";
 const unsigned short SERVER_PORT = 5303;
@@ -325,10 +322,8 @@ TEST(TLSSocket, sequenceTest) {
     IOService service;
 
     // The client - the TLSSocket being tested
-    TlsContextPtr client_ctx(new TlsContext(CLIENT));
-    client_ctx->loadCaFile(CA("kea-ca.crt"));
-    client_ctx->loadCertFile(CA("kea-client.crt"));
-    client_ctx->loadKeyFile(CA("kea-client.key"));
+    TlsContextPtr client_ctx;
+    test::configClient(client_ctx);
     // Socket under test
     TLSSocket<TLSCallback> client(service, client_ctx);
     // Async I/O callback function
@@ -346,10 +341,8 @@ TEST(TLSSocket, sequenceTest) {
     TCPEndpoint server_endpoint(server_address, SERVER_PORT);
     // Address where server received message from
     TCPEndpoint server_remote_endpoint;
-    TlsContextPtr server_ctx(new TlsContext(SERVER));
-    server_ctx->loadCaFile(CA("kea-ca.crt"));
-    server_ctx->loadCertFile(CA("kea-server.crt"));
-    server_ctx->loadKeyFile(CA("kea-server.key"));
+    TlsContextPtr server_ctx;
+    test::configServer(server_ctx);
     // Stream used for server.
     TlsStreamImpl server(service.get_io_service(), server_ctx->getContext());
 

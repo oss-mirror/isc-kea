@@ -34,6 +34,13 @@ public:
     /// @param role The TLS role client or server.
     explicit TlsContextBase(TlsRole role) : role_(role) { }
 
+    /// @brief Returns the role.
+    TlsRole getRole() const {
+        return (role_);
+    }
+
+    /// @note No need for a role set method.
+
     /// @brief Set the peer certificate requirement mode.
     ///
     /// @param cert_required True if peer certificates are required,

@@ -18,6 +18,14 @@
 namespace isc {
 namespace asiolink {
 
+/// @brief Forward declaration of OpenSSL TLS context.
+class TlsContext;
+
+/// @brief The type of shared pointers to TlsContext objects.
+///
+/// @note Not clear we need shared pointers but they covers more use cases...
+typedef boost::shared_ptr<TlsContext> TlsContextPtr;
+
 /// @brief OpenSSL TLS context.
 class TlsContext : public TlsContextBase {
 public:
@@ -74,6 +82,22 @@ public:
     /// @param key_file The private key file name.
     virtual void loadKeyFile(const std::string& key_file);
 
+    /// @brief Configure.
+    ///
+    /// @param context The TLS context to configure.
+    /// @param role The TLS role client or server.
+    /// @param ca_file The certificate file or directory name.
+    /// @param cert_file The certificate file name.
+    /// @param key_file The private key file name.
+    /// @param cert_required True if peer certificates are required,
+    /// false if they are optional.
+    static void configure(TlsContextPtr& context,
+                          TlsRole role,
+                          const std::string& ca_file,
+                          const std::string& cert_file,
+                          const std::string& key_file,
+                          bool cert_required);
+
 protected:
     /// @brief Cached cert_required value.
     bool cert_required_;
@@ -81,11 +105,6 @@ protected:
     /// @brief Boost ASIO SSL object.
     boost::asio::ssl::context context_;
 };
-
-/// @brief The type of shared pointers to TlsContext objects.
-///
-/// @note Not clear we need shared pointers but they covers more use cases...
-typedef boost::shared_ptr<TlsContext> TlsContextPtr;
 
 /// @brief The type of underlying TLS streams.
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> TlsStreamImpl;
@@ -107,7 +126,7 @@ public:
     /// @note The caller must not provide a null pointer to the TLS context.
     TlsStream(IOService& service, TlsContextPtr context)
         : TlsStreamImpl(service.get_io_service(), context->getContext()),
-          role_(context->role_) {
+          role_(context->getRole()) {
     }
 
     /// @brief Destructor.
@@ -213,6 +232,7 @@ public:
         return (ret);
     }
 };
+
 
 } // namespace asiolink
 } // namespace isc

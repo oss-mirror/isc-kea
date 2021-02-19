@@ -41,13 +41,14 @@ noinst_LTLIBRARIES = libasiolinktest.la
 
 libasiolinktest_la_SOURCES  = test_server_unix_socket.cc test_server_unix_socket.h
 libasiolinktest_la_SOURCES += timed_signal.cc timed_signal.h
+libasiolinktest_la_SOURCES += test_tls.cc test_tls.h
 
 libasiolinktest_la_CXXFLAGS = $(AM_CXXFLAGS)
 libasiolinktest_la_CPPFLAGS = $(AM_CPPFLAGS) $(GTEST_INCLUDES)
-libasiolinktest_la_LDFLAGS  = $(AM_LDFLAGS)
+libasiolinktest_la_LDFLAGS  = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
 
 libasiolinktest_la_LIBADD  = $(top_builddir)/src/lib/asiolink/libkea-asiolink.la
 libasiolinktest_la_LIBADD += $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
-libasiolinktest_la_LIBADD += $(BOOST_LIBS)
+libasiolinktest_la_LIBADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 
 endif
