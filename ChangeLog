@@ -1,3 +1,5 @@
+Kea 1.9.5 (development) released on Feb 24, 2021
+
 1867.	[bug]		andrei
 	MySQL connection unit tests have been modified to work with
 	Percona cluster. This change doesn't fix all problems, but it

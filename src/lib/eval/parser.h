@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.7.5.
+// A Bison parser, made by GNU Bison 3.7.2.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -103,9 +103,9 @@ using namespace isc::eval;
 #endif
 # include "location.hh"
 #include <typeinfo>
-#ifndef EVAL_ASSERT
+#ifndef YY_ASSERT
 # include <cassert>
-# define EVAL_ASSERT assert
+# define YY_ASSERT assert
 #endif
 
 
@@ -127,9 +127,9 @@ using namespace isc::eval;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YY_USE(E) ((void) (E))
+# define YYUSE(E) ((void) (E))
 #else
-# define YY_USE(E) /* empty */
+# define YYUSE(E) /* empty */
 #endif
 
 #if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
@@ -231,7 +231,7 @@ namespace isc { namespace eval {
     semantic_type (YY_RVREF (T) t)
       : yytypeid_ (&typeid (T))
     {
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (sizeof (T) <= size);
       new (yyas_<T> ()) T (YY_MOVE (t));
     }
 
@@ -245,7 +245,7 @@ namespace isc { namespace eval {
     /// Destruction, allowed only if empty.
     ~semantic_type () YY_NOEXCEPT
     {
-      EVAL_ASSERT (!yytypeid_);
+      YY_ASSERT (!yytypeid_);
     }
 
 # if 201103L <= YY_CPLUSPLUS
@@ -254,8 +254,8 @@ namespace isc { namespace eval {
     T&
     emplace (U&&... u)
     {
-      EVAL_ASSERT (!yytypeid_);
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (!yytypeid_);
+      YY_ASSERT (sizeof (T) <= size);
       yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (std::forward <U>(u)...);
     }
@@ -265,8 +265,8 @@ namespace isc { namespace eval {
     T&
     emplace ()
     {
-      EVAL_ASSERT (!yytypeid_);
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (!yytypeid_);
+      YY_ASSERT (sizeof (T) <= size);
       yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T ();
     }
@@ -276,8 +276,8 @@ namespace isc { namespace eval {
     T&
     emplace (const T& t)
     {
-      EVAL_ASSERT (!yytypeid_);
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (!yytypeid_);
+      YY_ASSERT (sizeof (T) <= size);
       yytypeid_ = & typeid (T);
       return *new (yyas_<T> ()) T (t);
     }
@@ -306,9 +306,9 @@ namespace isc { namespace eval {
     T&
     as () YY_NOEXCEPT
     {
-      EVAL_ASSERT (yytypeid_);
-      EVAL_ASSERT (*yytypeid_ == typeid (T));
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (yytypeid_);
+      YY_ASSERT (*yytypeid_ == typeid (T));
+      YY_ASSERT (sizeof (T) <= size);
       return *yyas_<T> ();
     }
 
@@ -317,9 +317,9 @@ namespace isc { namespace eval {
     const T&
     as () const YY_NOEXCEPT
     {
-      EVAL_ASSERT (yytypeid_);
-      EVAL_ASSERT (*yytypeid_ == typeid (T));
-      EVAL_ASSERT (sizeof (T) <= size);
+      YY_ASSERT (yytypeid_);
+      YY_ASSERT (*yytypeid_ == typeid (T));
+      YY_ASSERT (sizeof (T) <= size);
       return *yyas_<T> ();
     }
 
@@ -335,8 +335,8 @@ namespace isc { namespace eval {
     void
     swap (self_type& that) YY_NOEXCEPT
     {
-      EVAL_ASSERT (yytypeid_);
-      EVAL_ASSERT (*yytypeid_ == *that.yytypeid_);
+      YY_ASSERT (yytypeid_);
+      YY_ASSERT (*yytypeid_ == *that.yytypeid_);
       std::swap (as<T> (), that.as<T> ());
     }
 
@@ -726,7 +726,7 @@ namespace isc { namespace eval {
       /// Copy constructor.
       basic_symbol (const basic_symbol& that);
 
-      /// Constructors for typed symbols.
+      /// Constructor for valueless symbols, and symbols from each type.
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, location_type&& l)
         : Base (t)
@@ -738,7 +738,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenOption::RepresentationType&& v, location_type&& l)
         : Base (t)
@@ -752,7 +751,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenPkt4::FieldType&& v, location_type&& l)
         : Base (t)
@@ -766,7 +764,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenPkt6::FieldType&& v, location_type&& l)
         : Base (t)
@@ -780,7 +777,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenPkt::MetadataType&& v, location_type&& l)
         : Base (t)
@@ -794,7 +790,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenRelay6Field::FieldType&& v, location_type&& l)
         : Base (t)
@@ -808,7 +803,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, int8_t&& v, location_type&& l)
         : Base (t)
@@ -822,7 +816,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, std::string&& v, location_type&& l)
         : Base (t)
@@ -836,7 +829,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, uint16_t&& v, location_type&& l)
         : Base (t)
@@ -850,7 +842,6 @@ namespace isc { namespace eval {
         , location (l)
       {}
 #endif
-
 #if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, uint32_t&& v, location_type&& l)
         : Base (t)
@@ -872,7 +863,7 @@ namespace isc { namespace eval {
       }
 
       /// Destroy contents, and record that is empty.
-      void clear () YY_NOEXCEPT
+      void clear ()
       {
         // User destructor.
         symbol_kind_type yykind = this->kind ();
@@ -985,7 +976,7 @@ switch (yykind)
       by_kind (kind_type t);
 
       /// Record that this symbol is empty.
-      void clear () YY_NOEXCEPT;
+      void clear ();
 
       /// Steal the symbol kind from \a that.
       void move (by_kind& that);
@@ -1018,24 +1009,29 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, location_type l)
         : super_type(token_type (tok), std::move (l))
+      {
+        YY_ASSERT (tok == token::TOKEN_END || tok == token::TOKEN_EVALerror || tok == token::TOKEN_EVALUNDEF || tok == token::TOKEN_LPAREN || tok == token::TOKEN_RPAREN || tok == token::TOKEN_NOT || tok == token::TOKEN_AND || tok == token::TOKEN_OR || tok == token::TOKEN_EQUAL || tok == token::TOKEN_OPTION || tok == token::TOKEN_RELAY4 || tok == token::TOKEN_RELAY6 || tok == token::TOKEN_MEMBER || tok == token::TOKEN_PEERADDR || tok == token::TOKEN_LINKADDR || tok == token::TOKEN_LBRACKET || tok == token::TOKEN_RBRACKET || tok == token::TOKEN_DOT || tok == token::TOKEN_TEXT || tok == token::TOKEN_HEX || tok == token::TOKEN_EXISTS || tok == token::TOKEN_PKT || tok == token::TOKEN_IFACE || tok == token::TOKEN_SRC || tok == token::TOKEN_DST || tok == token::TOKEN_LEN || tok == token::TOKEN_PKT4 || tok == token::TOKEN_CHADDR || tok == token::TOKEN_HLEN || tok == token::TOKEN_HTYPE || tok == token::TOKEN_CIADDR || tok == token::TOKEN_GIADDR || tok == token::TOKEN_YIADDR || tok == token::TOKEN_SIADDR || tok == token::TOKEN_SUBSTRING || tok == token::TOKEN_ALL || tok == token::TOKEN_COMA || tok == token::TOKEN_CONCAT || tok == token::TOKEN_IFELSE || tok == token::TOKEN_TOHEXSTRING || tok == token::TOKEN_PKT6 || tok == token::TOKEN_MSGTYPE || tok == token::TOKEN_TRANSID || tok == token::TOKEN_VENDOR_CLASS || tok == token::TOKEN_VENDOR || tok == token::TOKEN_ANY || tok == token::TOKEN_DATA || tok == token::TOKEN_ENTERPRISE || tok == token::TOKEN_TOPLEVEL_BOOL || tok == token::TOKEN_TOPLEVEL_STRING);
+      }
 #else
       symbol_type (int tok, const location_type& l)
         : super_type(token_type (tok), l)
-#endif
       {
-        EVAL_ASSERT (tok == token::TOKEN_END
-                   || (token::TOKEN_EVALerror <= tok && tok <= token::TOKEN_TOPLEVEL_STRING));
+        YY_ASSERT (tok == token::TOKEN_END || tok == token::TOKEN_EVALerror || tok == token::TOKEN_EVALUNDEF || tok == token::TOKEN_LPAREN || tok == token::TOKEN_RPAREN || tok == token::TOKEN_NOT || tok == token::TOKEN_AND || tok == token::TOKEN_OR || tok == token::TOKEN_EQUAL || tok == token::TOKEN_OPTION || tok == token::TOKEN_RELAY4 || tok == token::TOKEN_RELAY6 || tok == token::TOKEN_MEMBER || tok == token::TOKEN_PEERADDR || tok == token::TOKEN_LINKADDR || tok == token::TOKEN_LBRACKET || tok == token::TOKEN_RBRACKET || tok == token::TOKEN_DOT || tok == token::TOKEN_TEXT || tok == token::TOKEN_HEX || tok == token::TOKEN_EXISTS || tok == token::TOKEN_PKT || tok == token::TOKEN_IFACE || tok == token::TOKEN_SRC || tok == token::TOKEN_DST || tok == token::TOKEN_LEN || tok == token::TOKEN_PKT4 || tok == token::TOKEN_CHADDR || tok == token::TOKEN_HLEN || tok == token::TOKEN_HTYPE || tok == token::TOKEN_CIADDR || tok == token::TOKEN_GIADDR || tok == token::TOKEN_YIADDR || tok == token::TOKEN_SIADDR || tok == token::TOKEN_SUBSTRING || tok == token::TOKEN_ALL || tok == token::TOKEN_COMA || tok == token::TOKEN_CONCAT || tok == token::TOKEN_IFELSE || tok == token::TOKEN_TOHEXSTRING || tok == token::TOKEN_PKT6 || tok == token::TOKEN_MSGTYPE || tok == token::TOKEN_TRANSID || tok == token::TOKEN_VENDOR_CLASS || tok == token::TOKEN_VENDOR || tok == token::TOKEN_ANY || tok == token::TOKEN_DATA || tok == token::TOKEN_ENTERPRISE || tok == token::TOKEN_TOPLEVEL_BOOL || tok == token::TOKEN_TOPLEVEL_STRING);
       }
+#endif
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, std::string v, location_type l)
         : super_type(token_type (tok), std::move (v), std::move (l))
+      {
+        YY_ASSERT (tok == token::TOKEN_STRING || tok == token::TOKEN_INTEGER || tok == token::TOKEN_HEXSTRING || tok == token::TOKEN_OPTION_NAME || tok == token::TOKEN_IP_ADDRESS);
+      }
 #else
       symbol_type (int tok, const std::string& v, const location_type& l)
         : super_type(token_type (tok), v, l)
-#endif
       {
-        EVAL_ASSERT ((token::TOKEN_STRING <= tok && tok <= token::TOKEN_IP_ADDRESS));
+        YY_ASSERT (tok == token::TOKEN_STRING || tok == token::TOKEN_INTEGER || tok == token::TOKEN_HEXSTRING || tok == token::TOKEN_OPTION_NAME || tok == token::TOKEN_IP_ADDRESS);
       }
+#endif
     };
 
     /// Build a parser object.
@@ -1915,9 +1911,9 @@ switch (yykind)
     {
     public:
       context (const EvalParser& yyparser, const symbol_type& yyla);
-      const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
-      symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
-      const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
+      const symbol_type& lookahead () const { return yyla_; }
+      symbol_kind_type token () const { return yyla_.kind (); }
+      const location_type& location () const { return yyla_.location; }
 
       /// Put in YYARG at most YYARGN of the expected tokens, and return the
       /// number of tokens stored in YYARG.  If YYARG is null, return the
@@ -1990,7 +1986,7 @@ switch (yykind)
     static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
-    static const unsigned char yydefgoto_[];
+    static const short yydefgoto_[];
 
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
@@ -2459,7 +2455,7 @@ switch (yykind)
 
   inline
   void
-  EvalParser::by_kind::clear () YY_NOEXCEPT
+  EvalParser::by_kind::clear ()
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
@@ -2488,7 +2484,7 @@ switch (yykind)
 
 #line 14 "parser.yy"
 } } // isc::eval
-#line 2492 "parser.h"
+#line 2488 "parser.h"
 
 
 
