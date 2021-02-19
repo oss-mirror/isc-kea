@@ -357,6 +357,9 @@ EOF
                            ])],
          [AC_MSG_RESULT([yes])],
          [AC_MSG_ERROR([HMAC functions return void: please use OpenSSL version 1.0.1 or later])])
+    dnl Check boost ASIO SSL
+    AC_CHECK_HEADERS([boost/asio/ssl.hpp],,
+        [AC_MSG_ERROR([Missing required boost ssl header file])])
     LIBS=${LIBS_SAVED}
     CPPFLAGS=${CPPFLAGS_SAVED}
 fi
