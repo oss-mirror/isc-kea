@@ -18,7 +18,7 @@
 namespace isc {
 namespace asiolink {
 
-/// @file Common TLS API.
+/// @file crypto_tls.h Common TLS API.
 
 /// @brief Client and server roles.
 enum TlsRole { CLIENT, SERVER };
@@ -56,28 +56,28 @@ public:
     /// @brief Load the trust anchor aka certificate authority.
     ///
     /// @param ca_file The certificate file name.
-    /// @throw @c isc::cryptolink::LibraryError on various errors as
+    /// @throw isc::cryptolink::LibraryError on various errors as
     /// file not found, bad format, etc.
     virtual void loadCaFile(const std::string& ca_file) = 0;
 
     /// @brief Load the trust anchor aka certificate authority.
     ///
     /// @param ca_path The certificate directory name.
-    /// @throw @c isc::cryptolink::LibraryError on various errors as
+    /// @throw isc::cryptolink::LibraryError on various errors as
     /// file not found, bad format, etc.
     virtual void loadCaPath(const std::string& ca_path) = 0;
 
     /// @brief Load the certificate file.
     ///
     /// @param cert_file The certificate file name.
-    /// @throw @c isc::cryptolink::LibraryError on various errors as
+    /// @throw isc::cryptolink::LibraryError on various errors as
     /// file not found, bad format, etc.
     virtual void loadCertFile(const std::string& cert_file) = 0;
 
     /// @brief Load the private key file name.
     ///
     /// @param key_file The private key file name.
-    /// @throw @c isc::cryptolink::LibraryError on various errors as
+    /// @throw isc::cryptolink::LibraryError on various errors as
     /// file not found, bad format, etc.
     virtual void loadKeyFile(const std::string& key_file) = 0;
 
