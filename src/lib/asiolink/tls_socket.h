@@ -200,6 +200,9 @@ public:
     /// @brief Close socket.
     virtual void close();
 
+    /// @brief TLS shutdown.
+    virtual void shutdown(C& callback);
+
     /// @brief Returns reference to the underlying ASIO socket.
     ///
     /// @return Reference to underlying ASIO socket.
@@ -309,7 +312,7 @@ TLSSocket<C>::open(const IOEndpoint* endpoint, C& callback) {
 template <typename C> void
 TLSSocket<C>::handshake(C& callback) {
     if (!socket_.is_open()) {
-        isc_throw(SocketNotOpen, "attempt to preform handshake on "
+        isc_throw(SocketNotOpen, "attempt to perform handshake on "
                   "a TLS socket that is not open");
     }
     stream_.handshake(callback);
@@ -487,6 +490,17 @@ TLSSocket<C>::cancel() {
     if (socket_.is_open()) {
         socket_.cancel();
     }
+}
+
+// TLS shutdown.  Can be used for orderly close.
+
+template <typename C> void
+TLSSocket<C>::shutdown(C& callback) {
+    if (!socket_.is_open()) {
+        isc_throw(SocketNotOpen, "attempt to perform shutdown on "
+                  "a TLS socket that is not open");
+    }
+    stream_.shutdown(callback);
 }
 
 // Close the socket down.  Can only do this if the socket is open and we are
