@@ -93,8 +93,13 @@ public:
             // the data awaiting to be read.
             char data[2];
             int err = 0;
-            if (recv(getNative(), data, sizeof(data), MSG_PEEK) < 0) {
+            int cc = recv(getNative(), data, sizeof(data), MSG_PEEK);
+            if (cc < 0) {
+                // Error case.
                 err = errno;
+            } else if (cc == 0) {
+                // End of file.
+                err = -1;
             }
 
             // Revert the original non_blocking flag on the socket.
