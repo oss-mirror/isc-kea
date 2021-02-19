@@ -114,9 +114,11 @@ TEST(TLSTest, loadCAPath) {
 TEST(TLSTest, loadKeyCA) {
     string ca(string(TEST_CA_DIR) + "/kea-ca.key");
     TlsContext ctx(TlsRole::CLIENT);
-#ifndef LIBRESSL_VERSION_NUMBER
+#ifdef WITH_OPENSSL
+#if defined(LIBRESSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER >= 0x10100000L)
     EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
                      "no certificate or crl found");
+#endif
 #endif
 }
 
@@ -631,10 +633,16 @@ TEST(TLSTest, unknownClient) {
         service.run_one();
     }
     EXPECT_TRUE(server_cb.getCode());
+#ifdef WITH_OPENSSL
 #ifndef LIBRESSL_VERSION_NUMBER
+#if (OPENSSL_VERSION_NUMBER >= 0x10100000L)
     string server_expected("wrong version number");
 #else
+    string server_expected("unknown protocol");
+#endif
+#else
     string server_expected("tlsv1 alert protocol version");
+#endif
 #endif
     EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_FALSE(client_cb.getCode());
@@ -700,13 +708,17 @@ TEST(TLSTest, anotherClient) {
     EXPECT_TRUE(server_cb.getCode());
     // Full error is:
     // error 20 at 0 depth lookup:unable to get local issuer certificate
+#ifdef WITH_OPENSSL
 #ifndef LIBRESSL_VERSION_NUMBER
     string server_expected("certificate verify failed");
 #else
     string server_expected("tlsv1 alert unknown ca");
 #endif
     EXPECT_EQ(server_expected, server_cb.getCode().message());
+#if defined(LIBRESSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER >= 0x10100000L)
     EXPECT_FALSE(client_cb.getCode());
+#endif
+#endif
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -769,13 +781,17 @@ TEST(TLSTest, selfSigned) {
     EXPECT_TRUE(server_cb.getCode());
     // Full error is:
     // error 18 at 0 depth lookup:self signed certificate
+#ifdef WITH_OPENSSL
 #ifndef LIBRESSL_VERSION_NUMBER
     string server_expected("certificate verify failed");
 #else
     string server_expected("tlsv1 alert unknown ca");
 #endif
     EXPECT_EQ(server_expected, server_cb.getCode().message());
+#if defined(LIBRESSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER >= 0x10100000L)
     EXPECT_FALSE(client_cb.getCode());
+#endif
+#endif
 
     // Used when adding other error cases.
 #if 0
@@ -787,4 +803,12 @@ TEST(TLSTest, selfSigned) {
     EXPECT_NO_THROW(client.lowest_layer().close());
     EXPECT_NO_THROW(server.lowest_layer().close());
 }
+
+
+
+
+
+
+
+
 
