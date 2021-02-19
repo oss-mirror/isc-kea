@@ -21,6 +21,10 @@
 #include <string>
 #include <vector>
 
+#ifdef WITH_OPENSSL
+#include <openssl/opensslv.h>
+#endif
+
 using namespace boost::asio;
 using namespace boost::asio::ip;
 using namespace isc::asiolink;
@@ -110,8 +114,10 @@ TEST(TLSTest, loadCAPath) {
 TEST(TLSTest, loadKeyCA) {
     string ca(string(TEST_CA_DIR) + "/kea-ca.key");
     TlsContext ctx(TlsRole::CLIENT);
+#ifndef LIBRESSL_VERSION_NUMBER
     EXPECT_THROW_MSG(ctx.loadCaFile(ca), LibraryError,
                      "no certificate or crl found");
+#endif
 }
 
 // Test if the end entity certificate can be loaded.
@@ -418,7 +424,12 @@ TEST(TLSTest, serverNotConfigured) {
         service.run_one();
     }
     EXPECT_TRUE(server_cb.getCode());
-    EXPECT_EQ("no shared cipher", server_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string server_expected("no shared cipher");
+#else
+    string server_expected("sslv3 alert handshake failure");
+#endif
+    EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_TRUE(client_cb.getCode());
     EXPECT_EQ("sslv3 alert handshake failure", client_cb.getCode().message());
 
@@ -483,7 +494,12 @@ TEST(TLSTest, clientNotConfigured) {
     EXPECT_TRUE(server_cb.getCode());
     EXPECT_EQ("tlsv1 alert unknown ca", server_cb.getCode().message());
     EXPECT_TRUE(client_cb.getCode());
-    EXPECT_EQ("certificate verify failed", client_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string client_expected("certificate verify failed");
+#else
+    string client_expected("tlsv1 alert unknown ca");
+#endif
+    EXPECT_EQ(client_expected, client_cb.getCode().message());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -546,7 +562,12 @@ TEST(TLSTest, clientHTTPnoS) {
         service.run_one();
     }
     EXPECT_TRUE(server_cb.getCode());
-    EXPECT_EQ("http request", server_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string server_expected("http request");
+#else
+    string server_expected("tlsv1 alert protocol version");
+#endif
+    EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
@@ -610,7 +631,12 @@ TEST(TLSTest, unknownClient) {
         service.run_one();
     }
     EXPECT_TRUE(server_cb.getCode());
-    EXPECT_EQ("wrong version number", server_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string server_expected("wrong version number");
+#else
+    string server_expected("tlsv1 alert protocol version");
+#endif
+    EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
@@ -674,7 +700,12 @@ TEST(TLSTest, anotherClient) {
     EXPECT_TRUE(server_cb.getCode());
     // Full error is:
     // error 20 at 0 depth lookup:unable to get local issuer certificate
-    EXPECT_EQ("certificate verify failed", server_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string server_expected("certificate verify failed");
+#else
+    string server_expected("tlsv1 alert unknown ca");
+#endif
+    EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
@@ -738,7 +769,12 @@ TEST(TLSTest, selfSigned) {
     EXPECT_TRUE(server_cb.getCode());
     // Full error is:
     // error 18 at 0 depth lookup:self signed certificate
-    EXPECT_EQ("certificate verify failed", server_cb.getCode().message());
+#ifndef LIBRESSL_VERSION_NUMBER
+    string server_expected("certificate verify failed");
+#else
+    string server_expected("tlsv1 alert unknown ca");
+#endif
+    EXPECT_EQ(server_expected, server_cb.getCode().message());
     EXPECT_FALSE(client_cb.getCode());
 
     // Used when adding other error cases.
