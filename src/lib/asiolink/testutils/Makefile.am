@@ -9,7 +9,9 @@ AM_CXXFLAGS = $(KEA_CXXFLAGS)
 
 EXTRA_DIST  =
 EXTRA_DIST += ca/0c7eedb9.0
+EXTRA_DIST += ca/26d052a5.0
 EXTRA_DIST += ca/3071e5ff.0
+EXTRA_DIST += ca/a465d731.0
 EXTRA_DIST += ca/ad950210.0
 EXTRA_DIST += ca/d3d11a5f.0
 EXTRA_DIST += ca/doc
@@ -50,5 +52,23 @@ libasiolinktest_la_LDFLAGS  = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
 libasiolinktest_la_LIBADD  = $(top_builddir)/src/lib/asiolink/libkea-asiolink.la
 libasiolinktest_la_LIBADD += $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
 libasiolinktest_la_LIBADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+
+if HAVE_OPENSSL
+# Boost ASIO SSL sample server and client for C++11.
+# openssl_sample_server <port>
+# openssl_sample_server <name-or-address> <port>
+
+noinst_PROGRAMS = openssl_sample_client openssl_sample_server
+
+openssl_sample_client_SOURCES = openssl_sample_client.cc
+openssl_sample_client_CPPFLAGS = $(AM_CPPFLAGS)
+openssl_sample_client_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
+openssl_sample_client_LDADD = $(CRYPTO_LIBS)
+
+openssl_sample_server_SOURCES = openssl_sample_server.cc
+openssl_sample_server_CPPFLAGS = $(AM_CPPFLAGS)
+openssl_sample_server_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
+openssl_sample_server_LDADD = $(CRYPTO_LIBS)
+endif
 
 endif
