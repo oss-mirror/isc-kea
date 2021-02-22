@@ -59,7 +59,7 @@ if HAVE_OPENSSL
 # openssl_sample_server <port>
 # openssl_sample_server <address> <port>
 
-#noinst_PROGRAMS = openssl_sample_client openssl_sample_server
+noinst_PROGRAMS = openssl_sample_client openssl_sample_server
 
 openssl_sample_client_SOURCES = openssl_sample_client.cc
 openssl_sample_client_CPPFLAGS = $(AM_CPPFLAGS)
@@ -88,7 +88,3 @@ botan_boost_sample_server_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
 botan_boost_sample_server_LDADD = $(CRYPTO_LIBS)
 endif
 endif
-
-
-
-
