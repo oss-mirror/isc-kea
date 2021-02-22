@@ -39,9 +39,6 @@ public:
     explicit TlsContext(TlsRole role);
 
     /// @brief Return a reference to the underlying context.
-    ///
-    /// Boost ASIO uses a move constructor which "eats" the context,
-    /// this updates the OpenSSL reference count so the object is not freed.
     boost::asio::ssl::context& getContext();
 
     /// @brief Return the pointer to the SSL_CTX object.

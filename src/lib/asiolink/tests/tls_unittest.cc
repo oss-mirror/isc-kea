@@ -448,7 +448,6 @@ TEST(TLSTest, clientNotConfigured) {
     TlsContextPtr server_ctx;
     test::configServer(server_ctx);
     TlsStream<Callback> server(service, server_ctx);
-    test::configServer(server_ctx);
 
     // Accept a client.
     tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
@@ -516,7 +515,6 @@ TEST(TLSTest, clientHTTPnoS) {
     TlsContextPtr server_ctx;
     test::configServer(server_ctx);
     TlsStream<Callback> server(service, server_ctx);
-    test::configServer(server_ctx);
 
     // Accept a client.
     tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
@@ -585,7 +583,6 @@ TEST(TLSTest, unknownClient) {
     TlsContextPtr server_ctx;
     test::configServer(server_ctx);
     TlsStream<Callback> server(service, server_ctx);
-    test::configServer(server_ctx);
 
     // Accept a client.
     tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
@@ -660,7 +657,6 @@ TEST(TLSTest, anotherClient) {
     TlsContextPtr server_ctx;
     test::configServer(server_ctx);
     TlsStream<Callback> server(service, server_ctx);
-    test::configServer(server_ctx);
 
     // Accept a client.
     tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
@@ -733,7 +729,6 @@ TEST(TLSTest, selfSigned) {
     TlsContextPtr server_ctx;
     test::configServer(server_ctx);
     TlsStream<Callback> server(service, server_ctx);
-    test::configServer(server_ctx);
 
     // Accept a client.
     tcp::endpoint server_ep(tcp::endpoint(address::from_string(SERVER_ADDRESS),
