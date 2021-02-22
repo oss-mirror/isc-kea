@@ -59,7 +59,7 @@ if HAVE_OPENSSL
 # openssl_sample_server <port>
 # openssl_sample_server <name-or-address> <port>
 
-noinst_PROGRAMS = openssl_sample_client openssl_sample_server
+#noinst_PROGRAMS = openssl_sample_client openssl_sample_server
 
 openssl_sample_client_SOURCES = openssl_sample_client.cc
 openssl_sample_client_CPPFLAGS = $(AM_CPPFLAGS)
@@ -72,3 +72,7 @@ openssl_sample_server_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS)
 openssl_sample_server_LDADD = $(BOOST_LIBS) $(CRYPTO_LIBS)
 endif
 endif
+
+
+
+
