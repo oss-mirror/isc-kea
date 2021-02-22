@@ -8,89 +8,109 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
+// Use the cpp03 version because the cpp11 version does not compile with
+// some g++ e.g. on Fedora 33.
+
 #include <cstdlib>
-#include <functional>
 #include <iostream>
+#include <boost/bind/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
-
-using boost::asio::ip::tcp;
 
 inline std::string CA_(const std::string& filename) {
   return (std::string(TEST_CA_DIR) + "/" + filename);
 }
 
-class session : public std::enable_shared_from_this<session>
+typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
+
+class session
 {
 public:
-  session(boost::asio::ssl::stream<tcp::socket> socket)
-    : socket_(std::move(socket))
+  session(boost::asio::io_service& io_context,
+      boost::asio::ssl::context& context)
+    : socket_(io_context, context)
   {
+  }
+
+  ssl_socket::lowest_layer_type& socket()
+  {
+    return socket_.lowest_layer();
   }
 
   void start()
   {
-    do_handshake();
+    socket_.async_handshake(boost::asio::ssl::stream_base::server,
+        boost::bind(&session::handle_handshake, this,
+          boost::asio::placeholders::error));
+  }
+
+  void handle_handshake(const boost::system::error_code& error)
+  {
+    if (!error)
+    {
+      socket_.async_read_some(boost::asio::buffer(data_, max_length),
+          boost::bind(&session::handle_read, this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+    }
+    else
+    {
+      std::cerr << "handshake error '" << error.message() << "'\n";
+      delete this;
+    }
+  }
+
+  void handle_read(const boost::system::error_code& error,
+      size_t bytes_transferred)
+  {
+    if (!error)
+    {
+      boost::asio::async_write(socket_,
+          boost::asio::buffer(data_, bytes_transferred),
+          boost::bind(&session::handle_write, this,
+            boost::asio::placeholders::error));
+    }
+    else
+    {
+      delete this;
+    }
+  }
+
+  void handle_write(const boost::system::error_code& error)
+  {
+    if (!error)
+    {
+      socket_.async_read_some(boost::asio::buffer(data_, max_length),
+          boost::bind(&session::handle_read, this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+    }
+    else
+    {
+      delete this;
+    }
   }
 
 private:
-  void do_handshake()
-  {
-    auto self(shared_from_this());
-    socket_.async_handshake(boost::asio::ssl::stream_base::server,
-        [this, self](const boost::system::error_code& error)
-        {
-          if (!error)
-          {
-            do_read();
-          } else {
-            std::cerr << "handshake error '" << error.message() << "'\n";
-          }
-        });
-  }
-
-  void do_read()
-  {
-    auto self(shared_from_this());
-    socket_.async_read_some(boost::asio::buffer(data_),
-        [this, self](const boost::system::error_code& ec, std::size_t length)
-        {
-          if (!ec)
-          {
-            do_write(length);
-          }
-        });
-  }
-
-  void do_write(std::size_t length)
-  {
-    auto self(shared_from_this());
-    boost::asio::async_write(socket_, boost::asio::buffer(data_, length),
-        [this, self](const boost::system::error_code& ec,
-          std::size_t /*length*/)
-        {
-          if (!ec)
-          {
-            do_read();
-          }
-        });
-  }
-
-  boost::asio::ssl::stream<tcp::socket> socket_;
-  char data_[1024];
+  ssl_socket socket_;
+  enum { max_length = 1024 };
+  char data_[max_length];
 };
 
 class server
 {
 public:
-  server(boost::asio::io_context& io_context, unsigned short port)
-    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)),
+  server(boost::asio::io_service& io_context, unsigned short port)
+    : io_context_(io_context),
+      acceptor_(io_context,
+          boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
       context_(boost::asio::ssl::context::tls)
   {
     //context_.set_options(
     //    boost::asio::ssl::context::default_workarounds
     //    | boost::asio::ssl::context::no_sslv2
     //    | boost::asio::ssl::context::single_dh_use);
+    //context_.set_password_callback(boost::bind(&server::get_password, this));
     context_.set_verify_mode(boost::asio::ssl::verify_peer |
                              boost::asio::ssl::verify_fail_if_no_peer_cert);
     context_.load_verify_file(CA_("kea-ca.crt"));
@@ -99,27 +119,35 @@ public:
                                   boost::asio::ssl::context::pem);
     //context_.use_tmp_dh_file("dh2048.pem");
 
-    do_accept();
+    start_accept();
+  }
+
+  void start_accept()
+  {
+    session* new_session = new session(io_context_, context_);
+    acceptor_.async_accept(new_session->socket(),
+        boost::bind(&server::handle_accept, this, new_session,
+          boost::asio::placeholders::error));
+  }
+
+  void handle_accept(session* new_session,
+      const boost::system::error_code& error)
+  {
+    if (!error)
+    {
+      new_session->start();
+    }
+    else
+    {
+      delete new_session;
+    }
+
+    start_accept();
   }
 
 private:
-  void do_accept()
-  {
-    acceptor_.async_accept(
-        [this](const boost::system::error_code& error, tcp::socket socket)
-        {
-          if (!error)
-          {
-            std::make_shared<session>(
-                boost::asio::ssl::stream<tcp::socket>(
-                  std::move(socket), context_))->start();
-          }
-
-          do_accept();
-        });
-  }
-
-  tcp::acceptor acceptor_;
+  boost::asio::io_service& io_context_;
+  boost::asio::ip::tcp::acceptor acceptor_;
   boost::asio::ssl::context context_;
 };
 
@@ -133,7 +161,7 @@ int main(int argc, char* argv[])
       return 1;
     }
 
-    boost::asio::io_context io_context;
+    boost::asio::io_service io_context;
 
     using namespace std; // For atoi.
     server s(io_context, atoi(argv[1]));
