@@ -1434,10 +1434,14 @@ public:
         /// @brief Handshake callback handler
         /// @param ec Error status of the ASIO connect
 <<<<<<< HEAD
+<<<<<<< HEAD
         bool handshakeHandler(const boost::system::error_code&, int) {
 =======
         bool handshakeHandler(const boost::system::error_code& ec, int) {
 >>>>>>> [#1661] Checkpoint: split server/client UTs
+=======
+        bool handshakeHandler(const boost::system::error_code&, int) {
+>>>>>>> [#1661] Fixed build on last Fedora
             ++handshake_cnt_;
             // ec indicates an error, return true, so that error can be handled
             // by Connection logic.

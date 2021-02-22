@@ -2121,6 +2121,7 @@ public:
         /// @brief Handshake callback handler
         /// @param ec Error status of the ASIO connect
 <<<<<<< HEAD
+<<<<<<< HEAD
         bool handshakeHandler(const boost::system::error_code&, int) {
             ADD_FAILURE() << "handshake callback handler is called";
 =======
@@ -2129,6 +2130,9 @@ public:
             ++handshake_cnt_;
 >>>>>>> [#1661] HTTP code half done
 =======
+=======
+        bool handshakeHandler(const boost::system::error_code&, int) {
+>>>>>>> [#1661] Fixed build on last Fedora
             ADD_FAILURE() << "handshake callback handler is called";
 >>>>>>> [#1661] Checkpoint: split server/client UTs
             // ec indicates an error, return true, so that error can be handled
