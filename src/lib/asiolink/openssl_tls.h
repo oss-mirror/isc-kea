@@ -221,9 +221,6 @@ public:
         ::X509_free(cert);
         return (ret);
     }
-
-    /// @brief The role i.e. client or server.
-    TlsRole role_;
 };
 
 // Stream truncated error code.
