@@ -44,7 +44,7 @@ libkea_asiolink_la_SOURCES += unix_domain_socket_acceptor.h
 libkea_asiolink_la_SOURCES += unix_domain_socket_endpoint.h
 
 if HAVE_BOTAN
-#libkea_asiolink_la_SOURCES += botan_tls.cc
+libkea_asiolink_la_SOURCES += botan_tls.cc
 endif
 if HAVE_OPENSSL
 libkea_asiolink_la_SOURCES += openssl_tls.cc

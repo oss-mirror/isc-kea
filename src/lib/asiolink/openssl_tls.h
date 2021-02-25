@@ -112,6 +112,9 @@ typedef ::X509 TlsCertificate;
 /// @tparam Callback The type of callbacks.
 /// @tparam TlsStreamImpl The type of underlying TLS streams.
 /// @tparam TlsCertificate The type of X509 certificates.
+/// @param service I/O Service object used to manage the stream.
+/// @param context Pointer to the TLS context.
+/// @note The caller must not provide a null pointer to the TLS context.
 template <typename Callback, typename TlsStreamImpl, typename TlsCertificate>
 TlsStreamBase<Callback, TlsStreamImpl, TlsCertificate>::
 TlsStreamBase(IOService& service, TlsContextPtr context)
