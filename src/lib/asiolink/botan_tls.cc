@@ -8,7 +8,7 @@
 
 #include <config.h>
 
-#ifdef WITH_BOTAN
+#if defined(WITH_BOTAN) && !defined(HAVE_BOTAN_ASIO_STREAM_H)
 
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/crypto_tls.h>
@@ -57,4 +57,4 @@ TlsContext::loadKeyFile(const std::string&) {
 } // namespace asiolink
 } // namespace isc
 
-#endif // WITH_BOTAN
+#endif // WITH_BOTAN && !HAVE_BOTAN_ASIO_STREAM_H
