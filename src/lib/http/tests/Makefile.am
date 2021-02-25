@@ -2,13 +2,8 @@ SUBDIRS = .
 
 AM_CPPFLAGS = -I$(top_builddir)/src/lib -I$(top_srcdir)/src/lib
 AM_CPPFLAGS += $(BOOST_INCLUDES) $(CRYPTO_CFLAGS) $(CRYPTO_INCLUDES)
-<<<<<<< HEAD
 TEST_CA_DIR = $(srcdir)/../../asiolink/testutils/ca
 AM_CPPFLAGS += -DTEST_DATA_BUILDDIR=\"$(TEST_CA_DIR)\"
-=======
-AM_CPPFLAGS += -DTEST_CA_DIR=\"$(srcdir)/../../asiolink/tests/ca\"
-AM_CPPFLAGS += -DTEST_DATA_BUILDDIR=\"$(abs_top_builddir)/src/lib/http/tests\"
->>>>>>> [#1661] HTTP code half done
 AM_CPPFLAGS += -DINSTALL_PROG=\"$(abs_top_srcdir)/install-sh\"
 
 AM_CXXFLAGS = $(KEA_CXXFLAGS)
@@ -43,7 +38,6 @@ libhttp_unittests_SOURCES += response_unittests.cc
 libhttp_unittests_SOURCES += response_json_unittests.cc
 libhttp_unittests_SOURCES += run_unittests.cc
 libhttp_unittests_SOURCES += server_client_unittests.cc
-<<<<<<< HEAD
 if HAVE_OPENSSL
 libhttp_unittests_SOURCES += tls_server_unittests.cc
 libhttp_unittests_SOURCES += tls_client_unittests.cc
@@ -52,10 +46,6 @@ if HAVE_BOTAN_BOOST
 libhttp_unittests_SOURCES += tls_server_unittests.cc
 libhttp_unittests_SOURCES += tls_client_unittests.cc
 endif
-=======
-libhttp_unittests_SOURCES += tls_server_unittests.cc
-libhttp_unittests_SOURCES += tls_client_unittests.cc
->>>>>>> [#1661] Checkpoint: split server/client UTs
 libhttp_unittests_SOURCES += url_unittests.cc
 libhttp_unittests_SOURCES += test_http_client.h
 
