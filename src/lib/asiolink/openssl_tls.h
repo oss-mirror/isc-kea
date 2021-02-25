@@ -221,6 +221,7 @@ public:
         ::X509_free(cert);
         return (ret);
     }
+<<<<<<< HEAD
 };
 
 // Stream truncated error code.
@@ -293,6 +294,8 @@ public:
 
     /// @brief The role i.e. client or server.
     TlsRole role_;
+=======
+>>>>>>> [#1665] Checkpoint
 };
 
 } // namespace asiolink
