@@ -11,7 +11,7 @@
 
 /// @file botan_tls.h Botan fake implementation of the TLS API.
 
-#ifdef WITH_BOTAN
+#if defined(WITH_BOTAN) && !defined(HAVE_BOTAN_ASIO_STREAM_H)
 
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/io_asio_socket.h>
@@ -168,6 +168,6 @@ public:
 } // namespace asiolink
 } // namespace isc
 
-#endif // WITH_BOTAN
+#endif // WITH_BOTAN && !HAVE_BOTAN_ASIO_STREAM_H
 
 #endif // BOTAN_TLS_H
