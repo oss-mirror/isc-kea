@@ -41,7 +41,7 @@ CREATE TABLE lease4 (
     fqdn_fwd BOOL,                              # Has forward DNS update been performed by a server
     fqdn_rev BOOL,                              # Has reverse DNS update been performed by a server
     hostname VARCHAR(255)                       # The FQDN of the client
-    ) ENGINE = INNODB;
+    ) ENGINE = NDB;
 
 
 # Create search indexes for lease4 table
@@ -69,7 +69,7 @@ CREATE TABLE lease6 (
     fqdn_rev BOOL,                              # Has reverse DNS update been performed by a server
     hostname VARCHAR(255)                       # The FQDN of the client
 
-    ) ENGINE = INNODB;
+    ) ENGINE = NDB;
 
 # Create search indexes for lease4 table
 # index by iaid, subnet_id, and duid
@@ -83,7 +83,7 @@ CREATE INDEX lease6_by_iaid_subnet_id_duid ON lease6 (iaid, subnet_id, duid);
 CREATE TABLE lease6_types (
     lease_type TINYINT PRIMARY KEY NOT NULL,    # Lease type code.
     name VARCHAR(5)                             # Name of the lease type
-    ) ENGINE = INNODB;
+    ) ENGINE = NDB;
 
 START TRANSACTION;
 INSERT INTO lease6_types VALUES (0, 'IA_NA');   # Non-temporary v6 addresses
@@ -98,7 +98,7 @@ COMMIT;
 CREATE TABLE schema_version (
     version INT PRIMARY KEY NOT NULL,       # Major version number
     minor INT                               # Minor version number
-    ) ENGINE = INNODB;
+    ) ENGINE = NDB;
 START TRANSACTION;
 INSERT INTO schema_version VALUES (1, 0);
 COMMIT;
@@ -123,7 +123,7 @@ ALTER TABLE lease6
 CREATE TABLE lease_hwaddr_source (
     hwaddr_source INT PRIMARY KEY NOT NULL,
     name VARCHAR(40)
-) ENGINE = INNODB;
+) ENGINE = NDB;
 
 # Hardware address obtained from raw sockets
 INSERT INTO lease_hwaddr_source VALUES (1, 'HWADDR_SOURCE_RAW');
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS hosts (
     PRIMARY KEY (host_id),
     INDEX key_dhcp4_identifier_subnet_id (dhcp_identifier ASC , dhcp_identifier_type ASC),
     INDEX key_dhcp6_identifier_subnet_id (dhcp_identifier ASC , dhcp_identifier_type ASC , dhcp6_subnet_id ASC)
-)  ENGINE=INNODB;
+)  ENGINE = NDB;
 -- -----------------------------------------------------
 -- Table `ipv6_reservations`
 -- -----------------------------------------------------
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS ipv6_reservations (
     CONSTRAINT fk_ipv6_reservations_Host FOREIGN KEY (host_id)
         REFERENCES hosts (host_id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
-)  ENGINE=INNODB;
+)  ENGINE = NDB;
 -- -----------------------------------------------------
 -- Table `dhcp4_options`
 -- -----------------------------------------------------
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS dhcp4_options (
     CONSTRAINT fk_options_host1 FOREIGN KEY (host_id)
         REFERENCES hosts (host_id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
-)  ENGINE=INNODB;
+)  ENGINE = NDB;
 -- -----------------------------------------------------
 -- Table `dhcp6_options`
 -- -----------------------------------------------------
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS dhcp6_options (
     CONSTRAINT fk_options_host10 FOREIGN KEY (host_id)
         REFERENCES hosts (host_id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
-)  ENGINE=INNODB;
+)  ENGINE = NDB;
 
 DELIMITER $$
 CREATE TRIGGER host_BDEL BEFORE DELETE ON hosts FOR EACH ROW
@@ -261,7 +261,7 @@ CREATE INDEX lease6_by_state_expire ON lease6 (state ASC, expire ASC);
 CREATE TABLE IF NOT EXISTS lease_state (
   state INT UNSIGNED PRIMARY KEY NOT NULL,
   name VARCHAR(64) NOT NULL
-) ENGINE=INNODB;
+) ENGINE = NDB;
 
 # Insert currently defined state names.
 INSERT INTO lease_state VALUES (0, 'default');
@@ -417,7 +417,7 @@ CREATE UNIQUE INDEX key_dhcp6_address_prefix_len ON ipv6_reservations (address A
 CREATE TABLE IF NOT EXISTS host_identifier_type (
     type TINYINT PRIMARY KEY NOT NULL,   # Lease type code.
     name VARCHAR(32)                     # Name of the lease type
-) ENGINE = INNODB;
+) ENGINE = NDB;
 
 START TRANSACTION;
 INSERT INTO host_identifier_type VALUES (0, 'hw-address');
@@ -444,7 +444,7 @@ ALTER TABLE dhcp6_options MODIFY dhcp6_subnet_id INT UNSIGNED NULL;
 CREATE TABLE IF NOT EXISTS dhcp_option_scope (
     scope_id TINYINT UNSIGNED PRIMARY KEY NOT NULL,
     scope_name VARCHAR(32)
-) ENGINE = INNODB;
+) ENGINE = NDB;
 
 START TRANSACTION;
 INSERT INTO dhcp_option_scope VALUES (0, 'global');
@@ -541,7 +541,7 @@ CREATE TABLE lease4_stat (
     state INT UNSIGNED NOT NULL,
     leases BIGINT,
     PRIMARY KEY (subnet_id, state)
-) ENGINE = INNODB;
+) ENGINE = NDB;
 
 # Create stat_lease4_insert trigger
 DELIMITER $$
@@ -607,7 +607,7 @@ CREATE TABLE lease6_stat (
     state INT UNSIGNED NOT NULL,
     leases BIGINT,
     PRIMARY KEY (subnet_id, lease_type, state)
-) ENGINE = INNODB;
+) ENGINE = NDB;
 
 # Create stat_lease6_insert trigger
 DELIMITER $$
@@ -759,7 +759,7 @@ CREATE TABLE logs (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  # creation timestamp
     address VARCHAR(43) NULL,                       # address or prefix
     log TEXT NOT NULL                               # the log itself
-    ) ENGINE = INNODB;
+    ) ENGINE = NDB;
 
 # Create search index
 CREATE INDEX timestamp_index ON logs (timestamp);
@@ -3050,9 +3050,6 @@ UPDATE schema_version
 #
 # Portability
 # ===========
-# The 'ENGINE = INNODB' on some tables is not portable to another database
-# and will need to be removed.
-#
 # Some columns contain binary data so are stored as VARBINARY instead of
 # VARCHAR.  This may be non-portable between databases: in this case, the
 # definition should be changed to VARCHAR.
