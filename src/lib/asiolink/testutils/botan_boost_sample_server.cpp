@@ -8,13 +8,84 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
+//////// TODO:
+//////// fix the -Wnon-virtual-dtor stuff
+//////// use the Certificate_Store for the trust-anchor
+//////// find a system where the server does not fail in the handshake
+//////// with "basic_flat_buffer too long" boost::beast error.
+
 #include <cstdlib>
 #include <functional>
 #include <iostream>
 #include <boost/asio.hpp>
+
 #include <botan/asio_stream.h>
+#include <botan/pkcs8.h>
+#include <botan/auto_rng.h>
+
+inline std::string CA_(const std::string& filename) {
+  return (std::string(TEST_CA_DIR) + "/" + filename);
+}
 
 using boost::asio::ip::tcp;
+
+class Server_Credentials_Manager : public Botan::Credentials_Manager
+{
+public:
+  Server_Credentials_Manager(Botan::RandomNumberGenerator& rng)
+    : stores_(), certs_(),
+      cert_(Botan::X509_Certificate(CA_("kea-server.crt"))),
+      key_(Botan::PKCS8::load_key(CA_("kea-server.p8"), rng))
+  {
+    certs_.push_back(cert_);
+  }
+
+  virtual ~Server_Credentials_Manager()
+  {
+  }
+
+  std::vector<Botan::Certificate_Store*>
+  trusted_certificate_authorities(const std::string&,
+                                  const std::string&) override
+  {
+    return stores_;
+  }
+
+  std::vector<Botan::X509_Certificate>
+  cert_chain(const std::vector<std::string>&,
+             const std::string&,
+             const std::string&) override
+  {
+    return certs_;
+  }
+
+  Botan::Private_Key*
+  private_key_for(const Botan::X509_Certificate&,
+                  const std::string&,
+                  const std::string&) override
+  {
+    return key_.get();
+  }
+
+  std::vector<Botan::Certificate_Store*> stores_;
+  std::vector<Botan::X509_Certificate> certs_;
+  Botan::X509_Certificate cert_;
+  std::unique_ptr<Botan::Private_Key> key_;
+};
+
+using Server_Session_Manager = Botan::TLS::Session_Manager_Noop;
+
+class Server_Policy : public Botan::TLS::Default_Policy {
+public:
+  virtual ~Server_Policy()
+  {
+  }
+
+  bool require_cert_revocation_info() const override
+  {
+    return false;
+  }
+};
 
 class session : public std::enable_shared_from_this<session>
 {
@@ -39,6 +110,10 @@ private:
           if (!error)
           {
             do_read();
+          }
+          else
+          {
+            std::cerr << "handshake failed with " << error.message() << "\n";
           }
         });
   }
@@ -74,13 +149,17 @@ private:
   char data_[1024];
 };
 
-#if 0
 class server
 {
 public:
-  server(boost::asio::io_service& io_context, unsigned short port)
+  server(boost::asio::io_service& io_context,
+         unsigned short port,
+         Botan::Credentials_Manager& creds_mgr,
+         Botan::RandomNumberGenerator& rng,
+         Botan::TLS::Session_Manager& sess_mgr,
+         Botan::TLS::Policy& policy)
     : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)),
-      context_()
+      context_(creds_mgr, rng, sess_mgr, policy)
   {
     do_accept();
   }
@@ -118,8 +197,11 @@ int main(int argc, char* argv[])
 
     boost::asio::io_service io_context;
 
-    using namespace std; // For atoi.
-    server s(io_context, atoi(argv[1]));
+    Botan::AutoSeeded_RNG rng;
+    Server_Credentials_Manager creds_mgr(rng);
+    Server_Session_Manager sess_mgr;
+    Server_Policy policy;
+    server s(io_context, std::atoi(argv[1]), creds_mgr, rng, sess_mgr, policy);
 
     io_context.run();
   }
@@ -130,4 +212,3 @@ int main(int argc, char* argv[])
 
   return 0;
 }
-#endif
