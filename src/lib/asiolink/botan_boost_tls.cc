@@ -24,7 +24,7 @@ public:
     // Constructor.
     KeaCredentialsManager() {
     }
-    
+
     // Destructor.
     virtual ~KeaCredentialsManager() {
     }
