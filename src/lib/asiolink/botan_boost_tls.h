@@ -17,7 +17,9 @@
 #include <asiolink/io_asio_socket.h>
 #include <asiolink/io_service.h>
 #include <asiolink/common_tls.h>
+#include <exceptions/exceptions.h>
 
+#include <asiolink/botan_boost_wrapper.h>
 #include <botan/asio_stream.h>
 
 namespace isc {
@@ -164,8 +166,13 @@ public:
     }
 
     /// @brief Clear the SSL object.
+    ///
+    /// @note The idea to reuse a TCP connection for a fresh TLS is at
+    /// least arguable.
+    /// @throw @c isc::NotImplemented
     virtual void clear() {
-        /// @todo
+        isc_throw(NotImplemented,
+                  "Botan TLS does not support the clear operation");
     }
 
     /// @brief Return the peer certificate.
