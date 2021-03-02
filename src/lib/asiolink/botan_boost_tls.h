@@ -42,7 +42,10 @@ class TlsContext : public TlsContextBase {
 public:
 
     /// @brief Destructor.
-    virtual ~TlsContext() { }
+    ///
+    /// @note The destructor can't be defined here because  a unique
+    /// pointer to an incomplete type is used.
+    virtual ~TlsContext();
 
     /// @brief Create a fresh context.
     ///
@@ -50,7 +53,7 @@ public:
     explicit TlsContext(TlsRole role);
 
     /// @brief Return the underlying context.
-    Botan::TLS::Context getContext();
+    Botan::TLS::Context& getContext();
 
     /// @brief Set the peer certificate requirement mode.
     ///
@@ -105,7 +108,7 @@ protected:
     bool cert_required_;
 
     /// @brief Botan TLS context.
-    std::unique_ptr<TlsContextImpl> context_;
+    std::unique_ptr<TlsContextImpl> impl_;
 };
 
 /// @brief The type of underlying TLS streams.
@@ -133,7 +136,8 @@ TlsStreamBase(IOService& service, TlsContextPtr context)
 ///
 /// @tparam callback The callback.
 template <typename Callback>
-class TlsStream : public TlsStreamBase<Callback, TlsStreamImpl, TlsCertificate> {
+class TlsStream : public TlsStreamBase<Callback, TlsStreamImpl, TlsCertificate>
+{
 public:
 
     /// @brief Type of the base.
@@ -169,7 +173,7 @@ public:
     ///
     /// @note The idea to reuse a TCP connection for a fresh TLS is at
     /// least arguable.
-    /// @throw @c isc::NotImplemented
+    /// @throw isc::NotImplemented
     virtual void clear() {
         isc_throw(NotImplemented,
                   "Botan TLS does not support the clear operation");
@@ -180,8 +184,12 @@ public:
     /// @note The native_handle() method is used so it can't be made const.
     /// @note Do not forget to free it when no longer used.
     virtual TlsCertificate* getPeerCert() {
-        /// @todo
-        return (0);
+        const std::vector<Botan::X509_Certificate>& cert_chain =
+            Base::native_handle()->peer_cert_chain();
+        if (cert_chain.empty()) {
+            return (0);
+        }
+        return (new Botan::X509_Certificate(cert_chain[0]));
     }
 
     /// @brief Return the commonName part of the subjectName of
@@ -191,8 +199,13 @@ public:
     ///
     /// @return The commonName part of the subjectName or the empty string.
     virtual std::string getSubject() {
-        /// @todo
-        return ("");
+        const std::vector<Botan::X509_Certificate>& cert_chain =
+            Base::native_handle()->peer_cert_chain();
+        if (cert_chain.empty()) {
+            return ("");
+        }
+        const Botan::X509_DN& subject = cert_chain[0].subject_dn();
+        return (subject.get_first_attribute("CommonName"));
     }
 
     /// @brief Return the commonName part of the issuerName of
@@ -202,8 +215,13 @@ public:
     ///
     /// @return The commonName part of the issuerName or the empty string.
     virtual std::string getIssuer() {
-        /// @todo
-        return ("");
+        const std::vector<Botan::X509_Certificate>& cert_chain =
+            Base::native_handle()->peer_cert_chain();
+        if (cert_chain.empty()) {
+            return ("");
+        }
+        const Botan::X509_DN& issuer = cert_chain[0].issuer_dn();
+        return (issuer.get_first_attribute("CommonName"));
     }
 };
 

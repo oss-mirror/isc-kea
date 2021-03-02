@@ -54,6 +54,18 @@ public:
     virtual ~TlsContextImpl() {
     }
 
+    // Build the context.
+    virtual void build() {
+        context_.reset(new Botan::TLS::Context(cred_mgr_,
+                                               rng_,
+                                               sess_mgr_,
+                                               policy_));
+    }
+
+    virtual Botan::TLS::Context& get() {
+        return (*context_);
+    }
+
     // Credentials Manager.
     KeaCredentialsManager cred_mgr_;
 
@@ -64,19 +76,22 @@ public:
     Botan::TLS::Session_Manager_Noop sess_mgr_;
 
     KeaPolicy policy_;
+
+    std::unique_ptr<Botan::TLS::Context> context_;
 };
+
+TlsContext::~TlsContext() {
+}
 
 TlsContext::TlsContext(TlsRole role)
     : TlsContextBase(role), cert_required_(true),
-      context_(new TlsContextImpl()) {
+      impl_(new TlsContextImpl()) {
 }
 
-Botan::TLS::Context
+Botan::TLS::Context&
 TlsContext::getContext() {
-    return (Botan::TLS::Context(context_->cred_mgr_,
-                                context_->rng_,
-                                context_->sess_mgr_,
-                                context_->policy_));
+    impl_->build();
+    return (impl_->get());
 }
 
 void
