@@ -144,7 +144,7 @@ public:
 =======
     KeaCredentialsManager() {
     }
-    
+
     // Destructor.
     virtual ~KeaCredentialsManager() {
     }
