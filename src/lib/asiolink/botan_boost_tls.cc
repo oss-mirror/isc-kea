@@ -89,14 +89,25 @@ public:
         while (!source.end_of_data()) {
             std::string label;
             std::vector<uint8_t> cert;
-            cert = unlock(Botan::PEM_Code::decode(source, label));
-            if ((label != "CERTIFICATE") &&
-                (label != "X509 CERTIFICATE") &&
-                (label != "TRUSTED CERTIFICATE")) {
-                isc_throw(LibraryError, "Expected a certificate, got '"
-                          << label << "'");
+            try {
+                cert = unlock(Botan::PEM_Code::decode(source, label));
+                if ((label != "CERTIFICATE") &&
+                    (label != "X509 CERTIFICATE") &&
+                    (label != "TRUSTED CERTIFICATE")) {
+                    isc_throw(LibraryError, "Expected a certificate, got '"
+                              << label << "'");
+                }
+                certs_.push_back(Botan::X509_Certificate(cert));
+            } catch (const std::exception& ex) {
+                if (certs_.empty()) {
+                    throw;
+                }
+                // Got one certificate so skipping garbage.
+                continue;
             }
-            certs_.push_back(Botan::X509_Certificate(cert));
+        }
+        if (certs_.empty()) {
+            isc_throw(LibraryError, "Found no certificate?");
         }
     }
 
@@ -259,7 +270,7 @@ public:
     Botan::AutoSeeded_RNG rng_;
 
     // Session Manager.
-    Botan::TLS::Session_Manager_Noop sess_mgr_;
+    KeaSessionManager sess_mgr_;
 
     KeaPolicy policy_;
 
@@ -309,25 +320,6 @@ TlsContext::loadCertFile(const std::string& cert_file) {
 void
 TlsContext::loadKeyFile(const std::string& key_file) {
     impl_->loadKeyFile(key_file);
-}
-
-void
-TlsContext::configure(TlsContextPtr& context,
-                      TlsRole role,
-                      const std::string& ca_file,
-                      const std::string& cert_file,
-                      const std::string& key_file,
-                      bool cert_required) {
-    try {
-        context.reset(new TlsContext(role));
-        context->loadCaFile(ca_file);
-        context->loadCertFile(cert_file);
-        context->loadKeyFile(key_file);
-        context->setCertRequired(cert_required);
-    } catch (...) {
-        context.reset();
-        throw;
-    }
 }
 
 } // namespace asiolink
