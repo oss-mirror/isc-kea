@@ -87,22 +87,6 @@ public:
     /// @param key_file The private key file name.
     virtual void loadKeyFile(const std::string& key_file);
 
-    /// @brief Configure.
-    ///
-    /// @param context The TLS context to configure.
-    /// @param role The TLS role client or server.
-    /// @param ca_file The certificate file or directory name.
-    /// @param cert_file The certificate file name.
-    /// @param key_file The private key file name.
-    /// @param cert_required True if peer certificates are required,
-    /// false if they are optional.
-    static void configure(TlsContextPtr& context,
-                          TlsRole role,
-                          const std::string& ca_file,
-                          const std::string& cert_file,
-                          const std::string& key_file,
-                          bool cert_required);
-
 protected:
     /// @brief Cached cert_required value.
     bool cert_required_;
@@ -172,11 +156,9 @@ public:
     /// @brief Clear the SSL object.
     ///
     /// @note The idea to reuse a TCP connection for a fresh TLS is at
-    /// least arguable.
-    /// @throw isc::NotImplemented
+    /// least arguable. Currently it does nothing so the socket is
+    /// **not** reusable.
     virtual void clear() {
-        isc_throw(NotImplemented,
-                  "Botan TLS does not support the clear operation");
     }
 
     /// @brief Return the peer certificate.
