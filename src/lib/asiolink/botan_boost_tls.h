@@ -207,6 +207,9 @@ public:
     }
 };
 
+// Stream truncated error code.
+const int STREAM_TRUNCATED = Botan::TLS::StreamError::StreamTruncated;
+
 } // namespace asiolink
 } // namespace isc
 
