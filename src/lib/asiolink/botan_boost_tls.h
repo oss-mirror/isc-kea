@@ -82,7 +82,7 @@ public:
     /// @param cert_file The certificate file name.
     virtual void loadCertFile(const std::string& cert_file);
 
-    /// @brief Load the private key file name.
+    /// @brief Load the private key from a file.
     ///
     /// @param key_file The private key file name.
     virtual void loadKeyFile(const std::string& key_file);
@@ -153,7 +153,7 @@ public:
         Base::async_shutdown(callback);
     }
 
-    /// @brief Clear the SSL object.
+    /// @brief Clear the TLS object.
     ///
     /// @note The idea to reuse a TCP connection for a fresh TLS is at
     /// least arguable. Currently it does nothing so the socket is
