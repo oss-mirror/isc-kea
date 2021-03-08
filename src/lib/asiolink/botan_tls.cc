@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+/// @file botan_tls.cc Botan fake implementation of the TLS API.
+
 #include <config.h>
 
 #ifdef WITH_BOTAN
@@ -46,25 +48,6 @@ TlsContext::loadCertFile(const std::string&) {
 void
 TlsContext::loadKeyFile(const std::string&) {
     isc_throw(NotImplemented, "Botan TLS is not yet supported");
-}
-
-void
-TlsContext::configure(TlsContextPtr& context,
-                      TlsRole role,
-                      const std::string& ca_file,
-                      const std::string& cert_file,
-                      const std::string& key_file,
-                      bool cert_required) {
-    try {
-        context.reset(new TlsContext(role));
-        context->loadCaFile(ca_file);
-        context->loadCertFile(cert_file);
-        context->loadKeyFile(key_file);
-        context->setCertRequired(cert_required);
-    } catch (...) {
-        context.reset();
-        throw;
-    }
 }
 
 } // namespace asiolink

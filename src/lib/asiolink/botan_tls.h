@@ -68,28 +68,12 @@ public:
     /// file not found, bad format, etc.
     virtual void loadCertFile(const std::string& cert_file);
 
-    /// @brief Load the private key file name.
+    /// @brief Load the private key from a file.
     ///
     /// @param key_file The private key file name.
     /// @throw isc::cryptolink::LibraryError on various errors as
     /// file not found, bad format, etc.
     virtual void loadKeyFile(const std::string& key_file);
-
-    /// @brief Configure.
-    ///
-    /// @param context The TLS context to configure.
-    /// @param role The TLS role client or server.
-    /// @param ca_file The certificate file or directory name.
-    /// @param cert_file The certificate file name.
-    /// @param key_file The private key file name.
-    /// @param cert_required True if peer certificates are required,
-    /// false if they are optional.
-    static void configure(TlsContextPtr& context,
-                          TlsRole role,
-                          const std::string& ca_file,
-                          const std::string& cert_file,
-                          const std::string& key_file,
-                          bool cert_required);
 
 protected:
     /// @brief Cached cert_required value.
@@ -119,8 +103,6 @@ TlsStreamBase(IOService& service, TlsContextPtr context)
 /// @brief Botan fake TLS stream.
 ///
 /// @tparam callback The callback.
-/// @tparam TlsStreamImpl The type of underlying TLS streams.
-/// @tparam TlsCertificate The type of X509 certificates.
 template <typename Callback>
 class TlsStream : public TlsStreamBase<Callback, TlsStreamImpl, TlsCertificate> {
 public:
