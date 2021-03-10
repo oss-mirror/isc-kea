@@ -251,8 +251,11 @@ public:
         }
     }
 
-    // Build the context.
+    // Build the context if not yet done.
     virtual void build() {
+        if (context_) {
+            return;
+        }
         context_.reset(new Botan::TLS::Context(cred_mgr_,
                                                rng_,
                                                sess_mgr_,
