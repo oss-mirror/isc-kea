@@ -17,10 +17,6 @@
 
 #include <openssl/opensslv.h>
 
-#include <sys/stat.h>
-
-#include <openssl/opensslv.h>
-
 using namespace boost::asio;
 using namespace boost::asio::ssl;
 using namespace boost::system;
