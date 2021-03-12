@@ -223,11 +223,14 @@ public:
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     /// @brief The role i.e. client or server.
     TlsRole role_;
 >>>>>>> [#1665] Added dummy TLS (non) support for Botan
+=======
+>>>>>>> [#1662] Fixed rebase
 };
 
 // Stream truncated error code.
