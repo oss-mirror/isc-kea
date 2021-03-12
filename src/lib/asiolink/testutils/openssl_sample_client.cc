@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
     tcp::resolver resolver(io_context);
     auto endpoints = resolver.resolve(argv[1], argv[2]);
 
-    boost::asio::ssl::context ctx(boost::asio::ssl::context::tls);
+    boost::asio::ssl::context ctx(boost::asio::ssl::context::tlsv12);
     ctx.load_verify_file(CA_("kea-ca.crt"));
     ctx.use_certificate_chain_file(CA_("kea-client.crt"));
     ctx.use_private_key_file(CA_("kea-client.key"),

@@ -106,7 +106,7 @@ public:
     : io_context_(io_context),
       acceptor_(io_context,
           boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
-      context_(boost::asio::ssl::context::tls)
+      context_(boost::asio::ssl::context::tlsv12)
   {
     //context_.set_options(
     //    boost::asio::ssl::context::default_workarounds

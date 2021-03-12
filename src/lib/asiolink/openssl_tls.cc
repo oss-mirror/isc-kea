@@ -27,7 +27,7 @@ namespace asiolink {
 
 TlsContext::TlsContext(TlsRole role)
     : TlsContextBase(role), cert_required_(true),
-      context_(context::method::tls) {
+      context_(context::method::tlsv12) {
     // Not leave the verify mode to OpenSSL default.
     setCertRequired(true);
 }
