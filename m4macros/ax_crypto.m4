@@ -244,12 +244,6 @@ then
          try upgrading to a higher version of botan or installing libbz2
          and libgmp.])]
    )
-   dnl Check Botan boost ASIO TLS
-   BOTAN_BOOST=""
-   AC_CHECK_HEADERS([botan/asio_stream.h], [BOTAN_BOOST="yes"],
-        [BOTAN_BOOST="no"
-         AC_MSG_RESULT([Botan was not configured with boost support.])
-         AC_MSG_WARN([Botan cannot be used for TLS support.])])
    CPPFLAGS=$CPPFLAGS_SAVED
    LIBS=$LIBS_SAVED
    CRYPTO_NAME="Botan"
@@ -368,8 +362,6 @@ EOF
 fi
 
 AM_CONDITIONAL(HAVE_BOTAN, test "$CRYPTO_NAME" = "Botan")
-AM_CONDITIONAL(HAVE_BOTAN_BOOST,
-    test "$CRYPTO_NAME" = "Botan" && test "$BOTAN_BOOST" = "yes")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$CRYPTO_NAME" = "OpenSSL")
 AC_SUBST(CRYPTO_INCLUDES)
 AC_SUBST(CRYPTO_CFLAGS)
@@ -386,7 +378,15 @@ AC_SUBST(DISTCHECK_CRYPTO_CONFIGURE_FLAG)
 AC_DEFUN([AX_TLS], [
 if test "x${CRYPTO_NAME}" = "xBotan"
 then
-    AC_MSG_WARN([Botan TLS support is not yet done])
+    dnl Check Botan boost ASIO TLS
+    CPPFLAGS_SAVED=$CPPFLAGS
+    CPPFLAGS="$CRYPTO_INCLUDES $CPPFLAGS $BOOST_INCLUDES"
+    BOTAN_BOOST=""
+    AC_CHECK_HEADERS([botan/asio_stream.h], [BOTAN_BOOST="yes"],
+        [BOTAN_BOOST="no"
+         AC_MSG_RESULT([Botan was not configured with boost support.])
+         AC_MSG_WARN([Botan cannot be used for TLS support.])])
+    CPPFLAGS=${CPPFLAGS_SAVED}
 fi
 if test "x${CRYPTO_NAME}" = "xOpenSSL"
 then
@@ -429,8 +429,9 @@ then
                                ERR_PACK(ERR_LIB_SSL, 0, SSL_R_SHORT_READ);])],
              [],
              [AC_MSG_ERROR([Can not find a definition for stream_truncated (SSL short read) error])])])
-    LIBS=${LIBS_SAVED}
     CPPFLAGS=${CPPFLAGS_SAVED}
 fi
+AM_CONDITIONAL(HAVE_BOTAN_BOOST,
+    test "$CRYPTO_NAME" = "Botan" && test "$BOTAN_BOOST" = "yes")
 ])
 # End of AX_TLS
