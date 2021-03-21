@@ -2262,7 +2262,9 @@ TEST(TLSTest, shutdownCloseInactive) {
     exps.clear();
     // Botan gets no error.
     exps.addNoError();
-    // OpenSSL get Bad file descriptor
+    // LibreSSL and some old OpenSSL gets Operation canceled.
+    exps.addError("Operation canceled");
+    // OpenSSL gets Bad file descriptor.
     exps.addError("Bad file descriptor");
     exps.checkAsync("shutdown", shutdown_cb);
     if (Expecteds::displayErrMsg()) {
@@ -2367,7 +2369,9 @@ TEST(TLSTest, shutdownCloseActive) {
     exps.clear();
     // Botan gets no error.
     exps.addNoError();
-    // OpenSSL get Bad file descriptor
+    // LibreSSL and some old OpenSSL gets Operation canceled.
+    exps.addError("Operation canceled");
+    // OpenSSL gets Bad file descriptor.
     exps.addError("Bad file descriptor");
     exps.checkAsync("shutdown", shutdown_cb);
     if (Expecteds::displayErrMsg()) {
