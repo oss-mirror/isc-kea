@@ -29,6 +29,22 @@ void configTrustedSelf(TlsContextPtr& ctx) {
     TlsContext::configure(ctx, TlsRole::SERVER, ca, cert, key, true);
 }
 
+/// @brief Configure the TLS server with no client certificate request.
+void configServerNoReq(TlsContextPtr& ctx) {
+    std::string ca(std::string(TEST_CA_DIR) + "/kea-ca.crt");
+    std::string cert(std::string(TEST_CA_DIR) + "/kea-server.crt");
+    std::string key(std::string(TEST_CA_DIR) + "/kea-server.key");
+    TlsContext::configure(ctx, TlsRole::SERVER, ca, cert, key, false);
+}
+
+/// @brief Configure the TLS server with no subject alternative name.
+void configServerRaw(TlsContextPtr& ctx) {
+    std::string ca(std::string(TEST_CA_DIR) + "/kea-ca.crt");
+    std::string cert(std::string(TEST_CA_DIR) + "/kea-server-raw.crt");
+    std::string key(std::string(TEST_CA_DIR) + "/kea-server.key");
+    TlsContext::configure(ctx, TlsRole::SERVER, ca, cert, key, true);
+}
+
 /// @brief Configure the TLS client.
 void configClient(TlsContextPtr& ctx) {
     std::string ca(std::string(TEST_CA_DIR) + "/kea-ca.crt");
