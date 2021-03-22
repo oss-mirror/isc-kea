@@ -1,3 +1,9 @@
+1888.	[func]		andrei
+	All logs that expose configuration, either in full or in snippets
+	now have the values of "password" and "secret" entries replaced
+	with asterisks "****".
+	(Gitlab #1721)
+
 1887.	[build]		andrei, fdupont
 	Migrated autoconf macros, which became warningly deprecated
 	since autoconf 2.70, to supported macros.
