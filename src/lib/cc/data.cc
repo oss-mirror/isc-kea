@@ -1331,5 +1331,36 @@ void Element::preprocess(std::istream& in, std::stringstream& out) {
     }
 }
 
+void Element::redact() {
+    // Redact lists.
+    if (getType() == Element::list) {
+        for (ElementPtr item : listValue()) {
+            item->redact();
+        }
+    }
+    // Redact maps.
+    if (getType() == Element::map) {
+        for (auto kv : mapValue()) {
+            std::string const& key(kv.first);
+            ElementPtr value(boost::const_pointer_cast<Element>(kv.second));
+
+            if (key == "password" || key == "secret") {
+                // Handle passwords.
+                set(key, Element::create("****"));
+            } else if (key == "user-context") {
+                // Skip.
+                continue;
+            }
+            value->redact();
+        }
+    }
+}
+
+ElementPtr Element::redactCopy(ConstElementPtr const& input) {
+    ElementPtr const copy(isc::data::copy(input));
+    copy->redact();
+    return copy;
+}
+
 } // end of isc::data namespace
 } // end of isc namespace

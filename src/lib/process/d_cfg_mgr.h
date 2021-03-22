@@ -210,17 +210,6 @@ protected:
     virtual isc::data::ConstElementPtr parse(isc::data::ConstElementPtr config,
                                              bool check_only);
 
-    /// @brief Redact the configuration.
-    ///
-    /// This method replaces passwords by asterisks. By default it does
-    /// nothing: derived class must redefine it.
-    ///
-    /// @param config the Element tree structure that describes the configuration.
-    /// @return unmodified config or a copy of the config where passwords were
-    /// replaced by asterisks so can be safely logged to an unprivileged place.
-    virtual isc::data::ConstElementPtr
-    redactConfig(isc::data::ConstElementPtr config) const;
-
 private:
     /// @brief Pointer to the configuration context instance.
     ConfigPtr context_;

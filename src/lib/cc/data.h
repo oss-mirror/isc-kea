@@ -529,6 +529,19 @@ public:
     /// @return ElementPtr with the data that is parsed.
     static ElementPtr fromWire(const std::string& s);
     //@}
+
+    /// @brief Redaction methods
+    ///@{
+    /// @brief Replace passwords by asterisks.
+    void redact();
+
+    /// @brief Convenience function to copy and redact.
+    ///
+    /// Modify and return a copy to leave the original intact.
+    ///
+    /// @return the copy
+    static ElementPtr redactCopy(ConstElementPtr const& input);
+    ///@}
 };
 
 /// Notes: IntElement type is changed to int64_t.

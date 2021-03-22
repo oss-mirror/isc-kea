@@ -57,11 +57,6 @@ DCfgMgrBase::setContext(ConfigPtr& context) {
 }
 
 isc::data::ConstElementPtr
-DCfgMgrBase::redactConfig(isc::data::ConstElementPtr config_set) const {
-    return (config_set);
-}
-
-isc::data::ConstElementPtr
 DCfgMgrBase::simpleParseConfig(isc::data::ConstElementPtr config_set,
                                bool check_only,
                                const std::function<void()>& post_config_cb) {
@@ -70,7 +65,7 @@ DCfgMgrBase::simpleParseConfig(isc::data::ConstElementPtr config_set,
                                     std::string("Can't parse NULL config")));
     }
     LOG_DEBUG(dctl_logger, isc::log::DBGLVL_COMMAND, DCTL_CONFIG_START)
-        .arg(redactConfig(config_set)->str());
+        .arg(Element::redactCopy(config_set)->str());
 
     // The parsers implement data inheritance by directly accessing
     // configuration context. For this reason the data parsers must store
