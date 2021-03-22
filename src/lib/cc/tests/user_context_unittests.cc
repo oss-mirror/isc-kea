@@ -90,6 +90,60 @@ TEST(UserContext, both) {
     EXPECT_EQ(*expected, *map);
 }
 
+TEST(UserContext, redact) {
+    ConstElementPtr const config(Element::fromJSON(R"(
+        {
+            "some-database": {
+                "password": "sensitive",
+                "secret": "sensitive",
+                "user": "keatest",
+                "nested-map": {
+                    "password": "sensitive",
+                    "secret": "sensitive",
+                    "user": "keatest"
+                }
+            },
+            "user-context": {
+                "password": "keatest",
+                "secret": "keatest",
+                "user": "keatest",
+                "nested-map": {
+                    "password": "keatest",
+                    "secret": "keatest",
+                    "user": "keatest"
+                }
+            }
+        }
+    )"));
+    ConstElementPtr const expected(Element::fromJSON(R"(
+        {
+            "some-database": {
+                "password": "****",
+                "secret": "****",
+                "user": "keatest",
+                "nested-map": {
+                    "password": "****",
+                    "secret": "****",
+                    "user": "keatest"
+                }
+            },
+            "user-context": {
+                "password": "keatest",
+                "secret": "keatest",
+                "user": "keatest",
+                "nested-map": {
+                    "password": "keatest",
+                    "secret": "keatest",
+                    "user": "keatest"
+                }
+            }
+        }
+    )"));
+    ConstElementPtr redacted(Element::redactCopy(config));
+    EXPECT_TRUE(isEquivalent(expected, redacted))
+        << prettyPrint(config) << "\nvs\n" << prettyPrint(expected);
+}
+
 TEST(toElement, notMap) {
     ConstElementPtr arg = Element::create("foo");
     ConstElementPtr result = UserContext::toElement(arg);
