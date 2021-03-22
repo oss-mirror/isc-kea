@@ -446,7 +446,7 @@ TEST(TLSTest, certRequired) {
 #endif
     };
 
-    TestTlsContext ctx(TlsRole::CLIENT);
+    TestTlsContext ctx(TlsRole::SERVER);
     EXPECT_TRUE(ctx.getCertRequired());
     EXPECT_TRUE(check(ctx));
     ASSERT_NO_THROW(ctx.setCertRequired(false));
@@ -455,6 +455,15 @@ TEST(TLSTest, certRequired) {
     ASSERT_NO_THROW(ctx.setCertRequired(true));
     EXPECT_TRUE(ctx.getCertRequired());
     EXPECT_TRUE(check(ctx));
+
+    // Client role is different so test it too.
+    TestTlsContext cctx(TlsRole::CLIENT);
+    EXPECT_TRUE(cctx.getCertRequired());
+    EXPECT_TRUE(check(cctx));
+    ASSERT_NO_THROW(cctx.setCertRequired(true));
+    EXPECT_TRUE(cctx.getCertRequired());
+    EXPECT_TRUE(check(cctx));
+    EXPECT_THROW(cctx.setCertRequired(false), isc::BadValue);
 }
 
 // Test if the certificate authority can be loaded.
