@@ -493,6 +493,7 @@ TEST(TLSTest, loadNoCAFile) {
 #ifdef WITH_BOTAN
 // Test that Botan requires a real CA certificate so fails with
 // trusted self-signed client.
+/// @note: convert to GTEST when gtest_utils.h will be moved.
 TEST(TLSTest, loadTrustedSelfCAFile) {
     Expecteds exps;
     // Botan error.
@@ -1709,10 +1710,9 @@ TEST(TLSTest, clientHTTPnoSCloseonError) {
         }
     }
 
-    exps.clear();
     // No error at the client.
-    exps.addNoError();
-    exps.checkAsync("client", client_cb);
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -1965,11 +1965,12 @@ TEST(TLSTest, anotherClientNoReq) {
     }
     timer.cancel();
 
-    Expecteds exps;
     // Should not fail.
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -2036,11 +2037,12 @@ TEST(TLSTest, serverRaw) {
     }
     timer.cancel();
 
-    Expecteds exps;
     // Should not fail.
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -2108,15 +2110,12 @@ TEST(TLSTest, trustedSelfSigned) {
     }
     timer.cancel();
 
-    Expecteds exps;
     // It should work for all OpenSSL.
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-
-    exps.clear();
-    // It should work in all cases.
-    exps.addNoError();
-    exps.checkAsync("client", client_cb);
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Close client and server.
     EXPECT_NO_THROW(client.lowest_layer().close());
@@ -2189,10 +2188,12 @@ TEST(TLSTest, shutdownInactive) {
     }
     timer.cancel();
 
-    Expecteds exps;
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    // No problem is expected.
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Setup a timeout for the shutdown.
     IntervalTimer timer2(service);
@@ -2207,7 +2208,7 @@ TEST(TLSTest, shutdownInactive) {
     }
     timer2.cancel();
 
-    exps.clear();
+    Expecteds exps;
     // Botan gets no error.
     exps.addNoError();
     // OpenSSL hangs.
@@ -2285,10 +2286,12 @@ TEST(TLSTest, shutdownActive) {
     }
     timer.cancel();
 
-    Expecteds exps;
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    // No problem is expected.
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Setup a timeout for the shutdown and receive.
     IntervalTimer timer2(service);
@@ -2308,7 +2311,7 @@ TEST(TLSTest, shutdownActive) {
     }
     timer2.cancel();
 
-    exps.clear();
+    Expecteds exps;
     // Botan gets no error.
     exps.addNoError();
     // OpenSSL hangs.
@@ -2395,10 +2398,12 @@ TEST(TLSTest, shutdownCloseInactive) {
     }
     timer.cancel();
 
-    Expecteds exps;
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    // No problem is expected.
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Setup a timeout for the shutdown.
     IntervalTimer timer2(service);
@@ -2416,7 +2421,7 @@ TEST(TLSTest, shutdownCloseInactive) {
     }
     timer2.cancel();
 
-    exps.clear();
+    Expecteds exps;
     // Botan gets no error.
     exps.addNoError();
     // LibreSSL and some old OpenSSL gets Operation canceled.
@@ -2497,10 +2502,12 @@ TEST(TLSTest, shutdownCloseActive) {
     }
     timer.cancel();
 
-    Expecteds exps;
-    exps.addNoError();
-    exps.checkAsync("server", server_cb);
-    exps.checkAsync("client", client_cb);
+    // No problem is expected.
+    EXPECT_FALSE(timeout);
+    EXPECT_TRUE(server_cb.getCalled());
+    EXPECT_FALSE(server_cb.getCode());
+    EXPECT_TRUE(client_cb.getCalled());
+    EXPECT_FALSE(client_cb.getCode());
 
     // Setup a timeout for the shutdown and receive.
     IntervalTimer timer2(service);
@@ -2523,7 +2530,7 @@ TEST(TLSTest, shutdownCloseActive) {
     }
     timer2.cancel();
 
-    exps.clear();
+    Expecteds exps;
     // Botan gets no error.
     exps.addNoError();
     // LibreSSL and some old OpenSSL gets Operation canceled.
@@ -2539,12 +2546,12 @@ TEST(TLSTest, shutdownCloseActive) {
         }
     }
 
-    exps.clear();
     // End of file on the receive side.
-    exps.addError("End of file");
-    exps.checkAsync("receive", receive_cb);
+    EXPECT_TRUE(receive_cb.getCalled());
+    EXPECT_TRUE(receive_cb.getCode());
+    EXPECT_EQ("End of file", receive_cb.getCode().message());
     if (Expecteds::displayErrMsg()) {
-        std::cout << "receive: " << exps.getErrMsg() << "\n";
+        std::cout << "receive: " << receive_cb.getCode().message() << "\n";
     }
 
     // Close client and server.
