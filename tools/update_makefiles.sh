@@ -140,11 +140,11 @@ compute_dependencies() {
 			echo "### ERROR ### dependencies ERROR for ${ARTIFACT_PATH}/${ARTIFACT} on ${j} with:"
 			# if there are any header only external files
 			if test $(echo "${EXTERNAL_ALL}" | wc -w) -ne 0; then
-				echo "non header files: ${EXTERNAL_ALL}"
+				echo "non header only files: ${EXTERNAL_ALL}"
 			fi
 			# if there are any header and source external files
 			if test $(echo "${EXTERNAL_HEADERS}" | wc -w) -ne 0; then
-				echo "only header files: ${EXTERNAL_HEADERS}"
+				echo "header only files: ${EXTERNAL_HEADERS}"
 			fi
 		else
 			# don't add current library to it's dependencies list
