@@ -22,7 +22,6 @@ HttpAcceptorCallback;
 /// @brief Type of the TCP acceptor used in this library.
 typedef asiolink::TCPAcceptor<HttpAcceptorCallback> HttpAcceptor;
 
-<<<<<<< HEAD
 /// @brief Type of the TLS acceptor used in this library.
 ///
 /// @note It is a derived type of HttpAcceptor.
@@ -34,11 +33,6 @@ typedef boost::shared_ptr<HttpAcceptor> HttpAcceptorPtr;
 /// @brief Type of shared pointer to TLS acceptors.
 typedef boost::shared_ptr<HttpsAcceptor> HttpsAcceptorPtr;
 
-=======
-/// @brief Type of shared pointer to TCP acceptors.
-typedef boost::shared_ptr<HttpAcceptor> HttpAcceptorPtr;
-
->>>>>>> [#1661] HTTP code half done
 } // end of namespace isc::http
 } // end of namespace isc
 

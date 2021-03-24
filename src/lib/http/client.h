@@ -104,14 +104,11 @@ public:
     /// @brief Optional handler invoked when client performs the TLS handshake
     /// with the server.
     ///
-<<<<<<< HEAD
     /// It is called when the TLS handshake completes:
     /// - if the handshake succeeds it is called with error code 0
     /// - if the handshake fails it is called with error code != 0
     /// - if TLS is not enabled, it is not called at all
     ///
-=======
->>>>>>> [#1661] HTTP code half done
     /// Returned boolean value indicates whether the client should continue
     /// connecting to the server (if true) or not (false).
     /// @note The second argument is not used.
@@ -184,11 +181,7 @@ public:
     /// callback can be used to recognize this condition.
     ///
     /// @param url URL where the request should be send.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /// @param context TLS context.
->>>>>>> [#1661] HTTP code half done
     /// @param request Pointer to the object holding a request.
     /// @param response Pointer to the object where response should be stored.
     /// @param request_callback Pointer to the user callback function invoked
@@ -203,11 +196,7 @@ public:
     ///
     /// @throw HttpClientError If invalid arguments were provided.
     void asyncSendRequest(const Url& url,
-<<<<<<< HEAD
                           const asiolink::TlsContextPtr& tls_context,
-=======
-                          const asiolink::TlsContextPtr& context,
->>>>>>> [#1661] HTTP code half done
                           const HttpRequestPtr& request,
                           const HttpResponsePtr& response,
                           const RequestHandler& request_callback,

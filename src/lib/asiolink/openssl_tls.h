@@ -221,16 +221,6 @@ public:
         ::X509_free(cert);
         return (ret);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-    /// @brief The role i.e. client or server.
-    TlsRole role_;
->>>>>>> [#1665] Added dummy TLS (non) support for Botan
-=======
->>>>>>> [#1662] Fixed rebase
 };
 
 // Stream truncated error code.
@@ -239,73 +229,6 @@ const int STREAM_TRUNCATED = boost::asio::ssl::error::stream_truncated;
 #else
 const int STREAM_TRUNCATED = ERR_PACK(ERR_LIB_SSL, 0, SSL_R_SHORT_READ);
 #endif
-
-/// @brief The type of underlying TLS streams.
-typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> TlsStreamImpl;
-
-/// @brief The type of X509 certificates.
-typedef ::X509 TlsCertificate;
-
-/// @brief OpenSSL TLS stream.
-///
-/// @param callback The callback.
-template <typename Callback>
-class TlsStream : public TlsStreamImpl {
-public:
-
-    /// @brief Constructor.
-    ///
-    /// @param service I/O Service object used to manage the stream.
-    /// @param context Pointer to the TLS context.
-    TlsStream(IOService& service, TlsContextPtr context)
-        : TlsStreamImpl(service.get_io_service(), context->getContext()),
-          role_(context->role_) {
-    }
-
-    /// @brief Destructor.
-    virtual ~TlsStream() { }
-
-    /// @brief Returns the role.
-    TlsRole getRole() const {
-        return (role_);
-    }
-
-    /// @brief TLS Handshake.
-    ///
-    /// @param callback Callback object.
-    virtual void handshake(Callback& callback) {
-        using namespace boost::asio::ssl;
-        if (role_ == SERVER) {
-            async_handshake(stream_base::server, callback);
-        } else {
-            async_handshake(stream_base::client, callback);
-        }
-    }
-
-    /// @brief TLS shutdown.
-    ///
-    /// @param callback Callback object.
-    virtual void shutdown(Callback& callback) {
-        async_shutdown(callback);
-    }
-
-    /// @brief Clear the SSL object.
-    virtual void clear() {
-        static_cast<void>(::SSL_clear(this->native_handle()));
-    }
-
-    /// @brief Return the peer certificate.
-    ///
-    /// @note The native_handle() method is used so it can't be made const.
-    virtual TlsCertificate* getPeerCert() {
-        return (::SSL_get_peer_certificate(this->native_handle()));
-    }
-
-    /// @brief The role i.e. client or server.
-    TlsRole role_;
-=======
->>>>>>> [#1665] Checkpoint
-};
 
 } // namespace asiolink
 } // namespace isc

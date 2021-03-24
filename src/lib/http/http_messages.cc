@@ -22,11 +22,8 @@ extern const isc::log::MessageID HTTP_CLIENT_REQUEST_SEND = "HTTP_CLIENT_REQUEST
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_SEND_DETAILS = "HTTP_CLIENT_REQUEST_SEND_DETAILS";
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_TIMEOUT_OCCURRED = "HTTP_CLIENT_REQUEST_TIMEOUT_OCCURRED";
 extern const isc::log::MessageID HTTP_CONNECTION_CLOSE_CALLBACK_FAILED = "HTTP_CONNECTION_CLOSE_CALLBACK_FAILED";
-<<<<<<< HEAD
 extern const isc::log::MessageID HTTP_CONNECTION_HANDSHAKE_FAILED = "HTTP_CONNECTION_HANDSHAKE_FAILED";
 extern const isc::log::MessageID HTTP_CONNECTION_HANDSHAKE_START = "HTTP_CONNECTION_HANDSHAKE_START";
-=======
->>>>>>> [#1661] Added shutdown
 extern const isc::log::MessageID HTTP_CONNECTION_SHUTDOWN = "HTTP_CONNECTION_SHUTDOWN";
 extern const isc::log::MessageID HTTP_CONNECTION_SHUTDOWN_FAILED = "HTTP_CONNECTION_SHUTDOWN_FAILED";
 extern const isc::log::MessageID HTTP_CONNECTION_STOP = "HTTP_CONNECTION_STOP";
@@ -61,11 +58,8 @@ const char* values[] = {
     "HTTP_CLIENT_REQUEST_SEND_DETAILS", "detailed information about request sent to %1:\n%2",
     "HTTP_CLIENT_REQUEST_TIMEOUT_OCCURRED", "HTTP request timeout occurred when communicating with %1",
     "HTTP_CONNECTION_CLOSE_CALLBACK_FAILED", "Connection close callback threw an exception",
-<<<<<<< HEAD
     "HTTP_CONNECTION_HANDSHAKE_FAILED", "TLS handshake with %1 failed with %2",
     "HTTP_CONNECTION_HANDSHAKE_START", "start TLS handshake with %1 with timeout %2",
-=======
->>>>>>> [#1661] Added shutdown
     "HTTP_CONNECTION_SHUTDOWN", "shutting down HTTP connection from %1",
     "HTTP_CONNECTION_SHUTDOWN_FAILED", "shutting down HTTP connection failed",
     "HTTP_CONNECTION_STOP", "stopping HTTP connection from %1",

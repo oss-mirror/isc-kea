@@ -232,32 +232,21 @@ public:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /////// add a TLS acceptor
-    /// @param context TLS context.
->>>>>>> [#1661] HTTP code half done
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-    /// @param acceptor_callback Callback invoked when new connection is accepted.
-    /// @param handshake_callback Callback invoked when TLS handshake is performed.
+    /// @param callback Callback invoked when new connection is accepted.
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     HttpConnection(asiolink::IOService& io_service,
                    const HttpAcceptorPtr& acceptor,
-<<<<<<< HEAD
                    const asiolink::TlsContextPtr& tls_context,
-=======
-                   const asiolink::TlsContextPtr& context,
->>>>>>> [#1661] HTTP code half done
                    HttpConnectionPool& connection_pool,
                    const HttpResponseCreatorPtr& response_creator,
-                   const HttpAcceptorCallback& acceptor_callback,
-                   const HttpAcceptorCallback& handshake_callback,
+                   const HttpAcceptorCallback& callback,
                    const long request_timeout,
                    const long idle_timeout);
 
@@ -269,12 +258,7 @@ public:
     /// @brief Asynchronously accepts new connection.
     ///
     /// When the connection is established successfully, the timeout timer is
-<<<<<<< HEAD
     /// setup and the asynchronous handshake with client is performed.
-=======
-    /// setup and the asynchronous read from the socket or handshake with
-    /// the client is started.
->>>>>>> [#1661] HTTP code half done
     void asyncAccept();
 
     /// @brief Shutdown the socket.
@@ -285,14 +269,9 @@ public:
 
     /// @brief Asynchronously performs TLS handshake.
     ///
-<<<<<<< HEAD
 
     /// When the handshake is performed successfully or skipped because TLS
     /// was not enabled, the asynchronous read from the socket is started.
-=======
-    /// When the handshake is performed successfully, the asynchronous read
-    /// from the socket is started.
->>>>>>> [#1661] HTTP code half done
     void doHandshake();
 
     /// @brief Starts asynchronous read from the socket.
@@ -400,13 +379,9 @@ protected:
     void idleTimeoutCallback();
 
     /// @brief Shuts down current connection.
-<<<<<<< HEAD
     ///
     /// Copied from the next method @ref stopThisConnection
     void shutdownConnection();
-=======
-    void shutdownThisConnection();
->>>>>>> [#1661] Added shutdown
 
     /// @brief Stops current connection.
     void stopThisConnection();
@@ -421,22 +396,10 @@ protected:
     long request_timeout_;
 
     /// @brief TLS context.
-<<<<<<< HEAD
     asiolink::TlsContextPtr tls_context_;
 
     /// @brief Timeout after which the persistent HTTP connection is shut
     /// down by the server.
-=======
-    asiolink::TlsContextPtr context_;
-
-<<<<<<< HEAD
-    /// @brief Timeout after which the persistent HTTP connection is closed
-    /// by the server.
->>>>>>> [#1661] HTTP code half done
-=======
-    /// @brief Timeout after which the persistent HTTP connection is shut
-    /// down by the server.
->>>>>>> [#1661] Added shutdown
     long idle_timeout_;
 
     /// @brief TCP socket used by this connection.
@@ -447,10 +410,6 @@ protected:
 
     /// @brief Pointer to the TCP acceptor used to accept new connections.
     HttpAcceptorPtr acceptor_;
-<<<<<<< HEAD
-=======
-    /////////////// Add a TLS acceptor.
->>>>>>> [#1661] HTTP code half done
 
     /// @brief Connection pool holding this connection.
     HttpConnectionPool& connection_pool_;
@@ -461,9 +420,6 @@ protected:
 
     /// @brief External TCP acceptor callback.
     HttpAcceptorCallback acceptor_callback_;
-
-    /// @brief External TLS handshake callback.
-    HttpAcceptorCallback handshake_callback_;
 };
 
 } // end of namespace isc::http

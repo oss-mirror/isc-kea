@@ -23,11 +23,8 @@ extern const isc::log::MessageID HTTP_CLIENT_REQUEST_SEND;
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_SEND_DETAILS;
 extern const isc::log::MessageID HTTP_CLIENT_REQUEST_TIMEOUT_OCCURRED;
 extern const isc::log::MessageID HTTP_CONNECTION_CLOSE_CALLBACK_FAILED;
-<<<<<<< HEAD
 extern const isc::log::MessageID HTTP_CONNECTION_HANDSHAKE_FAILED;
 extern const isc::log::MessageID HTTP_CONNECTION_HANDSHAKE_START;
-=======
->>>>>>> [#1661] Added shutdown
 extern const isc::log::MessageID HTTP_CONNECTION_SHUTDOWN;
 extern const isc::log::MessageID HTTP_CONNECTION_SHUTDOWN_FAILED;
 extern const isc::log::MessageID HTTP_CONNECTION_STOP;
