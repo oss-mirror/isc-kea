@@ -244,12 +244,6 @@ then
          try upgrading to a higher version of botan or installing libbz2
          and libgmp.])]
    )
-   dnl Check Botan boost ASIO TLS
-   BOTAN_BOOST=""
-   AC_CHECK_HEADERS([botan/asio_stream.h], [BOTAN_BOOST="yes"],
-        [BOTAN_BOOST="no"
-         AC_MSG_RESULT([Botan was not configured with boost support.])
-         AC_MSG_WARN([Botan cannot be used for TLS support.])])
    CPPFLAGS=$CPPFLAGS_SAVED
    LIBS=$LIBS_SAVED
    CRYPTO_NAME="Botan"
@@ -368,8 +362,6 @@ EOF
 fi
 
 AM_CONDITIONAL(HAVE_BOTAN, test "$CRYPTO_NAME" = "Botan")
-AM_CONDITIONAL(HAVE_BOTAN_BOOST,
-    test "$CRYPTO_NAME" = "Botan" && test "$BOTAN_BOOST" = "yes")
 AM_CONDITIONAL(HAVE_OPENSSL, test "$CRYPTO_NAME" = "OpenSSL")
 AC_SUBST(CRYPTO_INCLUDES)
 AC_SUBST(CRYPTO_CFLAGS)
