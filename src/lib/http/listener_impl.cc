@@ -19,21 +19,11 @@ namespace http {
 HttpListenerImpl::HttpListenerImpl(IOService& io_service,
                                    const asiolink::IOAddress& server_address,
                                    const unsigned short server_port,
-<<<<<<< HEAD
                                    const TlsContextPtr& tls_context,
                                    const HttpResponseCreatorFactoryPtr& creator_factory,
                                    const long request_timeout,
                                    const long idle_timeout)
     : io_service_(io_service), tls_context_(tls_context), acceptor_(),
-=======
-                                   const TlsContextPtr& context,
-                                   const HttpResponseCreatorFactoryPtr& creator_factory,
-                                   const long request_timeout,
-                                   const long idle_timeout)
-    : io_service_(io_service), context_(context),
-      ///////// move acceptor init below
-      acceptor_(new HttpAcceptor(io_service)),
->>>>>>> [#1661] HTTP code half done
       endpoint_(), connections_(),
       creator_factory_(creator_factory),
       request_timeout_(request_timeout), idle_timeout_(idle_timeout) {
@@ -108,11 +98,8 @@ HttpListenerImpl::accept() {
     HttpResponseCreatorPtr response_creator = creator_factory_->create();
     HttpAcceptorCallback acceptor_callback =
         std::bind(&HttpListenerImpl::acceptHandler, this, ph::_1);
-    HttpAcceptorCallback handshake_callback =
-        std::bind(&HttpListenerImpl::handshakeHandler, this, ph::_1);
     HttpConnectionPtr conn = createConnection(response_creator,
-                                              acceptor_callback,
-                                              handshake_callback);
+                                              acceptor_callback);
     // Add this new connection to the pool.
     connections_.start(conn);
 }
@@ -124,25 +111,12 @@ HttpListenerImpl::acceptHandler(const boost::system::error_code&) {
     accept();
 }
 
-void
-HttpListenerImpl::handshakeHandler(const boost::system::error_code&) {
-    // The TLS handshake has been performed.
-    ///////////// DO MORE!!!!!!!!
-}
-
 HttpConnectionPtr
 HttpListenerImpl::createConnection(const HttpResponseCreatorPtr& response_creator,
-                                   const HttpAcceptorCallback& acceptor_callback,
-                                   const HttpAcceptorCallback& handshake_callback) {
+                                   const HttpAcceptorCallback& callback) {
     HttpConnectionPtr
-<<<<<<< HEAD
         conn(new HttpConnection(io_service_, acceptor_, tls_context_,
                                 connections_, response_creator, callback,
-=======
-        conn(new HttpConnection(io_service_, acceptor_, context_,
-                                connections_, response_creator,
-                                acceptor_callback, handshake_callback,
->>>>>>> [#1661] HTTP code half done
                                 request_timeout_, idle_timeout_));
     return (conn);
 }

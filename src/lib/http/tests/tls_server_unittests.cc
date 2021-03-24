@@ -8,10 +8,7 @@
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/interval_timer.h>
 #include <asiolink/tls_acceptor.h>
-<<<<<<< HEAD
 #include <asiolink/testutils/test_tls.h>
-=======
->>>>>>> [#1661] Checkpoint: split server/client UTs
 #include <cc/data.h>
 #include <http/client.h>
 #include <http/http_types.h>
@@ -35,26 +32,18 @@
 #include <sstream>
 #include <string>
 
-<<<<<<< HEAD
 using namespace boost::asio;
 using namespace boost::asio::ip;
 using namespace isc::asiolink;
 using namespace isc::asiolink::test;
-=======
-using namespace boost::asio::ip;
-using namespace isc::asiolink;
->>>>>>> [#1661] Checkpoint: split server/client UTs
 using namespace isc::data;
 using namespace isc::http;
 using namespace isc::http::test;
 using namespace isc::util;
 namespace ph = std::placeholders;
 
-<<<<<<< HEAD
 /// @todo: put the common part of client and server tests in its own file(s).
 
-=======
->>>>>>> [#1661] Checkpoint: split server/client UTs
 namespace {
 
 /// @brief IP address to which HTTP service is bound.
@@ -226,20 +215,12 @@ public:
     HttpListenerImplCustom(IOService& io_service,
                            const IOAddress& server_address,
                            const unsigned short server_port,
-<<<<<<< HEAD
                            const TlsContextPtr& tls_context,
-=======
-                           const TlsContextPtr& context,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                            const HttpResponseCreatorFactoryPtr& creator_factory,
                            const long request_timeout,
                            const long idle_timeout)
         : HttpListenerImpl(io_service, server_address, server_port,
-<<<<<<< HEAD
                            tls_context, creator_factory, request_timeout,
-=======
-                           context, creator_factory, request_timeout,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                            idle_timeout) {
     }
 
@@ -250,7 +231,6 @@ protected:
     /// This method is virtual so as it can be overridden when customized
     /// connections are to be used, e.g. in case of unit testing.
     ///
-<<<<<<< HEAD
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
     /// @param callback Callback invoked when new connection is accepted.
@@ -264,31 +244,6 @@ protected:
             conn(new HttpConnectionType(io_service_, acceptor_,
                                         tls_context_, connections_,
                                         response_creator, callback,
-=======
-    /// @param io_service IO service to be used by the connection.
-    /// @param acceptor Pointer to the TCP acceptor object used to listen for
-    /// new HTTP connections.
-    /// @param context TLS context.
-    /// @param connection_pool Connection pool in which this connection is
-    /// stored.
-    /// @param response_creator Pointer to the response creator object used to
-    /// create HTTP response from the HTTP request received.
-    /// @param acceptor_callback Callback invoked when new connection is accepted.
-    /// @param handshake_callback Callback invoked when TLS handshake is performed.
-    /// @param request_timeout Configured timeout for a HTTP request.
-    /// @param idle_timeout Timeout after which persistent HTTP connection is
-    /// closed by the server.
-    ///
-    /// @return Pointer to the created connection.
-    virtual HttpConnectionPtr createConnection(const HttpResponseCreatorPtr& response_creator,
-                                               const HttpAcceptorCallback& acceptor_callback,
-                                               const HttpAcceptorCallback& handshake_callback) {
-        HttpConnectionPtr
-            conn(new HttpConnectionType(io_service_, acceptor_,
-                                        context_, connections_,
-                                        response_creator,
-                                        acceptor_callback, handshake_callback,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                                         request_timeout_, idle_timeout_));
         return (conn);
     }
@@ -310,11 +265,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /// @param context TLS context.
->>>>>>> [#1661] Checkpoint: split server/client UTs
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -328,30 +279,18 @@ public:
     HttpListenerCustom(IOService& io_service,
                        const IOAddress& server_address,
                        const unsigned short server_port,
-<<<<<<< HEAD
                        const TlsContextPtr& tls_context,
-=======
-                       const TlsContextPtr& context,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                        const HttpResponseCreatorFactoryPtr& creator_factory,
                        const HttpListener::RequestTimeout& request_timeout,
                        const HttpListener::IdleTimeout& idle_timeout)
         : HttpListener(io_service, server_address, server_port,
-<<<<<<< HEAD
                        tls_context, creator_factory,
-=======
-                       context, creator_factory,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                        request_timeout, idle_timeout) {
         // Replace the default implementation with the customized version
         // using the custom derivation of the HttpConnection.
         impl_.reset(new HttpListenerImplCustom<HttpConnectionType>
                     (io_service, server_address, server_port,
-<<<<<<< HEAD
                      tls_context, creator_factory, request_timeout.value_,
-=======
-                     context, creator_factory, request_timeout.value_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                      idle_timeout.value_));
     }
 };
@@ -366,27 +305,17 @@ public:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /// @param context TLS context.
->>>>>>> [#1661] Checkpoint: split server/client UTs
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-<<<<<<< HEAD
     /// @param callback Callback invoked when new connection is accepted.
-=======
-    /// @param acceptor_callback Callback invoked when new connection is accepted.
-    /// @param handshake_callback Callback invoked when TLS handshake is performed.
->>>>>>> [#1661] Checkpoint: split server/client UTs
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     HttpConnectionLongWriteBuffer(IOService& io_service,
                                   const HttpAcceptorPtr& acceptor,
-<<<<<<< HEAD
                                   const TlsContextPtr& tls_context,
                                   HttpConnectionPool& connection_pool,
                                   const HttpResponseCreatorPtr& response_creator,
@@ -395,18 +324,6 @@ public:
                                   const long idle_timeout)
         : HttpConnection(io_service, acceptor, tls_context, connection_pool,
                          response_creator, callback, request_timeout,
-=======
-                                  const TlsContextPtr& context,
-                                  HttpConnectionPool& connection_pool,
-                                  const HttpResponseCreatorPtr& response_creator,
-                                  const HttpAcceptorCallback& acceptor_callback,
-                                  const HttpAcceptorCallback& handshake_callback,
-                                  const long request_timeout,
-                                  const long idle_timeout)
-        : HttpConnection(io_service, acceptor, context, connection_pool,
-                         response_creator, acceptor_callback,
-                         handshake_callback, request_timeout,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                          idle_timeout) {
     }
 
@@ -435,27 +352,17 @@ public:
     /// @param io_service IO service to be used by the connection.
     /// @param acceptor Pointer to the TCP acceptor object used to listen for
     /// new HTTP connections.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /// @param context TLS context.
->>>>>>> [#1661] Checkpoint: split server/client UTs
     /// @param connection_pool Connection pool in which this connection is
     /// stored.
     /// @param response_creator Pointer to the response creator object used to
     /// create HTTP response from the HTTP request received.
-<<<<<<< HEAD
     /// @param callback Callback invoked when new connection is accepted.
-=======
-    /// @param acceptor_callback Callback invoked when new connection is accepted.
-    /// @param handshake_callback Callback invoked when TLS handshake is performed.
->>>>>>> [#1661] Checkpoint: split server/client UTs
     /// @param request_timeout Configured timeout for a HTTP request.
     /// @param idle_timeout Timeout after which persistent HTTP connection is
     /// closed by the server.
     HttpConnectionTransactionChange(IOService& io_service,
                                     const HttpAcceptorPtr& acceptor,
-<<<<<<< HEAD
                                     const TlsContextPtr& tls_context,
                                     HttpConnectionPool& connection_pool,
                                     const HttpResponseCreatorPtr& response_creator,
@@ -464,18 +371,6 @@ public:
                                     const long idle_timeout)
         : HttpConnection(io_service, acceptor, tls_context, connection_pool,
                          response_creator, callback, request_timeout,
-=======
-                                    const TlsContextPtr& context,
-                                    HttpConnectionPool& connection_pool,
-                                    const HttpResponseCreatorPtr& response_creator,
-                                    const HttpAcceptorCallback& acceptor_callback,
-                                    const HttpAcceptorCallback& handshake_callback,
-                                    const long request_timeout,
-                                    const long idle_timeout)
-        : HttpConnection(io_service, acceptor, context, connection_pool,
-                         response_creator, acceptor_callback,
-                         handshake_callback, request_timeout,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                          idle_timeout) {
     }
 
@@ -510,15 +405,10 @@ public:
     /// connect() to connect to the server.
     ///
     /// @param io_service IO service to be stopped on error.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
     TestHttpClient(IOService& io_service, TlsContextPtr tls_context)
         : io_service_(io_service.get_io_service()),
           stream_(io_service_, tls_context->getContext()),
-=======
-    explicit TestHttpClient(IOService& io_service)
-        : io_service_(io_service.get_io_service()), socket_(io_service_),
->>>>>>> [#1661] Checkpoint: split server/client UTs
           buf_(), response_() {
     }
 
@@ -535,11 +425,7 @@ public:
     void startRequest(const std::string& request) {
         tcp::endpoint endpoint(address::from_string(SERVER_ADDRESS),
                                SERVER_PORT);
-<<<<<<< HEAD
         stream_.lowest_layer().async_connect(endpoint,
-=======
-        socket_.async_connect(endpoint,
->>>>>>> [#1661] Checkpoint: split server/client UTs
         [this, request](const boost::system::error_code& ec) {
             if (ec) {
                 // One would expect that async_connect wouldn't return
@@ -556,7 +442,6 @@ public:
                     return;
                 }
             }
-<<<<<<< HEAD
             stream_.async_handshake(roleToImpl(TlsRole::CLIENT),
             [this, request](const boost::system::error_code& ec) {
                 if (ec) {
@@ -567,9 +452,6 @@ public:
                 }
                 sendRequest(request);
             });
-=======
-            sendRequest(request);
->>>>>>> [#1661] Checkpoint: split server/client UTs
         });
     }
 
@@ -584,16 +466,10 @@ public:
     ///
     /// @param request part of the HTTP request to be sent.
     void sendPartialRequest(std::string request) {
-<<<<<<< HEAD
         boost::asio::async_write(stream_,
                 boost::asio::buffer(request.data(), request.size()),
                 [this, request](const boost::system::error_code& ec,
                                 std::size_t bytes_transferred) mutable {
-=======
-        socket_.async_send(boost::asio::buffer(request.data(), request.size()),
-                           [this, request](const boost::system::error_code& ec,
-                                           std::size_t bytes_transferred) mutable {
->>>>>>> [#1661] Checkpoint: split server/client UTs
             if (ec) {
                 if (ec.value() == boost::asio::error::operation_aborted) {
                     return;
@@ -632,11 +508,7 @@ public:
 
     /// @brief Receive response from the server.
     void receivePartialResponse() {
-<<<<<<< HEAD
         stream_.async_read_some(boost::asio::buffer(buf_.data(), buf_.size()),
-=======
-        socket_.async_read_some(boost::asio::buffer(buf_.data(), buf_.size()),
->>>>>>> [#1661] Checkpoint: split server/client UTs
                                 [this](const boost::system::error_code& ec,
                                        std::size_t bytes_transferred) {
             if (ec) {
@@ -685,32 +557,18 @@ public:
     /// @return true if the TCP connection is open.
     bool isConnectionAlive() {
         // Remember the current non blocking setting.
-<<<<<<< HEAD
         const bool non_blocking_orig = stream_.lowest_layer().non_blocking();
         // Set the socket to non blocking mode. We're going to test if the socket
         // returns would_block status on the attempt to read from it.
         stream_.lowest_layer().non_blocking(true);
-=======
-        const bool non_blocking_orig = socket_.non_blocking();
-        // Set the socket to non blocking mode. We're going to test if the socket
-        // returns would_block status on the attempt to read from it.
-        socket_.non_blocking(true);
->>>>>>> [#1661] Checkpoint: split server/client UTs
 
         // We need to provide a buffer for a call to read.
         char data[2];
         boost::system::error_code ec;
-<<<<<<< HEAD
         boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
 
         // Revert the original non_blocking flag on the socket.
         stream_.lowest_layer().non_blocking(non_blocking_orig);
-=======
-        boost::asio::read(socket_, boost::asio::buffer(data, sizeof(data)), ec);
-
-        // Revert the original non_blocking flag on the socket.
-        socket_.non_blocking(non_blocking_orig);
->>>>>>> [#1661] Checkpoint: split server/client UTs
 
         // If the connection is alive we'd typically get would_block status code.
         // If there are any data that haven't been read we may also get success
@@ -732,22 +590,14 @@ public:
     /// @return true if the TCP connection is closed.
     bool isConnectionClosed() {
         // Remember the current non blocking setting.
-<<<<<<< HEAD
         const bool non_blocking_orig = stream_.lowest_layer().non_blocking();
         // Set the socket to blocking mode. We're going to test if the socket
         // returns eof status on the attempt to read from it.
         stream_.lowest_layer().non_blocking(false);
-=======
-        const bool non_blocking_orig = socket_.non_blocking();
-        // Set the socket to blocking mode. We're going to test if the socket
-        // returns eof status on the attempt to read from it.
-        socket_.non_blocking(false);
->>>>>>> [#1661] Checkpoint: split server/client UTs
 
         // We need to provide a buffer for a call to read.
         char data[2];
         boost::system::error_code ec;
-<<<<<<< HEAD
         boost::asio::read(stream_, boost::asio::buffer(data, sizeof(data)), ec);
 
         // Revert the original non_blocking flag on the socket.
@@ -757,24 +607,11 @@ public:
         // stream_truncated status code.
         return ((ec.value() == boost::asio::error::eof) ||
                 (ec.value() == STREAM_TRUNCATED));
-=======
-        boost::asio::read(socket_, boost::asio::buffer(data, sizeof(data)), ec);
-
-        // Revert the original non_blocking flag on the socket.
-        socket_.non_blocking(non_blocking_orig);
-
-        // If the connection is closed we'd typically get eof status code.
-        return (ec.value() == boost::asio::error::eof);
->>>>>>> [#1661] Checkpoint: split server/client UTs
     }
 
     /// @brief Close connection.
     void close() {
-<<<<<<< HEAD
         stream_.lowest_layer().close();
-=======
-        socket_.close();
->>>>>>> [#1661] Checkpoint: split server/client UTs
     }
 
     std::string getResponse() const {
@@ -787,11 +624,7 @@ private:
     boost::asio::io_service& io_service_;
 
     /// @brief A socket used for the connection.
-<<<<<<< HEAD
     TlsStreamImpl stream_;
-=======
-    boost::asio::ip::tcp::socket socket_;
->>>>>>> [#1661] Checkpoint: split server/client UTs
 
     /// @brief Buffer into which response is written.
     std::array<char, 8192> buf_;
@@ -812,14 +645,10 @@ public:
     /// Starts test timer which detects timeouts.
     HttpsListenerTest()
         : io_service_(), factory_(new TestHttpResponseCreatorFactory()),
-<<<<<<< HEAD
           test_timer_(io_service_), run_io_service_timer_(io_service_),
           clients_(), server_context_(), client_context_() {
         configServer(server_context_);
         configClient(client_context_);
-=======
-          test_timer_(io_service_), run_io_service_timer_(io_service_), clients_() {
->>>>>>> [#1661] Checkpoint: split server/client UTs
         test_timer_.setup(std::bind(&HttpsListenerTest::timeoutHandler, this, true),
                           TEST_TIMEOUT, IntervalTimer::ONE_SHOT);
     }
@@ -841,12 +670,8 @@ public:
     ///
     /// @param request String containing the HTTP request to be sent.
     void startRequest(const std::string& request) {
-<<<<<<< HEAD
         TestHttpClientPtr client(new TestHttpClient(io_service_,
                                                     client_context_));
-=======
-        TestHttpClientPtr client(new TestHttpClient(io_service_));
->>>>>>> [#1661] Checkpoint: split server/client UTs
         clients_.push_back(client);
         clients_.back()->startRequest(request);
     }
@@ -906,14 +731,8 @@ public:
                             const HttpVersion& expected_version) {
         // Open the listener with the Request Timeout of 1 sec and post the
         // partial request.
-<<<<<<< HEAD
         HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, server_context_,
-=======
-        TlsContextPtr context;
-        HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                               factory_, HttpListener::RequestTimeout(1000),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT));
         ASSERT_NO_THROW(listener.start());
@@ -964,16 +783,9 @@ public:
             "{ }";
 
         // Use custom listener and the specialized connection object.
-<<<<<<< HEAD
         HttpListenerCustom<HttpConnectionType>
             listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                      server_context_, factory_,
-=======
-        TlsContextPtr context;
-        HttpListenerCustom<HttpConnectionType>
-            listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                     context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                      HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                      HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -1006,15 +818,12 @@ public:
 
     /// @brief List of client connections.
     std::list<TestHttpClientPtr> clients_;
-<<<<<<< HEAD
 
     /// @brief Server TLS context.
     TlsContextPtr server_context_;
 
     /// @brief Client TLS context.
     TlsContextPtr client_context_;
-=======
->>>>>>> [#1661] Checkpoint: split server/client UTs
 };
 
 // This test verifies that HTTP connection can be established and used to
@@ -1025,14 +834,8 @@ TEST_F(HttpsListenerTest, listen) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1062,14 +865,8 @@ TEST_F(HttpsListenerTest, keepAlive) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -1117,14 +914,8 @@ TEST_F(HttpsListenerTest, persistentConnection) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -1174,16 +965,9 @@ TEST_F(HttpsListenerTest, keepAliveTimeout) {
         "Connection: Keep-Alive\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    // Specify the idle timeout of 500ms.
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -1238,16 +1022,9 @@ TEST_F(HttpsListenerTest, persistentConnectionTimeout) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     // Specify the idle timeout of 500ms.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    // Specify the idle timeout of 500ms.
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(500));
 
@@ -1302,14 +1079,8 @@ TEST_F(HttpsListenerTest, persistentConnectionBadBody) {
         "Content-Length: 12\r\n\r\n"
         "{ \"a\": abc }";
 
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
 
@@ -1353,14 +1124,8 @@ TEST_F(HttpsListenerTest, persistentConnectionBadBody) {
 
 // This test verifies that the HTTP listener can't be started twice.
 TEST_F(HttpsListenerTest, startTwice) {
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1376,14 +1141,8 @@ TEST_F(HttpsListenerTest, badRequest) {
         "Content-Length: 3\r\n\r\n"
         "{ }";
 
-<<<<<<< HEAD
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
                           server_context_, factory_,
-=======
-    TlsContextPtr context;
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS), SERVER_PORT,
-                          context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     ASSERT_NO_THROW(listener.start());
@@ -1404,14 +1163,8 @@ TEST_F(HttpsListenerTest, badRequest) {
 // This test verifies that NULL pointer can't be specified for the
 // HttpResponseCreatorFactory.
 TEST_F(HttpsListenerTest, invalidFactory) {
-<<<<<<< HEAD
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, server_context_,
-=======
-    TlsContextPtr context;
-    EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpResponseCreatorFactoryPtr(),
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
@@ -1421,14 +1174,8 @@ TEST_F(HttpsListenerTest, invalidFactory) {
 // This test verifies that the timeout of 0 can't be specified for the
 // Request Timeout.
 TEST_F(HttpsListenerTest, invalidRequestTimeout) {
-<<<<<<< HEAD
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, server_context_, factory_,
-=======
-    TlsContextPtr context;
-    EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpListener::RequestTimeout(0),
                               HttpListener::IdleTimeout(IDLE_TIMEOUT)),
                  HttpListenerError);
@@ -1437,14 +1184,8 @@ TEST_F(HttpsListenerTest, invalidRequestTimeout) {
 // This test verifies that the timeout of 0 can't be specified for the
 // idle persistent connection timeout.
 TEST_F(HttpsListenerTest, invalidIdleTimeout) {
-<<<<<<< HEAD
     EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
                               SERVER_PORT, server_context_, factory_,
-=======
-    TlsContextPtr context;
-    EXPECT_THROW(HttpListener(io_service_, IOAddress(SERVER_ADDRESS),
-                              SERVER_PORT, context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                               HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                               HttpListener::IdleTimeout(0)),
                  HttpListenerError);
@@ -1461,18 +1202,10 @@ TEST_F(HttpsListenerTest, addressInUse) {
     acceptor.open(endpoint.protocol());
     acceptor.bind(endpoint);
 
-<<<<<<< HEAD
     // Listener should report an error when we try to start it because another
     // acceptor is bound to that port and address.
     HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
                           SERVER_PORT + 1, server_context_, factory_,
-=======
-    TlsContextPtr context;
-    // Listener should report an error when we try to start it because another
-    // acceptor is bound to that port and address.
-    HttpListener listener(io_service_, IOAddress(SERVER_ADDRESS),
-                          SERVER_PORT + 1, context, factory_,
->>>>>>> [#1661] Checkpoint: split server/client UTs
                           HttpListener::RequestTimeout(REQUEST_TIMEOUT),
                           HttpListener::IdleTimeout(IDLE_TIMEOUT));
     EXPECT_THROW(listener.start(), HttpListenerError);

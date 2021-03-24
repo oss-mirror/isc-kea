@@ -165,7 +165,6 @@ class client
 public:
   client(boost::asio::io_service& io_context,
       Botan::TLS::Context& context,
-<<<<<<< HEAD
       const tcp::endpoint& endpoint)
     : socket_(io_context, context)
   {
@@ -177,20 +176,6 @@ private:
   {
     socket_.lowest_layer().async_connect(endpoint,
         [this](const boost::system::error_code& error)
-=======
-      const tcp::resolver::results_type& endpoints)
-    : socket_(io_context, context)
-  {
-    connect(endpoints);
-  }
-
-private:
-  void connect(const tcp::resolver::results_type& endpoints)
-  {
-    boost::asio::async_connect(socket_.lowest_layer(), endpoints,
-        [this](const boost::system::error_code& error,
-          const tcp::endpoint& /*endpoint*/)
->>>>>>> [#1661] Moved ca to testutils
         {
           if (!error)
           {
@@ -278,36 +263,22 @@ int main(int argc, char* argv[])
   {
     if (argc != 3)
     {
-<<<<<<< HEAD
       std::cerr << "Usage: client <addr> <port>\n";
-=======
-      std::cerr << "Usage: client <host> <port>\n";
->>>>>>> [#1661] Moved ca to testutils
       return 1;
     }
 
     boost::asio::io_service io_context;
 
-<<<<<<< HEAD
     using namespace std; // For atoi.
     tcp::endpoint endpoint(
       boost::asio::ip::address::from_string(argv[1]), atoi(argv[2]));
-=======
-    tcp::resolver resolver(io_context);
-    auto endpoints = resolver.resolve(argv[1], argv[2]);
-
->>>>>>> [#1661] Moved ca to testutils
     Botan::AutoSeeded_RNG rng;
     Client_Credentials_Manager creds_mgr(rng);
     Client_Session_Manager sess_mgr;
     Client_Policy policy;
     Botan::TLS::Context ctx(creds_mgr, rng, sess_mgr, policy);
 
-<<<<<<< HEAD
     client c(io_context, ctx, endpoint);
-=======
-    client c(io_context, ctx, endpoints);
->>>>>>> [#1661] Moved ca to testutils
 
     io_context.run();
   }

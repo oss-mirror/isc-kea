@@ -10,11 +10,6 @@
 #include <asiolink/io_address.h>
 #include <asiolink/io_service.h>
 #include <asiolink/crypto_tls.h>
-<<<<<<< HEAD
-=======
-#include <asiolink/openssl_tls.h>
-#include <asiolink/botan_tls.h>
->>>>>>> [#1661] HTTP code half done
 #include <exceptions/exceptions.h>
 #include <http/response_creator_factory.h>
 #include <boost/shared_ptr.hpp>
@@ -90,11 +85,7 @@ public:
     /// @param io_service IO service to be used by the listener.
     /// @param server_address Address on which the HTTP service should run.
     /// @param server_port Port number on which the HTTP service should run.
-<<<<<<< HEAD
     /// @param tls_context TLS context.
-=======
-    /// @param context TLS context.
->>>>>>> [#1661] HTTP code half done
     /// @param creator_factory Pointer to the caller-defined
     /// @ref HttpResponseCreatorFactory derivation which should be used to
     /// create @ref HttpResponseCreator instances.
@@ -108,11 +99,7 @@ public:
     HttpListener(asiolink::IOService& io_service,
                  const asiolink::IOAddress& server_address,
                  const unsigned short server_port,
-<<<<<<< HEAD
                  const asiolink::TlsContextPtr& tls_context,
-=======
-                 const asiolink::TlsContextPtr& context,
->>>>>>> [#1661] HTTP code half done
                  const HttpResponseCreatorFactoryPtr& creator_factory,
                  const RequestTimeout& request_timeout,
                  const IdleTimeout& idle_timeout);

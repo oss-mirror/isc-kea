@@ -14,31 +14,24 @@
 #include <asiolink/crypto_tls.h>
 
 #include <botan/auto_rng.h>
-<<<<<<< HEAD
 #include <botan/certstor_flatfile.h>
 #include <botan/data_src.h>
 #include <botan/pem.h>
 #include <botan/pkcs8.h>
 
 using namespace isc::cryptolink;
-=======
->>>>>>> [#1665] Checkpoint
 
 namespace isc {
 namespace asiolink {
 
-<<<<<<< HEAD
 // Classes of Kea certificate stores.
 using KeaCertificateStorePath = Botan::Certificate_Store_In_Memory;
 using KeaCertificateStoreFile = Botan::Flatfile_Certificate_Store;
 
-=======
->>>>>>> [#1665] Checkpoint
 // Class of Kea credential managers.
 class KeaCredentialsManager : public Botan::Credentials_Manager {
 public:
     // Constructor.
-<<<<<<< HEAD
     KeaCredentialsManager() : store_(), use_stores_(true), certs_(), key_() {
     }
 
@@ -141,14 +134,6 @@ public:
 
     // Pointer to the private key.
     std::unique_ptr<Botan::Private_Key> key_;
-=======
-    KeaCredentialsManager() {
-    }
-
-    // Destructor.
-    virtual ~KeaCredentialsManager() {
-    }
->>>>>>> [#1665] Checkpoint
 };
 
 // Class of Kea policy.
@@ -156,17 +141,12 @@ public:
 class KeaPolicy : public Botan::TLS::Default_Policy {
 public:
     // Constructor.
-<<<<<<< HEAD
     KeaPolicy() : prefer_rsa_(true) {
-=======
-    KeaPolicy() {
->>>>>>> [#1665] Checkpoint
     }
 
     // Destructor.
     virtual ~KeaPolicy() {
     }
-<<<<<<< HEAD
 
     // Allowed signature methods in preference order.
     std::vector<std::string> allowed_signature_methods() const override {
@@ -209,10 +189,6 @@ KeaPolicy::AllowedSignatureMethodsRSA = { "RSA", "DSA", "ECDSA" };
 const std::vector<std::string>
 KeaPolicy::AllowedSignatureMethodsECDSA = { "ECDSA", "RSA", "DSA" };
 
-=======
-};
-
->>>>>>> [#1665] Checkpoint
 // Class of Botan TLS context implementations.
 class TlsContextImpl {
 public:
@@ -224,7 +200,6 @@ public:
     virtual ~TlsContextImpl() {
     }
 
-<<<<<<< HEAD
     // Set the the peer certificate requirement mode.
     //
     // With Botan this means to provide or not the CA certificate stores.
@@ -291,8 +266,6 @@ public:
         return (*context_);
     }
 
-=======
->>>>>>> [#1665] Checkpoint
     // Credentials Manager.
     KeaCredentialsManager cred_mgr_;
 
@@ -300,7 +273,6 @@ public:
     Botan::AutoSeeded_RNG rng_;
 
     // Session Manager.
-<<<<<<< HEAD
     KeaSessionManager sess_mgr_;
 
     KeaPolicy policy_;
@@ -320,39 +292,16 @@ Botan::TLS::Context&
 TlsContext::getContext() {
     impl_->build();
     return (impl_->get());
-=======
-    Botan::TLS::Session_Manager_Noop sess_mgr_;
-
-    KeaPolicy policy_;
-};
-
-TlsContext::TlsContext(TlsRole role)
-    : TlsContextBase(role), cert_required_(true),
-      context_(new TlsContextImpl()) {
-}
-
-Botan::TLS::Context
-TlsContext::getContext() {
-    return (Botan::TLS::Context(context_->cred_mgr_,
-                                context_->rng_,
-                                context_->sess_mgr_,
-                                context_->policy_));
->>>>>>> [#1665] Checkpoint
 }
 
 void
 TlsContext::setCertRequired(bool cert_required) {
-<<<<<<< HEAD
     if (!cert_required && (getRole() == TlsRole::CLIENT)) {
         isc_throw(BadValue,
                   "'cert-required' parameter must be true for a TLS client");
     }
     cert_required_ = cert_required;
     impl_->setCertRequired(cert_required_);
-=======
-    cert_required_ = cert_required;
-    // Todo
->>>>>>> [#1665] Checkpoint
 }
 
 bool
@@ -361,7 +310,6 @@ TlsContext::getCertRequired() const {
 }
 
 void
-<<<<<<< HEAD
 TlsContext::loadCaFile(const std::string& ca_file) {
     impl_->loadCaFile(ca_file);
 }
@@ -379,44 +327,6 @@ TlsContext::loadCertFile(const std::string& cert_file) {
 void
 TlsContext::loadKeyFile(const std::string& key_file) {
     impl_->loadKeyFile(key_file);
-=======
-TlsContext::loadCaFile(const std::string&) {
-    // Todo.
-}
-
-void
-TlsContext::loadCaPath(const std::string&) {
-    isc_throw(NotImplemented, "loadCaPath is not implemented by Botan");
-}
-
-void
-TlsContext::loadCertFile(const std::string&) {
-    // Todo.
-}
-
-void
-TlsContext::loadKeyFile(const std::string&) {
-    // Todo.
-}
-
-void
-TlsContext::configure(TlsContextPtr& context,
-                      TlsRole role,
-                      const std::string& ca_file,
-                      const std::string& cert_file,
-                      const std::string& key_file,
-                      bool cert_required) {
-    try {
-        context.reset(new TlsContext(role));
-        context->loadCaFile(ca_file);
-        context->loadCertFile(cert_file);
-        context->loadKeyFile(key_file);
-        context->setCertRequired(cert_required);
-    } catch (...) {
-        context.reset();
-        throw;
-    }
->>>>>>> [#1665] Checkpoint
 }
 
 } // namespace asiolink

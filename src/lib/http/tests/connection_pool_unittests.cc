@@ -223,7 +223,6 @@ public:
 
 };
 
-<<<<<<< HEAD
 // Verifies that connections can be added to the pool and removed.
 // with MultiThreading disabled.
 TEST_F(HttpConnectionPoolTest, startStopTest) {
@@ -236,57 +235,11 @@ TEST_F(HttpConnectionPoolTest, startStopTest) {
 TEST_F(HttpConnectionPoolTest, startStopTestMultiThreading) {
     MultiThreadingMgr::instance().setMode(true);
     startStopTest();
-=======
-// This test verifies that connections can be added to the pool and removed.
-TEST_F(HttpConnectionPoolTest, startStop) {
-    // Create two distinct connections.
-    HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    // The pool should be initially empty.
-    TestHttpConnectionPool pool;
-    ASSERT_TRUE(pool.connections_.empty());
-
-    // Start first connection and check that it has been added to the pool.
-    ASSERT_NO_THROW(pool.start(conn1));
-    ASSERT_EQ(1, pool.connections_.size());
-    ASSERT_EQ(1, pool.hasConnection(conn1));
-
-    // Start second connection and check that it also has been added.
-    ASSERT_NO_THROW(pool.start(conn2));
-    ASSERT_EQ(2, pool.connections_.size());
-    ASSERT_EQ(1, pool.hasConnection(conn2));
-
-    // Stop first connection.
-    ASSERT_NO_THROW(pool.stop(conn1));
-    ASSERT_EQ(1, pool.connections_.size());
-    // Check that it has been removed but the second connection is still there.
-    ASSERT_EQ(0, pool.hasConnection(conn1));
-    ASSERT_EQ(1, pool.hasConnection(conn2));
-
-    // Remove second connection and verify.
-    ASSERT_NO_THROW(pool.stop(conn2));
-    EXPECT_TRUE(pool.connections_.empty());
->>>>>>> [#1661] HTTP code half done
 }
 
 // Check that all connections can be remove with a single call.
 // with MultiThreading disabled.
 TEST_F(HttpConnectionPoolTest, stopAll) {
-<<<<<<< HEAD
     ASSERT_FALSE(MultiThreadingMgr::instance().getMode());
     stopAllTest();
 }
@@ -297,40 +250,11 @@ TEST_F(HttpConnectionPoolTest, stopAllMultiThreading) {
     MultiThreadingMgr::instance().setMode(true);
     ASSERT_TRUE(MultiThreadingMgr::instance().getMode());
     stopAllTest();
-=======
-    HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    TestHttpConnectionPool pool;
-    ASSERT_NO_THROW(pool.start(conn1));
-    ASSERT_NO_THROW(pool.start(conn2));
-
-    // There are two distinct connections in the pool.
-    ASSERT_EQ(2, pool.connections_.size());
-
-    // This should remove all connections.
-    ASSERT_NO_THROW(pool.stopAll());
-    EXPECT_TRUE(pool.connections_.empty());
->>>>>>> [#1661] HTTP code half done
 }
 
 // Check that stopping non-existing connection is no-op.
 // with MultiThreading disabled.
 TEST_F(HttpConnectionPoolTest, stopInvalid) {
-<<<<<<< HEAD
     ASSERT_FALSE(MultiThreadingMgr::instance().getMode());
     stopInvalidTest();
 }
@@ -341,29 +265,6 @@ TEST_F(HttpConnectionPoolTest, stopInvalidMultiThreading) {
     MultiThreadingMgr::instance().setMode(true);
     ASSERT_TRUE(MultiThreadingMgr::instance().getMode());
     stopInvalidTest();
-=======
-    HttpConnectionPtr conn1(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    HttpConnectionPtr conn2(new HttpConnection(io_service_, acceptor_,
-                                               TlsContextPtr(),
-                                               connection_pool_,
-                                               response_creator_,
-                                               HttpAcceptorCallback(),
-                                               HttpAcceptorCallback(),
-                                               CONN_REQUEST_TIMEOUT,
-                                               CONN_IDLE_TIMEOUT));
-    TestHttpConnectionPool pool;
-    ASSERT_NO_THROW(pool.start(conn1));
-    ASSERT_NO_THROW(pool.stop(conn2));
-    ASSERT_EQ(1, pool.connections_.size());
-    ASSERT_EQ(1, pool.hasConnection(conn1));
->>>>>>> [#1661] HTTP code half done
 }
 
 }

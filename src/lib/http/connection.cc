@@ -64,15 +64,10 @@ SocketCallback::operator()(boost::system::error_code ec, size_t length) {
 
 HttpConnection::HttpConnection(asiolink::IOService& io_service,
                                const HttpAcceptorPtr& acceptor,
-<<<<<<< HEAD
                                const TlsContextPtr& tls_context,
-=======
-                               const TlsContextPtr& context,
->>>>>>> [#1661] HTTP code half done
                                HttpConnectionPool& connection_pool,
                                const HttpResponseCreatorPtr& response_creator,
-                               const HttpAcceptorCallback& acceptor_callback,
-                               const HttpAcceptorCallback& handshake_callback,
+                               const HttpAcceptorCallback& callback,
                                const long request_timeout,
                                const long idle_timeout)
     : request_timer_(io_service),
@@ -84,7 +79,6 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
       acceptor_(acceptor),
       connection_pool_(connection_pool),
       response_creator_(response_creator),
-<<<<<<< HEAD
       acceptor_callback_(callback) {
     if (!tls_context) {
         tcp_socket_.reset(new asiolink::TCPSocket<SocketCallback>(io_service));
@@ -92,10 +86,6 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
         tls_socket_.reset(new asiolink::TLSSocket<SocketCallback>(io_service,
                                                                   tls_context));
     }
-=======
-      acceptor_callback_(acceptor_callback),
-      handshake_callback_(handshake_callback) {
->>>>>>> [#1661] HTTP code half done
 }
 
 HttpConnection::~HttpConnection() {
@@ -118,11 +108,7 @@ HttpConnection::shutdown() {
         // Create instance of the callback to close the socket.
         SocketCallback cb(std::bind(&HttpConnection::shutdownCallback,
                                     shared_from_this(),
-<<<<<<< HEAD
                                     ph::_1)); // error_code
-=======
-                                    ph::_1)); // error
->>>>>>> [#1661] Added shutdown
         tls_socket_->shutdown(cb);
         return;
     }
@@ -146,11 +132,7 @@ HttpConnection::close() {
 }
 
 void
-<<<<<<< HEAD
 HttpConnection::shutdownConnection() {
-=======
-HttpConnection::shutdownThisConnection() {
->>>>>>> [#1661] Added shutdown
     try {
         LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_BASIC,
                   HTTP_CONNECTION_SHUTDOWN)
@@ -182,7 +164,6 @@ HttpConnection::asyncAccept() {
                                         shared_from_this(),
                                         ph::_1); // error
     try {
-<<<<<<< HEAD
         HttpsAcceptorPtr tls_acceptor =
             boost::dynamic_pointer_cast<HttpsAcceptor>(acceptor_);
         if (!tls_acceptor) {
@@ -196,10 +177,6 @@ HttpConnection::asyncAccept() {
             }
             tls_acceptor->asyncAccept(*tls_socket_, cb);
         }
-=======
-        acceptor_->asyncAccept(socket_, cb);
-
->>>>>>> [#1661] HTTP code half done
     } catch (const std::exception& ex) {
         isc_throw(HttpConnectionError, "unable to start accepting TCP "
                   "connections: " << ex.what());
@@ -208,15 +185,12 @@ HttpConnection::asyncAccept() {
 
 void
 HttpConnection::doHandshake() {
-<<<<<<< HEAD
     // Skip the handshake if the socket is not a TLS one.
     if (!tls_socket_) {
         doRead();
         return;
     }
 
-=======
->>>>>>> [#1661] HTTP code half done
     // Create instance of the callback. It is safe to pass the local instance
     // of the callback, because the underlying boost functions make copies
     // as needed.
@@ -224,11 +198,7 @@ HttpConnection::doHandshake() {
                                 shared_from_this(),
                                 ph::_1)); // error
     try {
-<<<<<<< HEAD
         tls_socket_->handshake(cb);
-=======
-        ////////// socket_.handshake(true, cb);
->>>>>>> [#1661] HTTP code half done
 
     } catch (const std::exception& ex) {
         isc_throw(HttpConnectionError, "unable to perform TLS handshake: "
@@ -339,7 +309,6 @@ HttpConnection::acceptorCallback(const boost::system::error_code& ec) {
     acceptor_callback_(ec);
 
     if (!ec) {
-<<<<<<< HEAD
         if (!tls_context_) {
             LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
                       HTTP_REQUEST_RECEIVE_START)
@@ -351,13 +320,6 @@ HttpConnection::acceptorCallback(const boost::system::error_code& ec) {
                 .arg(getRemoteEndpointAddressAsText())
                 .arg(static_cast<unsigned>(request_timeout_/1000));
         }
-=======
-        LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
-                  HTTP_REQUEST_RECEIVE_START)
-            //////////// change the message
-            .arg(getRemoteEndpointAddressAsText())
-            .arg(static_cast<unsigned>(request_timeout_/1000));
->>>>>>> [#1661] HTTP code half done
 
         setupRequestTimer();
         doHandshake();
@@ -374,24 +336,6 @@ HttpConnection::handshakeCallback(const boost::system::error_code& ec) {
     } else {
         LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
                   HTTPS_REQUEST_RECEIVE_START)
-            .arg(getRemoteEndpointAddressAsText());
-
-        doRead();
-        ////////// or doHandshake();
-    }
-}
-
-void
-HttpConnection::handshakeCallback(const boost::system::error_code& ec) {
-    if (ec) {
-        stopThisConnection();
-    }
-
-    handshake_callback_(ec);
-
-    if (!ec) {
-        LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_DETAIL,
-                  HTTP_REQUEST_RECEIVE_START)
             .arg(getRemoteEndpointAddressAsText());
 
         doRead();
