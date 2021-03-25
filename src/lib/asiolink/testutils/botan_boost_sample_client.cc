@@ -18,6 +18,7 @@
 
 #include <asiolink/botan_boost_wrapper.h>
 #include <botan/asio_stream.h>
+#include <botan/certstor_flatfile.h>
 #include <botan/pkcs8.h>
 #include <botan/auto_rng.h>
 
@@ -29,77 +30,14 @@ using boost::asio::ip::tcp;
 
 enum { max_length = 1024 };
 
-class Client_Certificate_Store : public Botan::Certificate_Store
-{
-public:
-  Client_Certificate_Store()
-    : cert_(), certs_()
-  {
-    cert_.reset(new Botan::X509_Certificate(CA_("kea-ca.crt")));
-    certs_.push_back(cert_);
-  }
-
-  virtual ~Client_Certificate_Store()
-  {
-  }
-
-  std::vector<std::shared_ptr<const Botan::X509_Certificate>>
-  find_all_certs(const Botan::X509_DN& subject_dn,
-                 const std::vector<uint8_t>& key_id) const override
-  {
-    std::vector<std::shared_ptr<const Botan::X509_Certificate>> result;
-    for (auto const& cert : certs_) {
-      if (cert->subject_dn() != subject_dn)
-      {
-        continue;
-      }
-      if (key_id.size())
-      {
-        auto const& skid = cert->subject_key_id();
-        if (skid.size() && (skid != key_id))
-        {
-          continue;
-        }
-      }
-      result.push_back(cert);
-    }
-    return result;
-  }
-
-  std::shared_ptr<const Botan::X509_Certificate>
-  find_cert_by_pubkey_sha1(const std::vector<uint8_t>&) const override
-  {
-    // Used by OSCP so useless?
-    return nullptr;
-  }
-
-  std::shared_ptr<const Botan::X509_Certificate>
-  find_cert_by_raw_subject_dn_sha256(const std::vector<uint8_t>&) const override
-  {
-    // Used by OSCP so useless?
-    return nullptr;
-  }
-
-  std::vector<Botan::X509_DN> all_subjects() const override
-  {
-    std::vector<Botan::X509_DN> subjects;
-    for (auto const& cert : certs_)
-    {
-      subjects.push_back(cert->subject_dn());
-    }
-    return subjects;
-  }
-
-  std::shared_ptr<const Botan::X509_Certificate> cert_;
-  std::vector<std::shared_ptr<const Botan::X509_Certificate>> certs_;
-};
+using Client_Certificate_Store = Botan::Flatfile_Certificate_Store;
 
 class Client_Credentials_Manager : public Botan::Credentials_Manager
 {
 public:
   explicit Client_Credentials_Manager(Botan::RandomNumberGenerator& rng)
     : stores_(), certs_(),
-      store_(new Client_Certificate_Store),
+      store_(new Client_Certificate_Store(CA_("kea-ca.crt"))),
       cert_(Botan::X509_Certificate(CA_("kea-client.crt"))),
       key_(Botan::PKCS8::load_key(CA_("kea-client.key"), rng))
   {
