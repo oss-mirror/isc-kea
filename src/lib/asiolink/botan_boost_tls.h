@@ -88,9 +88,6 @@ protected:
     /// @param key_file The private key file name.
     virtual void loadKeyFile(const std::string& key_file);
 
-    /// @brief Cached cert_required value.
-    bool cert_required_;
-
     /// @brief Botan TLS context.
     std::unique_ptr<TlsContextImpl> impl_;
 

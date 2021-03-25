@@ -77,7 +77,12 @@ public:
         store_.reset(new KeaCertificateStoreFile(file));
     }
 
-    // Set the use the CA certificate stores flag.
+    // Get the use of CA certificate stores flag.
+    bool getUseStores() const {
+        return (use_stores_);
+    }
+
+    // Set the use of CA certificate stores flag.
     void setUseStores(bool use_stores) {
         use_stores_ = use_stores;
     }
@@ -200,15 +205,16 @@ public:
     virtual ~TlsContextImpl() {
     }
 
-    // Set the the peer certificate requirement mode.
+    // Get the peer certificate requirement mode.
+    virtual bool getCertRequired() const {
+        return (cred_mgr_.getUseStores());
+    }
+
+    // Set the peer certificate requirement mode.
     //
     // With Botan this means to provide or not the CA certificate stores.
     virtual void setCertRequired(bool cert_required) {
-        try {
-            cred_mgr_.setUseStores(cert_required);
-        } catch (const std::exception& ex) {
-            isc_throw(LibraryError, ex.what());
-        }
+        cred_mgr_.setUseStores(cert_required);
     }
 
     // Load the trust anchor aka certificate authority (path).
@@ -284,8 +290,7 @@ TlsContext::~TlsContext() {
 }
 
 TlsContext::TlsContext(TlsRole role)
-    : TlsContextBase(role), cert_required_(true),
-      impl_(new TlsContextImpl()) {
+    : TlsContextBase(role), impl_(new TlsContextImpl()) {
 }
 
 Botan::TLS::Context&
@@ -300,13 +305,12 @@ TlsContext::setCertRequired(bool cert_required) {
         isc_throw(BadValue,
                   "'cert-required' parameter must be true for a TLS client");
     }
-    cert_required_ = cert_required;
-    impl_->setCertRequired(cert_required_);
+    impl_->setCertRequired(cert_required);
 }
 
 bool
 TlsContext::getCertRequired() const {
-    return (cert_required_);
+    return (impl_->getCertRequired());
 }
 
 void
