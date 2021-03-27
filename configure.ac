@@ -1409,7 +1409,7 @@ if test "x${CRYPTO_NAME}" = "xOpenSSL"; then
   tls_support=yes
 fi
 if test "x${CRYPTO_NAME}" = "xBotan" && test "x$BOTAN_BOOST" = "xyes"; then
-  ca_tls_test=yes
+  tls_support=yes
 fi
 
 # Decide if the shell TLS test can work.
