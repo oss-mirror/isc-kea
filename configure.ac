@@ -2004,14 +2004,6 @@ if test x"$BOOST_LIBS" = "x"; then
 END
 fi
 
-tls_support=no
-if test "x${CRYPTO_NAME}" = "xOpenSSL"; then
-  tls_support=yes
-fi
-if test "x${CRYPTO_NAME}" = "xBotan" && test "x$BOTAN_BOOST" = "xyes"; then
-  tls_support=yes
-fi
-
 cat >> config.report << END
 ${CRYPTO_NAME}:
   CRYPTO_VERSION:  ${CRYPTO_VERSION}
