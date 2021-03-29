@@ -1680,6 +1680,9 @@ AC_CONFIG_FILES([src/bin/perfdhcp/tests/testdata/Makefile])
 AC_CONFIG_FILES([src/bin/shell/Makefile])
 AC_CONFIG_FILES([src/bin/shell/kea-shell],
                 [chmod +x src/bin/shell/kea-shell])
+AC_CONFIG_FILES([src/bin/shell/kea_conn.py])
+AC_CONFIG_FILES([src/bin/shell/kea_connector2.py])
+AC_CONFIG_FILES([src/bin/shell/kea_connector3.py])
 AC_CONFIG_FILES([src/bin/shell/tests/Makefile])
 AC_CONFIG_FILES([src/bin/shell/tests/basic_auth_tests.sh],
                 [chmod +x src/bin/shell/tests/basic_auth_tests.sh])
