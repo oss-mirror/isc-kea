@@ -8,7 +8,7 @@
 
 /// @file botan_boost_tls.cc Botan boost ASIO implementation of the TLS API.
 
-#if defined(WITH_BOTAN) && defined(HAVE_BOTAN_ASIO_STREAM_H)
+#if defined(WITH_BOTAN) && defined(WITH_BOTAN_BOOST)
 
 #include <asiolink/asio_wrapper.h>
 #include <asiolink/crypto_tls.h>
@@ -336,4 +336,4 @@ TlsContext::loadKeyFile(const std::string& key_file) {
 } // namespace asiolink
 } // namespace isc
 
-#endif // WITH_BOTAN && HAVE_BOTAN_ASIO_STREAM_H
+#endif // WITH_BOTAN && WITH_BOTAN_BOOST

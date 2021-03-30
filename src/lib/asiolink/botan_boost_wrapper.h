@@ -11,7 +11,7 @@
 
 /// @file botan_boost_wrapper.h Botan boost ASIO wrapper.
 
-#if defined(WITH_BOTAN) && defined(HAVE_BOTAN_ASIO_STREAM_H)
+#if defined(WITH_BOTAN) && defined(WITH_BOTAN_BOOST)
 
 /// The error classes do not define virtual destructors.
 /// This workaround is taken from the boost header.
@@ -27,6 +27,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-#endif // WITH_BOTAN && HAVE_BOTAN_ASIO_STREAM_H
+#endif // WITH_BOTAN && WITH_BOTAN_BOOST
 
 #endif // BOTAN_BOOST_WRAPPER_H
