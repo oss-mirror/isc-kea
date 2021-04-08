@@ -23,7 +23,7 @@ namespace process {
 ///
 /// @param follow The set of keywords of subtrees where a password or a
 /// secret can be found.
-/// @param config the Element tree structure that describes the configuration.
+/// @param elem the Element tree structure that describes the configuration.
 /// @return unmodified config or a copy of the config where passwords and
 /// secrets were replaced by asterisks so can be safely logged to an
 /// unprivileged place.
@@ -35,7 +35,7 @@ isc::data::ConstElementPtr redactElem(const std::set<std::string>& follow,
 /// The generic version of the configuration redaction to use when
 /// location of password and secret entries is not known.
 ///
-/// @param config the Element tree structure that describes the configuration.
+/// @param elem the Element tree structure that describes the configuration.
 /// @return unmodified config or a copy of the config where passwords and
 /// secrets were replaced by asterisks so can be safely logged to an
 /// unprivileged place.
