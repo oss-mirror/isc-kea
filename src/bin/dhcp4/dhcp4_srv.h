@@ -1161,6 +1161,20 @@ public:
     /// @brief Returns the index for "lease4_decline" hook point
     /// @return the index for "lease4_decline" hook point
     static int getHookIndexLease4Decline();
+
+    /// @brief Redact the DHCPv4 server configuration.
+    ///
+    /// This method replaces passwords and secrets by asterisks. By
+    /// default it follows all subtrees at the exception of user
+    /// contexts. Please derive the method to allow a reasonable
+    /// performance by following only subtrees where the syntax allows
+    /// the presence of passwords and secrets.
+    ///
+    /// @param config the Element tree structure that describes the configuration.
+    /// @return unmodified config or a copy of the config where passwords were
+    /// replaced by asterisks so can be safely logged to an unprivileged place.
+    static isc::data::ConstElementPtr
+    redactConfig(isc::data::ConstElementPtr config);
 };
 
 }  // namespace dhcp

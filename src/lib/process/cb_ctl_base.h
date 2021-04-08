@@ -1,4 +1,4 @@
-// Copyright (C) 2019-2020 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2019-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -338,7 +338,7 @@ protected:
         }
 
         // Get the audit entries sorted by modification time and id,
-	// and pick the latest entry.
+        // and pick the latest entry.
         const auto& index = audit_entries.get<db::AuditEntryModificationTimeIdTag>();
         last_audit_revision_time_ = (*index.rbegin())->getModificationTime();
         last_audit_revision_id_ = (*index.rbegin())->getRevisionId();

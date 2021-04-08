@@ -1,4 +1,4 @@
-// Copyright (C) 2014-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2014-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,6 +10,7 @@
 #include <d2/d2_cfg_mgr.h>
 #include <d2/d2_simple_parser.h>
 #include <cc/command_interpreter.h>
+#include <process/redact_config.h>
 #include <util/encode/hex.h>
 
 #include <boost/foreach.hpp>
@@ -309,6 +310,15 @@ D2CfgMgr::parse(isc::data::ConstElementPtr config_set, bool check_only) {
     return (answer);
 }
 
+static const std::set<std::string> TO_REDACT_KEYWORDS = {
+    "DhcpDdns",
+    "tsig-keys"
+};
 
-}; // end of isc::dhcp namespace
-}; // end of isc namespace
+ConstElementPtr
+D2CfgMgr::redactConfig(ConstElementPtr config) const {
+    return (redactElem(TO_REDACT_KEYWORDS, config));
+}
+
+} // end of isc::dhcp namespace
+} // end of isc namespace

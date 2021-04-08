@@ -298,30 +298,19 @@ protected:
     /// @return Returns a ConfigPtr to the new context instance.
     virtual process::ConfigPtr createNewContext();
 
-    /// @brief Redact the configuration.
+    /// @brief Redact the Control Agent configuration.
     ///
-    /// This method replaces passwords by asterisks. The agent version
-    /// applies authentication clients.
+    /// This method replaces passwords and secrets by asterisks. By
+    /// default it follows all subtrees at the exception of user
+    /// contexts. Please derive the method to allow a reasonable
+    /// performance by following only subtrees where the syntax allows
+    /// the presence of passwords and secrets.
     ///
-    /// @param config Pointer to a configuration specified for the agent.
+    /// @param config the Element tree structure that describes the configuration.
     /// @return unmodified config or a copy of the config where passwords were
     /// replaced by asterisks so can be safely logged to an unprivileged place.
     virtual isc::data::ConstElementPtr
     redactConfig(isc::data::ConstElementPtr config) const;
-
-private:
-    /// @brief Redact an element.
-    ///
-    /// Recursive helper of redactConfig.
-    ///
-    /// @param elem An element to redact.
-    /// @param redacted The reference to redacted flag: true means the result
-    /// was redacted so cannot be shared.
-    /// @return unmodified element or a copy of the element: in the second
-    /// case embedded passwords were replaced by asterisks and the redacted
-    /// flag was set to true.
-    virtual isc::data::ConstElementPtr
-    redactElement(isc::data::ConstElementPtr elem, bool& redacted) const;
 };
 
 /// @brief Defines a shared pointer to CtrlAgentCfgMgr.
