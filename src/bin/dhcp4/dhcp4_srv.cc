@@ -45,6 +45,7 @@
 #include <hooks/callout_handle.h>
 #include <hooks/hooks_log.h>
 #include <hooks/hooks_manager.h>
+#include <process/redact_config.h>
 #include <stats/stats_mgr.h>
 #include <util/strutil.h>
 #include <log/logger.h>
@@ -4067,6 +4068,20 @@ int Dhcpv4Srv::getHookIndexLease4Decline() {
 void Dhcpv4Srv::discardPackets() {
     // Dump all of our current packets, anything that is mid-stream
     HooksManager::clearParkingLots();
+}
+
+static const std::set<std::string> TO_REDACT_KEYWORDS = {
+    "Dhcp4",
+    "config-control", "config-databases",
+    "hooks-libraries", "parameters",
+    "hosts-database",
+    "hosts-databases",
+    "lease-database"
+};
+
+data::ConstElementPtr
+Dhcpv4Srv::redactConfig(data::ConstElementPtr config) {
+    return (process::redactElem(TO_REDACT_KEYWORDS, config));
 }
 
 }  // namespace dhcp

@@ -1,4 +1,4 @@
-// Copyright (C) 2013-2020 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2013-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -208,7 +208,7 @@ isc::data::ConstElementPtr
 D2Process::configure(isc::data::ConstElementPtr config_set, bool check_only) {
     LOG_DEBUG(d2_logger, isc::log::DBGLVL_TRACE_BASIC, DHCP_DDNS_CONFIGURE)
         .arg(check_only ? "check" : "update")
-        .arg(config_set->str());
+        .arg(getD2CfgMgr()->redactConfig(config_set)->str());
 
     isc::data::ConstElementPtr answer;
     answer = getCfgMgr()->simpleParseConfig(config_set, check_only,

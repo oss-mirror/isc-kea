@@ -10,6 +10,7 @@
 #include <exceptions/exceptions.h>
 #include <process/testutils/d_test_stubs.h>
 #include <process/d_cfg_mgr.h>
+#include <process/redact_config.h>
 
 #include <boost/foreach.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -279,6 +280,40 @@ TEST_F(DStubCfgMgrTest, simpleParseConfigWithCallback) {
         isc_throw(Unexpected, "unexpected configuration error");
     });
     EXPECT_TRUE(checkAnswer(1));
+}
+
+// This test checks that redactElem works as expected.
+TEST_F(DStubCfgMgrTest, redactElem) {
+    // Basic case.
+    string config = "{ \"foo\": 1 }";
+    ConstElementPtr elem;
+    ASSERT_NO_THROW(elem = Element::fromJSON(config));
+    ConstElementPtr ret;
+    ASSERT_NO_THROW(ret = redactGeneric(elem));
+    EXPECT_EQ(ret->str(), elem->str());
+
+    // Verify redaction.
+    config = "{ \"password\": \"foo\", \"secret\": \"bar\" }";
+    ASSERT_NO_THROW(elem = Element::fromJSON(config));
+    ASSERT_NO_THROW(ret = redactGeneric(elem));
+    string expected = "{ \"password\": \"*****\", \"secret\": \"*****\" }";
+    EXPECT_EQ(expected, ret->str());
+
+    // Verify that user context are skipped.
+    config = "{ \"user-context\": { \"password\": \"foo\" } }";
+    ASSERT_NO_THROW(elem = Element::fromJSON(config));
+    ASSERT_NO_THROW(ret = redactGeneric(elem));
+    EXPECT_EQ(ret->str(), elem->str());
+
+    // Verify that only given subtrees are handled.
+    set<string> keys = { "foo" };
+    config = "{ \"foo\": { \"password\": \"foo\" }, ";
+    config += "\"next\": { \"secret\": \"bar\" } }";
+    ASSERT_NO_THROW(elem = Element::fromJSON(config));
+    ASSERT_NO_THROW(ret = redactElem(keys, elem));
+    expected = "{ \"foo\": { \"password\": \"*****\" }, ";
+    expected += "\"next\": { \"secret\": \"bar\" } }";
+    EXPECT_EQ(expected, ret->str());
 }
 
 } // end of anonymous namespace

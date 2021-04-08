@@ -46,6 +46,7 @@
 #include <hooks/callout_handle.h>
 #include <hooks/hooks_log.h>
 #include <hooks/hooks_manager.h>
+#include <process/redact_config.h>
 #include <stats/stats_mgr.h>
 #include <util/encode/hex.h>
 #include <util/io_utilities.h>
@@ -4336,6 +4337,20 @@ Dhcpv6Srv::checkDynamicSubnetChange(const Pkt6Ptr& question, Pkt6Ptr& answer,
             LeaseMgrFactory::instance().updateLease6(*l);
         }
     }
+}
+
+static const std::set<std::string> TO_REDACT_KEYWORDS = {
+    "Dhcp6",
+    "config-control", "config-databases",
+    "hooks-libraries", "parameters",
+    "hosts-database",
+    "hosts-databases",
+    "lease-database"
+};
+
+data::ConstElementPtr
+Dhcpv6Srv::redactConfig(data::ConstElementPtr config) {
+    return (process::redactElem(TO_REDACT_KEYWORDS, config));
 }
 
 }  // namespace dhcp

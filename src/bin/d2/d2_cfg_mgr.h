@@ -1,4 +1,4 @@
-// Copyright (C) 2014-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2014-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -311,6 +311,21 @@ protected:
     ///
     /// @return Returns a ConfigPtr to the new context instance.
     virtual process::ConfigPtr createNewContext();
+
+public:
+    /// @brief Redact the D2 configuration.
+    ///
+    /// This method replaces passwords and secrets by asterisks. By
+    /// default it follows all subtrees at the exception of user
+    /// contexts. Please derive the method to allow a reasonable
+    /// performance by following only subtrees where the syntax allows
+    /// the presence of passwords and secrets.
+    ///
+    /// @param config the Element tree structure that describes the configuration.
+    /// @return unmodified config or a copy of the config where passwords were
+    /// replaced by asterisks so can be safely logged to an unprivileged place.
+    virtual isc::data::ConstElementPtr
+    redactConfig(isc::data::ConstElementPtr config) const;
 };
 
 /// @brief Defines a shared pointer to D2CfgMgr.
