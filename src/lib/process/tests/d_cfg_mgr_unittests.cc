@@ -307,11 +307,11 @@ TEST_F(DStubCfgMgrTest, redactElem) {
 
     // Verify that only given subtrees are handled.
     set<string> keys = { "foo" };
-    config = "{ \"foo\": { \"password\": \"foo\" }, ";
+    config = "{ \"foo\": { \"my-password\": \"foo\" }, ";
     config += "\"next\": { \"secret\": \"bar\" } }";
     ASSERT_NO_THROW(elem = Element::fromJSON(config));
     ASSERT_NO_THROW(ret = redactElem(keys, elem));
-    expected = "{ \"foo\": { \"password\": \"*****\" }, ";
+    expected = "{ \"foo\": { \"my-password\": \"*****\" }, ";
     expected += "\"next\": { \"secret\": \"bar\" } }";
     EXPECT_EQ(expected, ret->str());
 }
