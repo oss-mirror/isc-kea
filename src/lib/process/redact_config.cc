@@ -60,10 +60,14 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
         bool redacted = false;
         for (auto kv : elem->mapValue()) {
             const string& key = kv.first;
+            size_t keylen = key.size();
             ConstElementPtr value = kv.second;
 
-            if ((key == "password") || (key == "secret")) {
-                // Handle passwords.
+            if (((keylen >= 8) &&
+                 (key.compare(keylen - 8, string::npos, "password") == 0)) ||
+                ((keylen >= 6) &&
+                 (key.compare(keylen - 6, string::npos, "secret") == 0))) {
+                // Handle passwords and secrets.
                 redacted = true;
                 result->set(key, Element::create(std::string("*****")));
             } else if (key == "user-context") {

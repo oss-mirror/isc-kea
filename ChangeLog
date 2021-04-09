@@ -1,7 +1,7 @@
 1901.	[func]		andrei, fdupont
 	All log messages that expose configuration now have the
-	values of "password" and "secret" entries replaced with
-	asterisks.
+	values of entries equal or finishing by "password" or
+	"secret" replaced with asterisks.
 	(Gitlab #1721)
 
 1900.	[bug]		tmark
