@@ -1,6 +1,7 @@
 SUBDIRS = .
 
 AM_CPPFLAGS = -I$(top_builddir)/src/lib -I$(top_srcdir)/src/lib
+AM_CPPFLAGS += -I$(top_srcdir) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/src/hooks/dhcp/high_availability -I$(top_srcdir)/src/hooks/dhcp/high_availability
 AM_CPPFLAGS += $(BOOST_INCLUDES) $(CRYPTO_CFLAGS) $(CRYPTO_INCLUDES)
 AM_CPPFLAGS += -DLIBDHCP_HA_SO=\"$(abs_top_builddir)/src/hooks/dhcp/high_availability/.libs/libdhcp_ha.so\"

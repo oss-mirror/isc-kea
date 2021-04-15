@@ -1,6 +1,7 @@
 SUBDIRS = .
 
 AM_CPPFLAGS = -I$(top_builddir)/src/lib -I$(top_srcdir)/src/lib
+AM_CPPFLAGS += -I$(top_srcdir) -I$(top_builddir)
 AM_CPPFLAGS += $(BOOST_INCLUDES) $(CRYPTO_CFLAGS) $(CRYPTO_INCLUDES)
 TEST_CA_DIR = $(srcdir)/../../asiolink/testutils/ca
 AM_CPPFLAGS += -DTEST_DATA_BUILDDIR=\"$(TEST_CA_DIR)\"

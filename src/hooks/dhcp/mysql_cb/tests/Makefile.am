@@ -1,6 +1,7 @@
 SUBDIRS = .
 
 AM_CPPFLAGS = -I$(top_builddir)/src/lib -I$(top_srcdir)/src/lib
+AM_CPPFLAGS += -I$(top_srcdir) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/src/hooks/dhcp/mysql_cb -I$(top_srcdir)/src/hooks/dhcp/mysql_cb
 AM_CPPFLAGS += $(BOOST_INCLUDES) $(MYSQL_CPPFLAGS)
 AM_CPPFLAGS += -DINSTALL_PROG=\"$(abs_top_srcdir)/install-sh\"
