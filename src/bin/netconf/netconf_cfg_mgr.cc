@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,6 +10,7 @@
 #include <netconf/simple_parser.h>
 #include <cc/simple_parser.h>
 #include <cc/command_interpreter.h>
+#include <process/redact_config.h>
 #include <exceptions/exceptions.h>
 
 using namespace isc::config;
@@ -140,6 +141,16 @@ NetconfCfgMgr::parse(isc::data::ConstElementPtr config_set,
     }
 
     return (answer);
+}
+
+static const std::set<std::string> TO_REDACT_KEYWORDS = {
+    "Netconf",
+    "hooks-libraries", "parameters"
+};
+
+ConstElementPtr
+NetconfCfgMgr::redactConfig(ConstElementPtr config) const {
+    return (redactElem(TO_REDACT_KEYWORDS, config));
 }
 
 ElementPtr

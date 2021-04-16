@@ -8,11 +8,36 @@
 
 #include <process/redact_config.h>
 
+/// @note This file implements a hairy algorithm to do a little or no
+/// transform on a data structure with no side effect and maximum sharing.
+/// The original version was in CAML (ancestor of OCaml) using a local
+/// exception so this C++ version is pretty different but the base idea
+/// is still the same.
+///
+/// Consider values a, b, ... from the space A. When a value is modified
+/// let add a star on it so you have the original / sharable value a and
+/// the modified / copied a*.
+/// The idea is to extend this to base data structures. Let take the pair
+/// as the example: (a, b) can be transformed into 4 cases:
+///  - unchanged / shared: (a, b)
+///  - first modified / copied: (a*, b)*
+///  - second modified / copied: (a, b*)*
+///  - both members modified / copied: (a*, b*)*
+/// The key point is the addition of the star at the end of the pair when
+/// the whole pair was modified / copied / not sharable.
+/// This can be extended to lists, maps, etc. The final result of the
+/// transform on the tree t is either t or t*.
+///
+/// The last point is in the coding of the A + A* space. Both the original
+/// Caml code and the C++ code below uses the fact that it is not required
+/// to implement the A space part: the value to return is the argument.
+/// So the recursive function implementing the transform in a tree walk
+/// has to return the modified / copied value or the fact that the
+/// argument can be shared: the CAML code raises a local exception named
+/// shared, this C++ code returns the null element pointer to code this fact.
+
 using namespace isc::data;
 using namespace std;
-
-namespace isc {
-namespace process {
 
 namespace {
 
@@ -31,7 +56,7 @@ template<typename ElementPtrType>
 ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
     // From isc::data::copy.
     if (!elem) {
-        isc_throw(BadValue, "redact got a null pointer");
+        isc_throw(isc::BadValue, "redact got a null pointer");
     }
 
     // Redact lists.
@@ -99,6 +124,9 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
 }
 
 } // end of anonymous namespace.
+
+namespace isc {
+namespace process {
 
 ConstElementPtr
 redactElem(const set<string>& follow, ConstElementPtr elem) {
