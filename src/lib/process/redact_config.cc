@@ -59,68 +59,41 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
         isc_throw(isc::BadValue, "redact got a null pointer");
     }
 
-    // Redact lists.
+    ElementPtr result;
     if (elem->getType() == Element::list) {
-        ElementPtr result = ElementPtr(new ListElement());
-        bool redacted = false;
-        for (ElementPtr item : elem->listValue()) {
-            ElementPtr copy = redact<ElementPtr>(follow, item);
-            if (copy) {
-                redacted = true;
-                result->add(copy);
-            } else {
-                result->add(item);
-            }
+        result = Element::createList();
+        for (ElementPtr const& item : elem->listValue()) {
+            result->add(redact(follow, item));
         }
-        if (redacted) {
-            return (result);
-        } else {
-            return (ElementPtrType());
-        }
-    }
-
-    // Redact maps.
-    if (elem->getType() == Element::map) {
-        ElementPtr result = ElementPtr(new MapElement());
-        bool redacted = false;
+    } else if (elem->getType() == Element::map) {
+        result = Element::createMap();
         for (auto kv : elem->mapValue()) {
             const string& key = kv.first;
             size_t keylen = key.size();
-            ConstElementPtr value = kv.second;
+            ConstElementPtr const& value = kv.second;
 
             if (((keylen >= 8) &&
                  (key.compare(keylen - 8, string::npos, "password") == 0)) ||
                 ((keylen >= 6) &&
                  (key.compare(keylen - 6, string::npos, "secret") == 0))) {
                 // Handle passwords and secrets.
-                redacted = true;
                 result->set(key, Element::create(std::string("*****")));
             } else if (key == "user-context") {
                 // Skip user contexts.
                 result->set(key, value);
             } else if (follow.empty() || follow.count(key)) {
                 // Handle this subtree where are passwords or secrets.
-                ConstElementPtr copy = redact(follow, value);
-                if (copy) {
-                    redacted = true;
-                    result->set(key, copy);
-                } else {
-                    result->set(key, value);
-                }
+                result->set(key, redact(follow, value));
             } else {
                 // Not follow: no passwords and secrets in this subtree.
                 result->set(key, value);
             }
         }
-        if (redacted) {
-            return (result);
-        } else {
-            return (ElementPtrType());
-        }
+    } else {
+        return elem;
     }
 
-    // Handle other element types.
-    return (ElementPtrType());
+    return result;
 }
 
 } // end of anonymous namespace.
@@ -130,12 +103,7 @@ namespace process {
 
 ConstElementPtr
 redactElem(const set<string>& follow, ConstElementPtr elem) {
-    ConstElementPtr copy = redact<ConstElementPtr>(follow, elem);
-    if (copy) {
-        return (copy);
-    } else {
-        return (elem);
-    }
+    return redact<ConstElementPtr>(follow, elem);
 }
 
 ConstElementPtr
