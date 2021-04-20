@@ -61,7 +61,7 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
 
     // Redact lists.
     if (elem->getType() == Element::list) {
-        ElementPtr result = ElementPtr(new ListElement());
+        ElementPtr result = Element::createList();
         bool redacted = false;
         for (ElementPtr item : elem->listValue()) {
             ElementPtr copy = redact<ElementPtr>(follow, item);
@@ -81,7 +81,7 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
 
     // Redact maps.
     if (elem->getType() == Element::map) {
-        ElementPtr result = ElementPtr(new MapElement());
+        ElementPtr result = Element::createMap();
         bool redacted = false;
         for (auto kv : elem->mapValue()) {
             const string& key = kv.first;
