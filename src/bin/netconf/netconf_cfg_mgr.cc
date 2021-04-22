@@ -145,7 +145,7 @@ NetconfCfgMgr::parse(isc::data::ConstElementPtr config_set,
 
 static const std::set<std::string> TO_REDACT_KEYWORDS = {
     "Netconf",
-    "hooks-libraries", "parameters"
+    "hooks-libraries",
 };
 
 ConstElementPtr

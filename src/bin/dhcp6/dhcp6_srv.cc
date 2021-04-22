@@ -4342,7 +4342,7 @@ Dhcpv6Srv::checkDynamicSubnetChange(const Pkt6Ptr& question, Pkt6Ptr& answer,
 static const std::set<std::string> TO_REDACT_KEYWORDS = {
     "Dhcp6",
     "config-control", "config-databases",
-    "hooks-libraries", "parameters",
+    "hooks-libraries",
     "hosts-database",
     "hosts-databases",
     "lease-database"

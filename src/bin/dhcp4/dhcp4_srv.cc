@@ -4073,7 +4073,7 @@ void Dhcpv4Srv::discardPackets() {
 static const std::set<std::string> TO_REDACT_KEYWORDS = {
     "Dhcp4",
     "config-control", "config-databases",
-    "hooks-libraries", "parameters",
+    "hooks-libraries",
     "hosts-database",
     "hosts-databases",
     "lease-database"

@@ -64,7 +64,7 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
         ElementPtr result = Element::createList();
         bool redacted = false;
         for (ElementPtr item : elem->listValue()) {
-            ElementPtr copy = redact<ElementPtr>(follow, item);
+            ElementPtr copy = redact(follow, item);
             if (copy) {
                 redacted = true;
                 result->add(copy);
@@ -88,6 +88,8 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
             size_t keylen = key.size();
             ConstElementPtr value = kv.second;
 
+            // The following keys are meant to be matched:
+            // "basic-auth-password", "password", "secret".
             if (((keylen >= 8) &&
                  (key.compare(keylen - 8, string::npos, "password") == 0)) ||
                 ((keylen >= 6) &&
@@ -98,6 +100,15 @@ ElementPtrType redact(const set<string>& follow, ElementPtrType elem) {
             } else if (key == "user-context") {
                 // Skip user contexts.
                 result->set(key, value);
+            } else if (key == "parameters") {
+                // Follow hook parameters.
+                ConstElementPtr copy = redact({ }, value);
+                if (copy) {
+                    redacted = true;
+                    result->set(key, copy);
+                } else {
+                    result->set(key, value);
+                }
             } else if (follow.empty() || follow.count(key)) {
                 // Handle this subtree where are passwords or secrets.
                 ConstElementPtr copy = redact(follow, value);

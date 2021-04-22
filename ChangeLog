@@ -1,6 +1,6 @@
 1901.	[func]		andrei, fdupont
 	All log messages that expose configuration now have the
-	values of entries equal or finishing by "password" or
+	values of map entries equal or finishing by "password" or
 	"secret" replaced with asterisks.
 	(Gitlab #1721)
 

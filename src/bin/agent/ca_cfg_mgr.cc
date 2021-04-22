@@ -141,8 +141,8 @@ CtrlAgentCfgMgr::parse(ConstElementPtr config_set, bool check_only) {
 
 static const std::set<std::string> TO_REDACT_KEYWORDS = {
     "Control-agent",
-    "hooks-libraries", "parameters",
-    "authentication", "clients"
+    "authentication", "clients",
+    "hooks-libraries"
 };
 
 ConstElementPtr

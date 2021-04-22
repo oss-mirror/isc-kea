@@ -299,7 +299,7 @@ TEST_F(DStubCfgMgrTest, redactElem) {
     string expected = "{ \"password\": \"*****\", \"secret\": \"*****\" }";
     EXPECT_EQ(expected, ret->str());
 
-    // Verify that user context are skipped.
+    // Verify that user context is skipped.
     config = "{ \"user-context\": { \"password\": \"foo\" } }";
     ASSERT_NO_THROW(elem = Element::fromJSON(config));
     ASSERT_NO_THROW(ret = redactGeneric(elem));
@@ -313,6 +313,15 @@ TEST_F(DStubCfgMgrTest, redactElem) {
     ASSERT_NO_THROW(ret = redactElem(keys, elem));
     expected = "{ \"foo\": { \"my-password\": \"*****\" }, ";
     expected += "\"next\": { \"secret\": \"bar\" } }";
+    EXPECT_EQ(expected, ret->str());
+
+    // Verify that parameters is followed.
+    config = "{ \"foo\": { \"bar\": { \"password\": \"bar\" }, ";
+    config += "\"parameters\": [ { \"my-secret\": \"foo\" } ] } }";
+    ASSERT_NO_THROW(elem = Element::fromJSON(config));
+    ASSERT_NO_THROW(ret = redactElem(keys, elem));
+    expected = "{ \"foo\": { \"bar\": { \"password\": \"bar\" }, ";
+    expected += "\"parameters\": [ { \"my-secret\": \"*****\" } ] } }";
     EXPECT_EQ(expected, ret->str());
 }
 
