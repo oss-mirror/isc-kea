@@ -198,7 +198,8 @@ public:
     MtHttpClientTest()
         : io_service_(), client_(), listener_(), factory_(), listeners_(), factories_(),
           test_timer_(io_service_), num_threads_(0), num_batches_(0), num_listeners_(0),
-          expected_requests_(0), num_in_progress_(0), num_finished_(0) {
+          expected_requests_(0), num_in_progress_(0), num_finished_(0), paused_(false),
+          pause_cnt_(0) {
         test_timer_.setup(std::bind(&MtHttpClientTest::timeoutHandler, this, true),
                           TEST_TIMEOUT, IntervalTimer::ONE_SHOT);
         MultiThreadingMgr::instance().setMode(true);
@@ -537,6 +538,211 @@ public:
         }
     }
 
+    bool shouldPause(size_t num_pauses) {
+        if (paused_ || !num_pauses || !clientRRs_.size()) {
+            return false;
+        }
+
+        size_t interval = expected_requests_ / num_pauses; 
+        size_t next_stop = interval * (pause_cnt_ + 1);
+        return (clientRRs_.size() >= next_stop);
+    }
+
+    // I replicated threadRequestAndReceive to avoid breaking things while
+    // I experiment. 
+    void mitPauseThreadRequestAndReceive(size_t num_threads, size_t num_batches, 
+                                         size_t num_listeners = 1, size_t num_pauses = 0) {
+        ASSERT_TRUE(num_batches);
+        ASSERT_TRUE(num_listeners);
+        num_threads_ = num_threads;
+        num_batches_ = num_batches;
+        num_listeners_ = num_listeners;
+
+        // Client in ST is, in effect, 1 thread.
+        size_t effective_threads = (num_threads_ == 0 ? 1 : num_threads_);
+
+        // Calculate the expected number of requests.
+        expected_requests_ = (num_batches_ * num_listeners_ * effective_threads);
+
+        for (auto i = 0; i < num_listeners_; ++i) {
+            // Make a factory
+            HttpResponseCreatorFactoryPtr factory(new TestHttpResponseCreatorFactory(SERVER_PORT + i));
+            factories_.push_back(factory);
+
+            // Need to create a Listener on
+            HttpListenerPtr listener(new HttpListener(io_service_,
+                                                      IOAddress(SERVER_ADDRESS), (SERVER_PORT + i),
+                                                      TlsContextPtr(), factory,
+                                                      HttpListener::RequestTimeout(10000),
+                                                      HttpListener::IdleTimeout(10000)));
+            listeners_.push_back(listener);
+
+            // Start the server.
+            ASSERT_NO_THROW(listener->start());
+        }
+
+        // Create an MT client with num_threads
+        ASSERT_NO_THROW_LOG(client_.reset(new HttpClient(io_service_, num_threads)));
+        ASSERT_TRUE(client_);
+
+        if (num_threads_ == 0) {
+            // If we single-threaded client should not have it's own IOService.
+            ASSERT_FALSE(client_->getThreadIOService());
+        } else {
+            // If we multi-threaded client should have it's own IOService.
+            ASSERT_TRUE(client_->getThreadIOService());
+        }
+
+        // Verify the pool size and number of threads are as expected.
+        ASSERT_EQ(client_->getThreadPoolSize(), num_threads);
+        ASSERT_EQ(client_->getThreadCount(), num_threads);
+
+        // Start the requisite number of requests:
+        //   batch * listeners * threads.
+        int sequence = 0;
+        for (auto b = 0; b < num_batches; ++b) {
+            for (auto l = 0; l < num_listeners_; ++l) {
+                for (auto t = 0; t < effective_threads; ++t) {
+                    startRequest(++sequence, l);
+                }
+            }
+        }
+
+        IntervalTimer pause_timer_(io_service_);
+        paused_ = false;
+
+        // Loop until the clients are done, an error occurs, or the time runs out.
+        while (clientRRs_.size() < expected_requests_) {
+            // Always call reset() before we call run();
+            io_service_.get_io_service().reset();
+
+            if (shouldPause(num_pauses)) {
+                // pause client
+                paused_ = true;
+                ++pause_cnt_;
+                client_->pause();
+
+                // set timer to resume client
+                pause_timer_.setup(
+                    [this](){ 
+                            client_->resume();
+                            paused_ = false;
+                    }, 
+                    10, IntervalTimer::ONE_SHOT);
+                }
+
+            // Run until a client stops the service.
+            io_service_.run();
+        }
+
+        // Client should stop without issue.
+        ASSERT_NO_THROW(client_->stop());
+
+        // Listeners should stop without issue.
+        for (const auto& listener : listeners_) {
+            ASSERT_NO_THROW(listener->stop());
+        }
+
+        // We should have a response for each request.
+        ASSERT_EQ(clientRRs_.size(), expected_requests_);
+
+        // We should have had the expected number of pauses.
+        if (!num_pauses) {
+            ASSERT_EQ(pause_cnt_, 0);
+        } else {
+            // We allow a range on pauses of +-1.  Figuring
+            // out the exact intervals at which to pause was
+            // getting to be a pain.  We don't really care as
+            // long as we're close.  The primary thing is that
+            // we did in fact pause, more than once.
+            ASSERT_TRUE((num_pauses - 1) <= pause_cnt_ && 
+                        (pause_cnt_ <= (num_pauses + 1)));
+        }
+
+        // Create a map to track number of responses for each client thread.
+        std::map<std::string, int> responses_per_thread;
+
+        // Create a map to track number of responses for each listener port.
+        std::map<uint16_t, int> responses_per_listener;
+
+        // Get the stringified thread-id of the test's main thread.
+        std::stringstream ss;
+        ss << std::this_thread::get_id();
+        std::string main_thread_id = ss.str();
+
+        // Iterate over the client request/response pairs.
+        for (auto const& clientRR : clientRRs_) {
+            // Make sure it's whole.
+            ASSERT_FALSE(clientRR->thread_id_.empty());
+            ASSERT_TRUE(clientRR->request_);
+            ASSERT_TRUE(clientRR->response_);
+
+            // Request should contain an integer sequence number.
+            int request_sequence;
+            ConstElementPtr sequence = clientRR->request_->getJsonElement("sequence");
+            ASSERT_TRUE(sequence);
+            ASSERT_NO_THROW(request_sequence = sequence->intValue());
+
+            // Response should contain an integer sequence number.
+            int response_sequence;
+            sequence = clientRR->response_->getJsonElement("sequence");
+            ASSERT_TRUE(sequence);
+            ASSERT_NO_THROW(response_sequence = sequence->intValue());
+
+            // Request and Response sequence numbers should match.
+            ASSERT_EQ(request_sequence, response_sequence);
+
+            ConstElementPtr server_port_elem = clientRR->response_->getJsonElement("server-port");
+            ASSERT_TRUE(server_port_elem);
+            uint16_t server_port = server_port_elem->intValue();
+
+            if (num_threads_ == 0) {
+                // For ST mode thread id should always be the main thread.
+                ASSERT_EQ(clientRR->thread_id_, main_thread_id);
+            } else {
+                // For MT mode the thread id should never be the main thread.
+                ASSERT_NE(clientRR->thread_id_, main_thread_id);
+            }
+
+            // Bump the response count for the given client thread-id.
+            auto rit = responses_per_thread.find(clientRR->thread_id_);
+            if (rit != responses_per_thread.end()) {
+                responses_per_thread[clientRR->thread_id_] = rit->second + 1;
+            } else {
+                responses_per_thread[clientRR->thread_id_] = 1;
+            }
+
+            // Bump the response count for the given server port.
+            auto lit = responses_per_listener.find(server_port);
+            if (lit != responses_per_listener.end()) {
+                responses_per_listener[server_port] = lit->second + 1;
+            } else {
+                responses_per_listener[server_port] = 1;
+            }
+        }
+
+        // Make sure that all client threads received responses.
+        ASSERT_EQ(responses_per_thread.size(), effective_threads);
+
+        // Make sure that each client thread received the same number of responses.
+        for (auto const& it : responses_per_thread) {
+            EXPECT_EQ(it.second, (num_batches_ * num_listeners_))
+                      << "thread-id: " << it.first
+                      << ", responses: " << it.second << std::endl;
+        }
+
+        // Make sure that all listeners generated responses.
+        ASSERT_EQ(responses_per_listener.size(), num_listeners_);
+
+        // Make sure Each listener generated the same number of responses.
+        for (auto const& it : responses_per_listener) {
+            EXPECT_EQ(it.second, (num_batches_ * effective_threads))
+                      << "server-port: " << it.first
+                      << ", responses: " << it.second << std::endl;
+        }
+    }
+
+
     /// @brief IO service used in the tests.
     IOService io_service_;
 
@@ -586,6 +792,10 @@ public:
     /// until number of in-progress requests reaches the number
     /// of client requests.
     std::condition_variable cv_;
+
+    /// @brief Indicates if client threads are currently "paused".
+    bool paused_;
+    size_t pause_cnt_; 
 };
 
 // Verifies we can construct and destruct, in both single
@@ -698,6 +908,16 @@ TEST_F(MtHttpClientTest, fourByFourByTwo) {
     size_t num_batches = 4;
     size_t num_listeners = 2;
     threadRequestAndReceive(num_threads, num_batches, num_listeners);
+}
+
+// 12 of everything plus 7 pauses.
+TEST_F(MtHttpClientTest, mitPause) {
+    size_t num_threads = 12;
+    size_t num_batches = 12;
+    size_t num_listeners = 12;
+    size_t num_pauses = 7;
+
+    mitPauseThreadRequestAndReceive(num_threads, num_batches, num_listeners, num_pauses);
 }
 
 } // end of anonymous namespace

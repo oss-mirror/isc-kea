@@ -848,7 +848,6 @@ public:
     /// @return Pointer to the response to the ha-sync command.
     data::ConstElementPtr processSynchronize(const std::string& server_name,
                                              const unsigned int max_period);
-
 protected:
 
     /// @brief Synchronizes lease database with a partner.
@@ -944,6 +943,8 @@ public:
     ///
     /// @return Pointer to the response to the ha-continue command.
     data::ConstElementPtr processContinue();
+
+    data::ConstElementPtr processThreadToggle();
 
     /// @brief Processes ha-maintenance-notify command and returns a response.
     ///

@@ -872,7 +872,7 @@ HAService::verboseTransition(const unsigned state) {
         boost::to_upper(partner_state_name);
 
         // Log the transition.
-        LOG_INFO(ha_logger, HA_STATE_TRANSITION)
+        LOG_WARN(ha_logger, HA_STATE_TRANSITION)
             .arg(current_state_name)
             .arg(new_state_name)
             .arg(partner_state_name);
@@ -2830,6 +2830,27 @@ HAService::stopClientAndListener() {
         listener_->stop();
     }
 }
+
+ConstElementPtr
+HAService::processThreadToggle()  {
+    std::string msg = "";
+    switch (client_->getRunState()) {
+    case HttpClient::RunState::RUN:
+        msg = "Toggling to PAUSE";
+        client_->pause();
+        break;
+    case HttpClient::RunState::PAUSED:
+        msg = "Toggling to RUN";
+        client_->resume();
+        break;
+    case HttpClient::RunState::SHUTDOWN:
+        msg = "IGNORED in shutdown";
+        break;
+    }
+
+    return (createAnswer(CONTROL_RESULT_SUCCESS, msg));
+}
+
 
 // Explicit instantiations.
 template int HAService::getPendingRequest(const Pkt4Ptr&);

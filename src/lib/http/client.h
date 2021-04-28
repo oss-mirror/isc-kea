@@ -85,6 +85,11 @@ class HttpClientImpl;
 /// are returned via the 3rd parameter of the callback.
 class HttpClient {
 public:
+    enum class RunState {
+        RUN,
+        PAUSED,
+        SHUTDOWN,
+    };
 
     /// @brief HTTP request/response timeout value.
     struct RequestTimeout {
@@ -249,6 +254,7 @@ public:
     /// IOService.
     void stop();
 
+
     /// @brief Closes a connection if it has an out-of-band socket event
     ///
     /// If the  client owns a connection using the given socket and that
@@ -279,6 +285,10 @@ public:
     ///
     /// @return the number of running threads.
     uint16_t getThreadCount() const;
+
+    void pause();
+    void resume();
+    RunState getRunState() const;
 
 private:
 

@@ -315,7 +315,7 @@ HAImpl::commandProcessed(hooks::CalloutHandle& callout_handle) {
         ha_relationship->set("ha-mode", Element::create(HAConfig::HAModeToString(config_->getHAMode())));
         ha_relationships->add(ha_relationship);
         mutable_resp_args->set("high-availability", ha_relationships);
-    }
+    } 
 }
 
 void
@@ -487,6 +487,12 @@ HAImpl::maintenanceCancelHandler(hooks::CalloutHandle& callout_handle) {
 void
 HAImpl::haResetHandler(hooks::CalloutHandle& callout_handle) {
     ConstElementPtr response = service_->processHAReset();
+    callout_handle.setArgument("response", response);
+}
+
+void
+HAImpl::threadToggleHandler(hooks::CalloutHandle& callout_handle) {
+    ConstElementPtr response = service_->processThreadToggle();
     callout_handle.setArgument("response", response);
 }
 

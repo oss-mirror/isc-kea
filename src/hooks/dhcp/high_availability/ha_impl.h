@@ -164,6 +164,8 @@ public:
     /// @param callout_handle Callout handle provided to the callout.
     void haResetHandler(hooks::CalloutHandle& callout_handle);
 
+    void threadToggleHandler(hooks::CalloutHandle& callout_handle);
+
 protected:
 
     /// @brief Holds parsed configuration.
