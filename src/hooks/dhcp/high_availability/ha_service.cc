@@ -2839,10 +2839,12 @@ HAService::processThreadToggle()  {
     case HttpThreadPool::RunState::RUN:
         msg = "Toggling to PAUSE";
         client_->pause();
+        listener_->pause();
         break;
     case HttpThreadPool::RunState::PAUSED:
         msg = "Toggling to RUN";
         client_->resume();
+        listener_->resume();
         break;
     case HttpThreadPool::RunState::SHUTDOWN:
         msg = "IGNORED in shutdown";
