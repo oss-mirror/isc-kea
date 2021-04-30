@@ -629,7 +629,7 @@ public:
                             paused_ = false;
                     }, 
                     10, IntervalTimer::ONE_SHOT);
-                }
+            }
 
             // Run until a client stops the service.
             io_service_.run();
@@ -742,6 +742,85 @@ public:
         }
     }
 
+    void workPauseShutdown(size_t num_threads, size_t num_batches, 
+                           size_t num_listeners = 1) {
+        ASSERT_TRUE(num_batches);
+        ASSERT_TRUE(num_listeners);
+        num_threads_ = num_threads;
+        num_batches_ = num_batches;
+        num_listeners_ = num_listeners;
+
+        // Client in ST is, in effect, 1 thread.
+        size_t effective_threads = (num_threads_ == 0 ? 1 : num_threads_);
+
+        // Calculate the expected number of requests.
+        expected_requests_ = (num_batches_ * num_listeners_ * effective_threads);
+
+        for (auto i = 0; i < num_listeners_; ++i) {
+            // Make a factory
+            HttpResponseCreatorFactoryPtr factory(new TestHttpResponseCreatorFactory(SERVER_PORT + i));
+            factories_.push_back(factory);
+
+            // Need to create a Listener on
+            HttpListenerPtr listener(new HttpListener(io_service_,
+                                                      IOAddress(SERVER_ADDRESS), (SERVER_PORT + i),
+                                                      TlsContextPtr(), factory,
+                                                      HttpListener::RequestTimeout(10000),
+                                                      HttpListener::IdleTimeout(10000)));
+            listeners_.push_back(listener);
+
+            // Start the server.
+            ASSERT_NO_THROW(listener->start());
+        }
+
+        // Create an MT client with num_threads
+        ASSERT_NO_THROW_LOG(client_.reset(new HttpClient(io_service_, num_threads)));
+        ASSERT_TRUE(client_);
+
+        if (num_threads_ == 0) {
+            // If we single-threaded client should not have it's own IOService.
+            ASSERT_FALSE(client_->getThreadIOService());
+        } else {
+            // If we multi-threaded client should have it's own IOService.
+            ASSERT_TRUE(client_->getThreadIOService());
+        }
+
+        // Verify the pool size and number of threads are as expected.
+        ASSERT_EQ(client_->getThreadPoolSize(), num_threads);
+        ASSERT_EQ(client_->getThreadCount(), num_threads);
+
+        // Start the requisite number of requests:
+        //   batch * listeners * threads.
+        int sequence = 0;
+        for (auto b = 0; b < num_batches; ++b) {
+            for (auto l = 0; l < num_listeners_; ++l) {
+                for (auto t = 0; t < effective_threads; ++t) {
+                    startRequest(++sequence, l);
+                }
+            }
+        }
+
+        // Loop until the clients are done, an error occurs, or the time runs out.
+        while (clientRRs_.size() < expected_requests_ / 2) {
+            // Always call reset() before we call run();
+            io_service_.get_io_service().reset();
+
+            // Run until a client stops the service.
+            io_service_.run();
+        }
+
+        ASSERT_NO_THROW(client_->pause());
+        ASSERT_EQ(HttpThreadPool::RunState::PAUSED, client_->getRunState());
+
+        // Client should stop without issue.
+        ASSERT_NO_THROW(client_->stop());
+
+        // Listeners should stop without issue.
+        for (const auto& listener : listeners_) {
+            ASSERT_NO_THROW(listener->stop());
+        }
+    }
+
 
     /// @brief IO service used in the tests.
     IOService io_service_;
@@ -838,7 +917,8 @@ TEST_F(MtHttpClientTest, basics) {
     ASSERT_NO_THROW_LOG(client->stop());
 
     // Verify we're stopped.
-    ASSERT_FALSE(client->getThreadIOService());
+    ASSERT_TRUE(client->getThreadIOService());
+    EXPECT_TRUE(client->getThreadIOService()->stopped());
     ASSERT_EQ(client->getThreadPoolSize(), 3);
     ASSERT_EQ(client->getThreadCount(), 0);
 
@@ -918,6 +998,14 @@ TEST_F(MtHttpClientTest, mitPause) {
     size_t num_pauses = 7;
 
     mitPauseThreadRequestAndReceive(num_threads, num_batches, num_listeners, num_pauses);
+}
+
+TEST_F(MtHttpClientTest, workPauseShutdown) {
+    size_t num_threads = 12;
+    size_t num_batches = 12;
+    size_t num_listeners = 12;
+
+    workPauseShutdown(num_threads, num_batches, num_listeners);
 }
 
 } // end of anonymous namespace

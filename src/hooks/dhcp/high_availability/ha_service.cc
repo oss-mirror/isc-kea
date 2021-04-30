@@ -20,6 +20,7 @@
 #include <http/date_time.h>
 #include <http/response_json.h>
 #include <http/post_request_json.h>
+#include <http/thread_pool.h>
 #include <util/multi_threading_mgr.h>
 #include <util/stopwatch.h>
 #include <boost/pointer_cast.hpp>
@@ -2835,15 +2836,15 @@ ConstElementPtr
 HAService::processThreadToggle()  {
     std::string msg = "";
     switch (client_->getRunState()) {
-    case HttpClient::RunState::RUN:
+    case HttpThreadPool::RunState::RUN:
         msg = "Toggling to PAUSE";
         client_->pause();
         break;
-    case HttpClient::RunState::PAUSED:
+    case HttpThreadPool::RunState::PAUSED:
         msg = "Toggling to RUN";
         client_->resume();
         break;
-    case HttpClient::RunState::SHUTDOWN:
+    case HttpThreadPool::RunState::SHUTDOWN:
         msg = "IGNORED in shutdown";
         break;
     }

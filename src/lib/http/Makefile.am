@@ -41,6 +41,7 @@ libkea_http_la_SOURCES += url.cc url.h
 libkea_http_la_SOURCES += basic_auth.cc basic_auth.h
 libkea_http_la_SOURCES += auth_config.h
 libkea_http_la_SOURCES += basic_auth_config.cc basic_auth_config.h
+libkea_http_la_SOURCES += thread_pool.cc thread_pool.h
 
 libkea_http_la_CXXFLAGS = $(AM_CXXFLAGS)
 libkea_http_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -120,5 +121,6 @@ libkea_http_include_HEADERS = \
 	response_creator_factory.h \
 	response_json.h \
 	response_parser.h \
+	thread_pool.h \
 	url.h
 

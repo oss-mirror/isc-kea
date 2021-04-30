@@ -1603,62 +1603,30 @@ public:
     ///
     /// @param io_service IOService that will drive connection IO in single
     /// threaded mode.  (Currently ignored in multi-threaded mode)
-    ///
     /// @param thread_pool_size maximum number of concurrent threads
     /// Internally this also sets the maximum number concurrent connections
+    /// @param defer_thread_start if true, then the thread pool will be
+    /// created but started  Applicable only when thread-pool-size is
+    /// greater than zero. 
+    /// will not be startedfalse, then 
     /// per URL.
-    HttpClientImpl(IOService& io_service, size_t thread_pool_size = 0)
-        : thread_pool_size_(thread_pool_size), run_state_(HttpClient::RunState::RUN) {
+    HttpClientImpl(IOService& io_service, size_t thread_pool_size = 0,
+                   bool defer_thread_start = false)
+        : thread_pool_size_(thread_pool_size), threads_() {
         if (thread_pool_size_ > 0) {
             // Create our own private IOService.
             thread_io_service_.reset(new IOService());
 
-            // Create a pool of threads, each calls run on the same, private
-            // io_service instance
-            for (std::size_t i = 0; i < thread_pool_size_; ++i) {
-                boost::shared_ptr<std::thread> thread(new std::thread(
-                [this]() {
-                    bool done = false;
-                    while (!done) {
-                        switch (getRunState()) {
-                        case HttpClient::RunState::RUN:
-                            thread_io_service_->run();
-                            break;
-                        case HttpClient::RunState::PAUSED:
-                        {
-                            // We need to stop and wait to be released.
-                            std::unique_lock<std::mutex> lck(mutex_);
-                            bool ret = cv_.wait_for(lck, std::chrono::seconds(60),
-                                [&]() {
-                                    return (getRunState() != HttpClient::RunState::PAUSED);
-                                });
-
-                            if (!ret) {
-                                // We timed out, still paused. Nothing to do but go
-                                // around again? Eventually we'll resume or shutdown.
-                                // What's the alternative?
-                                std::cout << "***** STILL PAUSED... "
-                                          << (int)(getRunState())  << std::endl;
-                            }
-
-                            break;
-                        }
-                        case HttpClient::RunState::SHUTDOWN:
-                            done = true;
-                            break;
-                        }
-                    }
-                }));
-
-                threads_.push_back(thread);
-            }
+            // Create the thread pool. 
+            threads_.reset(new HttpThreadPool(thread_io_service_, thread_pool_size_,
+                                              defer_thread_start));
 
             // Create the connection pool. Note that we use the thread_pool_size
             // as the maximum connections per URL value.
             conn_pool_.reset(new ConnectionPool(*thread_io_service_, thread_pool_size_));
 
             LOG_DEBUG(http_logger, isc::log::DBGLVL_TRACE_BASIC, HTTP_CLIENT_MT_STARTED)
-                     .arg(threads_.size());
+                     .arg(getThreadCount());
         } else {
             // Single-threaded mode: use the caller's IOService,
             // one connection per URL.
@@ -1676,54 +1644,36 @@ public:
     /// @brief Close all connections, and if multi-threaded, stop internal IOService
     /// and the thread pool.
     void stop() {
-
-        run_state_.store(HttpClient::RunState::SHUTDOWN);
-        cv_.notify_all();
-
-        if (thread_io_service_) {
-            // Stop the private IOService.
-            thread_io_service_->stop();
-
-            // Shutdown the threads.
-            for (auto const& thread : threads_) {
-                thread->join();
-            }
-
-            threads_.clear();
+        if (threads_) {
+            threads_->stop();
         }
 
         // Close all the connections.
         conn_pool_->closeAll();
-
-        // Get rid of the IOService.
-        thread_io_service_.reset();
     }
 
     void pause() {
-        if (run_state_.load() !=  HttpClient::RunState::RUN) {
-            std::cout << "Client pause - not running" << std::endl;
-            return;
+        if (!threads_) {
+            isc_throw(InvalidOperation, "HttpClient::pause - no thread pool");
         }
 
-        std::cout << "Client pausing" << std::endl;
-        run_state_.store(HttpClient::RunState::PAUSED);
-        thread_io_service_->stop();
+        threads_->pause();
     }
 
     void resume() {
-        if (run_state_.load() !=  HttpClient::RunState::PAUSED) {
-            std::cout << "Client resume - not paused" << std::endl;
-            return;
+        if (!threads_) {
+            isc_throw(InvalidOperation, "HttpClient::resume - no thread pool");
         }
 
-        std::cout << "Client resuming" << std::endl;
-        thread_io_service_->get_io_service().reset();
-        run_state_.store(HttpClient::RunState::RUN);
-        cv_.notify_all();
+        threads_->resume();
     }
 
-    HttpClient::RunState getRunState() const {
-        return (run_state_.load());
+    HttpThreadPool::RunState getRunState() const {
+        if (!threads_) {
+            isc_throw(InvalidOperation, "HttpClient::getRunState - no thread pool");
+        }
+
+        return (threads_->getRunState());
     }
 
     /// @brief Fetches the internal IOService used in multi-threaded mode.
@@ -1745,7 +1695,10 @@ public:
     ///
     /// @return the number of running threads.
     uint16_t getThreadCount() {
-        return (threads_.size());
+        if (!threads_) {
+            return (0);
+        }
+        return (threads_->getThreadCount());
     }
 
     /// @brief Holds a pointer to the connection pool.
@@ -1756,16 +1709,12 @@ private:
     /// @brief Maxim number of threads in the thread pool.
     size_t thread_pool_size_;
 
-    /// @brief Pool of threads used to service connections in multi-threaded
-    /// mode.
-    std::vector<boost::shared_ptr<std::thread> > threads_;
-
     /// @brief Pointer to private IOService used in multi-threaded mode.
     asiolink::IOServicePtr thread_io_service_;
 
-    std::atomic<HttpClient::RunState> run_state_;
-    std::mutex mutex_;
-    std::condition_variable cv_;
+    /// @brief Pool of threads used to service connections in multi-threaded
+    /// mode.
+    HttpThreadPoolPtr threads_;
 };
 
 HttpClient::HttpClient(IOService& io_service, size_t thread_pool_size) {
@@ -1854,7 +1803,7 @@ HttpClient::getThreadCount() const {
     return (impl_->getThreadCount());
 }
 
-HttpClient::RunState
+HttpThreadPool::RunState
 HttpClient::getRunState() const {
     return (impl_->getRunState());
 }
