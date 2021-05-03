@@ -236,7 +236,7 @@ public:
     /// have been carried out or the test fails.
     void runIOService() {
         // Loop until the clients are done, an error occurs, or the time runs out.
-        while (clientRRs_.size() < expected_requests_) {
+        while (getRRCount() < expected_requests_) {
             // Always call reset() before we call run();
             io_service_.get_io_service().reset();
 
@@ -305,15 +305,15 @@ public:
 
             // Wait here until we have as many in progress as we have threads.
             {
-                std::unique_lock<std::mutex> lck(mutex_);
+                std::unique_lock<std::mutex> lck(test_mutex_);
                 ++num_in_progress_;
                 if (num_threads_ == 0 || num_in_progress_ == num_threads_) {
                     // Everybody has one, let's go.
                     num_finished_ = 0;
-                    cv_.notify_all();
+                    test_cv_.notify_all();
                 } else {
                     // I'm ready but others aren't wait here.
-                    bool ret = cv_.wait_for(lck, std::chrono::seconds(10),
+                    bool ret = test_cv_.wait_for(lck, std::chrono::seconds(10),
                                             [&]() { return (num_in_progress_ == num_threads_); });
                     if (!ret) {
                         ADD_FAILURE() << "clients failed to start work";
@@ -333,24 +333,75 @@ public:
 
             // Wait here until we have as many ready to finish as we have threads.
             {
-                std::unique_lock<std::mutex> lck(mutex_);
+                std::unique_lock<std::mutex> lck(test_mutex_);
                 ++num_finished_;
                 clientRRs_.push_back(clientRR);
                 if (num_threads_ == 0 || num_finished_ == num_threads_) {
                     // We're all done, notify the others and finish.
                     num_in_progress_ = 0;
-                    cv_.notify_all();
+                    test_cv_.notify_all();
                     // Stop the test's IOService.
                     io_service_.stop();
                 } else {
                     // I'm done but others aren't wait here.
-                    bool ret = cv_.wait_for(lck, std::chrono::seconds(10),
+                    bool ret = test_cv_.wait_for(lck, std::chrono::seconds(10),
                                             [&]() { return (num_finished_ == num_threads_); });
                     if (!ret) {
                         ADD_FAILURE() << "clients failed to finish work";
                     }
                 }
             }
+        }));
+    }
+
+    /// @brief Initiates a single HTTP request.
+    ///
+    /// Constructs an HTTP post whose body is a JSON map containing a
+    /// single integer element, "sequence".
+    ///
+    /// The request completion handler simply constructs the response,
+    /// and adds it the list of completed request/responses. If the
+    /// number of completed requests has reached the expected number
+    /// it stops the test IOService.
+    ///
+    /// @param sequence value for the integer element, "sequence",
+    /// to send in the request.
+    void startRequestSimple(int sequence, int port_offset = 0) {
+        // Create the URL on which the server can be reached.
+        std::stringstream ss;
+        ss << "http://" << SERVER_ADDRESS << ":" << (SERVER_PORT + port_offset);
+        Url url(ss.str());
+
+        // Initiate request to the server.
+        PostHttpRequestJsonPtr request_json = createRequest("sequence", sequence);
+        HttpResponseJsonPtr response_json = boost::make_shared<HttpResponseJson>();
+        ASSERT_NO_THROW(client_->asyncSendRequest(url, TlsContextPtr(),
+                                                  request_json, response_json,
+            [this, request_json, response_json](const boost::system::error_code& ec,
+                                                const HttpResponsePtr&,
+                                                const std::string&) {
+            // Bail on an error.
+            ASSERT_FALSE(ec) << "asyncSendRequest failed, ec: " << ec;
+
+            // Get stringified thread-id.
+            std::stringstream ss;
+            ss << std::this_thread::get_id();
+
+            // Create the ClientRR.
+            ClientRRPtr clientRR(new ClientRR());
+            clientRR->thread_id_ = ss.str();
+            clientRR->request_ = request_json;
+            clientRR->response_ = response_json;
+
+            {
+                std::unique_lock<std::mutex> lck(test_mutex_);
+                clientRRs_.push_back(clientRR);
+                ++num_finished_;
+                if ((num_finished_ >= expected_requests_) && !io_service_.stopped()) {
+                    io_service_.stop();
+                }
+            }
+
         }));
     }
 
@@ -363,7 +414,10 @@ public:
     ///
     /// Then it iteratively runs the test's IOService until all
     /// the requests have been responded to, an error occurs, or the
-    /// test times out.
+    /// test times out.  During each pass through the run loop, the
+    /// a call to shouldPause() is made to determine if the client
+    /// thread pool should be paused.  If so, the the pool is paused
+    /// and an timer begun which resumes the pool upon timeout.
     ///
     /// Each request carries a single integer element, "sequence", which
     /// uniquely identifies the request. Each response is expected to
@@ -383,8 +437,13 @@ public:
     /// A value of 0 puts the HttpClient in single-threaded mode.
     /// @param num_batches number of batches of requests that should be
     /// conducted.
-    /// @param num_listeners number of HttpListeners to create.
-    void threadRequestAndReceive(size_t num_threads, size_t num_batches, size_t num_listeners = 1) {
+    /// @param num_listeners number of HttpListeners to create. Defaults
+    /// to 1.
+    /// @param num_pauses number of times to pause and resume the client
+    /// during the test.  Defaults to 0.
+    void threadRequestAndReceive(size_t num_threads, size_t num_batches,
+                                 size_t num_listeners = 1,
+                                 size_t num_pauses = 0) {
         ASSERT_TRUE(num_batches);
         ASSERT_TRUE(num_listeners);
         num_threads_ = num_threads;
@@ -441,194 +500,27 @@ public:
             }
         }
 
-        // Run test thread IOService. This drives the listener's IO.
-        ASSERT_NO_THROW(runIOService());
-
-        // Client should stop without issue.
-        ASSERT_NO_THROW(client_->stop());
-
-        // Listeners should stop without issue.
-        for (const auto& listener : listeners_) {
-            ASSERT_NO_THROW(listener->stop());
-        }
-
-        // We should have a response for each request.
-        ASSERT_EQ(clientRRs_.size(), expected_requests_);
-
-        // Create a map to track number of responses for each client thread.
-        std::map<std::string, int> responses_per_thread;
-
-        // Create a map to track number of responses for each listener port.
-        std::map<uint16_t, int> responses_per_listener;
-
-        // Get the stringified thread-id of the test's main thread.
-        std::stringstream ss;
-        ss << std::this_thread::get_id();
-        std::string main_thread_id = ss.str();
-
-        // Iterate over the client request/response pairs.
-        for (auto const& clientRR : clientRRs_) {
-            // Make sure it's whole.
-            ASSERT_FALSE(clientRR->thread_id_.empty());
-            ASSERT_TRUE(clientRR->request_);
-            ASSERT_TRUE(clientRR->response_);
-
-            // Request should contain an integer sequence number.
-            int request_sequence;
-            ConstElementPtr sequence = clientRR->request_->getJsonElement("sequence");
-            ASSERT_TRUE(sequence);
-            ASSERT_NO_THROW(request_sequence = sequence->intValue());
-
-            // Response should contain an integer sequence number.
-            int response_sequence;
-            sequence = clientRR->response_->getJsonElement("sequence");
-            ASSERT_TRUE(sequence);
-            ASSERT_NO_THROW(response_sequence = sequence->intValue());
-
-            // Request and Response sequence numbers should match.
-            ASSERT_EQ(request_sequence, response_sequence);
-
-            ConstElementPtr server_port_elem = clientRR->response_->getJsonElement("server-port");
-            ASSERT_TRUE(server_port_elem);
-            uint16_t server_port = server_port_elem->intValue();
-
-            if (num_threads_ == 0) {
-                // For ST mode thread id should always be the main thread.
-                ASSERT_EQ(clientRR->thread_id_, main_thread_id);
-            } else {
-                // For MT mode the thread id should never be the main thread.
-                ASSERT_NE(clientRR->thread_id_, main_thread_id);
-            }
-
-            // Bump the response count for the given client thread-id.
-            auto rit = responses_per_thread.find(clientRR->thread_id_);
-            if (rit != responses_per_thread.end()) {
-                responses_per_thread[clientRR->thread_id_] = rit->second + 1;
-            } else {
-                responses_per_thread[clientRR->thread_id_] = 1;
-            }
-
-            // Bump the response count for the given server port.
-            auto lit = responses_per_listener.find(server_port);
-            if (lit != responses_per_listener.end()) {
-                responses_per_listener[server_port] = lit->second + 1;
-            } else {
-                responses_per_listener[server_port] = 1;
-            }
-        }
-
-        // Make sure that all client threads received responses.
-        ASSERT_EQ(responses_per_thread.size(), effective_threads);
-
-        // Make sure that each client thread received the same number of responses.
-        for (auto const& it : responses_per_thread) {
-            EXPECT_EQ(it.second, (num_batches_ * num_listeners_))
-                      << "thread-id: " << it.first
-                      << ", responses: " << it.second << std::endl;
-        }
-
-        // Make sure that all listeners generated responses.
-        ASSERT_EQ(responses_per_listener.size(), num_listeners_);
-
-        // Make sure Each listener generated the same number of responses.
-        for (auto const& it : responses_per_listener) {
-            EXPECT_EQ(it.second, (num_batches_ * effective_threads))
-                      << "server-port: " << it.first
-                      << ", responses: " << it.second << std::endl;
-        }
-    }
-
-    bool shouldPause(size_t num_pauses) {
-        if (paused_ || !num_pauses || !clientRRs_.size()) {
-            return false;
-        }
-
-        size_t interval = expected_requests_ / num_pauses; 
-        size_t next_stop = interval * (pause_cnt_ + 1);
-        return (clientRRs_.size() >= next_stop);
-    }
-
-    // I replicated threadRequestAndReceive to avoid breaking things while
-    // I experiment. 
-    void mitPauseThreadRequestAndReceive(size_t num_threads, size_t num_batches, 
-                                         size_t num_listeners = 1, size_t num_pauses = 0) {
-        ASSERT_TRUE(num_batches);
-        ASSERT_TRUE(num_listeners);
-        num_threads_ = num_threads;
-        num_batches_ = num_batches;
-        num_listeners_ = num_listeners;
-
-        // Client in ST is, in effect, 1 thread.
-        size_t effective_threads = (num_threads_ == 0 ? 1 : num_threads_);
-
-        // Calculate the expected number of requests.
-        expected_requests_ = (num_batches_ * num_listeners_ * effective_threads);
-
-        for (auto i = 0; i < num_listeners_; ++i) {
-            // Make a factory
-            HttpResponseCreatorFactoryPtr factory(new TestHttpResponseCreatorFactory(SERVER_PORT + i));
-            factories_.push_back(factory);
-
-            // Need to create a Listener on
-            HttpListenerPtr listener(new HttpListener(io_service_,
-                                                      IOAddress(SERVER_ADDRESS), (SERVER_PORT + i),
-                                                      TlsContextPtr(), factory,
-                                                      HttpListener::RequestTimeout(10000),
-                                                      HttpListener::IdleTimeout(10000)));
-            listeners_.push_back(listener);
-
-            // Start the server.
-            ASSERT_NO_THROW(listener->start());
-        }
-
-        // Create an MT client with num_threads
-        ASSERT_NO_THROW_LOG(client_.reset(new HttpClient(io_service_, num_threads)));
-        ASSERT_TRUE(client_);
-
-        if (num_threads_ == 0) {
-            // If we single-threaded client should not have it's own IOService.
-            ASSERT_FALSE(client_->getThreadIOService());
-        } else {
-            // If we multi-threaded client should have it's own IOService.
-            ASSERT_TRUE(client_->getThreadIOService());
-        }
-
-        // Verify the pool size and number of threads are as expected.
-        ASSERT_EQ(client_->getThreadPoolSize(), num_threads);
-        ASSERT_EQ(client_->getThreadCount(), num_threads);
-
-        // Start the requisite number of requests:
-        //   batch * listeners * threads.
-        int sequence = 0;
-        for (auto b = 0; b < num_batches; ++b) {
-            for (auto l = 0; l < num_listeners_; ++l) {
-                for (auto t = 0; t < effective_threads; ++t) {
-                    startRequest(++sequence, l);
-                }
-            }
-        }
-
+        // Create a timer to use for invoking resume after pause.
         IntervalTimer pause_timer_(io_service_);
         paused_ = false;
 
         // Loop until the clients are done, an error occurs, or the time runs out.
-        while (clientRRs_.size() < expected_requests_) {
-            // Always call reset() before we call run();
-            io_service_.get_io_service().reset();
+        while (getRRCount() < expected_requests_) {
+            // Always call restart() before we call run();
+            io_service_.restart();
 
             if (shouldPause(num_pauses)) {
-                // pause client
+                // Pause client.
                 paused_ = true;
                 ++pause_cnt_;
                 client_->pause();
 
-                // set timer to resume client
+                // Set timer to resume client.
                 pause_timer_.setup(
-                    [this](){ 
+                    [this]() {
                             client_->resume();
                             paused_ = false;
-                    }, 
-                    10, IntervalTimer::ONE_SHOT);
+                    }, 10, IntervalTimer::ONE_SHOT);
             }
 
             // Run until a client stops the service.
@@ -644,7 +536,7 @@ public:
         }
 
         // We should have a response for each request.
-        ASSERT_EQ(clientRRs_.size(), expected_requests_);
+        ASSERT_EQ(getRRCount(), expected_requests_);
 
         // We should have had the expected number of pauses.
         if (!num_pauses) {
@@ -654,9 +546,11 @@ public:
             // out the exact intervals at which to pause was
             // getting to be a pain.  We don't really care as
             // long as we're close.  The primary thing is that
-            // we did in fact pause, more than once.
-            ASSERT_TRUE((num_pauses - 1) <= pause_cnt_ && 
-                        (pause_cnt_ <= (num_pauses + 1)));
+            // we did in fact pause and resume.
+            ASSERT_TRUE((num_pauses - 1) <= pause_cnt_ &&
+                        (pause_cnt_ <= (num_pauses + 1)))
+                        << " num+_pauses: " << num_pauses
+                        << ", pause_cnt_" << pause_cnt_;
         }
 
         // Create a map to track number of responses for each client thread.
@@ -742,8 +636,37 @@ public:
         }
     }
 
-    void workPauseShutdown(size_t num_threads, size_t num_batches, 
-                           size_t num_listeners = 1) {
+    /// @brief Indicates if the test should pause.
+    ///
+    /// Returns true if the number of completed requests
+    /// has reached or exceeded the next pause interval.
+    /// The pause interval is given by expected number of
+    /// requests divided by the desired number of pauses.
+    ///
+    /// @param num_pauses Desired number of pauses.
+    ///
+    /// @return True if the client should be paused.
+    bool shouldPause(size_t num_pauses) {
+        size_t rr_count = getRRCount();
+        if (paused_ || !num_pauses || !rr_count) {
+            return false;
+        }
+
+        size_t interval = expected_requests_ / num_pauses;
+        size_t next_stop = interval * (pause_cnt_ + 1);
+        return (rr_count >= next_stop);
+    }
+
+    /// @brief Verifies the client can be puased and shutdown while doing work.
+    ///
+    /// @param num_threads number of threads the HttpClient should use.
+    /// A value of 0 puts the HttpClient in single-threaded mode.
+    /// @param num_batches number of batches of requests that should be
+    /// conducted.
+    /// @param num_listeners number of HttpListeners to create. Defaults
+    /// to 1.
+    void workPauseShutdown(size_t num_threads, size_t num_batches,
+                           size_t num_listeners = 1, bool pause_first = true) {
         ASSERT_TRUE(num_batches);
         ASSERT_TRUE(num_listeners);
         num_threads_ = num_threads;
@@ -753,8 +676,11 @@ public:
         // Client in ST is, in effect, 1 thread.
         size_t effective_threads = (num_threads_ == 0 ? 1 : num_threads_);
 
+        // Calculate the maximum requests that could complete.
+        size_t maximum_requests = (num_batches_ * num_listeners_ * effective_threads);
+
         // Calculate the expected number of requests.
-        expected_requests_ = (num_batches_ * num_listeners_ * effective_threads);
+        expected_requests_ = maximum_requests / 2;
 
         for (auto i = 0; i < num_listeners_; ++i) {
             // Make a factory
@@ -795,22 +721,33 @@ public:
         for (auto b = 0; b < num_batches; ++b) {
             for (auto l = 0; l < num_listeners_; ++l) {
                 for (auto t = 0; t < effective_threads; ++t) {
-                    startRequest(++sequence, l);
+                    startRequestSimple(++sequence, l);
                 }
             }
         }
 
-        // Loop until the clients are done, an error occurs, or the time runs out.
-        while (clientRRs_.size() < expected_requests_ / 2) {
+        // Loop until the 1/2 the reuests are done, an error occurs,
+        // or the time runs out.
+        size_t rr_count = 0;
+        while (rr_count < (expected_requests_)) {
             // Always call reset() before we call run();
             io_service_.get_io_service().reset();
 
             // Run until a client stops the service.
             io_service_.run();
+            rr_count = getRRCount();
         }
 
-        ASSERT_NO_THROW(client_->pause());
-        ASSERT_EQ(HttpThreadPool::RunState::PAUSED, client_->getRunState());
+        if (pause_first) {
+            // Pause the client.
+            ASSERT_NO_THROW(client_->pause());
+            ASSERT_EQ(HttpThreadPool::RunState::PAUSED, client_->getRunState());
+        }
+
+        // We should have completed at least the expected number of requests
+        // but less than the maximum number of requests.
+        ASSERT_GE(getRRCount(), expected_requests_ );
+        ASSERT_LT(getRRCount(), maximum_requests);
 
         // Client should stop without issue.
         ASSERT_NO_THROW(client_->stop());
@@ -821,6 +758,13 @@ public:
         }
     }
 
+    /// @brief Fetch the number of completed requests.
+    ///
+    /// @return number of completed requests.
+    size_t getRRCount() {
+        std::unique_lock<std::mutex> lck(test_mutex_);
+        return(clientRRs_.size());
+    }
 
     /// @brief IO service used in the tests.
     IOService io_service_;
@@ -865,16 +809,18 @@ public:
     std::vector<ClientRRPtr> clientRRs_;
 
     /// @brief Mutex for locking.
-    std::mutex mutex_;
+    std::mutex test_mutex_;
 
     /// @brief Condition variable used to make client threads wait
     /// until number of in-progress requests reaches the number
     /// of client requests.
-    std::condition_variable cv_;
+    std::condition_variable test_cv_;
 
     /// @brief Indicates if client threads are currently "paused".
     bool paused_;
-    size_t pause_cnt_; 
+
+    /// @brief Number of times client has been paused during the test.
+    size_t pause_cnt_;
 };
 
 // Verifies we can construct and destruct, in both single
@@ -990,21 +936,21 @@ TEST_F(MtHttpClientTest, fourByFourByTwo) {
     threadRequestAndReceive(num_threads, num_batches, num_listeners);
 }
 
-// 12 of everything plus 7 pauses.
+// Multi-threaded with 12 of everything plus 7 pauses.
 TEST_F(MtHttpClientTest, mitPause) {
     size_t num_threads = 12;
     size_t num_batches = 12;
     size_t num_listeners = 12;
     size_t num_pauses = 7;
-
-    mitPauseThreadRequestAndReceive(num_threads, num_batches, num_listeners, num_pauses);
+    threadRequestAndReceive(num_threads, num_batches, num_listeners, num_pauses);
 }
 
+// Verifies that we can cleanly pause and shutdown while doing
+// multi-threaded work.
 TEST_F(MtHttpClientTest, workPauseShutdown) {
-    size_t num_threads = 12;
-    size_t num_batches = 12;
-    size_t num_listeners = 12;
-
+    size_t num_threads = 8;
+    size_t num_batches = 8;
+    size_t num_listeners = 8;
     workPauseShutdown(num_threads, num_batches, num_listeners);
 }
 

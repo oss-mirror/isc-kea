@@ -30,17 +30,20 @@ using namespace isc::asiolink;
 using namespace isc::http;
 using namespace isc::util;
 
-HttpThreadPool::HttpThreadPool(IOServicePtr io_service, size_t pool_size, bool defer_start /* = false */)
-    : pool_size_(pool_size), io_service_(io_service), 
+HttpThreadPool::HttpThreadPool(IOServicePtr io_service, size_t pool_size,
+                               bool defer_start /* = false */)
+    : pool_size_(pool_size), io_service_(io_service),
       run_state_(RunState::STOPPED), mutex_(), cv_()  {
-    if (!pool_size) { 
+    if (!pool_size) {
         isc_throw(BadValue, "HttpThreadPool::ctor pool_size must be > 0");
     }
 
+    // If we weren't given an IOService, create our own.
     if (!io_service_) {
         io_service_.reset(new IOService());
     }
 
+    // If we're not deferring the start, do it now.
     if (!defer_start) {
         start();
     }
@@ -48,6 +51,7 @@ HttpThreadPool::HttpThreadPool(IOServicePtr io_service, size_t pool_size, bool d
 
 HttpThreadPool::~HttpThreadPool() {
     if (getRunState() != RunState::STOPPED) {
+        // Stop if we aren't already stopped
         stop();
     }
 }
@@ -58,13 +62,14 @@ HttpThreadPool::start() {
         isc_throw(InvalidOperation, "HttpThreadPool::start already started!");
     }
 
+    // Set state to RUN.
     setRunState(RunState::RUN);
 
     // Prep IOservice for run() invocations.
     io_service_->restart();
 
-    // Create a pool of threads, each calls run on the same, private
-    // io_service instance
+    // Create a pool of threads, each calls run() on our
+    // io_service instance.
     for (std::size_t i = 0; i < pool_size_; ++i) {
         boost::shared_ptr<std::thread> thread(new std::thread(
             [this]() {
@@ -76,13 +81,12 @@ HttpThreadPool::start() {
                         break;
                     case RunState::PAUSED:
                     {
-                        // We need to stop and wait to be released.
-                        // Try it w/o timer. We don't care how we exit, we'll
-                        // do whatever the current state dictates.
+                        // We need to stop and wait to be released. We don't care how 
+                        // we exit, we'll do whatever the current state dictates.
                         std::unique_lock<std::mutex> lck(mutex_);
-                        static_cast<void>(cv_.wait_for(lck, std::chrono::seconds(60),
+                        static_cast<void>(cv_.wait_for(lck, std::chrono::milliseconds(25),
                             [&]() {
-                                return (getRunState() != RunState::PAUSED);
+                                return (run_state_ != RunState::PAUSED);
                             }));
 
                         break;
@@ -91,9 +95,7 @@ HttpThreadPool::start() {
                         done = true;
                         break;
                     case RunState::STOPPED:
-                        // THIS SHOULD NOT HAPPEN.
-                        std::cout << "Somehow we're in stopped state and threads are alive!"
-                                  << std::endl;
+                        // This should never happen.
                         done = true;
                         break;
                     }
@@ -111,11 +113,10 @@ HttpThreadPool::stop() {
         return;
     }
 
-    std::cout << "HttpThreadPool::stop - stopping" << std::endl;
-
+    // Set the state to SHUTDOWN.
     setRunState(RunState::SHUTDOWN);
 
-    // Stop the private IOService.
+    // Stop our IOService.
     if (!io_service_->stopped()) {
         io_service_->stop();
     }
@@ -125,21 +126,21 @@ HttpThreadPool::stop() {
         thread->join();
     }
 
-    // Empty the pool.
+    // Empty the thread pool.
     threads_.clear();
 
-    // Should we consider a reset()/poll() call here?
-
+    // Set the state to STOPPED.
     setRunState(RunState::STOPPED);
 }
 
 void
 HttpThreadPool::pause() {
     if (getRunState() !=  RunState::RUN) {
-        std::cout << "HttpThreadPool::pause - not running" << std::endl;
+        // Not running, can't pause.
         return;
     }
 
+    /// @todo TKM - Take this out
     std::cout << "HttpThreadPool pausing" << std::endl;
     setRunState(RunState::PAUSED);
     io_service_->stop();
@@ -148,26 +149,29 @@ HttpThreadPool::pause() {
 void
 HttpThreadPool::resume() {
     if (getRunState() !=  RunState::PAUSED) {
-        std::cout << "HttpThreadPool::resume - not paused" << std::endl;
+        // Not PAUSED, can't resume.
         return;
     }
 
+    /// @todo TKM - Take this out
     std::cout << "HttpThreadPool resuming" << std::endl;
     io_service_->restart();
     setRunState(RunState::RUN);
 }
 
 HttpThreadPool::RunState
-HttpThreadPool::getRunState() const {
-    return(run_state_.load());
+HttpThreadPool::getRunState() {
+    std::lock_guard<std::mutex> lck(mutex_);
+    return (run_state_);
 }
 
-void 
+void
 HttpThreadPool::setRunState(RunState state) {
-    run_state_.store(state);
-    if (threads_.size()) {
-        cv_.notify_all();
+    {
+        std::lock_guard<std::mutex> lck(mutex_);
+        run_state_ = state;
     }
+    cv_.notify_all();
 }
 
 IOServicePtr
