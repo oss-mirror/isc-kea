@@ -1706,6 +1706,10 @@ AC_CONFIG_FILES([src/bin/netconf/tests/test_libraries.h])
 AC_CONFIG_FILES([src/bin/perfdhcp/Makefile])
 AC_CONFIG_FILES([src/bin/perfdhcp/tests/Makefile])
 AC_CONFIG_FILES([src/bin/perfdhcp/tests/testdata/Makefile])
+AC_CONFIG_FILES([src/bin/relay/Makefile])
+AC_CONFIG_FILES([src/bin/relay/tests/Makefile])
+AC_CONFIG_FILES([src/bin/relay/tests/relay_process_tests.sh],
+                [chmod +x src/bin/relay/tests/relay_process_tests.sh])
 AC_CONFIG_FILES([src/bin/shell/Makefile])
 AC_CONFIG_FILES([src/bin/shell/kea-shell],
                 [chmod +x src/bin/shell/kea-shell])
