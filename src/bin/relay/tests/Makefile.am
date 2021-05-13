@@ -40,7 +40,6 @@ TESTS_ENVIRONMENT = \
 TESTS =
 if HAVE_GTEST
 
-noinst_LTLIBRARIES = libcallout.la
 
 TESTS += relay_unittests
 
@@ -49,7 +48,7 @@ relay_unittests_SOURCES = relay_unittests.cc
 relay_unittests_CPPFLAGS = $(AM_CPPFLAGS) $(GTEST_INCLUDES)
 relay_unittests_LDFLAGS = $(AM_LDFLAGS) $(CRYPTO_LDFLAGS) $(GTEST_LDFLAGS)
 
-relay_unittests_LDADD = $(top_builddir)/src/bin/agent/librelay.la
+relay_unittests_LDADD = $(top_builddir)/src/bin/relay/librelay.la
 relay_unittests_LDADD += $(top_builddir)/src/lib/process/testutils/libprocesstest.la
 relay_unittests_LDADD += $(top_builddir)/src/lib/cfgrpt/libcfgrpt.la
 relay_unittests_LDADD += $(top_builddir)/src/lib/process/libkea-process.la
@@ -65,15 +64,6 @@ relay_unittests_LDADD += $(top_builddir)/src/lib/util/libkea-util.la
 relay_unittests_LDADD += $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
 relay_unittests_LDADD += $(LOG4CPLUS_LIBS) $(CRYPTO_LIBS)
 relay_unittests_LDADD += $(BOOST_LIBS) $(GTEST_LDADD)
-
-# The basic callout library - contains standard callouts
-libcallout_la_SOURCES  = callout_library.cc
-libcallout_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcallout_la_CPPFLAGS = $(AM_CPPFLAGS)
-libcallout_la_LIBADD   = $(top_builddir)/src/lib/exceptions/libkea-exceptions.la
-libcallout_la_LIBADD  += $(top_builddir)/src/lib/hooks/libkea-hooks.la
-libcallout_la_LIBADD  += $(top_builddir)/src/lib/log/libkea-log.la
-libcallout_la_LDFLAGS  = -avoid-version -export-dynamic -module -rpath /nowhere
 
 endif
 
