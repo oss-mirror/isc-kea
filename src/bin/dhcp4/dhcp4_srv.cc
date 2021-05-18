@@ -1809,11 +1809,11 @@ Dhcpv4Srv::appendRequestedVendorOptions(Dhcpv4Exchange& ex) {
 
     std::vector<uint8_t> requested_opts;
 
-    // Let's try to get ORO within that vendor-option
-    /// @todo This is very specific to vendor-id=4491 (Cable Labs). Other
-    /// vendors may have different policies.
+    // Let's try to get ORO within that vendor-option.
+    // This is very specific to vendor-id=4491 (Cable Labs). Other vendors may
+    // have different policies.
     OptionUint8ArrayPtr oro;
-    if (vendor_req) {
+    if (vendor_id == VENDOR_ID_CABLE_LABS && vendor_req) {
         oro = boost::dynamic_pointer_cast<OptionUint8Array>(vendor_req->getOption(DOCSIS3_V4_ORO));
         // Get the list of options that client requested.
         if (oro) {
