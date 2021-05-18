@@ -1461,14 +1461,12 @@ Dhcpv6Srv::appendRequestedVendorOptions(const Pkt6Ptr& question,
     /// @todo This is very specific to vendor-id=4491 (Cable Labs). Other vendors
     /// may have different policies.
     boost::shared_ptr<OptionUint16Array> oro;
-    for (OptionVendorPtr const& vendor_option : {vendor_rsp, vendor_req}) {
-        if (vendor_option) {
-            OptionPtr oro_generic = vendor_option->getOption(DOCSIS3_V6_ORO);
-            if (oro_generic) {
-                oro = boost::dynamic_pointer_cast<OptionUint16Array>(oro_generic);
-                if (oro) {
-                    requested_opts = oro->getValues();
-                }
+    if (vendor_req) {
+        OptionPtr oro_generic = vendor_req->getOption(DOCSIS3_V6_ORO);
+        if (oro_generic) {
+            oro = boost::dynamic_pointer_cast<OptionUint16Array>(oro_generic);
+            if (oro) {
+                requested_opts = oro->getValues();
             }
         }
     }
