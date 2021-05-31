@@ -55,9 +55,6 @@ LFCController::LFCController()
       copy_file_(""), output_file_(""), finish_file_(""), pid_file_("") {
 }
 
-LFCController::~LFCController() {
-}
-
 void
 LFCController::launch(int argc, char* argv[], const bool test_mode) {
     bool do_rotate = true;

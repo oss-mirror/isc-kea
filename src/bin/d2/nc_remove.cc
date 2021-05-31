@@ -38,9 +38,6 @@ NameRemoveTransaction(asiolink::IOServicePtr& io_service,
     }
 }
 
-NameRemoveTransaction::~NameRemoveTransaction(){
-}
-
 void
 NameRemoveTransaction::defineEvents() {
     // Call superclass impl first.

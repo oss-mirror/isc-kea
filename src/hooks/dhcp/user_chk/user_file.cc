@@ -22,9 +22,12 @@ UserFile::UserFile(const std::string& fname) : fname_(fname), file_() {
     }
 }
 
-UserFile::~UserFile(){
-    close();
-};
+UserFile::~UserFile() {
+    try {
+        close();
+    } catch (...) {
+    }
+}
 
 void
 UserFile::open() {

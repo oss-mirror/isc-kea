@@ -22,15 +22,20 @@ class CryptoLinkImpl {
 };
 
 CryptoLink::~CryptoLink() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief OpenSSL implementation of RNG.
 class RNGImpl : public RNG {
 public:
-    RNGImpl() { }
+    /// @brief Constructor
+    RNGImpl() = default;
 
-    ~RNGImpl() { }
+    /// @brief Destructor
+    ~RNGImpl() = default;
 
 private:
     std::vector<uint8_t> random(size_t len) {

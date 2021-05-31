@@ -33,9 +33,6 @@ NetconfProcess::NetconfProcess(const char* name,
     : DProcessBase(name, io_service, DCfgMgrBasePtr(new NetconfCfgMgr())) {
 }
 
-NetconfProcess::~NetconfProcess() {
-}
-
 void
 NetconfProcess::init() {
 }

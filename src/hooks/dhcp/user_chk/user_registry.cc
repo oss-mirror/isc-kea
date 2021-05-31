@@ -11,12 +11,6 @@
 
 namespace user_chk {
 
-UserRegistry::UserRegistry() {
-}
-
-UserRegistry::~UserRegistry(){
-}
-
 void
 UserRegistry::addUser(UserPtr& user) {
     if (!user) {

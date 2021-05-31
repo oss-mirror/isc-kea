@@ -26,6 +26,7 @@ namespace {
 // to protected methods.
 class NameRemoveStub : public NameRemoveTransaction {
 public:
+    /// @brief Constructor
     NameRemoveStub(asiolink::IOServicePtr& io_service,
                    dhcp_ddns::NameChangeRequestPtr& ncr,
                    DdnsDomainPtr& forward_domain,
@@ -37,8 +38,8 @@ public:
           simulate_build_request_exception_(false) {
     }
 
-    virtual ~NameRemoveStub() {
-    }
+    /// @brief Destructor
+    virtual ~NameRemoveStub() = default;
 
     /// @brief Simulates sending update requests to the DNS server
     ///
@@ -184,11 +185,11 @@ typedef boost::shared_ptr<NameRemoveStub> NameRemoveStubPtr;
 /// aspects of NameRemoveTransaction.
 class NameRemoveTransactionTest : public TransactionTest {
 public:
-    NameRemoveTransactionTest() {
-    }
+    /// @brief Constructor
+    NameRemoveTransactionTest() = default;
 
-    virtual ~NameRemoveTransactionTest() {
-    }
+    /// @brief Destructor
+    virtual ~NameRemoveTransactionTest() = default;
 
     /// @brief Creates a transaction which requests an IPv4 DNS update.
     ///

@@ -52,12 +52,10 @@ typedef boost::shared_ptr<thread> ThreadPtr;
 class NakedNetconfAgent : public NetconfAgent {
 public:
     /// @brief Constructor.
-    NakedNetconfAgent() {
-    }
+    NakedNetconfAgent() = default;
 
     /// @brief Destructor.
-    virtual ~NakedNetconfAgent() {
-    }
+    virtual ~NakedNetconfAgent() = default;
 
     /// Export protected methods and fields.
     using NetconfAgent::keaConfig;
@@ -105,24 +103,27 @@ public:
 
     /// @brief Destructor.
     virtual ~NetconfAgentTest() {
-        NetconfProcess::shut_down = true;
-        if (thread_) {
-            thread_->join();
-            thread_.reset();
+        try {
+            NetconfProcess::shut_down = true;
+            if (thread_) {
+                thread_->join();
+                thread_.reset();
+            }
+            // io_service must be stopped after the thread returns,
+            // otherwise the thread may never return if it is
+            // waiting for the completion of some asynchronous tasks.
+            io_service_->stop();
+            io_service_.reset();
+            if (agent_) {
+                clearYang(agent_);
+                agent_->clear();
+            }
+            agent_.reset();
+            requests_.clear();
+            responses_.clear();
+            removeUnixSocketFile();
+        } catch (...) {
         }
-        // io_service must be stopped after the thread returns,
-        // otherwise the thread may never return if it is
-        // waiting for the completion of some asynchronous tasks.
-        io_service_->stop();
-        io_service_.reset();
-        if (agent_) {
-            clearYang(agent_);
-            agent_->clear();
-        }
-        agent_.reset();
-        requests_.clear();
-        responses_.clear();
-        removeUnixSocketFile();
     }
 
     /// @brief Returns socket file path.
@@ -186,19 +187,22 @@ public:
 
     /// @brief Destructor.
     virtual ~NetconfAgentLogTest() {
-        NetconfProcess::shut_down = true;
-        // io_service must be stopped to make the thread to return.
-        io_service_->stop();
-        io_service_.reset();
-        if (thread_) {
-            thread_->join();
-            thread_.reset();
+        try {
+            NetconfProcess::shut_down = true;
+            // io_service must be stopped to make the thread to return.
+            io_service_->stop();
+            io_service_.reset();
+            if (thread_) {
+                thread_->join();
+                thread_.reset();
+            }
+            if (agent_) {
+                clearYang(agent_);
+                agent_->clear();
+            }
+            agent_.reset();
+        } catch (...) {
         }
-        if (agent_) {
-            clearYang(agent_);
-            agent_->clear();
-        }
-        agent_.reset();
     }
 
     /// @brief IOService object.

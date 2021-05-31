@@ -25,11 +25,10 @@ namespace db {
 class DbAccessParser: public isc::data::SimpleParser {
 public:
     /// @brief Constructor
-    DbAccessParser();
+    DbAccessParser() = default;
 
-    /// The destructor.
-    virtual ~DbAccessParser()
-    {}
+    /// @brief Destructor.
+    virtual ~DbAccessParser() = default;
 
     /// @brief Parse configuration value.
     ///

@@ -75,9 +75,12 @@ ClientHandler::ClientHandler() : client_(), locked_() {
 }
 
 ClientHandler::~ClientHandler() {
-    if (locked_) {
-        lock_guard<mutex> lk(mutex_);
-        unLock();
+    try {
+        if (locked_) {
+            lock_guard<mutex> lk(mutex_);
+            unLock();
+        }
+    } catch (...) {
     }
 }
 

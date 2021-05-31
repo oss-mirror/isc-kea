@@ -45,14 +45,12 @@ std::string testDataFile(const std::string& name) {
 /// results, and accessing the configuration context.
 class D2CfgMgrTest : public ConfigParseTest {
 public:
-
     /// @brief Constructor
-    D2CfgMgrTest():cfg_mgr_(new D2CfgMgr()), d2_params_() {
+    D2CfgMgrTest() : cfg_mgr_(new D2CfgMgr()), d2_params_() {
     }
 
     /// @brief Destructor
-    ~D2CfgMgrTest() {
-    }
+    ~D2CfgMgrTest() = default;
 
     /// @brief Configuration manager instance.
     D2CfgMgrPtr cfg_mgr_;

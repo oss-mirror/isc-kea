@@ -60,7 +60,7 @@ public:
     ParserContext();
 
     /// @brief destructor
-    virtual ~ParserContext();
+    virtual ~ParserContext() = default;
 
     /// @brief JSON elements being parsed.
     std::vector<isc::data::ElementPtr> stack_;

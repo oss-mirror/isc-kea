@@ -29,7 +29,7 @@ public:
     UnixControlSocket(CfgControlSocketPtr ctrl_sock);
 
     /// @brief Destructor (does nothing).
-    virtual ~UnixControlSocket();
+    virtual ~UnixControlSocket() = default;
 
     /// @brief Get configuration.
     ///

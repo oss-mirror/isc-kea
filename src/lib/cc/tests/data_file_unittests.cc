@@ -33,9 +33,15 @@ public:
         write_me.close();
     }
 
-    /// destructor
+    /// @brief Constructor
+    DataFileTest() = default;
+
+    /// @brief Destructor
     ~DataFileTest() {
-        static_cast<void>(remove(TEMP_FILE));
+        try {
+            static_cast<void>(remove(TEMP_FILE));
+        } catch (...) {
+        }
     }
 
     /// Name of the temporary file

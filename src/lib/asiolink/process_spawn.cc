@@ -228,10 +228,13 @@ ProcessSpawnImpl::ProcessSpawnImpl(IOServicePtr io_service,
 }
 
 ProcessSpawnImpl::~ProcessSpawnImpl() {
-    io_signal_set_->remove(SIGCHLD);
-    if (store_) {
-        lock_guard<std::mutex> lk(mutex_);
-        process_collection_.erase(this);
+    try {
+        io_signal_set_->remove(SIGCHLD);
+        if (store_) {
+            lock_guard<std::mutex> lk(mutex_);
+            process_collection_.erase(this);
+        }
+    } catch (...) {
     }
 }
 

@@ -31,7 +31,7 @@ public:
     PacketQueueMgr6();
 
     /// @brief virtual Destructor
-    virtual ~PacketQueueMgr6(){}
+    virtual ~PacketQueueMgr6() = default;
 };
 
 /// @brief Defines a shared pointer to PacketQueueMgr6

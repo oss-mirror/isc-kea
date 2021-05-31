@@ -1491,7 +1491,10 @@ public:
 
     /// @brief Destructor.
     virtual ~Dhcpv6SharedNetworkTest() {
-        StatsMgr::instance().removeAll();
+        try {
+            StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Interface Manager's fake configuration control.

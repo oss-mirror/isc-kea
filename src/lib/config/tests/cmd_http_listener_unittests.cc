@@ -70,19 +70,22 @@ public:
     ///
     /// Removes HTTP clients, unregisters commands, disables MT.
     virtual ~CmdHttpListenerTest() {
-        // Wipe out the listener.
-        listener_.reset();
+            try {
+            // Wipe out the listener.
+            listener_.reset();
 
-        // Destroy all remaining clients.
-        for (auto const& client : clients_) {
-            client->close();
+            // Destroy all remaining clients.
+            for (auto const& client : clients_) {
+                client->close();
+            }
+
+            // Deregisters commands.
+            config::CommandMgr::instance().deregisterAll();
+
+            // Disable multi-threading.
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
         }
-
-        // Deregisters commands.
-        config::CommandMgr::instance().deregisterAll();
-
-        // Disable multi-threading.
-        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Constructs a complete HTTP POST given a request body.

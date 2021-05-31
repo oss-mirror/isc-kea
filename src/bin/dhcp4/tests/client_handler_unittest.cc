@@ -36,8 +36,11 @@ public:
     ///
     /// Removes statistics.
     ~ClientHandleTest() {
-        MultiThreadingMgr::instance().apply(false, 0, 0);
-        StatsMgr::instance().removeAll();
+        try {
+            MultiThreadingMgr::instance().apply(false, 0, 0);
+            StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Generates a client-id option.

@@ -45,7 +45,7 @@ public:
     ///
     /// @note The destructor can't be defined here because  a unique
     /// pointer to an incomplete type is used.
-    virtual ~TlsContext();
+    virtual ~TlsContext() = default;
 
     /// @brief Create a fresh context.
     ///
@@ -133,7 +133,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~TlsStream() { }
+    virtual ~TlsStream() = default;
 
     /// @brief TLS Handshake.
     ///

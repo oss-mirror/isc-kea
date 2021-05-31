@@ -89,7 +89,7 @@ protected:
 
 public:
 
-    /// Constructor
+    /// @brief Constructor
     Dhcp6CBTest()
     : rcode_(-1), db1_selector("db1"), db2_selector("db1")   {
         // Open port 0 means to not do anything at all. We don't want to
@@ -102,10 +102,13 @@ public:
         CfgMgr::instance().setFamily(AF_INET6);
     }
 
-    /// Destructor
+    /// @brief Destructor
     virtual ~Dhcp6CBTest() {
-        resetConfiguration();
-    };
+        try {
+            resetConfiguration();
+        } catch (...) {
+        }
+    }
 
     /// @brief Reset configuration singletons.
     void resetConfiguration() {

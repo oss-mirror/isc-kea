@@ -705,8 +705,11 @@ public:
 
     /// @brief Destructor.
     ~RunScriptTest() {
-        RunScriptImpl::setIOService(IOServicePtr());
-        clearLogFile();
+        try {
+            RunScriptImpl::setIOService(IOServicePtr());
+            clearLogFile();
+        } catch (...) {
+        }
     }
 
     /// @brief Clear the test file if it exists.

@@ -37,38 +37,41 @@ public:
     SecBuf(const std::vector<T>& x) : vec_(x) {}
 
     ~SecBuf() {
+        try {
 #if defined(__has_feature)
 #if __has_feature(address_sanitizer)
-        // Make the address sanitizer happy assuming this won't reallocate
-        vec_.resize(vec_.capacity());
+            // Make the address sanitizer happy assuming this won't reallocate
+            vec_.resize(vec_.capacity());
 #endif
 #endif
-        std::memset(&vec_[0], 0, vec_.capacity() * sizeof(T));
-    };
+            std::memset(&vec_[0], 0, vec_.capacity() * sizeof(T));
+        } catch (...) {
+        }
+    }
 
     iterator begin() {
         return (vec_.begin());
-    };
+    }
 
     const_iterator begin() const {
         return (vec_.begin());
-    };
+    }
 
     iterator end() {
         return (vec_.end());
-    };
+    }
 
     const_iterator end() const {
         return (vec_.end());
-    };
+    }
 
     size_t size() const {
         return (vec_.size());
-    };
+    }
 
     void resize(size_t sz) {
         vec_.resize(sz);
-    };
+    }
 
     void clear() {
 #if defined(__has_feature)
@@ -86,15 +89,15 @@ public:
             vec_ = x.vec_;
         }
         return (*this);
-    };
+    }
 
     T& operator[](size_t n) {
         return (vec_[n]);
-    };
+    }
 
     const T& operator[](size_t n) const {
         return (vec_[n]);
-    };
+    }
 
     // constant time comparison against timing attacks
     // (same type than XXX::verify() so const void* (vs. const T*) x)
@@ -104,7 +107,7 @@ public:
         for (size_t i = 0; i < len; ++i)
             ret = ret && (vec_[i] == p[i]);
         return ret;
-    };
+    }
 
 private:
     std::vector<T> vec_;

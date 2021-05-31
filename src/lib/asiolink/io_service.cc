@@ -48,10 +48,10 @@ public:
     IOServiceImpl() :
         io_service_(),
         work_(new boost::asio::io_service::work(io_service_)) {
-    };
+    }
 
     /// \brief The destructor.
-    ~IOServiceImpl() {};
+    ~IOServiceImpl() = default;
     //@}
 
     /// \brief Start the underlying event loop.
@@ -60,7 +60,7 @@ public:
     /// the \c stop() method is called via some handler.
     void run() {
         io_service_.run();
-    };
+    }
 
     /// \brief Run the underlying event loop for a single event.
     ///
@@ -69,7 +69,7 @@ public:
     /// it is run, it will block until one is.)
     void run_one() {
         io_service_.run_one();
-    };
+    }
 
     /// \brief Run the underlying event loop for a ready events.
     ///
@@ -77,7 +77,7 @@ public:
     /// It will return immediately if there are no ready events.
     void poll() {
         io_service_.poll();
-    };
+    }
 
     /// \brief Stop the underlying event loop.
     ///
@@ -128,9 +128,6 @@ private:
 };
 
 IOService::IOService() : io_impl_(new IOServiceImpl()) {
-}
-
-IOService::~IOService() {
 }
 
 void

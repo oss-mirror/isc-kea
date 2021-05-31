@@ -87,7 +87,7 @@ protected:
 
 public:
 
-    /// Constructor
+    /// @brief Constructor
     Dhcp4CBTest()
     : rcode_(-1), db1_selector("db1"), db2_selector("db1")   {
         // Open port 0 means to not do anything at all. We don't want to
@@ -99,10 +99,13 @@ public:
         resetConfiguration();
     }
 
-    /// Destructor
+    /// @brief Destructor
     virtual ~Dhcp4CBTest() {
-        resetConfiguration();
-    };
+        try {
+            resetConfiguration();
+        } catch (...) {
+        }
+    }
 
     /// @brief Reset configuration singletons.
     void resetConfiguration() {

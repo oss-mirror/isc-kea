@@ -62,9 +62,6 @@ NetconfController::NetconfController()
     : DControllerBase(netconf_app_name_, netconf_bin_name_) {
 }
 
-NetconfController::~NetconfController() {
-}
-
 NetconfProcessPtr
 NetconfController::getNetconfProcess() {
     return (boost::dynamic_pointer_cast<NetconfProcess>(getProcess()));

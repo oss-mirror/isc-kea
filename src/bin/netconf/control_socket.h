@@ -44,8 +44,7 @@ public:
     }
 
     /// @brief Destructor (does nothing).
-    virtual ~ControlSocketBase() {
-    }
+    virtual ~ControlSocketBase() = default;
 
     /// @brief Getter which returns the socket type.
     ///

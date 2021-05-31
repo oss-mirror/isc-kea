@@ -398,10 +398,6 @@ bool Option::equals(const Option& other) const {
              (getData() == other.getData()) );
 }
 
-Option::~Option() {
-
-}
-
 bool Option::lenient_parsing_;
 
 } // end of isc::dhcp namespace

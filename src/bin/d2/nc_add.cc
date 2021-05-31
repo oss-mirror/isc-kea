@@ -41,9 +41,6 @@ NameAddTransaction(asiolink::IOServicePtr& io_service,
     }
 }
 
-NameAddTransaction::~NameAddTransaction(){
-}
-
 void
 NameAddTransaction::defineEvents() {
     // Call superclass impl first.

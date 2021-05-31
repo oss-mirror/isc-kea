@@ -32,8 +32,7 @@ public:
     }
 
     /// @brief virtual Destructor.
-    virtual ~D2Dhcpv4Srv() {
-    }
+    virtual ~D2Dhcpv4Srv() = default;
 
     /// @brief Override the error handler.
     virtual void d2ClientErrorHandler(const dhcp_ddns::NameChangeSender::

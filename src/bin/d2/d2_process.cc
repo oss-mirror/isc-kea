@@ -420,9 +420,6 @@ D2Process::reconfigureQueueMgr() {
     }
 }
 
-D2Process::~D2Process() {
-};
-
 D2CfgMgrPtr
 D2Process::getD2CfgMgr() {
     // The base class gives a base class pointer to our configuration manager.

@@ -48,8 +48,6 @@ D2Params::D2Params()
     validateContents();
 }
 
-D2Params::~D2Params(){};
-
 void
 D2Params::validateContents() {
     if ((ip_address_.toText() == "0.0.0.0") || (ip_address_.toText() == "::")) {
@@ -139,9 +137,6 @@ TSIGKeyInfo::TSIGKeyInfo(const std::string& name, const std::string& algorithm,
     remakeKey();
 }
 
-TSIGKeyInfo::~TSIGKeyInfo() {
-}
-
 const dns::Name&
 TSIGKeyInfo::stringToAlgorithmName(const std::string& algorithm_id) {
     if (boost::iequals(algorithm_id, HMAC_MD5_STR)) {
@@ -207,9 +202,6 @@ DnsServerInfo::DnsServerInfo(const std::string& hostname,
     enabled_(enabled) {
 }
 
-DnsServerInfo::~DnsServerInfo() {
-}
-
 std::string
 DnsServerInfo::toText() const {
     std::ostringstream stream;
@@ -246,9 +238,6 @@ DdnsDomain::DdnsDomain(const std::string& name,
                        const TSIGKeyInfoPtr& tsig_key_info)
     : name_(name), servers_(servers),
       tsig_key_info_(tsig_key_info) {
-}
-
-DdnsDomain::~DdnsDomain() {
 }
 
 const std::string
@@ -292,10 +281,6 @@ const char* DdnsDomainListMgr::wildcard_domain_name_ = "*";
 
 DdnsDomainListMgr::DdnsDomainListMgr(const std::string& name) : name_(name),
     domains_(new DdnsDomainMap()) {
-}
-
-
-DdnsDomainListMgr::~DdnsDomainListMgr () {
 }
 
 void

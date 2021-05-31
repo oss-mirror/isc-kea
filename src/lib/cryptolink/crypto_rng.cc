@@ -16,15 +16,8 @@
 namespace isc {
 namespace cryptolink {
 
-RNG::RNG() {
-}
-
-RNG::~RNG() {
-}
-
 std::vector<uint8_t>
-random(size_t len)
-{
+random(size_t len) {
     RNGPtr rng(CryptoLink::getCryptoLink().getRNG());
     return (rng->random(len));
 }

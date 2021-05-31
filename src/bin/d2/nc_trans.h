@@ -173,7 +173,7 @@ public:
                           D2CfgMgrPtr& cfg_mgr);
 
     /// @brief Destructor
-    virtual ~NameChangeTransaction();
+    virtual ~NameChangeTransaction() = default;
 
     /// @brief Begins execution of the transaction.
     ///

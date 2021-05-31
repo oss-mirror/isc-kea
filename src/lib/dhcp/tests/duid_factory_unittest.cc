@@ -163,7 +163,10 @@ DUIDFactoryTest::DUIDFactoryTest()
 }
 
 DUIDFactoryTest::~DUIDFactoryTest() {
-    removeDefaultFile();
+    try {
+        removeDefaultFile();
+    } catch (...) {
+    }
 }
 
 std::string

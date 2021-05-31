@@ -147,16 +147,6 @@ Udt::Udt(const CqlConnection& connection, const std::string& name)
                                       << " is not a UDT as expected. ");
     }
 }
-
-Udt::~Udt() {
-    /// @todo: Need to get back to this issue. This is likely a memory leak.
-    //
-    // Bug: it seems that if there is no call to
-    //      cass_user_type_set_*(cass_user_type_), then
-    //      cass_user_type_free(cass_user_type_) might SIGSEGV, so we never
-    //      free. Udt objects should have application scope though.
-    // cass_user_type_free(cass_user_type_);
-}
 /// @}
 
 /// @brief AnyArray method implementations
@@ -733,12 +723,6 @@ CqlCommon::getData(const CassRow* row, AnyArray& data) {
     }
 }
 
-CqlExchange::CqlExchange() {
-}
-
-CqlExchange::~CqlExchange() {
-}
-
 void
 CqlExchange::convertToDatabaseTime(const time_t& cltt,
                                    const uint32_t& valid_lifetime,
@@ -983,12 +967,6 @@ constexpr StatementTag CqlVersionExchange::GET_VERSION;
 StatementMap CqlVersionExchange::tagged_statements_ = {
     {GET_VERSION, {GET_VERSION, "SELECT version, minor FROM schema_version "}}
 };
-
-CqlVersionExchange::CqlVersionExchange() {
-}
-
-CqlVersionExchange::~CqlVersionExchange() {
-}
 
 void
 CqlVersionExchange::createBindForSelect(AnyArray& data, StatementTag) {

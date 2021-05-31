@@ -86,7 +86,7 @@ public:
                      const isc::http::Url& url);
 
     /// @brief Destructor (doing nothing).
-    virtual ~CfgControlSocket();
+    virtual ~CfgControlSocket() = default;
 
     /// @brief Getter which returns the socket type.
     ///
@@ -156,7 +156,7 @@ public:
     CfgServer(const std::string& model, CfgControlSocketPtr ctrl_sock);
 
     /// @brief Destructor (doing nothing).
-    virtual ~CfgServer();
+    virtual ~CfgServer() = default;
 
     /// @brief Getter which returns the model name.
     ///

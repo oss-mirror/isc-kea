@@ -134,6 +134,7 @@ private:
 /// @brief "naked" Dhcpv6Srv class that exposes internal members
 class NakedDhcpv6Srv: public isc::dhcp::Dhcpv6Srv {
 public:
+    /// @brief Constructor
     NakedDhcpv6Srv(uint16_t port) : isc::dhcp::Dhcpv6Srv(port) {
         // Open the "memfile" database for leases
         std::string memfile = "type=memfile universe=6 persist=false";
@@ -219,9 +220,13 @@ public:
         fake_received_.push_back(pkt);
     }
 
+    /// @brief Destructor
     virtual ~NakedDhcpv6Srv() {
-        // Close the lease database
-        isc::dhcp::LeaseMgrFactory::destroy();
+        try {
+            // Close the lease database
+            isc::dhcp::LeaseMgrFactory::destroy();
+        } catch (...) {
+        }
     }
 
     /// @brief Processes incoming Request message.
@@ -503,6 +508,7 @@ public:
         EXPECT_EQ(expected_transid, rsp->getTransid());
     }
 
+    /// @brief Destructor
     virtual ~NakedDhcpv6SrvTest();
 
     // A DUID used in most tests (typically as client-id)
@@ -543,11 +549,16 @@ public:
 
     class Dhcpv6SrvMTTestGuard {
     public:
+        /// @brief Constructor
         Dhcpv6SrvMTTestGuard(Dhcpv6SrvTest& test, bool mt_enabled) : test_(test) {
             test_.setMultiThreading(mt_enabled);
         }
+        /// @brief Destructor
         ~Dhcpv6SrvMTTestGuard() {
-            test_.setMultiThreading(false);
+            try{
+                test_.setMultiThreading(false);
+            } catch (...) {
+            }
         }
         Dhcpv6SrvTest& test_;
     };

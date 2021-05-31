@@ -131,9 +131,12 @@ public:
     ///
     /// Stops all test servers.
     ~HAMtServiceTest() {
-        io_service_->get_io_service().reset();
-        io_service_->poll();
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            io_service_->get_io_service().reset();
+            io_service_->poll();
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 
     /// @brief Callback function invoke upon test timeout.

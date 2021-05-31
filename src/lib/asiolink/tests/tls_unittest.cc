@@ -49,10 +49,11 @@ public:
     /// @brief Constructor.
     ///
     /// @param role The TLS role client or server.
-    explicit TestTlsContext(TlsRole role) : TlsContext(role) { }
+    explicit TestTlsContext(TlsRole role) : TlsContext(role) {
+    }
 
     /// @brief Destructor.
-    virtual ~TestTlsContext() { }
+    virtual ~TestTlsContext() = default;
 
     /// @brief Make protected methods visible in tests.
     using TlsContext::setCertRequired;
@@ -73,8 +74,7 @@ public:
         }
 
         /// @brief Destructor.
-        virtual ~State() {
-        }
+        virtual ~State() = default;
 
         /// @brief Called flag.
         ///
@@ -103,8 +103,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~TestCallback() {
-    }
+    virtual ~TestCallback() = default;
 
     /// @brief Callback function (one argument).
     ///

@@ -36,8 +36,7 @@ public:
     }
 
     // Destructor.
-    virtual ~KeaCredentialsManager() {
-    }
+    virtual ~KeaCredentialsManager() = default;
 
     // CA certificate stores.
     // nullptr means do not require or check peer certificate.
@@ -150,8 +149,7 @@ public:
     }
 
     // Destructor.
-    virtual ~KeaPolicy() {
-    }
+    virtual ~KeaPolicy() = default;
 
     // Allowed signature methods in preference order.
     std::vector<std::string> allowed_signature_methods() const override {
@@ -202,8 +200,7 @@ public:
     }
 
     // Destructor.
-    virtual ~TlsContextImpl() {
-    }
+    virtual ~TlsContextImpl() = default;
 
     // Get the peer certificate requirement mode.
     virtual bool getCertRequired() const {
@@ -285,9 +282,6 @@ public:
 
     std::unique_ptr<Botan::TLS::Context> context_;
 };
-
-TlsContext::~TlsContext() {
-}
 
 TlsContext::TlsContext(TlsRole role)
     : TlsContextBase(role), impl_(new TlsContextImpl()) {

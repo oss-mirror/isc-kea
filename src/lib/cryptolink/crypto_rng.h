@@ -25,10 +25,10 @@ public:
     ///
     /// \exception LibraryError if there was any unexpected exception
     ///                         in the underlying library
-    RNG();
+    RNG() = default;
 
     /// \brief Destructor
-    virtual ~RNG();
+    virtual ~RNG() = default;
 
     /// \brief Generate random value.
     ///

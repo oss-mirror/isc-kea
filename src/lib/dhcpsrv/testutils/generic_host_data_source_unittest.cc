@@ -48,10 +48,6 @@ GenericHostDataSourceTest::GenericHostDataSourceTest()
     : GenericBackendTest(), hdsptr_() {
 }
 
-GenericHostDataSourceTest::~GenericHostDataSourceTest() {
-    hdsptr_.reset();
-}
-
 bool
 GenericHostDataSourceTest::compareHostsForSort4(const ConstHostPtr& host1,
                                                 const ConstHostPtr& host2) {

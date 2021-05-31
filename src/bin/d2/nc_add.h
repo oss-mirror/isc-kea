@@ -90,7 +90,7 @@ public:
                        D2CfgMgrPtr& cfg_mgr);
 
     /// @brief Destructor
-    virtual ~NameAddTransaction();
+    virtual ~NameAddTransaction() = default;
 
 protected:
     /// @brief Adds events defined by NameAddTransaction to the event set.

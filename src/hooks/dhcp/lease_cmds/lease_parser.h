@@ -50,8 +50,11 @@ public:
                                        const isc::data::ConstElementPtr& lease_info,
                                        bool& force_create);
 
-    /// @brief virtual dtor (does nothing)
-    virtual ~Lease4Parser() {}
+    /// @brief Constructor
+    Lease4Parser() = default;
+
+    /// @brief virtual Destructor (does nothing)
+    virtual ~Lease4Parser() = default;
 };
 
 /// @brief Parser for Lease6 structure
@@ -90,11 +93,14 @@ public:
                                        const isc::data::ConstElementPtr& lease_info,
                                        bool& force_create);
 
-    /// @brief virtual dtor (does nothing)
-    virtual ~Lease6Parser() {}
+        /// @brief Constructor
+    Lease6Parser() = default;
+
+    /// @brief virtual Destructor (does nothing)
+    virtual ~Lease6Parser() = default;
 };
 
-}; // end of isc::dhcp namespace
-}; // end of isc namespace
+} // end of isc::dhcp namespace
+} // end of isc namespace
 
 #endif

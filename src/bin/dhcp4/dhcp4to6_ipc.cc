@@ -27,8 +27,6 @@ using namespace isc::hooks;
 namespace isc {
 namespace dhcp {
 
-Dhcp4to6Ipc::Dhcp4to6Ipc() : Dhcp4o6IpcBase() {}
-
 Dhcp4to6Ipc& Dhcp4to6Ipc::instance() {
     static Dhcp4to6Ipc dhcp4to6_ipc;
     return (dhcp4to6_ipc);

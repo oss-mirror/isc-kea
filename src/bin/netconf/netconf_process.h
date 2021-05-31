@@ -33,7 +33,7 @@ public:
     NetconfProcess(const char* name, const asiolink::IOServicePtr& io_service);
 
     /// @brief Destructor
-    virtual ~NetconfProcess();
+    virtual ~NetconfProcess() = default;
 
     /// @brief Initialize the Netconf process.
     ///

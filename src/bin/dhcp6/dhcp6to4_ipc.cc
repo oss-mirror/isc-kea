@@ -29,8 +29,6 @@ namespace dhcp {
 
 uint16_t Dhcp6to4Ipc::client_port = 0;
 
-Dhcp6to4Ipc::Dhcp6to4Ipc() : Dhcp4o6IpcBase() {}
-
 Dhcp6to4Ipc& Dhcp6to4Ipc::instance() {
     static Dhcp6to4Ipc dhcp6to4_ipc;
     return (dhcp6to4_ipc);

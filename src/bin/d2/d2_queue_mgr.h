@@ -163,7 +163,7 @@ public:
                const size_t max_queue_size = MAX_QUEUE_DEFAULT);
 
     /// @brief Destructor
-    virtual ~D2QueueMgr();
+    virtual ~D2QueueMgr() = default;
 
     /// @brief Initializes the listener as a UDP listener.
     ///

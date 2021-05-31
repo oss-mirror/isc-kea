@@ -276,6 +276,7 @@ protected:
     }
 
 public:
+    /// @brief Constructor
     Dhcp4ParserTest()
     : rcode_(-1) {
         // Open port 0 means to not do anything at all. We don't want to
@@ -348,13 +349,17 @@ public:
         }
     }
 
+    /// @brief Destructor
     ~Dhcp4ParserTest() {
-        resetConfiguration();
+        try {
+            resetConfiguration();
 
-        // ... and delete the hooks library marker files if present
-        static_cast<void>(remove(LOAD_MARKER_FILE));
-        static_cast<void>(remove(UNLOAD_MARKER_FILE));
-    };
+            // ... and delete the hooks library marker files if present
+            static_cast<void>(remove(LOAD_MARKER_FILE));
+            static_cast<void>(remove(UNLOAD_MARKER_FILE));
+        } catch (...) {
+        }
+    }
 
     /// @brief Returns an interface configuration used by the most of the
     /// unit tests.

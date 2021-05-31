@@ -74,7 +74,10 @@ public:
     ///
     /// Stops IO service.
     ~IOServiceWork() {
-        io_service_->stop();
+        try {
+            io_service_->stop();
+        } catch (...) {
+        }
     }
 
 private:
@@ -123,16 +126,19 @@ public:
 
     /// @brief Destructor
     ~CtrlChannelDhcpv4SrvTest() {
-        LeaseMgrFactory::destroy();
-        StatsMgr::instance().removeAll();
+        try {
+            LeaseMgrFactory::destroy();
+            StatsMgr::instance().removeAll();
 
-        CommandMgr::instance().closeCommandSocket();
-        CommandMgr::instance().deregisterAll();
-        CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
+            CommandMgr::instance().closeCommandSocket();
+            CommandMgr::instance().deregisterAll();
+            CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
 
-        server_.reset();
-        MultiThreadingMgr::instance().setMode(false);
-    };
+            server_.reset();
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
+    }
 
     /// @brief Returns pointer to the server's IO service.
     ///

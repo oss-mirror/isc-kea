@@ -362,8 +362,7 @@ public:
         : errors_count_(0) {
     }
 
-    ~IfaceMgrTest() {
-    }
+    ~IfaceMgrTest() = default;
 
     /// @brief Tests the number of IPv6 sockets on interface
     ///

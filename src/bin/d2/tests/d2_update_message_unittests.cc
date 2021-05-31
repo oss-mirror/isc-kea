@@ -31,12 +31,12 @@ public:
     /// @brief Constructor
     //
     // Does nothing.
-    D2UpdateMessageTest() { }
+    D2UpdateMessageTest() = default;
 
     /// @brief Destructor
     //
     // Does nothing.
-    ~D2UpdateMessageTest() { };
+    ~D2UpdateMessageTest() = default;
 
     /// @brief Returns string representation of the name encoded in wire format.
     //

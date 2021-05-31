@@ -98,12 +98,10 @@ public:
     class Callback {
     public:
         /// \brief Default Constructor
-        Callback()
-        {}
+        Callback() = default;
 
         /// \brief Virtual Destructor
-        virtual ~Callback()
-        {}
+        virtual ~Callback() = default;
 
         /// \brief Callback method
         ///

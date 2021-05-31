@@ -143,13 +143,15 @@ public:
     ///
     /// Cleans up statistics after the test.
     ~InformTest() {
-        // Let's wipe all existing statistics.
-        isc::stats::StatsMgr::instance().removeAll();
+        try {
+            // Let's wipe all existing statistics.
+            isc::stats::StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Interface Manager's fake configuration control.
     IfaceMgrTestConfig iface_mgr_test_config_;
-
 };
 
 // Test that directly connected client's DHCPINFORM message is processed and

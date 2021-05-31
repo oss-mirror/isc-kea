@@ -143,14 +143,14 @@ protected:
         : type_(t), position_(pos) {
     }
 
-
 public:
 
     // any is a special type used in list specifications, specifying
     // that the elements can be of any type
     enum types { integer, real, boolean, null, string, list, map, any };
-    // base class; make dtor virtual
-    virtual ~Element() {};
+
+    /// @brief Destructor.
+    virtual ~Element() = default;
 
     /// @return the type of this element
     int getType() const { return (type_); }

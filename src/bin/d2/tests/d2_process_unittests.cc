@@ -65,8 +65,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~D2ProcessTest() {
-    }
+    virtual ~D2ProcessTest() = default;
 
     /// @brief Callback that will invoke shutdown method.
     void genShutdownCallback() {

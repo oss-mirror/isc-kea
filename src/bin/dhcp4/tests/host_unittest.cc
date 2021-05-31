@@ -410,8 +410,11 @@ public:
     ///
     /// Cleans up statistics after the test.
     ~HostTest() {
-        // Let's wipe all existing statistics.
-        isc::stats::StatsMgr::instance().removeAll();
+        try {
+            // Let's wipe all existing statistics.
+            isc::stats::StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Interface Manager's fake configuration control.

@@ -28,7 +28,7 @@ namespace data {
 ///
 struct CfgToElement {
     /// Destructor
-    virtual ~CfgToElement() { }
+    virtual ~CfgToElement() = default;
 
     /// @brief Unparse a configuration object
     ///
@@ -42,7 +42,7 @@ struct CfgToElement {
     virtual isc::data::ElementPtr toElement() const = 0;
 };
 
-}; // namespace isc::dhcp
-}; // namespace isc
+} // namespace isc::dhcp
+} // namespace isc
 
 #endif // CFG_TO_ELEMENT_H

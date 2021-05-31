@@ -103,10 +103,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class
     /// should never be instantiated (except as part of a derived class).
-    IOAsioSocket() {}
+    IOAsioSocket() = default;
 public:
     /// The destructor.
-    virtual ~IOAsioSocket() {}
+    virtual ~IOAsioSocket() = default;
     //@}
 
     /// \brief Return the "native" representation of the socket.

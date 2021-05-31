@@ -9861,6 +9861,7 @@ namespace {
 /// Test fixture class (code from Dhcp6ParserTest)
 class Dhcp6GetConfigTest : public ::testing::TestWithParam<size_t> {
 public:
+    /// @brief Constructor
     Dhcp6GetConfigTest() : rcode_(-1), srv_(0) {
         // srv_(0) means to not open any sockets. We don't want to
         // deal with sockets here, just check if configuration handling
@@ -9870,10 +9871,14 @@ public:
         resetConfiguration();
     }
 
+    /// @brief Destructor
     ~Dhcp6GetConfigTest() {
-        // Reset configuration database after each test.
-        resetConfiguration();
-    };
+        try {
+            // Reset configuration database after each test.
+            resetConfiguration();
+        } catch (...) {
+        }
+    }
 
     /// @brief Parse and Execute configuration
     ///

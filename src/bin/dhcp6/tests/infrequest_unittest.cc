@@ -127,8 +127,11 @@ public:
     ///
     /// Removes any statistics that may have been set.
     ~InfRequestTest() {
-        // Let's wipe all existing statistics.
-        isc::stats::StatsMgr::instance().removeAll();
+        try {
+            // Let's wipe all existing statistics.
+            isc::stats::StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Interface Manager's fake configuration control.

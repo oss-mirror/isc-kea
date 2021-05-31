@@ -53,7 +53,7 @@ private:
     uint8_t ip_version_;
 
 public:
-    /// \brief Receiver constructor.
+    /// \brief Constructor.
     ///
     /// \param socket A socket for receiving packets.
     /// \param single_threaded A flag indicating running mode.

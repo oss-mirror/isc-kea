@@ -46,7 +46,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~PacketQueueMgr4Test(){}
+    virtual ~PacketQueueMgr4Test() = default;
 
     /// @brief Registers a queue type factory
     ///

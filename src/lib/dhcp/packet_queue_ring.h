@@ -40,7 +40,7 @@ public:
     }
 
     /// @brief virtual Destructor
-    virtual ~PacketQueueRing(){};
+    virtual ~PacketQueueRing() = default;
 
     /// @brief Adds a packet to the queue
     ///
@@ -234,7 +234,7 @@ public:
     };
 
     /// @brief virtual Destructor
-    virtual ~PacketQueueRing4(){}
+    virtual ~PacketQueueRing4() = default;
 };
 
 /// @brief DHCPv6 packet queue buffer implementation
@@ -254,10 +254,10 @@ public:
     };
 
     /// @brief virtual Destructor
-    virtual ~PacketQueueRing6(){}
+    virtual ~PacketQueueRing6() = default;
 };
 
-}; // namespace isc::dhcp
-}; // namespace isc
+} // namespace isc::dhcp
+} // namespace isc
 
 #endif // PACKET_QUEUE_RING_H

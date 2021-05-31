@@ -388,9 +388,7 @@ public:
     }
 
     /// @brief Destructor.
-    ///
-    ~ClassifyTest() {
-    }
+    ~ClassifyTest() = default;
 
     /// @brief Does client exchanges and checks if fixed fields have expected values.
     ///

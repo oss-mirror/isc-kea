@@ -46,7 +46,10 @@ public:
     ///
     /// Removes unix socket descriptor after the test.
     virtual ~UnixDomainSocketTest() {
-        removeUnixSocketFile();
+        try {
+            removeUnixSocketFile();
+        } catch (...) {
+        }
     }
 
     /// @brief Returns socket file path.

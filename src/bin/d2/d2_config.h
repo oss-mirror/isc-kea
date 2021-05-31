@@ -167,7 +167,7 @@ public:
     D2Params();
 
     /// @brief Destructor
-    virtual ~D2Params();
+    virtual ~D2Params() = default;
 
     /// @brief Return the IP address D2 listens on.
     const isc::asiolink::IOAddress& getIpAddress() const {
@@ -309,7 +309,7 @@ public:
                 const std::string& secret, uint32_t digestbits = 0);
 
     /// @brief Destructor
-    virtual ~TSIGKeyInfo();
+    virtual ~TSIGKeyInfo() = default;
 
     /// @brief Getter which returns the key's name.
     ///
@@ -437,10 +437,10 @@ public:
     DnsServerInfo(const std::string& hostname,
                   isc::asiolink::IOAddress ip_address,
                   uint32_t port = STANDARD_DNS_PORT,
-                  bool enabled=true);
+                  bool enabled = true);
 
     /// @brief Destructor
-    virtual ~DnsServerInfo();
+    virtual ~DnsServerInfo() = default;
 
     /// @brief Getter which returns the server's hostname.
     ///
@@ -540,7 +540,7 @@ public:
                const TSIGKeyInfoPtr& tsig_key_info = TSIGKeyInfoPtr());
 
     /// @brief Destructor
-    virtual ~DdnsDomain();
+    virtual ~DdnsDomain() = default;
 
     /// @brief Getter which returns the domain's name.
     ///
@@ -621,7 +621,7 @@ public:
     DdnsDomainListMgr(const std::string& name);
 
     /// @brief Destructor
-    virtual ~DdnsDomainListMgr ();
+    virtual ~DdnsDomainListMgr() = default;
 
     /// @brief Matches a given name to a domain based on a longest match
     /// scheme.
@@ -710,12 +710,10 @@ class DScalarContext : public process::ConfigBase {
 public:
 
     /// @brief Constructor
-    DScalarContext() {
-    };
+    DScalarContext() = default;
 
     /// @brief Destructor
-    virtual ~DScalarContext() {
-    }
+    virtual ~DScalarContext() = default;
 
     /// @brief Creates a clone of a DStubContext.
     ///

@@ -32,9 +32,6 @@ CtrlAgentProcess::CtrlAgentProcess(const char* name,
       http_listeners_() {
 }
 
-CtrlAgentProcess::~CtrlAgentProcess() {
-}
-
 void
 CtrlAgentProcess::init() {
 }

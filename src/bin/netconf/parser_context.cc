@@ -18,17 +18,11 @@ namespace isc {
 namespace netconf {
 
 ParserContext::ParserContext()
-  : sfile_(0), ctx_(NO_KEYWORDS), trace_scanning_(false), trace_parsing_(false)
-{
-}
-
-ParserContext::~ParserContext()
-{
+  : sfile_(0), ctx_(NO_KEYWORDS), trace_scanning_(false), trace_parsing_(false) {
 }
 
 isc::data::ElementPtr
-ParserContext::parseString(const std::string& str, ParserType parser_type)
-{
+ParserContext::parseString(const std::string& str, ParserType parser_type) {
     scanStringBegin(str, parser_type);
     return (parseCommon());
 }
@@ -71,8 +65,7 @@ ParserContext::parseCommon() {
 void
 ParserContext::error(const isc::netconf::location& loc,
                      const std::string& what,
-                     size_t pos)
-{
+                     size_t pos) {
     if (pos == 0) {
         isc_throw(ParseError, loc << ": " << what);
     } else {
@@ -81,20 +74,17 @@ ParserContext::error(const isc::netconf::location& loc,
 }
 
 void
-ParserContext::error(const std::string& what)
-{
+ParserContext::error(const std::string& what) {
     isc_throw(ParseError, what);
 }
 
 void
-ParserContext::fatal(const std::string& what)
-{
+ParserContext::fatal(const std::string& what) {
     isc_throw(ParseError, what);
 }
 
 isc::data::Element::Position
-ParserContext::loc2pos(isc::netconf::location& loc)
-{
+ParserContext::loc2pos(isc::netconf::location& loc) {
     const std::string& file = *loc.begin.filename;
     const uint32_t line = loc.begin.line;
     const uint32_t pos = loc.begin.column;
@@ -104,8 +94,7 @@ ParserContext::loc2pos(isc::netconf::location& loc)
 void
 ParserContext::require(const std::string& name,
                        isc::data::Element::Position open_loc,
-                       isc::data::Element::Position close_loc)
-{
+                       isc::data::Element::Position close_loc) {
     ConstElementPtr value = stack_.back()->get(name);
     if (!value) {
         isc_throw(ParseError,
@@ -118,8 +107,7 @@ ParserContext::require(const std::string& name,
 
 void
 ParserContext::unique(const std::string& name,
-                      isc::data::Element::Position loc)
-{
+                      isc::data::Element::Position loc) {
     ConstElementPtr value = stack_.back()->get(name);
     if (value) {
         if (ctx_ != NO_KEYWORDS) {
@@ -135,15 +123,13 @@ ParserContext::unique(const std::string& name,
 }
 
 void
-ParserContext::enter(const LexerContext& ctx)
-{
+ParserContext::enter(const LexerContext& ctx) {
     cstack_.push_back(ctx_);
     ctx_ = ctx;
 }
 
 void
-ParserContext::leave()
-{
+ParserContext::leave() {
     if (cstack_.empty()) {
         fatal("unbalanced syntactic context");
     }
@@ -152,8 +138,7 @@ ParserContext::leave()
 }
 
 const std::string
-ParserContext::contextName()
-{
+ParserContext::contextName() {
     switch (ctx_) {
     case NO_KEYWORDS:
         return ("__no keywords__");

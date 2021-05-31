@@ -35,11 +35,14 @@ public:
 
     /// @brief Destructor.
     virtual ~MySqlConfigBackendDHCPv6MgrTest() {
-        // Destroy the mgr.
-        ConfigBackendDHCPv6Mgr::destroy();
+        try {
+            // Destroy the mgr.
+            ConfigBackendDHCPv6Mgr::destroy();
 
-        // If data wipe enabled, delete transient data otherwise destroy the schema.
-        destroyMySQLSchema();
+            // If data wipe enabled, delete transient data otherwise destroy the schema.
+            destroyMySQLSchema();
+        } catch (...) {
+        }
     }
 };
 

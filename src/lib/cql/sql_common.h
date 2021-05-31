@@ -42,12 +42,10 @@ enum ExchangeDataType {
 class SqlExchange {
 public:
     /// @brief Constructor
-    SqlExchange() {
-    }
+    SqlExchange() = default;
 
     /// @brief Destructor
-    virtual ~SqlExchange() {
-    }
+    virtual ~SqlExchange() = default;
 };
 
 }  // namespace db

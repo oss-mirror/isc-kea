@@ -257,7 +257,7 @@ public:
     CtrlAgentCfgMgr();
 
     /// @brief Destructor
-    virtual ~CtrlAgentCfgMgr();
+    virtual ~CtrlAgentCfgMgr() = default;
 
     /// @brief Convenience method that returns the Control Agent configuration
     /// context.

@@ -362,6 +362,7 @@ protected:
     }
 
 public:
+    /// @brief Constructor
     Dhcp6ParserTest() :rcode_(-1), srv_(0) {
         // srv_(0) means to not open any sockets. We don't want to
         // deal with sockets here, just check if configuration handling
@@ -388,14 +389,18 @@ public:
         resetConfiguration();
     }
 
+    /// @brief Destructor
     ~Dhcp6ParserTest() {
-        // Reset configuration database after each test.
-        resetConfiguration();
+        try {
+            // Reset configuration database after each test.
+            resetConfiguration();
 
-        // ... and delete the hooks library marker files if present
-        static_cast<void>(remove(LOAD_MARKER_FILE));
-        static_cast<void>(remove(UNLOAD_MARKER_FILE));
-    };
+            // ... and delete the hooks library marker files if present
+            static_cast<void>(remove(LOAD_MARKER_FILE));
+            static_cast<void>(remove(UNLOAD_MARKER_FILE));
+        } catch (...) {
+        }
+    }
 
     // Checks if config_result (result of DHCP server configuration) has
     // expected code (0 for success, other for failures).

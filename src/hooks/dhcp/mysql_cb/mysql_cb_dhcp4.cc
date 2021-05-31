@@ -156,7 +156,7 @@ public:
                                           parameters);
 
     /// @brief Destructor.
-    ~MySqlConfigBackendDHCPv4Impl();
+    ~MySqlConfigBackendDHCPv4Impl() = default;
 
     /// @brief Sends query to retrieve global parameter.
     ///
@@ -3016,9 +3016,6 @@ MySqlConfigBackendDHCPv4Impl::MySqlConfigBackendDHCPv4Impl(const DatabaseConnect
 
     // Create ReconnectCtl for this connection.
     conn_.makeReconnectCtl(timer_name_);
-}
-
-MySqlConfigBackendDHCPv4Impl::~MySqlConfigBackendDHCPv4Impl() {
 }
 
 MySqlConfigBackendDHCPv4::MySqlConfigBackendDHCPv4(const DatabaseConnection::ParameterMap& parameters)

@@ -35,8 +35,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~CtrlAgentProcessTest() {
-    }
+    virtual ~CtrlAgentProcessTest() = default;
 
     /// @brief Callback that will invoke shutdown method.
     void genShutdownCallback() {

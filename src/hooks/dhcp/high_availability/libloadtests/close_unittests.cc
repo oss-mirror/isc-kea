@@ -101,15 +101,17 @@ TestHooks testHooks;
 class CloseHATest : public ::testing::Test {
 public:
     /// @brief Constructor
-    CloseHATest() {
-    }
+    CloseHATest() = default;
 
     /// @brief Destructor
     virtual ~CloseHATest() {
-        HooksManager::prepareUnloadLibraries();
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            cerr << "(fixture dtor) unloadLibraries failed" << endl;
+        try {
+            HooksManager::prepareUnloadLibraries();
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                cerr << "(fixture dtor) unloadLibraries failed" << endl;
+            }
+        } catch (...) {
         }
     }
 

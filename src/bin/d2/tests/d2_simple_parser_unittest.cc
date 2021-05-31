@@ -163,7 +163,10 @@ public:
 
     /// @brief Destructor
     virtual ~D2SimpleParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Parses JSON text and compares the results against an expected
@@ -313,7 +316,10 @@ public:
 
     /// @brief Destructor
     virtual ~TSIGKeyInfoParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     };
 
     /// @brief Adds TSIG Key default values to the given TSIG Key element
@@ -353,7 +359,10 @@ public:
 
     /// @brief Destructor
     virtual ~TSIGKeyInfoListParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Free up the keys created by parsing
@@ -398,7 +407,10 @@ public:
 
     /// @brief Destructor
     virtual ~DnsServerInfoParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Free up the server created by parsing
@@ -442,7 +454,10 @@ public:
 
     /// @brief Destructor
     virtual ~DnsServerInfoListParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Free up the servers created by parsing
@@ -490,7 +505,10 @@ public:
 
     /// @brief Destructor
     virtual ~DdnsDomainParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Free up the domain created by parsing
@@ -549,7 +567,10 @@ public:
 
     /// @brief Destructor
     virtual ~DdnsDomainListParserTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Free up domains created by parsing

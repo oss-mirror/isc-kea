@@ -103,7 +103,7 @@ public:
     BaseCommandMgr();
 
     /// @brief Destructor.
-    virtual ~BaseCommandMgr() { };
+    virtual ~BaseCommandMgr() = default;
 
     /// @brief Triggers command processing.
     ///

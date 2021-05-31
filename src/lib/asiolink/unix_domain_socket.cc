@@ -33,7 +33,10 @@ public:
     ///
     /// Closes the socket.
     ~UnixDomainSocketImpl() {
-        close();
+        try {
+            close();
+        } catch (...) {
+        }
     }
 
     /// @brief Asynchronously connects to an endpoint.

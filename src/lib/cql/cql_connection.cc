@@ -36,42 +36,45 @@ CqlConnection::CqlConnection(const ParameterMap& parameters)
 }
 
 CqlConnection::~CqlConnection() {
-    // Free up the prepared statements, ignoring errors. Session and connection
-    // resources are deallocated.
-    CassError rc = CASS_OK;
-    std::string error;
+    try {
+        // Free up the prepared statements, ignoring errors. Session and connection
+        // resources are deallocated.
+        CassError rc = CASS_OK;
+        std::string error;
 
-    // Let's free the prepared statements.
-    for (StatementMapEntry s : statements_) {
-        CqlTaggedStatement statement = s.second;
-        if (statement.prepared_statement_) {
-            cass_prepared_free(statement.prepared_statement_);
+        // Let's free the prepared statements.
+        for (StatementMapEntry s : statements_) {
+            CqlTaggedStatement statement = s.second;
+            if (statement.prepared_statement_) {
+                cass_prepared_free(statement.prepared_statement_);
+            }
         }
-    }
 
-    // If there's a session, tear it down and free the resources.
-    if (session_) {
-        cass_schema_meta_free(schema_meta_);
-        CassFuture* close_future = cass_session_close(session_);
-        cass_future_wait(close_future);
-        error = checkFutureError(
-            "CqlConnection::~CqlConnection(): cass_session_close() != CASS_OK",
-            close_future);
-        rc = cass_future_error_code(close_future);
-        cass_future_free(close_future);
-        cass_session_free(session_);
-        session_ = NULL;
-    }
+        // If there's a session, tear it down and free the resources.
+        if (session_) {
+            cass_schema_meta_free(schema_meta_);
+            CassFuture* close_future = cass_session_close(session_);
+            cass_future_wait(close_future);
+            error = checkFutureError(
+                "CqlConnection::~CqlConnection(): cass_session_close() != CASS_OK",
+                close_future);
+            rc = cass_future_error_code(close_future);
+            cass_future_free(close_future);
+            cass_session_free(session_);
+            session_ = NULL;
+        }
 
-    // Free the cluster if there's one.
-    if (cluster_) {
-        cass_cluster_free(cluster_);
-        cluster_ = NULL;
-    }
+        // Free the cluster if there's one.
+        if (cluster_) {
+            cass_cluster_free(cluster_);
+            cluster_ = NULL;
+        }
 
-    if (rc != CASS_OK) {
-        // We're closing the connection anyway. Let's not throw at this stage.
-        DB_LOG_ERROR(CQL_DEALLOC_ERROR).arg(error);
+        if (rc != CASS_OK) {
+            // We're closing the connection anyway. Let's not throw at this stage.
+            DB_LOG_ERROR(CQL_DEALLOC_ERROR).arg(error);
+        }
+    } catch (...) {
     }
 }
 

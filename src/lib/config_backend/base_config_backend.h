@@ -35,7 +35,7 @@ class BaseConfigBackend {
 public:
 
     /// @brief Virtual destructor.
-    virtual ~BaseConfigBackend() { }
+    virtual ~BaseConfigBackend() = default;
 
     /// @brief Returns backend type in the textual format.
     ///

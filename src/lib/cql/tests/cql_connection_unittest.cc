@@ -28,12 +28,10 @@ using isc::db::CqlConnection;
 class CqlConnectionTest {
 public:
     /// @brief Constructor
-    CqlConnectionTest() {
-    }
+    CqlConnectionTest() = default;
 
     /// @brief Destructor
-    virtual ~CqlConnectionTest() {
-    }
+    virtual ~CqlConnectionTest() = default;
 };
 
 /// @brief Check that the key is properly hashed for StatementMap.

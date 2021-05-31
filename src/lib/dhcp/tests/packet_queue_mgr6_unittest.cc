@@ -29,13 +29,12 @@ public:
     PacketQueueMgr6Test()
         : default_queue_type_(PacketQueueMgr6::DEFAULT_QUEUE_TYPE6) {
         packet_queue_mgr6_.reset(new PacketQueueMgr6());
-
     }
 
     /// @brief Destructor
     ///
     /// It destroys the PQM singleton.
-    virtual ~PacketQueueMgr6Test(){}
+    virtual ~PacketQueueMgr6Test() = default;
 
     /// @brief Registers a queue type factory
     ///

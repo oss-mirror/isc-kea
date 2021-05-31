@@ -43,7 +43,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~IOAcceptor() { }
+    virtual ~IOAcceptor() = default;
 
     /// @brief Returns file descriptor of the underlying socket.
     virtual int getNative() const {

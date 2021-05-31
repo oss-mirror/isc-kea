@@ -198,8 +198,7 @@ public:
         virtual void operator ()(const Result result,
                                  NameChangeRequestPtr& ncr) = 0;
 
-        virtual ~RequestReceiveHandler() {
-        }
+        virtual ~RequestReceiveHandler() = default;
     };
 
     /// @brief Constructor
@@ -209,8 +208,7 @@ public:
     NameChangeListener(RequestReceiveHandler& recv_handler);
 
     /// @brief Destructor
-    virtual ~NameChangeListener() {
-    };
+    virtual ~NameChangeListener() = default;
 
     /// @brief Prepares the IO for reception and initiates the first receive.
     ///
@@ -502,8 +500,7 @@ public:
         virtual void operator ()(const Result result,
                                  NameChangeRequestPtr& ncr) = 0;
 
-        virtual ~RequestSendHandler() {
-        }
+        virtual ~RequestSendHandler() = default;
     };
 
     /// @brief Constructor
@@ -517,8 +514,7 @@ public:
                      size_t send_queue_max = MAX_QUEUE_DEFAULT);
 
     /// @brief Destructor
-    virtual ~NameChangeSender() {
-    }
+    virtual ~NameChangeSender() = default;
 
     /// @brief Prepares the IO for transmission.
     ///

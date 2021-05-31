@@ -47,7 +47,10 @@ public:
     ///
     /// Removes registered commands from the command manager.
     virtual ~CmdResponseCreatorTest() {
-        config::CommandMgr::instance().deregisterAll();
+        try {
+            config::CommandMgr::instance().deregisterAll();
+        } catch (...) {
+        }
     }
 
     /// @brief SetUp function that wraps call to initCreator.

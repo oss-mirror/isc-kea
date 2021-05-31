@@ -40,7 +40,7 @@ typedef boost::shared_ptr<TlsContext> TlsContextPtr;
 class TlsContextBase : private boost::noncopyable {
 public:
     /// @brief Destructor.
-    virtual ~TlsContextBase() { }
+    virtual ~TlsContextBase() = default;
 
     /// @brief Create a fresh context.
     ///
@@ -134,7 +134,7 @@ public:
     TlsStreamBase(IOService& service, TlsContextPtr context);
 
     /// @brief Destructor.
-    virtual ~TlsStreamBase() { }
+    virtual ~TlsStreamBase() = default;
 
     /// @brief Returns the role.
     TlsRole getRole() const {

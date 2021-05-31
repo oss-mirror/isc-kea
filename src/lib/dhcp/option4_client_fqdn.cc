@@ -348,7 +348,10 @@ Option4ClientFqdn::Option4ClientFqdn(OptionBufferConstIter first,
 }
 
 Option4ClientFqdn::~Option4ClientFqdn() {
-    delete(impl_);
+    try {
+        delete (impl_);
+    } catch (...) {
+    }
 }
 
 Option4ClientFqdn::Option4ClientFqdn(const Option4ClientFqdn& source)

@@ -59,7 +59,7 @@ public:
     UDPSocket(IOService& service);
 
     /// \brief Destructor
-    virtual ~UDPSocket();
+    virtual ~UDPSocket() = default;
 
     /// \brief Return file descriptor of underlying socket
     virtual int getNative() const {
@@ -174,15 +174,7 @@ UDPSocket<C>::UDPSocket(boost::asio::ip::udp::socket& socket) :
 template <typename C>
 UDPSocket<C>::UDPSocket(IOService& service) :
     socket_ptr_(new boost::asio::ip::udp::socket(service.get_io_service())),
-    socket_(*socket_ptr_), isopen_(false)
-{
-}
-
-// Destructor.
-
-template <typename C>
-UDPSocket<C>::~UDPSocket()
-{
+    socket_(*socket_ptr_), isopen_(false) {
 }
 
 // Open the socket.

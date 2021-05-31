@@ -69,7 +69,7 @@ public:
     }
 
     /// @brief Destructor
-    ~HashImpl() { }
+    ~HashImpl() = default;
 
     /// @brief Returns the HashAlgorithm of the object
     HashAlgorithm getHashAlgorithm() const {
@@ -156,13 +156,15 @@ private:
     boost::scoped_ptr<Botan::HashFunction> hash_;
 };
 
-Hash::Hash(const HashAlgorithm hash_algorithm)
-{
+Hash::Hash(const HashAlgorithm hash_algorithm) {
     impl_ = new HashImpl(hash_algorithm);
 }
 
 Hash::~Hash() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 HashAlgorithm

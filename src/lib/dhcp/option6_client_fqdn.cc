@@ -287,7 +287,10 @@ Option6ClientFqdn::Option6ClientFqdn(OptionBufferConstIter first,
 }
 
 Option6ClientFqdn::~Option6ClientFqdn() {
-    delete(impl_);
+    try {
+        delete (impl_);
+    } catch (...) {
+    }
 }
 
 Option6ClientFqdn::Option6ClientFqdn(const Option6ClientFqdn& source)

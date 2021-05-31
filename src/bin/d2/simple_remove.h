@@ -81,7 +81,7 @@ public:
                           D2CfgMgrPtr& cfg_mgr);
 
     /// @brief Destructor
-    virtual ~SimpleRemoveTransaction();
+    virtual ~SimpleRemoveTransaction() = default;
 
 protected:
     /// @brief Adds events defined by SimpleRemoveTransaction to the event set.

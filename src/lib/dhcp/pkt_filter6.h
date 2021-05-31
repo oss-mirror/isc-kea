@@ -71,7 +71,7 @@ class PktFilter6 {
 public:
 
     /// @brief Virtual Destructor.
-    virtual ~PktFilter6() { }
+    virtual ~PktFilter6() = default;
 
     /// @brief Opens a socket.
     ///

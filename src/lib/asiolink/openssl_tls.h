@@ -37,7 +37,7 @@ class TlsContext : public TlsContextBase {
 public:
 
     /// @brief Destructor.
-    virtual ~TlsContext() { }
+    virtual ~TlsContext() = default;
 
     /// @brief Create a fresh context.
     ///
@@ -133,7 +133,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~TlsStream() { }
+    virtual ~TlsStream() = default;
 
     /// @brief TLS Handshake.
     ///

@@ -671,41 +671,44 @@ void Dhcpv4Srv::setPacketStatisticsDefaults() {
 }
 
 Dhcpv4Srv::~Dhcpv4Srv() {
-    // Discard any parked packets
-    discardPackets();
-
     try {
-        stopD2();
-    } catch (const std::exception& ex) {
-        // Highly unlikely, but lets Report it but go on
-        LOG_ERROR(dhcp4_logger, DHCP4_SRV_D2STOP_ERROR).arg(ex.what());
-    }
+        // Discard any parked packets
+        discardPackets();
 
-    try {
-        Dhcp4to6Ipc::instance().close();
-    } catch (const std::exception& ex) {
-        // Highly unlikely, but lets Report it but go on
-        LOG_ERROR(dhcp4_logger, DHCP4_SRV_DHCP4O6_ERROR).arg(ex.what());
-    }
-
-    IfaceMgr::instance().closeSockets();
-
-    // The lease manager was instantiated during DHCPv4Srv configuration,
-    // so we should clean up after ourselves.
-    LeaseMgrFactory::destroy();
-
-    // Explicitly unload hooks
-    HooksManager::prepareUnloadLibraries();
-    if (!HooksManager::unloadLibraries()) {
-        auto names = HooksManager::getLibraryNames();
-        std::string msg;
-        if (!names.empty()) {
-            msg = names[0];
-            for (size_t i = 1; i < names.size(); ++i) {
-                msg += std::string(", ") + names[i];
-            }
+        try {
+            stopD2();
+        } catch (const std::exception& ex) {
+            // Highly unlikely, but lets Report it but go on
+            LOG_ERROR(dhcp4_logger, DHCP4_SRV_D2STOP_ERROR).arg(ex.what());
         }
-        LOG_ERROR(dhcp4_logger, DHCP4_SRV_UNLOAD_LIBRARIES_ERROR).arg(msg);
+
+        try {
+            Dhcp4to6Ipc::instance().close();
+        } catch (const std::exception& ex) {
+            // Highly unlikely, but lets Report it but go on
+            LOG_ERROR(dhcp4_logger, DHCP4_SRV_DHCP4O6_ERROR).arg(ex.what());
+        }
+
+        IfaceMgr::instance().closeSockets();
+
+        // The lease manager was instantiated during DHCPv4Srv configuration,
+        // so we should clean up after ourselves.
+        LeaseMgrFactory::destroy();
+
+        // Explicitly unload hooks
+        HooksManager::prepareUnloadLibraries();
+        if (!HooksManager::unloadLibraries()) {
+            auto names = HooksManager::getLibraryNames();
+            std::string msg;
+            if (!names.empty()) {
+                msg = names[0];
+                for (size_t i = 1; i < names.size(); ++i) {
+                    msg += std::string(", ") + names[i];
+                }
+            }
+            LOG_ERROR(dhcp4_logger, DHCP4_SRV_UNLOAD_LIBRARIES_ERROR).arg(msg);
+        }
+    } catch (...) {
     }
 }
 

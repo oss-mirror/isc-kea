@@ -54,7 +54,13 @@ public:
         return (controller_ptr);
     }
 
-    virtual ~NakedD2Controller() { deregisterCommands(); }
+    /// @brief Destructor
+    virtual ~NakedD2Controller() {
+        try {
+            deregisterCommands();
+        } catch (...) {
+        }
+    }
 
     using DControllerBase::getIOService;
     using DControllerBase::initProcess;
@@ -64,11 +70,12 @@ public:
     }
 
 private:
-    NakedD2Controller() { }
+    /// @brief Constructor
+    NakedD2Controller() = default;
 };
 
-}; // namespace isc::d2
-}; // namespace isc
+} // namespace isc::d2
+} // namespace isc
 
 namespace {
 
@@ -88,7 +95,10 @@ public:
     ///
     /// Stops IO service.
     ~IOServiceWork() {
-        io_service_->stop();
+        try {
+            io_service_->stop();
+        } catch (...) {
+        }
     }
 
 private:
@@ -117,7 +127,7 @@ public:
     /// @brief Configuration file.
     static const char* CFG_TEST_FILE;
 
-    /// @brief Default constructor.
+    /// @brief Constructor.
     ///
     /// Sets socket path to its default value.
     CtrlChannelD2Test()
@@ -133,16 +143,19 @@ public:
 
     /// @brief Destructor.
     ~CtrlChannelD2Test() {
-        // Deregister & co.
-        server_.reset();
+        try {
+            // Deregister & co.
+            server_.reset();
 
-        // Remove files.
-        ::remove(CFG_TEST_FILE);
-        ::remove(socket_path_.c_str());
+            // Remove files.
+            ::remove(CFG_TEST_FILE);
+            ::remove(socket_path_.c_str());
 
-        // Reset command manager.
-        CommandMgr::instance().deregisterAll();
-        CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
+            // Reset command manager.
+            CommandMgr::instance().deregisterAll();
+            CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
+        } catch (...) {
+        }
     }
 
     /// @brief Returns pointer to the server's IO service.

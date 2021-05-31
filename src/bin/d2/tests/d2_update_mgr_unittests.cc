@@ -45,8 +45,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~D2UpdateMgrWrapper() {
-    }
+    virtual ~D2UpdateMgrWrapper() = default;
 
     // Expose the protected methods to be tested.
     using D2UpdateMgr::checkFinishedTransactions;
@@ -72,6 +71,7 @@ public:
     std::vector<NameChangeRequestPtr> canned_ncrs_;
     size_t canned_count_;
 
+    /// @brief Constructor
     D2UpdateMgrTest() {
         queue_mgr_.reset(new D2QueueMgr(io_service_));
         cfg_mgr_.reset(new D2CfgMgr());
@@ -81,8 +81,8 @@ public:
         makeCannedConfig();
     }
 
-    ~D2UpdateMgrTest() {
-    }
+    /// @brief Destructor
+    ~D2UpdateMgrTest() = default;
 
     /// @brief Creates a list of valid NameChangeRequest.
     ///

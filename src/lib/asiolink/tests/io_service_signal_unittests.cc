@@ -61,7 +61,7 @@ public:
     }
 
     /// @brief Destructor.
-    ~IOSignalTest() {}
+    ~IOSignalTest() = default;
 
     /// @brief Method used as the IOSignalSet handler.
     ///

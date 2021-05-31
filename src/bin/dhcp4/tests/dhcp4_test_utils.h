@@ -208,8 +208,8 @@ public:
         fake_received_.push_back(pkt);
     }
 
-    virtual ~NakedDhcpv4Srv() {
-    }
+    /// @brief Destructor
+    virtual ~NakedDhcpv4Srv() = default;
 
     /// @brief Runs processing DHCPREQUEST.
     ///
@@ -314,11 +314,16 @@ public:
 
     class Dhcpv4SrvMTTestGuard {
     public:
+        /// @brief Constructor
         Dhcpv4SrvMTTestGuard(Dhcpv4SrvTest& test, bool mt_enabled) : test_(test) {
             test_.setMultiThreading(mt_enabled);
         }
+        /// @brief Destructor
         ~Dhcpv4SrvMTTestGuard() {
-            test_.setMultiThreading(false);
+            try {
+                test_.setMultiThreading(false);
+            } catch (...) {
+            }
         }
         Dhcpv4SrvTest& test_;
     };

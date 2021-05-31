@@ -29,7 +29,7 @@ public:
     HttpControlSocket(CfgControlSocketPtr ctrl_sock);
 
     /// @brief Destructor (does nothing).
-    virtual ~HttpControlSocket();
+    virtual ~HttpControlSocket() = default;
 
     /// @brief Get configuration.
     ///

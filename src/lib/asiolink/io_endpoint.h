@@ -50,10 +50,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class
     /// should never be instantiated (except as part of a derived class).
-    IOEndpoint() {}
+    IOEndpoint() = default;
 public:
     /// The destructor.
-    virtual ~IOEndpoint() {}
+    virtual ~IOEndpoint() = default;
     //@}
 
     /// \brief Returns the address of the endpoint.

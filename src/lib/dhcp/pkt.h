@@ -64,11 +64,14 @@ public:
     ///
     /// Disables options copying on a packets.
     ~ScopedEnableOptionsCopy() {
-        if (pkts_.first) {
-            pkts_.first->setCopyRetrievedOptions(false);
-        }
-        if (pkts_.second) {
-            pkts_.second->setCopyRetrievedOptions(false);
+        try {
+            if (pkts_.first) {
+                pkts_.first->setCopyRetrievedOptions(false);
+            }
+            if (pkts_.second) {
+                pkts_.second->setCopyRetrievedOptions(false);
+            }
+        } catch (...) {
         }
     }
 
@@ -584,8 +587,7 @@ public:
     /// There is nothing to clean up here, but since there are virtual methods,
     /// we define virtual destructor to ensure that derived classes will have
     /// a virtual one, too.
-    virtual ~Pkt() {
-    }
+    virtual ~Pkt() = default;
 
     /// @brief Classes this packet belongs to.
     ///

@@ -65,11 +65,16 @@ public:
     /// \param asio_endpoint The ASIO representation of the TCP endpoint.
     TCPEndpoint(const boost::asio::ip::tcp::endpoint& asio_endpoint) :
         asio_endpoint_placeholder_(new boost::asio::ip::tcp::endpoint(asio_endpoint)),
-        asio_endpoint_(*asio_endpoint_placeholder_)
-    {}
+        asio_endpoint_(*asio_endpoint_placeholder_) {
+    }
 
     /// \brief The destructor.
-    virtual ~TCPEndpoint() { delete asio_endpoint_placeholder_; }
+    virtual ~TCPEndpoint() {
+        try {
+            delete asio_endpoint_placeholder_;
+        } catch (...) {
+        }
+    }
     //@}
 
     virtual IOAddress getAddress() const {

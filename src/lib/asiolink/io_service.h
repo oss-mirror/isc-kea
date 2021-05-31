@@ -43,8 +43,9 @@ private:
 public:
     /// \brief The constructor
     IOService();
+
     /// \brief The destructor.
-    ~IOService();
+    ~IOService() = default;
     //@}
 
     /// \brief Start the underlying event loop.

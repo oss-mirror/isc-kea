@@ -54,8 +54,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~TestStdoutControlSocket() {
-    }
+    virtual ~TestStdoutControlSocket() = default;
 };
 
 /// @brief Type definition for the pointer to the @c TestStdoutControlSocket.
@@ -146,15 +145,18 @@ public:
 
     /// @brief Destructor.
     virtual ~UnixControlSocketTest() {
-        if (thread_) {
-            thread_->join();
-            thread_.reset();
+        try {
+            if (thread_) {
+                thread_->join();
+                thread_.reset();
+            }
+            // io_service must be stopped after the thread returns,
+            // otherwise the thread may never return if it is
+            // waiting for the completion of some asynchronous tasks.
+            io_service_.stop();
+            removeUnixSocketFile();
+        } catch (...) {
         }
-        // io_service must be stopped after the thread returns,
-        // otherwise the thread may never return if it is
-        // waiting for the completion of some asynchronous tasks.
-        io_service_.stop();
-        removeUnixSocketFile();
     }
 
     /// @brief Returns socket file path.
@@ -511,14 +513,17 @@ public:
 
     /// @brief Destructor.
     virtual ~HttpControlSocketTest() {
-        if (thread_) {
-            thread_->join();
-            thread_.reset();
+        try {
+            if (thread_) {
+                thread_->join();
+                thread_.reset();
+            }
+            // io_service must be stopped after the thread returns,
+            // otherwise the thread may never return if it is
+            // waiting for the completion of some asynchronous tasks.
+            io_service_.stop();
+        } catch (...) {
         }
-        // io_service must be stopped after the thread returns,
-        // otherwise the thread may never return if it is
-        // waiting for the completion of some asynchronous tasks.
-        io_service_.stop();
     }
 
     /// @brief Returns socket URL.

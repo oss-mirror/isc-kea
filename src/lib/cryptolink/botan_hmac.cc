@@ -82,8 +82,7 @@ public:
     }
 
     /// @brief Destructor
-    ~HMACImpl() {
-    }
+    ~HMACImpl() = default;
 
     /// @brief Returns the HashAlgorithm of the object
     HashAlgorithm getHashAlgorithm() const {
@@ -197,13 +196,15 @@ private:
 };
 
 HMAC::HMAC(const void* secret, size_t secret_length,
-           const HashAlgorithm hash_algorithm)
-{
+           const HashAlgorithm hash_algorithm) {
     impl_ = new HMACImpl(secret, secret_length, hash_algorithm);
 }
 
 HMAC::~HMAC() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 HashAlgorithm

@@ -22,9 +22,6 @@ Parser6Context::Parser6Context()
       trace_parsing_(false) {
 }
 
-Parser6Context::~Parser6Context() {
-}
-
 isc::data::ElementPtr
 Parser6Context::parseString(const std::string& str, ParserType parser_type) {
     scanStringBegin(str, parser_type);

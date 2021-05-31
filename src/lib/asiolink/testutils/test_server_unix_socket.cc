@@ -149,7 +149,10 @@ public:
 
     /// @brief Destructor.
     ~ConnectionPool() {
-        stopAll();
+        try {
+            stopAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Creates new unix domain socket and returns it.
@@ -237,7 +240,10 @@ TestServerUnixSocket::TestServerUnixSocket(IOService& io_service,
 }
 
 TestServerUnixSocket::~TestServerUnixSocket() {
-    server_acceptor_.close();
+    try {
+        server_acceptor_.close();
+    } catch (...) {
+    }
 }
 
 void

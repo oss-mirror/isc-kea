@@ -33,9 +33,6 @@ CfgControlSocket::CfgControlSocket(Type type, const string& name,
     : type_(type), name_(name), url_(url) {
 }
 
-CfgControlSocket::~CfgControlSocket() {
-}
-
 CfgControlSocket::Type
 CfgControlSocket::stringToType(const string& type) {
     if (type == "unix") {
@@ -81,9 +78,6 @@ CfgControlSocket::toElement() const {
 CfgServer::CfgServer(const string& model, CfgControlSocketPtr ctrl_sock)
     : model_(model), boot_update_(true), subscribe_changes_(true),
       validate_changes_(true), control_socket_(ctrl_sock) {
-}
-
-CfgServer::~CfgServer() {
 }
 
 string

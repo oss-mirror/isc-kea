@@ -188,16 +188,21 @@ public:
 
 class JSONFileBackendTest : public dhcp::test::BaseServerTest {
 public:
+    /// @brief Constructor
     JSONFileBackendTest()
         : BaseServerTest() {
     }
 
+    /// @brief Destructor
     ~JSONFileBackendTest() {
-        LeaseMgrFactory::destroy();
-        isc::log::setDefaultLoggingOutput();
-        static_cast<void>(remove(TEST_FILE));
-        static_cast<void>(remove(TEST_INCLUDE));
-    };
+        try {
+            LeaseMgrFactory::destroy();
+            isc::log::setDefaultLoggingOutput();
+            static_cast<void>(remove(TEST_FILE));
+            static_cast<void>(remove(TEST_INCLUDE));
+        } catch (...) {
+        }
+    }
 
     void writeFile(const std::string& file_name, const std::string& content) {
         static_cast<void>(remove(file_name.c_str()));
@@ -954,8 +959,11 @@ public:
     ///
     /// Destroys MySQL schema.
     virtual ~JSONFileBackendMySQLTest() {
-        // If data wipe enabled, delete transient data otherwise destroy the schema.
-        destroyMySQLSchema();
+        try {
+            // If data wipe enabled, delete transient data otherwise destroy the schema.
+            destroyMySQLSchema();
+        } catch (...) {
+        }
     }
 
     /// @brief Creates server configuration with specified backend type.

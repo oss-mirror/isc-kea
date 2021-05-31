@@ -64,12 +64,15 @@ public:
     ///
     /// Various cleanups.
     virtual ~Dhcp6to4IpcTest() {
-        Dhcp6to4Ipc::client_port = 0;
-        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_send");
-        callback_pkt_.reset();
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            std::cerr << "(fixture dtor) unloadLibraries failed" << std::endl;
+        try {
+            Dhcp6to4Ipc::client_port = 0;
+            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_send");
+            callback_pkt_.reset();
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                std::cerr << "(fixture dtor) unloadLibraries failed" << std::endl;
+            }
+        } catch (...) {
         }
     }
 

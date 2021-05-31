@@ -66,7 +66,7 @@ public:
     UserId(UserIdType id_type, const std::string& id_str);
 
     /// @brief Destructor.
-    ~UserId();
+    ~UserId() = default;
 
     /// @brief Returns a const reference to the actual id value
     const std::vector<uint8_t>& getId() const;
@@ -181,7 +181,7 @@ public:
     User(UserId::UserIdType id_type, const std::string& id_str);
 
     /// @brief Destructor
-    ~User();
+    ~User() = default;
 
     /// @brief Returns a reference to the map of properties.
     ///

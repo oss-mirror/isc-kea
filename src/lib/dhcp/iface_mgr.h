@@ -148,7 +148,7 @@ public:
     Iface(const std::string& name, unsigned int ifindex);
 
     /// @brief Destructor.
-    ~Iface() { }
+    ~Iface() = default;
 
     /// @brief Closes all open sockets on interface.
     void closeSockets();

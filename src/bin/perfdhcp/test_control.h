@@ -140,9 +140,11 @@ public:
     /// (e.g. sequential or based on random function).
     class NumberGenerator {
     public:
+        /// \brief Constructor.
+        NumberGenerator() = default;
 
         /// \brief Destructor.
-        virtual ~NumberGenerator() { }
+        virtual ~NumberGenerator() = default;
 
         /// \brief Generate number.
         ///

@@ -48,7 +48,7 @@ public:
     typedef boost::shared_ptr<ConfigBackendType> ConfigBackendTypePtr;
 
     /// @brief Virtual destructor.
-    virtual ~BaseConfigBackendPool() { }
+    virtual ~BaseConfigBackendPool() = default;
 
     /// @brief Adds a backend to the pool.
     ///

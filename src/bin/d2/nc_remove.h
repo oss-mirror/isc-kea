@@ -86,7 +86,7 @@ public:
                           D2CfgMgrPtr& cfg_mgr);
 
     /// @brief Destructor
-    virtual ~NameRemoveTransaction();
+    virtual ~NameRemoveTransaction() = default;
 
 protected:
     /// @brief Adds events defined by NameRemoveTransaction to the event set.

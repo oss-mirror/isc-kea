@@ -39,9 +39,6 @@ CtrlAgentCfgMgr::CtrlAgentCfgMgr()
     : DCfgMgrBase(ConfigPtr(new CtrlAgentCfgContext())) {
 }
 
-CtrlAgentCfgMgr::~CtrlAgentCfgMgr() {
-}
-
 std::string
 CtrlAgentCfgMgr::getConfigSummary(const uint32_t /*selection*/) {
 

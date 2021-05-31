@@ -40,7 +40,7 @@ public:
     CtrlAgentProcess(const char* name, const asiolink::IOServicePtr& io_service);
 
     /// @brief Destructor
-    virtual ~CtrlAgentProcess();
+    virtual ~CtrlAgentProcess() = default;
 
     /// @brief Initialize the Control Agent process.
     ///

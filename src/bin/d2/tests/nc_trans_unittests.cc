@@ -60,8 +60,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~NameChangeStub() {
-    }
+    virtual ~NameChangeStub() = default;
 
     /// @brief DNSClient callback
     /// Overrides the callback in NameChangeTransaction to allow testing
@@ -268,11 +267,11 @@ typedef boost::shared_ptr<NameChangeStub> NameChangeStubPtr;
 /// aspects of NameChangeTransaction.
 class NameChangeTransactionTest : public TransactionTest {
 public:
-    NameChangeTransactionTest() {
-    }
+    /// @brief Constructor
+    NameChangeTransactionTest() = default;
 
-    virtual ~NameChangeTransactionTest() {
-    }
+    /// @brief Destructor
+    virtual ~NameChangeTransactionTest() = default;
 
 
     /// @brief  Instantiates a NameChangeStub test transaction

@@ -48,7 +48,7 @@ public:
     LFCController();
 
     /// @brief Destructor
-    ~LFCController();
+    ~LFCController() = default;
 
     /// @brief Acts as the primary entry point to start execution
     /// of the process.

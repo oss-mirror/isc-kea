@@ -40,9 +40,6 @@ SimpleAddTransaction(asiolink::IOServicePtr& io_service,
     }
 }
 
-SimpleAddTransaction::~SimpleAddTransaction(){
-}
-
 void
 SimpleAddTransaction::defineEvents() {
     // Call superclass impl first.

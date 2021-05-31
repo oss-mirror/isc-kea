@@ -44,16 +44,19 @@ BaseServerTest::BaseServerTest()
 }
 
 BaseServerTest::~BaseServerTest() {
-    // Remove default lease file.
-    std::ostringstream s2;
-    s2 << CfgMgr::instance().getDataDir() << "/" << "kea-leases4.csv";
-    static_cast<void>(::remove(s2.str().c_str()));
+    try {
+        // Remove default lease file.
+        std::ostringstream s2;
+        s2 << CfgMgr::instance().getDataDir() << "/" << "kea-leases4.csv";
+        static_cast<void>(::remove(s2.str().c_str()));
 
-    // Revert to original data directory.
-    CfgMgr::instance().setDataDir(original_datadir_);
+        // Revert to original data directory.
+        CfgMgr::instance().setDataDir(original_datadir_);
 
-    // Revert to unit test logging, in case the test reconfigured it.
-    isc::log::initLogger();
+        // Revert to unit test logging, in case the test reconfigured it.
+        isc::log::initLogger();
+    } catch (...) {
+    }
 }
 
 Dhcpv4SrvTest::Dhcpv4SrvTest()
@@ -87,17 +90,19 @@ Dhcpv4SrvTest::Dhcpv4SrvTest()
 }
 
 Dhcpv4SrvTest::~Dhcpv4SrvTest() {
+    try {
+        // Make sure that we revert to default value
+        CfgMgr::instance().clear();
 
-    // Make sure that we revert to default value
-    CfgMgr::instance().clear();
+        LibDHCP::clearRuntimeOptionDefs();
 
-    LibDHCP::clearRuntimeOptionDefs();
+        // Let's wipe all existing statistics.
+        isc::stats::StatsMgr::instance().removeAll();
 
-    // Let's wipe all existing statistics.
-    isc::stats::StatsMgr::instance().removeAll();
-
-    // Reset the thread pool.
-    MultiThreadingMgr::instance().apply(false, 0, 0);
+        // Reset the thread pool.
+        MultiThreadingMgr::instance().apply(false, 0, 0);
+    } catch (...) {
+    }
 }
 
 void Dhcpv4SrvTest::addPrlOption(Pkt4Ptr& pkt) {

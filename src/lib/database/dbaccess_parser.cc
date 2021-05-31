@@ -22,12 +22,6 @@ using namespace isc::data;
 namespace isc {
 namespace db {
 
-
-// Factory function to build the parser
-DbAccessParser::DbAccessParser()
-    : values_() {
-}
-
 // Parse the configuration and check that the various keywords are consistent.
 void
 DbAccessParser::parse(std::string& access_string,

@@ -82,10 +82,6 @@ FauxServer::FauxServer(asiolink::IOService& io_service,
     server_socket_->bind(endpoint.getASIOEndpoint());
 }
 
-
-FauxServer::~FauxServer() {
-}
-
 void
 FauxServer::receive (const ResponseMode& response_mode,
                      const dns::Rcode& response_rcode) {
@@ -219,9 +215,6 @@ TimedIO::TimedIO()
      timer_(*io_service_), run_time_(0) {
 }
 
-TimedIO::~TimedIO() {
-}
-
 int
 TimedIO::runTimedIO(int run_time) {
     run_time_ = run_time;
@@ -248,9 +241,6 @@ const unsigned int TransactionTest::REVERSE_CHG = 0x02;
 const unsigned int TransactionTest::FWD_AND_REV_CHG = REVERSE_CHG | FORWARD_CHG;
 
 TransactionTest::TransactionTest() : ncr_(), cfg_mgr_(new D2CfgMgr()) {
-}
-
-TransactionTest::~TransactionTest() {
 }
 
 void

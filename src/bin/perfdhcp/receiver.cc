@@ -47,10 +47,13 @@ Receiver::stop() {
 }
 
 Receiver::~Receiver() {
-    if (single_threaded_) {
-        return;
+    try {
+        if (single_threaded_) {
+            return;
+        }
+        stop();
+    } catch (...) {
     }
-    stop();
 }
 
 

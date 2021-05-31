@@ -59,7 +59,7 @@ public:
         OptionConfig(uint16_t code, isc::dhcp::OptionDefinitionPtr def);
 
         /// @brief Destructor.
-        virtual ~OptionConfig();
+        virtual ~OptionConfig() = default;
 
         /// @brief Return option code.
         ///
@@ -142,7 +142,7 @@ public:
     typedef std::map<uint16_t, OptionConfigPtr> OptionConfigMap;
 
     /// @brief Constructor.
-    FlexOptionImpl();
+    FlexOptionImpl() = default;
 
     /// @brief Destructor.
     ~FlexOptionImpl();

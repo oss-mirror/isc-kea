@@ -120,9 +120,6 @@ D2Controller::parseFile(const std::string& file_name) {
     return (elements);
 }
 
-D2Controller::~D2Controller() {
-}
-
 // Refer to config_report so it will be embedded in the binary.
 const char* const* d2_config_report = isc::detail::config_report;
 

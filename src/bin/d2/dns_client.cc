@@ -56,11 +56,13 @@ public:
     // TSIG context used to sign outbound and verify inbound messages.
     dns::TSIGContextPtr tsig_context_;
 
-    // Constructor and Destructor
+    // Constructor
     DNSClientImpl(D2UpdateMessagePtr& response_placeholder,
                   DNSClient::Callback* callback,
                   const DNSClient::Protocol proto);
-    virtual ~DNSClientImpl();
+
+    // Destructor
+    virtual ~DNSClientImpl() = default;
 
     // This internal callback is called when the DNS update message exchange is
     // complete. It further invokes the external callback provided by a caller.
@@ -115,9 +117,6 @@ DNSClientImpl::DNSClientImpl(D2UpdateMessagePtr& response_placeholder,
                       << proto_ << "' specified for DNS Updates");
         }
     }
-}
-
-DNSClientImpl::~DNSClientImpl() {
 }
 
 void
@@ -232,10 +231,6 @@ DNSClientImpl::doUpdate(asiolink::IOService& io_service,
 DNSClient::DNSClient(D2UpdateMessagePtr& response_placeholder,
                      Callback* callback, const DNSClient::Protocol proto)
     : impl_(new DNSClientImpl(response_placeholder, callback, proto)) {
-}
-
-DNSClient::~DNSClient() {
-    delete (impl_);
 }
 
 unsigned int

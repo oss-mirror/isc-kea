@@ -40,10 +40,10 @@ public:
     /// @brief Constructor
     ///
     /// Creates a new registry with an empty list of users and no data source.
-    UserRegistry();
+    UserRegistry() = default;
 
     /// @brief Destructor
-    ~UserRegistry();
+    ~UserRegistry() = default;
 
     /// @brief Adds a given user to the registry.
     ///

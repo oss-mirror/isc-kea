@@ -25,16 +25,17 @@ public:
     /// @brief Logical name of the pre-registered, default queue implementation
     static const std::string DEFAULT_QUEUE_TYPE4;
 
+    /// @brief constructor.
+    ///
     /// It registers a default factory for DHCPv4 queues. 
     PacketQueueMgr4();
 
     /// @brief virtual Destructor
-    virtual ~PacketQueueMgr4(){}
+    virtual ~PacketQueueMgr4() = default;
 };
 
 /// @brief Defines a shared pointer to PacketQueueMgr4
 typedef boost::shared_ptr<PacketQueueMgr4> PacketQueueMgr4Ptr;
-
 
 } // end of namespace isc::dhcp
 } // end of namespace isc

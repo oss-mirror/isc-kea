@@ -120,6 +120,7 @@ public:
 /// Test fixture class
 class CtrlAgentGetCfgTest : public ConfigParseTest {
 public:
+    /// @brief Constructor
     CtrlAgentGetCfgTest()
     : rcode_(-1) {
         srv_.reset(new NakedAgentCfgMgr());
@@ -127,8 +128,12 @@ public:
         resetConfiguration();
     }
 
+    /// @brief Destructor
     ~CtrlAgentGetCfgTest() {
-        resetConfiguration();
+        try {
+            resetConfiguration();
+        } catch (...) {
+        }
     }
 
     /// @brief Parse and Execute configuration

@@ -136,26 +136,29 @@ ClientHandler::ClientHandler()
 }
 
 ClientHandler::~ClientHandler() {
-    bool unlocked = false;
-    lock_guard<mutex> lk(mutex_);
-    if (locked_client_id_) {
-        unlocked = true;
-        unLockById();
-    }
-    if (locked_hwaddr_) {
-        unlocked = true;
-        unLockByHWAddr();
-    }
-    if (!unlocked || !client_ || !client_->cont_) {
-        return;
-    }
-    // Try to process next query. As the caller holds the mutex of
-    // the handler class the continuation will be resumed after.
-    MultiThreadingMgr& mt_mgr = MultiThreadingMgr::instance();
-    if (mt_mgr.getMode()) {
-        if (!mt_mgr.getThreadPool().addFront(client_->cont_)) {
-            LOG_DEBUG(dhcp4_logger, DBG_DHCP4_BASIC, DHCP4_PACKET_QUEUE_FULL);
+    try {
+        bool unlocked = false;
+        lock_guard<mutex> lk(mutex_);
+        if (locked_client_id_) {
+            unlocked = true;
+            unLockById();
         }
+        if (locked_hwaddr_) {
+            unlocked = true;
+            unLockByHWAddr();
+        }
+        if (!unlocked || !client_ || !client_->cont_) {
+            return;
+        }
+        // Try to process next query. As the caller holds the mutex of
+        // the handler class the continuation will be resumed after.
+        MultiThreadingMgr& mt_mgr = MultiThreadingMgr::instance();
+        if (mt_mgr.getMode()) {
+            if (!mt_mgr.getThreadPool().addFront(client_->cont_)) {
+                LOG_DEBUG(dhcp4_logger, DBG_DHCP4_BASIC, DHCP4_PACKET_QUEUE_FULL);
+            }
+        }
+    } catch (...) {
     }
 }
 

@@ -72,7 +72,10 @@ public:
     ///
     /// Closes the underlying socket if it is open.
     ~TLSClient() {
-        close();
+        try {
+            close();
+        } catch (...) {
+        }
     }
 
     /// @brief Connect to the test server address and port.
@@ -161,7 +164,10 @@ public:
     ///
     /// Closes socket.
     ~Acceptor() {
-        socket_.close();
+        try {
+            socket_.close();
+        } catch (...) {
+        }
     }
 
     /// @brief Asynchronous accept new connection.
@@ -216,8 +222,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~TLSAcceptorTest() {
-    }
+    virtual ~TLSAcceptorTest() = default;
 
     /// @brief Specifies how many new connections are expected before the IO
     /// service is stopped.

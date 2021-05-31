@@ -24,7 +24,10 @@ class CryptoLinkImpl {
 };
 
 CryptoLink::~CryptoLink() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Botan implementation of RNG.
@@ -34,8 +37,7 @@ public:
         rng.reset(new Botan::AutoSeeded_RNG());
     }
 
-    ~RNGImpl() {
-    }
+    ~RNGImpl() = default;
 
 private:
     std::vector<uint8_t> random(size_t len) {

@@ -25,7 +25,6 @@ PerfSocket::PerfSocket(CommandOptions& options) {
     initSocketData();
 }
 
-
 int
 PerfSocket::openSocket(CommandOptions& options) const {
     std::string localname = options.getLocalName();
@@ -126,9 +125,12 @@ PerfSocket::openSocket(CommandOptions& options) const {
 }
 
 PerfSocket::~PerfSocket() {
-    IfacePtr iface = IfaceMgr::instance().getIface(ifindex_);
-    if (iface) {
-        iface->delSocket(sockfd_);
+    try {
+        IfacePtr iface = IfaceMgr::instance().getIface(ifindex_);
+        if (iface) {
+            iface->delSocket(sockfd_);
+        }
+    } catch (...) {
     }
 }
 

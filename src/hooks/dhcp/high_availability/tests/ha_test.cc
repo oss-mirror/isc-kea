@@ -55,9 +55,6 @@ HATest::HATest()
       network_state_(new NetworkState(NetworkState::DHCPv4)) {
 }
 
-HATest::~HATest() {
-}
-
 void
 HATest::startHAService() {
     if (HooksManager::calloutsPresent(Hooks.hooks_index_dhcp4_srv_configured_)) {

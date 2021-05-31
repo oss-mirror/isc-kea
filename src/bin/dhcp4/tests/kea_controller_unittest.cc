@@ -196,14 +196,18 @@ public:
 /// near future.
 class JSONFileBackendTest : public isc::dhcp::test::BaseServerTest {
 public:
-    JSONFileBackendTest() {
-    }
+    /// @brief Constructor
+    JSONFileBackendTest() = default;
 
+    /// @brief Destructor
     ~JSONFileBackendTest() {
-        LeaseMgrFactory::destroy();
-        static_cast<void>(remove(TEST_FILE));
-        static_cast<void>(remove(TEST_INCLUDE));
-    };
+        try {
+            LeaseMgrFactory::destroy();
+            static_cast<void>(remove(TEST_FILE));
+            static_cast<void>(remove(TEST_INCLUDE));
+        } catch (...) {
+        }
+    }
 
     /// @brief writes specified content to a well known file
     ///
@@ -969,8 +973,11 @@ public:
     ///
     /// Destroys MySQL schema.
     virtual ~JSONFileBackendMySQLTest() {
-        // If data wipe enabled, delete transient data otherwise destroy the schema.
-        destroyMySQLSchema();
+        try {
+            // If data wipe enabled, delete transient data otherwise destroy the schema.
+            destroyMySQLSchema();
+        } catch (...) {
+        }
     }
 
     /// @brief Creates server configuration with specified backend type.

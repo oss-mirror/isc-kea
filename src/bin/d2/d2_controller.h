@@ -36,7 +36,7 @@ public:
     static process::DControllerBasePtr& instance();
 
     /// @brief Destructor.
-    virtual ~D2Controller();
+    virtual ~D2Controller() = default;
 
     /// @brief Defines the application name, this is passed into base class
     /// and appears in log statements.
@@ -79,15 +79,13 @@ private:
     /// @throw BadValue if the file is empty
     virtual isc::data::ConstElementPtr parseFile(const std::string& file_name);
 
+protected:
     /// @brief Constructor is declared private to maintain the integrity of
     /// the singleton instance.
     D2Controller();
-
-    /// To facilitate unit testing.
-    friend class NakedD2Controller;
 };
 
-}; // namespace isc::d2
-}; // namespace isc
+} // namespace isc::d2
+} // namespace isc
 
 #endif

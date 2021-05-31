@@ -33,8 +33,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~NetconfProcessTest() {
-    }
+    virtual ~NetconfProcessTest() = default;
 
     /// @brief Callback that will invoke shutdown method.
     void genShutdownCallback() {

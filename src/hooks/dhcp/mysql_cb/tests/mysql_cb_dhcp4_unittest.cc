@@ -110,9 +110,12 @@ public:
 
     /// @brief Destructor.
     virtual ~MySqlConfigBackendDHCPv4Test() {
-        cbptr_.reset();
-        // If data wipe enabled, delete transient data otherwise destroy the schema.
-        destroyMySQLSchema();
+        try {
+            cbptr_.reset();
+            // If data wipe enabled, delete transient data otherwise destroy the schema.
+            destroyMySQLSchema();
+        } catch (...) {
+        }
     }
 
     /// @brief Counts rows in a selected table in MySQL database.
@@ -4164,6 +4167,7 @@ TEST_F(MySqlConfigBackendDHCPv4Test, multipleAuditEntries) {
 
 class MySqlConfigBackendDHCPv4DbLostCallbackTest : public ::testing::Test {
 public:
+    /// @brief Constructor
     MySqlConfigBackendDHCPv4DbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),
           db_failed_callback_called_(0),
@@ -4176,13 +4180,17 @@ public:
         isc::dhcp::CfgMgr::instance().clear();
     }
 
+    /// @brief Destructor
     virtual ~MySqlConfigBackendDHCPv4DbLostCallbackTest() {
-        isc::db::DatabaseConnection::db_lost_callback_ = 0;
-        isc::db::DatabaseConnection::db_recovered_callback_ = 0;
-        isc::db::DatabaseConnection::db_failed_callback_ = 0;
-        isc::dhcp::MySqlConfigBackendImpl::setIOService(isc::asiolink::IOServicePtr());
-        isc::dhcp::TimerMgr::instance()->unregisterTimers();
-        isc::dhcp::CfgMgr::instance().clear();
+        try {
+            isc::db::DatabaseConnection::db_lost_callback_ = 0;
+            isc::db::DatabaseConnection::db_recovered_callback_ = 0;
+            isc::db::DatabaseConnection::db_failed_callback_ = 0;
+            isc::dhcp::MySqlConfigBackendImpl::setIOService(isc::asiolink::IOServicePtr());
+            isc::dhcp::TimerMgr::instance()->unregisterTimers();
+            isc::dhcp::CfgMgr::instance().clear();
+        } catch (...) {
+        }
     }
 
     /// @brief Prepares the class for a test.

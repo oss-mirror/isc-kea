@@ -71,7 +71,10 @@ public:
     ///
     /// Stops IO service.
     ~IOServiceWork() {
-        io_service_->stop();
+        try {
+            io_service_->stop();
+        } catch (...) {
+        }
     }
 
 private:
@@ -98,20 +101,24 @@ const size_t DEFAULT_CONNECTION_TIMEOUT = 10000;
 
 class CtrlDhcpv6SrvTest : public BaseServerTest {
 public:
+    /// @brief Constructor
     CtrlDhcpv6SrvTest()
         : BaseServerTest() {
         reset();
     }
 
+    /// @brief Destructor
     virtual ~CtrlDhcpv6SrvTest() {
-        LeaseMgrFactory::destroy();
-        StatsMgr::instance().removeAll();
-        CommandMgr::instance().deregisterAll();
-        CommandMgr::instance().setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
+        try {
+            LeaseMgrFactory::destroy();
+            StatsMgr::instance().removeAll();
+            CommandMgr::instance().deregisterAll();
+            CommandMgr::instance().setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
 
-        reset();
-    };
-
+            reset();
+        } catch (...) {
+        }
+    }
 
     /// @brief Reset hooks data
     ///
@@ -156,10 +163,13 @@ public:
 
     /// @brief Destructor
     ~CtrlChannelDhcpv6SrvTest() {
-        server_.reset();
-        reset();
-        MultiThreadingMgr::instance().setMode(false);
-    };
+        try {
+            server_.reset();
+            reset();
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
+    }
 
     /// @brief Returns pointer to the server's IO service.
     ///

@@ -120,6 +120,7 @@ public:
 /// Test fixture class
 class NetconfGetCfgTest : public ConfigParseTest {
 public:
+    /// @brief Constructor
     NetconfGetCfgTest()
     : rcode_(-1) {
         srv_.reset(new NakedNetconfCfgMgr());
@@ -127,8 +128,12 @@ public:
         resetConfiguration();
     }
 
+    /// @brief Destructor
     ~NetconfGetCfgTest() {
-        resetConfiguration();
+        try {
+            resetConfiguration();
+        } catch (...) {
+        }
     }
 
     /// @brief Parse and Execute configuration

@@ -41,7 +41,10 @@ Dhcp6SrvD2Test::Dhcp6SrvD2Test() : rcode_(-1) {
 }
 
 Dhcp6SrvD2Test::~Dhcp6SrvD2Test() {
-    reset();
+    try {
+        reset();
+    } catch (...) {
+    }
 }
 
 dhcp_ddns::NameChangeRequestPtr

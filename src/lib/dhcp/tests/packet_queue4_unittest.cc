@@ -33,10 +33,10 @@ public:
     /// @param queue_size maximum number of packets the queue can hold
     TestQueue4(size_t queue_size)
         : PacketQueueRing4("kea-ring4", queue_size), drop_enabled_(false), eat_count_(0) {
-    };
+    }
 
     /// @brief virtual Destructor
-    virtual ~TestQueue4(){};
+    virtual ~TestQueue4() = default;
 
     /// @brief Determines is a packet should be dropped.
     ///

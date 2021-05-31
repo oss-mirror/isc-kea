@@ -31,9 +31,12 @@ public:
 
     /// Destructor
     ~DatabaseConnectionCallbackTest() {
-        DatabaseConnection::db_lost_callback_ = 0;
-        DatabaseConnection::db_recovered_callback_ = 0;
-        DatabaseConnection::db_failed_callback_ = 0;
+        try {
+            DatabaseConnection::db_lost_callback_ = 0;
+            DatabaseConnection::db_recovered_callback_ = 0;
+            DatabaseConnection::db_failed_callback_ = 0;
+        } catch (...) {
+        }
     }
 
     /// @brief Callback to register with a DatabaseConnection

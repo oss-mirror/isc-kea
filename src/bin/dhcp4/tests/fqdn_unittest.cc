@@ -332,21 +332,25 @@ public:
         NAME_NOT_REPLACED
     };
 
+    /// @brief Constructor
     NameDhcpv4SrvTest()
         : Dhcpv4SrvTest(),
           d2_mgr_(CfgMgr::instance().getD2ClientMgr()),
-          iface_mgr_test_config_(true)
-    {
+          iface_mgr_test_config_(true) {
         srv_ = boost::make_shared<NakedDhcpv4Srv>(0);
         IfaceMgr::instance().openSockets4();
         // Config DDNS to be enabled, all controls off
         enableD2();
     }
 
+    /// @brief Destructor
     virtual ~NameDhcpv4SrvTest() {
-        // CfgMgr singleton doesn't get wiped between tests, so  we'll
-        // disable D2 explicitly between tests.
-        disableD2();
+        try {
+            // CfgMgr singleton doesn't get wiped between tests, so  we'll
+            // disable D2 explicitly between tests.
+            disableD2();
+        } catch (...) {
+        }
     }
 
     /// @brief Sets the server's DDNS configuration to ddns updates disabled.

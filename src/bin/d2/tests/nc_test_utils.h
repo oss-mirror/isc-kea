@@ -79,7 +79,7 @@ public:
     FauxServer(asiolink::IOService& io_service, DnsServerInfo& server);
 
     /// @brief Destructor
-    virtual ~FauxServer();
+    virtual ~FauxServer() = default;
 
     /// @brief Initiates an asynchronous receive
     ///
@@ -141,7 +141,7 @@ public:
     TimedIO();
 
     // Destructor
-    virtual ~TimedIO();
+    virtual ~TimedIO() = default;
 
     /// @brief IO Timer expiration handler
     ///
@@ -182,8 +182,11 @@ public:
     static const unsigned int REVERSE_CHG;      // Only reverse change.
     static const unsigned int FWD_AND_REV_CHG;  // Both forward and reverse.
 
+    /// @brief Constructor
     TransactionTest();
-    virtual ~TransactionTest();
+
+    /// @brief Destructor
+    virtual ~TransactionTest() = default;
 
     /// @brief Creates a transaction which requests an IPv4 DNS update.
     ///

@@ -84,7 +84,7 @@ public:
     Impl();
 
     /// @brief Destructor.
-    ~Impl();
+    ~Impl() = default;
 
     /// @brief Configure.
     ///
@@ -100,9 +100,6 @@ public:
 
 Impl::Impl()
     : config_(new BasicHttpAuthConfig()), creator_(new ResponseCreator()) {
-}
-
-Impl::~Impl() {
 }
 
 void

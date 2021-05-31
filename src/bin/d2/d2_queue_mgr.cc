@@ -26,9 +26,6 @@ D2QueueMgr::D2QueueMgr(asiolink::IOServicePtr& io_service, const size_t max_queu
     setMaxQueueSize(max_queue_size);
 }
 
-D2QueueMgr::~D2QueueMgr() {
-}
-
 void
 D2QueueMgr::operator()(const dhcp_ddns::NameChangeListener::Result result,
                        dhcp_ddns::NameChangeRequestPtr& ncr) {

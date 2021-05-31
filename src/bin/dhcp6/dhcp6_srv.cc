@@ -261,39 +261,42 @@ void Dhcpv6Srv::setPacketStatisticsDefaults() {
 }
 
 Dhcpv6Srv::~Dhcpv6Srv() {
-    // Discard any parked packets
-    discardPackets();
-
     try {
-        stopD2();
-    } catch (const std::exception& ex) {
-        // Highly unlikely, but lets Report it but go on
-        LOG_ERROR(dhcp6_logger, DHCP6_SRV_D2STOP_ERROR).arg(ex.what());
-    }
+        // Discard any parked packets
+        discardPackets();
 
-    try {
-        Dhcp6to4Ipc::instance().close();
-    } catch (const std::exception& ex) {
-        // Highly unlikely, but lets Report it but go on
-        // LOG_ERROR(dhcp6_logger, DHCP6_SRV_DHCP4O6_ERROR).arg(ex.what());
-    }
-
-    IfaceMgr::instance().closeSockets();
-
-    LeaseMgrFactory::destroy();
-
-    // Explicitly unload hooks
-    HooksManager::prepareUnloadLibraries();
-    if (!HooksManager::unloadLibraries()) {
-        auto names = HooksManager::getLibraryNames();
-        std::string msg;
-        if (!names.empty()) {
-            msg = names[0];
-            for (size_t i = 1; i < names.size(); ++i) {
-                msg += std::string(", ") + names[i];
-            }
+        try {
+            stopD2();
+        } catch (const std::exception& ex) {
+            // Highly unlikely, but lets Report it but go on
+            LOG_ERROR(dhcp6_logger, DHCP6_SRV_D2STOP_ERROR).arg(ex.what());
         }
-        LOG_ERROR(dhcp6_logger, DHCP6_SRV_UNLOAD_LIBRARIES_ERROR).arg(msg);
+
+        try {
+            Dhcp6to4Ipc::instance().close();
+        } catch (const std::exception& ex) {
+            // Highly unlikely, but lets Report it but go on
+            // LOG_ERROR(dhcp6_logger, DHCP6_SRV_DHCP4O6_ERROR).arg(ex.what());
+        }
+
+        IfaceMgr::instance().closeSockets();
+
+        LeaseMgrFactory::destroy();
+
+        // Explicitly unload hooks
+        HooksManager::prepareUnloadLibraries();
+        if (!HooksManager::unloadLibraries()) {
+            auto names = HooksManager::getLibraryNames();
+            std::string msg;
+            if (!names.empty()) {
+                msg = names[0];
+                for (size_t i = 1; i < names.size(); ++i) {
+                    msg += std::string(", ") + names[i];
+                }
+            }
+            LOG_ERROR(dhcp6_logger, DHCP6_SRV_UNLOAD_LIBRARIES_ERROR).arg(msg);
+        }
+    } catch (...) {
     }
 }
 

@@ -160,7 +160,7 @@ public:
               bool check_only = false);
 
     /// @brief Destructor
-    virtual ~D2Process();
+    virtual ~D2Process() = default;
 
 protected:
     /// @brief Monitors current queue manager state, takes action accordingly
@@ -312,13 +312,12 @@ private:
 
     /// @brief Current socket control configuration.
     isc::data::ConstElementPtr current_control_socket_;
-
 };
 
 /// @brief Defines a shared pointer to D2Process.
 typedef boost::shared_ptr<D2Process> D2ProcessPtr;
 
-}; // namespace isc::d2
-}; // namespace isc
+} // namespace isc::d2
+} // namespace isc
 
 #endif

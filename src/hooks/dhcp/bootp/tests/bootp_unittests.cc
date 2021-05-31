@@ -40,8 +40,7 @@ public:
     }
 
     /// @brief Destructor.
-    virtual ~BootpTest() {
-    }
+    virtual ~BootpTest() = default;
 
     /// @brief Fetches the callout manager instance.
     boost::shared_ptr<CalloutManager>getCalloutManager() {

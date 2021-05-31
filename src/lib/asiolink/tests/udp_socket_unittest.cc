@@ -57,8 +57,8 @@ public:
 
     struct PrivateData {
         PrivateData() :
-            error_code_(), length_(0), called_(false), name_("")
-        {}
+            error_code_(), length_(0), called_(false), name_("") {
+        }
 
         boost::system::error_code  error_code_;    ///< Completion error code
         size_t                     length_;        ///< Number of bytes transferred
@@ -78,16 +78,14 @@ public:
     /// data.
     ///
     /// \param which Which of the two callback objects this is
-    UDPCallback(const std::string& which) : ptr_(new PrivateData())
-    {
+    UDPCallback(const std::string& which) : ptr_(new PrivateData()) {
         setName(which);
     }
 
     /// \brief Destructor
     ///
     /// No code needed, destroying the shared pointer destroys the private data.
-    virtual ~UDPCallback()
-    {}
+    virtual ~UDPCallback() = default;
 
     /// \brief Callback Function
     ///

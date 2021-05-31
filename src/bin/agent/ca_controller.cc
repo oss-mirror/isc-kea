@@ -98,9 +98,6 @@ CtrlAgentController::CtrlAgentController()
     : DControllerBase(agent_app_name_, agent_bin_name_) {
 }
 
-CtrlAgentController::~CtrlAgentController() {
-}
-
 CtrlAgentProcessPtr
 CtrlAgentController::getCtrlAgentProcess() {
     return (boost::dynamic_pointer_cast<CtrlAgentProcess>(getProcess()));

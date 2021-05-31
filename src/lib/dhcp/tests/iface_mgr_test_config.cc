@@ -39,15 +39,18 @@ IfaceMgrTestConfig::IfaceMgrTestConfig(const bool default_config) {
 }
 
 IfaceMgrTestConfig::~IfaceMgrTestConfig() {
-    IfaceMgr::instance().stopDHCPReceiver();
-    IfaceMgr::instance().closeSockets();
-    IfaceMgr::instance().getPacketQueueMgr4()->destroyPacketQueue();
-    IfaceMgr::instance().getPacketQueueMgr6()->destroyPacketQueue();
-    IfaceMgr::instance().clearIfaces();
-    IfaceMgr::instance().setPacketFilter(PktFilterPtr(new PktFilterInet()));
-    IfaceMgr::instance().setPacketFilter(PktFilter6Ptr(new PktFilterInet6()));
-    IfaceMgr::instance().setTestMode(false);
-    IfaceMgr::instance().detectIfaces();
+    try {
+        IfaceMgr::instance().stopDHCPReceiver();
+        IfaceMgr::instance().closeSockets();
+        IfaceMgr::instance().getPacketQueueMgr4()->destroyPacketQueue();
+        IfaceMgr::instance().getPacketQueueMgr6()->destroyPacketQueue();
+        IfaceMgr::instance().clearIfaces();
+        IfaceMgr::instance().setPacketFilter(PktFilterPtr(new PktFilterInet()));
+        IfaceMgr::instance().setPacketFilter(PktFilter6Ptr(new PktFilterInet6()));
+        IfaceMgr::instance().setTestMode(false);
+        IfaceMgr::instance().detectIfaces();
+    } catch (...) {
+    }
 }
 
 void

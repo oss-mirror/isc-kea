@@ -61,7 +61,10 @@ public:
     /// @brief Destructor
     /// Removes files that may be left over from previous tests
     virtual ~CalloutTest() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Removes files that may be left over from previous tests

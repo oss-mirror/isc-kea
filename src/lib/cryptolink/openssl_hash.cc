@@ -73,10 +73,13 @@ public:
 
     /// @brief Destructor
     ~HashImpl() {
-        if (md_) {
-            EVP_MD_CTX_free(md_);
+        try {
+            if (md_) {
+                EVP_MD_CTX_free(md_);
+            }
+            md_ = 0;
+        } catch (...) {
         }
-        md_ = 0;
     }
 
     /// @brief Returns the HashAlgorithm of the object
@@ -145,13 +148,15 @@ private:
     EVP_MD_CTX* md_;
 };
 
-Hash::Hash(const HashAlgorithm hash_algorithm)
-{
+Hash::Hash(const HashAlgorithm hash_algorithm) {
     impl_ = new HashImpl(hash_algorithm);
 }
 
 Hash::~Hash() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 HashAlgorithm

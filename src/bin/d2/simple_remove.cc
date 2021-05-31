@@ -37,9 +37,6 @@ SimpleRemoveTransaction(asiolink::IOServicePtr& io_service,
     }
 }
 
-SimpleRemoveTransaction::~SimpleRemoveTransaction(){
-}
-
 void
 SimpleRemoveTransaction::defineEvents() {
     // Call superclass impl first.

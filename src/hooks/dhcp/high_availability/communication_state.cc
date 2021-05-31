@@ -63,7 +63,10 @@ CommunicationState::CommunicationState(const IOServicePtr& io_service,
 }
 
 CommunicationState::~CommunicationState() {
-    stopHeartbeat();
+    try {
+        stopHeartbeat();
+    } catch (...) {
+    }
 }
 
 void

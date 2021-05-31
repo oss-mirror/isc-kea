@@ -45,7 +45,7 @@ public:
     TLSSocket(IOService& service, TlsContextPtr context);
 
     /// @brief Destructor.
-    virtual ~TLSSocket() { }
+    virtual ~TLSSocket() = default;
 
     /// @brief Return file descriptor of underlying socket.
     virtual int getNative() const {

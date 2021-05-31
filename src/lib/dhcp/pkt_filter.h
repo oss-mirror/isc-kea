@@ -45,7 +45,7 @@ class PktFilter {
 public:
 
     /// @brief Virtual Destructor
-    virtual ~PktFilter() { }
+    virtual ~PktFilter() = default;
 
     /// @brief Check if packet can be sent to the host without address directly.
     ///

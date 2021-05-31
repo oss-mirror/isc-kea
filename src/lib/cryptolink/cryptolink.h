@@ -227,9 +227,12 @@ private:
     // the 'real' instance getter is private
     static CryptoLink& getCryptoLinkInternal();
 
+    /// @brief Constructor
     // To prevent people constructing their own, we make the constructor
     // private too.
     CryptoLink() : impl_(NULL) {}
+
+    /// @brief Destructor
     ~CryptoLink();
 
     CryptoLinkImpl* impl_;

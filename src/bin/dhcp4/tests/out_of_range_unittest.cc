@@ -205,8 +205,7 @@ public:
     /// @brief Destructor.
     ///
     /// Cleans up statistics after the test.
-    ~OutOfRangeTest() {
-    }
+    ~OutOfRangeTest() = default;
 
     void configure(const std::string& config, Dhcp4Client& client) {
         NakedDhcpv4Srv& server = *client.getServer();

@@ -131,7 +131,7 @@ public:
         return factory(u, type, OptionBuffer());
     }
 
-    /// @brief ctor, used for options constructed, usually during transmission
+    /// @brief Constructor, used for options constructed, usually during transmission
     ///
     /// @param u option universe (DHCPv4 or DHCPv6)
     /// @param type option type
@@ -424,8 +424,10 @@ public:
         return (encapsulated_space_);
     }
 
+    /// @brief Destructor.
+    ///
     /// just to force that every option has virtual dtor
-    virtual ~Option();
+    virtual ~Option() = default;
 
     /// @brief Checks if options are equal.
     ///

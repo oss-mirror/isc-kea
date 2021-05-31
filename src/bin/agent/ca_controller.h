@@ -31,7 +31,7 @@ public:
     static process::DControllerBasePtr& instance();
 
     /// @brief Destructor
-    virtual ~CtrlAgentController();
+    virtual ~CtrlAgentController() = default;
 
     /// @brief Returns pointer to an instance of the underlying process object.
     CtrlAgentProcessPtr getCtrlAgentProcess();

@@ -51,8 +51,11 @@ public:
 
     /// @brief Destructor.
     ~CommunicationStateTest() {
-        MultiThreadingMgr::instance().setMode(false);
-        io_service_->poll();
+        try {
+            MultiThreadingMgr::instance().setMode(false);
+            io_service_->poll();
+        } catch (...) {
+        }
     }
 
     /// @brief Verifies that the partner state is set and retrieved correctly.

@@ -47,7 +47,10 @@ public:
 
     /// @brief Destructor.
     ~TimedSignal() {
-        cancel();
+        try {
+            cancel();
+        } catch (...) {
+        }
     }
 
     /// @brief Callback for the TimeSignal's internal timer.

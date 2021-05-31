@@ -50,10 +50,13 @@ HAImpl::startService(const IOServicePtr& io_service,
 }
 
 HAImpl::~HAImpl() {
-    if (service_) {
-        // Shut down the services explicitly, we need finer control
-        // than relying on destruction order.
-        service_->stopClientAndListener();
+    try {
+        if (service_) {
+            // Shut down the services explicitly, we need finer control
+            // than relying on destruction order.
+            service_->stopClientAndListener();
+        }
+    } catch (...) {
     }
 }
 

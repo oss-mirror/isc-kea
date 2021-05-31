@@ -53,7 +53,7 @@ public:
     GenericHostDataSourceTest();
 
     /// @brief Virtual destructor.
-    virtual ~GenericHostDataSourceTest();
+    virtual ~GenericHostDataSourceTest() = default;
 
     /// @brief Used to sort a host collection by IPv4 subnet id.
     /// @param host1 first host to be compared

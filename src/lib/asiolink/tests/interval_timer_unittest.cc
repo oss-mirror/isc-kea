@@ -24,28 +24,38 @@ using namespace isc::asiolink;
 // or not.
 class IntervalTimerTest : public ::testing::Test {
 protected:
+    /// @brief Constructor
     IntervalTimerTest() :
-        io_service_(), timer_called_(false), timer_cancel_success_(false)
-    {}
-    ~IntervalTimerTest() {}
+        io_service_(), timer_called_(false), timer_cancel_success_(false) {
+    }
+
+    /// @brief Destructor
+    ~IntervalTimerTest() = default;
+
     class TimerCallBack : public std::unary_function<void, void> {
     public:
-        TimerCallBack(IntervalTimerTest* test_obj) : test_obj_(test_obj) {}
+        /// @brief Constructor
+        TimerCallBack(IntervalTimerTest* test_obj) : test_obj_(test_obj) {
+        }
+
         void operator()() const {
             test_obj_->timer_called_ = true;
             test_obj_->io_service_.stop();
             return;
         }
+
     private:
         IntervalTimerTest* test_obj_;
     };
+
     class TimerCallBackCounter : public std::unary_function<void, void> {
     public:
+        /// @brief Constructor
         TimerCallBackCounter(IntervalTimerTest* test_obj) :
-            test_obj_(test_obj)
-        {
+            test_obj_(test_obj) {
             counter_ = 0;
         }
+
         void operator()() {
             ++counter_;
             return;
@@ -54,14 +64,17 @@ protected:
     private:
         IntervalTimerTest* test_obj_;
     };
+
     class TimerCallBackCancelDeleter : public std::unary_function<void, void> {
     public:
+        /// @brief Constructor
         TimerCallBackCancelDeleter(IntervalTimerTest* test_obj,
                                    IntervalTimer* timer,
                                    TimerCallBackCounter& counter)
             : test_obj_(test_obj), timer_(timer), counter_(counter), count_(0),
-              prev_counter_(-1)
-        {}
+              prev_counter_(-1) {
+        }
+
         void operator()() {
             ++count_;
             if (count_ == 1) {
@@ -89,11 +102,14 @@ protected:
         int count_;
         int prev_counter_;
     };
+
     class TimerCallBackCanceller {
     public:
+        /// @brief Constructor
         TimerCallBackCanceller(unsigned int& counter, IntervalTimer& itimer) :
-            counter_(counter), itimer_(itimer)
-        {}
+            counter_(counter), itimer_(itimer) {
+        }
+
         void operator()() {
             ++counter_;
             itimer_.cancel();
@@ -102,12 +118,15 @@ protected:
         unsigned int& counter_;
         IntervalTimer& itimer_;
     };
+
     class TimerCallBackOverwriter : public std::unary_function<void, void> {
     public:
+        /// @brief Constructor
         TimerCallBackOverwriter(IntervalTimerTest* test_obj,
                                 IntervalTimer& timer)
-            : test_obj_(test_obj), timer_(timer), count_(0)
-        {}
+            : test_obj_(test_obj), timer_(timer), count_(0) {
+        }
+
         void operator()() {
             ++count_;
             if (count_ == 1) {
@@ -128,11 +147,14 @@ protected:
         IntervalTimer& timer_;
         int count_;
     };
+
     class TimerCallBackAccumulator: public std::unary_function<void, void> {
     public:
+        /// @brief Constructor
         TimerCallBackAccumulator(IntervalTimerTest* test_obj, int &counter) :
             test_obj_(test_obj), counter_(counter) {
         }
+
         void operator()() {
             ++counter_;
             return;

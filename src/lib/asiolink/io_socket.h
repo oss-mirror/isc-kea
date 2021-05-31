@@ -59,10 +59,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class
     /// should never be instantiated (except as part of a derived class).
-    IOSocket() {}
+    IOSocket() = default;
 public:
     /// The destructor.
-    virtual ~IOSocket() {}
+    virtual ~IOSocket() = default;
     //@}
 
     /// \brief Return the "native" representation of the socket.

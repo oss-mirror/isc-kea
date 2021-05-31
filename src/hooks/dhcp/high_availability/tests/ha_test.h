@@ -84,7 +84,7 @@ public:
     HATest();
 
     /// @brief Destructor.
-    virtual ~HATest();
+    virtual ~HATest() = default;
 
     /// @brief Calls dhcp4_srv_configured callout to set IO service pointer.
     void startHAService();

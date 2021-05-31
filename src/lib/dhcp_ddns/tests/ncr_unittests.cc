@@ -348,8 +348,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~DhcidTest() {
-    }
+    virtual ~DhcidTest() = default;
 
     std::vector<uint8_t> wire_fqdn_;
 };

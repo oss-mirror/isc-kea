@@ -91,7 +91,10 @@ public:
     }
 
     ~Netlink() {
-        rtnl_close_socket();
+        try {
+            rtnl_close_socket();
+        } catch (...) {
+        }
     }
 
 

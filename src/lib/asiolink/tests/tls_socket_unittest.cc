@@ -72,8 +72,8 @@ public:
     struct PrivateData {
         PrivateData() :
             error_code_(), length_(0), cumulative_(0), expected_(0), offset_(0),
-            name_(""), queued_(NONE), called_(NONE), data_(MIN_SIZE, 0)
-        {}
+            name_(""), queued_(NONE), called_(NONE), data_(MIN_SIZE, 0) {
+        }
 
         boost::system::error_code  error_code_;    ///< Completion error code
         size_t                     length_;        ///< Bytes transferred in this I/O
@@ -98,16 +98,14 @@ public:
     /// data.
     ///
     /// @param which Which of the two callback objects this is
-    TLSCallback(std::string which) : ptr_(new PrivateData())
-    {
+    TLSCallback(std::string which) : ptr_(new PrivateData()) {
         ptr_->name_ = which;
     }
 
     /// @brief Destructor
     ///
     /// No code needed, destroying the shared pointer destroys the private data.
-    virtual ~TLSCallback()
-    {}
+    virtual ~TLSCallback() = default;
 
     /// @brief Client Callback Function
     ///
@@ -117,8 +115,7 @@ public:
     /// @param ec I/O completion error code passed to callback function.
     /// @param length Number of bytes transferred
     void operator()(boost::system::error_code ec = boost::system::error_code(),
-                            size_t length = 0)
-    {
+                            size_t length = 0) {
         setCode(ec.value());
         ptr_->called_ = ptr_->queued_;
         ptr_->length_ = length;

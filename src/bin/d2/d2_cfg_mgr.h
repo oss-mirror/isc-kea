@@ -37,7 +37,7 @@ public:
     D2CfgContext();
 
     /// @brief Destructor
-    virtual ~D2CfgContext();
+    virtual ~D2CfgContext() = default;
 
     /// @brief Creates a clone of this context object.
     ///
@@ -172,7 +172,7 @@ public:
     D2CfgMgr();
 
     /// @brief Destructor
-    virtual ~D2CfgMgr();
+    virtual ~D2CfgMgr() = default;
 
     /// @brief Convenience method that returns the D2 configuration context.
     ///

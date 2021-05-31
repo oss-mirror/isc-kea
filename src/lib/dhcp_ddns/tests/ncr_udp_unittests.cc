@@ -180,9 +180,7 @@ public:
                           TEST_TIMEOUT);
     }
 
-    virtual ~NameChangeUDPListenerTest(){
-    }
-
+    virtual ~NameChangeUDPListenerTest() = default;
 
     /// @brief Converts JSON string into an NCR and sends it to the listener.
     ///
@@ -298,8 +296,11 @@ public:
     }
 
     ~NameChangeUDPSenderBasicTest() {
-        // Disable multi-threading
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            // Disable multi-threading
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 };
 
@@ -988,8 +989,11 @@ public:
     }
 
     ~NameChangeUDPTest() {
-        // Disable multi-threading
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            // Disable multi-threading
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 
     void reset_results() {

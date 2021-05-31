@@ -58,7 +58,7 @@ public:
     }
 
     /// @brief Destructor.
-    ~ProcessSpawnTest() {}
+    ~ProcessSpawnTest() = default;
 
     /// @brief Method used as the IOSignalSet handler.
     ///

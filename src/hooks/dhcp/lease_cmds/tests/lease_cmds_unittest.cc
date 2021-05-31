@@ -57,7 +57,10 @@ public:
     /// @brief Destructor
     /// Removes files that may be left over from previous tests
     virtual ~LibLoadTest() {
-        unloadLibs();
+        try {
+            unloadLibs();
+        } catch (...) {
+        }
     }
 
     /// @brief Adds library/parameters to list of libraries to be loaded
@@ -285,13 +288,16 @@ public:
     ///
     /// Removes library (if any), destroys lease manager (if any).
     virtual ~LeaseCmdsTest() {
-        // destroys lease manager first because the other order triggers
-        // a clang/boost bug
-        LeaseMgrFactory::destroy();
-        disableD2();
-        unloadLibs();
-        lmptr_ = 0;
-        StatsMgr::instance().removeAll();
+        try {
+            // destroys lease manager first because the other order triggers
+            // a clang/boost bug
+            LeaseMgrFactory::destroy();
+            disableD2();
+            unloadLibs();
+            lmptr_ = 0;
+            StatsMgr::instance().removeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Initializes lease manager (and optionally populates it with a lease)

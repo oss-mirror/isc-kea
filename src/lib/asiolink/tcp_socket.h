@@ -71,7 +71,7 @@ public:
     TCPSocket(IOService& service);
 
     /// \brief Destructor
-    virtual ~TCPSocket();
+    virtual ~TCPSocket() = default;
 
     /// \brief Return file descriptor of underlying socket
     virtual int getNative() const {
@@ -263,15 +263,7 @@ TCPSocket<C>::TCPSocket(boost::asio::ip::tcp::socket& socket) :
 template <typename C>
 TCPSocket<C>::TCPSocket(IOService& service) :
     socket_ptr_(new boost::asio::ip::tcp::socket(service.get_io_service())),
-    socket_(*socket_ptr_)
-{
-}
-
-// Destructor.
-
-template <typename C>
-TCPSocket<C>::~TCPSocket()
-{
+    socket_(*socket_ptr_) {
 }
 
 // Open the socket.

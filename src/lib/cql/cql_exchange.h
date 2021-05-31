@@ -64,7 +64,15 @@ public:
     Udt(const CqlConnection& connection, const std::string& name);
 
     /// @brief Destructor
-    ~Udt();
+    ///
+    /// @todo: Need to get back to this issue. This is likely a memory leak.
+    ///
+    /// Bug: it seems that if there is no call to
+    ///      cass_user_type_set_*(cass_user_type_), then
+    ///      cass_user_type_free(cass_user_type_) might SIGSEGV, so we never
+    ///      free. Udt objects should have application scope though.
+    /// cass_user_type_free(cass_user_type_);
+    ~Udt() = default;
 
     /// @brief Frees the underlying container.
     void freeUserType();
@@ -144,10 +152,10 @@ public:
     /// @brief Constructor
     ///
     /// Empty body. Derived constructors specify table columns.
-    CqlExchange();
+    CqlExchange() = default;
 
     /// @brief Destructor
-    virtual ~CqlExchange();
+    virtual ~CqlExchange() = default;
 
     /// @name Time conversion:
     /// @{
@@ -238,10 +246,10 @@ public:
     /// @brief Constructor
     ///
     /// Specifies table columns.
-    CqlVersionExchange();
+    CqlVersionExchange() = default;
 
     /// @brief Destructor
-    virtual ~CqlVersionExchange();
+    virtual ~CqlVersionExchange() = default;
 
     /// @brief Create BIND array to receive C++ data.
     ///

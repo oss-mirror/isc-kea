@@ -25,6 +25,7 @@ namespace {
 // to protected methods.
 class SimpleAddStub : public SimpleAddTransaction {
 public:
+    /// @brief Constructor
     SimpleAddStub(asiolink::IOServicePtr& io_service,
                   dhcp_ddns::NameChangeRequestPtr& ncr,
                   DdnsDomainPtr& forward_domain,
@@ -36,8 +37,8 @@ public:
           simulate_build_request_exception_(false) {
     }
 
-    virtual ~SimpleAddStub() {
-    }
+    /// @brief Destructor
+    virtual ~SimpleAddStub() = default;
 
     /// @brief Simulates sending update requests to the DNS server
     ///
@@ -181,12 +182,11 @@ typedef boost::shared_ptr<SimpleAddStub> SimpleAddStubPtr;
 /// aspects of SimpleAddTransaction.
 class SimpleAddTransactionTest : public TransactionTest {
 public:
+    /// @brief Constructor
+    SimpleAddTransactionTest() = default;
 
-    SimpleAddTransactionTest() {
-    }
-
-    virtual ~SimpleAddTransactionTest() {
-    }
+    /// @brief Destructor
+    virtual ~SimpleAddTransactionTest() = default;
 
     /// @brief Creates a transaction which requests an IPv4 DNS update.
     ///

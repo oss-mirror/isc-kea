@@ -57,9 +57,6 @@ D2CfgContext::D2CfgContext(const D2CfgContext& rhs) : ConfigBase(rhs) {
     hooks_config_ = rhs.hooks_config_;
 }
 
-D2CfgContext::~D2CfgContext() {
-}
-
 ElementPtr
 D2CfgContext::toElement() const {
     ElementPtr d2 = ConfigBase::toElement();
@@ -119,9 +116,6 @@ const char* D2CfgMgr::IPV4_REV_ZONE_SUFFIX = "in-addr.arpa.";
 const char* D2CfgMgr::IPV6_REV_ZONE_SUFFIX = "ip6.arpa.";
 
 D2CfgMgr::D2CfgMgr() : DCfgMgrBase(ConfigPtr(new D2CfgContext())) {
-}
-
-D2CfgMgr::~D2CfgMgr() {
 }
 
 ConfigPtr

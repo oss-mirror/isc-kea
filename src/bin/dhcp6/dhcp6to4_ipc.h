@@ -23,10 +23,10 @@ protected:
     /// @brief Constructor
     ///
     /// Default constructor
-    Dhcp6to4Ipc();
+    Dhcp6to4Ipc() = default;
 
     /// @brief Destructor.
-    virtual ~Dhcp6to4Ipc() { }
+    virtual ~Dhcp6to4Ipc() = default;
 
 public:
     /// @brief Returns pointer to the sole instance of Dhcp6to4Ipc

@@ -24,6 +24,9 @@ typedef boost::shared_ptr<DNSClient> DNSClientPtr;
 /// DNSClient class implementation.
 class DNSClientImpl;
 
+/// @brief Defines a smart pointer to a DNSClientImpl.
+typedef boost::shared_ptr<DNSClientImpl> DNSClientImplPtr;
+
 /// @brief The @c DNSClient class handles communication with the DNS server.
 ///
 /// Communication with the DNS server is asynchronous. Caller must provide a
@@ -73,8 +76,11 @@ public:
     /// exchange is complete (@see @c DNSClient).
     class Callback {
     public:
+        // @brief Constructor.
+        Callback() = default;
+
         /// @brief Virtual destructor.
-        virtual ~Callback() { }
+        virtual ~Callback() = default;
 
         /// @brief Function operator implementing a callback.
         ///
@@ -96,7 +102,7 @@ public:
               const Protocol proto = UDP);
 
     /// @brief Virtual destructor, does nothing.
-    ~DNSClient();
+    ~DNSClient() = default;
 
     ///
     /// @name Copy constructor and assignment operator
@@ -149,7 +155,8 @@ public:
                   const dns::TSIGKeyPtr& tsig_key = dns::TSIGKeyPtr());
 
 private:
-    DNSClientImpl* impl_;  ///< Pointer to DNSClient implementation.
+    /// @brief Smart pointer to DNSClient implementation.
+    DNSClientImplPtr impl_;
 };
 
 } // namespace d2

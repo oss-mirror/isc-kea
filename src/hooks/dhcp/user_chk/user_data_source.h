@@ -26,10 +26,10 @@ public:
 class UserDataSource {
 public:
     /// @brief Constructor.
-    UserDataSource() {};
+    UserDataSource() = default;
 
     /// @brief Virtual Destructor.
-    virtual ~UserDataSource() {};
+    virtual ~UserDataSource() = default;
 
     /// @brief Opens the data source.
     ///

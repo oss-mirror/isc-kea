@@ -58,7 +58,7 @@ public:
         :  queue_type_(queue_type) {}
 
     /// Virtual destructor
-    virtual ~PacketQueue(){};
+    virtual ~PacketQueue() = default;
 
     /// @brief Adds a packet to the queue
     ///

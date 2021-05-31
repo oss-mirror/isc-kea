@@ -45,30 +45,38 @@ public:
         ///
         /// \param argv array of C-strings.
         /// \param number of C-strings in the array.
-        ArgvPtr(char** argv, int argc) : argv_(argv), argc_(argc) { }
+        ArgvPtr(char** argv, int argc) : argv_(argv), argc_(argc) {
+        }
 
         /// \brief Destructor.
         ///
         /// Deallocates wrapped array of C-strings.
         ~ArgvPtr() {
-            if (argv_ != NULL) {
-                for(int i = 0; i < argc_; ++i) {
-                    delete[] (argv_[i]);
-                    argv_[i] = NULL;
+            try {
+                if (argv_ != NULL) {
+                    for(int i = 0; i < argc_; ++i) {
+                        delete[] (argv_[i]);
+                        argv_[i] = NULL;
+                    }
+                    delete[] (argv_);
                 }
-                delete[] (argv_);
+            } catch (...) {
             }
         }
 
         /// \brief Return the array of C-strings.
         ///
         /// \return array of C-strings.
-        char** getArgv() const { return (argv_); }
+        char** getArgv() const {
+            return (argv_);
+        }
 
         /// \brief Return C-strings counter.
         ///
         /// \return C-strings counter.
-        int getArgc() const { return(argc_); }
+        int getArgc() const {
+            return (argc_);
+        }
 
     public:
         char** argv_; ///< array of C-strings being wrapped.

@@ -67,9 +67,6 @@ UserId::UserId(UserIdType id_type, const std::string & id_str) :
     id_ = addr_bytes;
 }
 
-UserId::~UserId() {
-}
-
 const std::vector<uint8_t>&
 UserId::getId() const {
     return (id_);
@@ -162,9 +159,6 @@ User::User(UserId::UserIdType id_type, const std::vector<uint8_t>& id)
 
 User::User(UserId::UserIdType id_type, const std::string& id_str)
     : user_id_(id_type, id_str) {
-}
-
-User::~User() {
 }
 
 const PropertyMap&

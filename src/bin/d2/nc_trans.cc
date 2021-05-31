@@ -80,9 +80,6 @@ NameChangeTransaction(asiolink::IOServicePtr& io_service,
     }
 }
 
-NameChangeTransaction::~NameChangeTransaction(){
-}
-
 void
 NameChangeTransaction::startTransaction() {
     LOG_DEBUG(d2_to_dns_logger, isc::log::DBGLVL_TRACE_DETAIL,

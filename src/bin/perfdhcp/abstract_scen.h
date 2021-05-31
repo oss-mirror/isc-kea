@@ -45,7 +45,7 @@ public:
     virtual int run() = 0;
 
     /// \brief Trivial virtual destructor.
-    virtual ~AbstractScen() {};
+    virtual ~AbstractScen() = default;
 
 protected:
     CommandOptions& options_; ///< Reference to commandline options.

@@ -58,8 +58,11 @@ public:
     ///
     /// Deregisters all commands except 'list-commands'.
     virtual ~CtrlAgentCommandMgrTest() {
-        mgr_.deregisterAll();
-        removeUnixSocketFile();
+        try {
+            mgr_.deregisterAll();
+            removeUnixSocketFile();
+        } catch (...) {
+        }
     }
 
     /// @brief Verifies received answer
