@@ -38,6 +38,7 @@ private:
     }
 
 public:
+
     /// @brief Sandbox constructor.
     Sandbox() {
         char tmpl[] = {P_tmpdir "/kea-XXXXXX"};
@@ -65,8 +66,7 @@ public:
     }
 };
 
-
-}; // end of isc::test namespace
-}; // end of isc namespace
+} // end of isc::test namespace
+} // end of isc namespace
 
 #endif // SANDBOX_H

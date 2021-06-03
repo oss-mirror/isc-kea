@@ -80,6 +80,7 @@ static const int COMMAND_INVALID = 2;
 /// application.
 class DProcessBase {
 public:
+
     /// @brief Constructor
     ///
     /// @param app_name is a text label for the process. Generally used

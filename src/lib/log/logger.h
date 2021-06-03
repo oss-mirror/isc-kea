@@ -357,5 +357,4 @@ private:
 } // namespace log
 } // namespace isc
 
-
 #endif // LOGGER_H

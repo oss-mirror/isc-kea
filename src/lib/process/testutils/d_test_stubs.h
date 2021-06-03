@@ -290,6 +290,7 @@ public:
     }
 
 private:
+
     /// @brief Constructor is private to protect singleton integrity.
     DStubController();
 
@@ -303,6 +304,7 @@ private:
     bool use_alternate_parser_;
 
 public:
+
     /// @brief Destructor
     virtual ~DStubController() = default;
 };
@@ -645,6 +647,7 @@ typedef boost::shared_ptr<DStubContext> DStubContextPtr;
 /// are parsed.  This is used to test ordered and non-ordered parsing.
 class DStubCfgMgr : public DCfgMgrBase {
 public:
+
     /// @brief Constructor
     DStubCfgMgr();
 

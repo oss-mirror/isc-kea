@@ -22,6 +22,7 @@ using namespace std;
 
 class LoggerLevelImplTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     LoggerLevelImplTest() {
         // Ensure logging set to default for unit tests

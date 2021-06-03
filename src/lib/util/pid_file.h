@@ -39,6 +39,7 @@ public:
 /// process is still running.
 class PIDFile {
 public:
+
     /// @brief Constructor
     ///
     /// @param filename PID filename.

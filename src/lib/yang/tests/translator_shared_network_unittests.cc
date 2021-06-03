@@ -237,4 +237,4 @@ TEST_F(TranslatorSharedNetworksTest, getList) {
     EXPECT_EQ(exp_both, networks->str());
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

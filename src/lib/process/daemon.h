@@ -46,8 +46,8 @@ public:
 ///       the whole operation of the server.  Nothing, however, enforces the
 ///       singleton status of the object.
 class Daemon : public boost::noncopyable {
-
 public:
+
     /// @brief Default constructor
     ///
     /// Initializes the object installing custom signal handlers for the

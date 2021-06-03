@@ -41,6 +41,7 @@ public:
 /// processes may have locks on them.
 class InterprocessSyncFile : public InterprocessSync {
 public:
+
     /// \brief Constructor
     ///
     /// Creates a file-based interprocess synchronization object

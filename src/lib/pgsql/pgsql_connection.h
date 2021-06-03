@@ -85,6 +85,7 @@ const size_t OID_TIMESTAMP = 1114;
 
 class PgSqlResult : public boost::noncopyable {
 public:
+
     /// @brief Constructor
     ///
     /// Store the pointer to the result set to being fetched.  Set row

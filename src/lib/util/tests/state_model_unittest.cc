@@ -69,6 +69,7 @@ public:
     StateModelTest() : dummy_called_(false), work_completed_(false),
                        failure_explanation_("") {
     }
+
     /// @brief Destructor
     virtual ~StateModelTest() = default;
 

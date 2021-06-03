@@ -336,6 +336,7 @@ readFail(int actual_len, int expected_len) {
 // SocketSessionReceiver::pop that ensures the socket is closed unless it
 // can be safely passed to the caller via release().
 struct ScopedSocket : boost::noncopyable {
+
     /// @brief Constructor
     ScopedSocket(int fd) : fd_(fd) {
     }

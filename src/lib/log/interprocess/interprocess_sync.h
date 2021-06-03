@@ -42,6 +42,7 @@ class InterprocessSync {
   friend class InterprocessSyncLocker;
 
 public:
+
     /// \brief Constructor
     ///
     /// Creates an interprocess synchronization object
@@ -85,6 +86,7 @@ protected:
 /// the description of InterprocessSync.
 class InterprocessSyncLocker {
 public:
+
     /// \brief Constructor
     ///
     /// Creates a lock manager around a interprocess synchronization object

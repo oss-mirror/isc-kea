@@ -30,6 +30,7 @@ namespace {
 
 class DNSSECTimeTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     DNSSECTimeTest() = default;
 

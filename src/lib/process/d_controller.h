@@ -103,6 +103,7 @@ typedef boost::shared_ptr<DControllerBase> DControllerBasePtr;
 /// member in order for it to be available for static callback functions.
 class DControllerBase : public Daemon {
 public:
+
     /// @brief Constructor
     ///
     /// @param app_name is display name of the application under control. This

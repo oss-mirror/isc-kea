@@ -20,6 +20,7 @@ namespace interprocess {
 /// InterprocessSync class documentation for usage.
 class InterprocessSyncNull : public InterprocessSync {
 public:
+
     /// \brief Constructor
     ///
     /// Creates a null interprocess synchronization object

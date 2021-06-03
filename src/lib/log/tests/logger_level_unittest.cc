@@ -22,6 +22,7 @@ using namespace std;
 
 class LoggerLevelTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     LoggerLevelTest() {
         // Logger initialization is done in main().  As logging tests may

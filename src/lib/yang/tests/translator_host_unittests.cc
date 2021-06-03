@@ -216,4 +216,4 @@ TEST_F(TranslatorHostsTest, getMany) {
               "\"ip-addresses\": [ \"2001:db8::2\" ] } ]");
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

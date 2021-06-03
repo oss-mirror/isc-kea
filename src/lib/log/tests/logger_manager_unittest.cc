@@ -41,6 +41,7 @@ using namespace std;
 /// \brief LoggerManager Test
 class LoggerManagerTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LoggerManagerTest() {
         // Initialization of logging is done in main()
@@ -335,6 +336,7 @@ namespace { // begin unnamed namespace
 
 class RegexHolder {
 public:
+
     /// @brief Constructor
     RegexHolder(const char* expr, const int flags = REG_EXTENDED) {
         const int rc = regcomp(&regex_, expr, flags);

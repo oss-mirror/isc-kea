@@ -22,6 +22,7 @@ namespace util {
 /// documentation for usage.
 class MemorySegmentLocal : public MemorySegment {
 public:
+
     /// \brief Constructor
     ///
     /// Creates a local memory segment object

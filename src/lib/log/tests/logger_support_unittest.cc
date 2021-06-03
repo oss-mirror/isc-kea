@@ -14,6 +14,7 @@ using namespace isc::log;
 
 class LoggerSupportTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     LoggerSupportTest() {
         // Logger initialization is done in main().  As logging tests may

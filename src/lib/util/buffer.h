@@ -293,6 +293,7 @@ protected:
 /// the \c InputBuffer and \c MessageRenderer classes.
 class OutputBuffer {
 public:
+
     ///
     /// \name Constructors and Destructor
     ///

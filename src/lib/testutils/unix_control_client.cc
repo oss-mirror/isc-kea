@@ -137,6 +137,6 @@ int UnixControlClient::selectCheck(const unsigned int timeout_sec) {
     return (select(maxfd + 1, &read_fds, NULL, NULL, &select_timeout));
 }
 
-};
-};
-};
+}
+}
+}

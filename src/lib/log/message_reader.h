@@ -190,8 +190,6 @@ private:
     /// \return true if the name is invalid, false if it is valid.
     bool invalidSymbol(const std::string& symbol);
 
-
-
     /// Attributes
     MessageDictionary*  dictionary_;    ///< Dictionary to add messages to
     MessageIDCollection not_added_;     ///< List of IDs not added

@@ -64,10 +64,12 @@ typedef std::vector<LevelAndEvent> LogEventList;
 /// it will dump any event it has left to stdout.
 class BufferAppender : public log4cplus::Appender {
 public:
+
     /// \brief Constructor
     ///
     /// Constructs a BufferAppender that buffers log evens
-    BufferAppender() : flushed_(false) {}
+    BufferAppender() : flushed_(false) {
+    }
 
     /// \brief Destructor
     ///

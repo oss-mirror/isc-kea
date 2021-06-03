@@ -107,6 +107,7 @@ public:
 /// for example use of this approach.
 class DCfgMgrBase {
 public:
+
     /// @brief Constructor
     ///
     /// @param context is a pointer to the configuration context the manager

@@ -21,6 +21,7 @@ using namespace std;
 
 class MessageReaderTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     MessageReaderTest() : dictionary_(), reader_() {
         dictionary_ = new MessageDictionary();

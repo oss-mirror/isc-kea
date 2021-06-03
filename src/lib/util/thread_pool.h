@@ -239,6 +239,7 @@ private:
     /// @tparam QueueContainer a 'queue like' container
     template <typename Item, typename QueueContainer = std::queue<Item>>
     struct ThreadPoolQueue {
+
         /// @brief Constructor
         ///
         /// Creates the thread pool queue in 'disabled' state

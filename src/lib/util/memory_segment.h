@@ -53,6 +53,7 @@ public:
 /// MemorySegmentLocal should be used in code.
 class MemorySegment {
 public:
+
     /// \brief Constructor
     MemorySegment() = default;
 

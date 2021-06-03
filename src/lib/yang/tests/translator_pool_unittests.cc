@@ -307,4 +307,4 @@ TEST_F(TranslatorPoolsTest, setKea) {
     EXPECT_NO_THROW(sess_->validate());
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

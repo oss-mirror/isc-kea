@@ -465,4 +465,4 @@ TEST_F(LoggingTest, emptyPattern) {
 /// check if the file is indeed created or configure stdout destination, then
 /// swap console file descriptors and check that messages are really logged.
 
-};
+}

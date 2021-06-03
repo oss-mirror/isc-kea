@@ -31,6 +31,7 @@ namespace {
 /// during construction.
 class DCtorTestCfgMgr : public DCfgMgrBase {
 public:
+
     /// @brief Constructor - Note that is passes in an empty configuration
     /// pointer to the base class constructor.
     DCtorTestCfgMgr() : DCfgMgrBase(ConfigPtr()) {

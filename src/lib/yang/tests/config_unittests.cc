@@ -430,4 +430,4 @@ TEST_F(ConfigTest, designExample) {
     EXPECT_TRUE(verify(designExampleTree));
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

@@ -48,6 +48,7 @@ namespace {
 /// @brief Daemon Test test fixture class
 class DaemonTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     DaemonTest() : env_copy_() {
         // Take a copy of KEA_PIDFILE_DIR environment variable value
@@ -324,4 +325,4 @@ TEST_F(DaemonTest, exitValue) {
 
 // More tests will appear here as we develop Daemon class.
 
-};
+}

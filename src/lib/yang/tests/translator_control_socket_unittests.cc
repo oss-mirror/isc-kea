@@ -153,4 +153,4 @@ TEST_F(TranslatorControlSocketTest, setEmpty) {
     EXPECT_FALSE(sock);
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

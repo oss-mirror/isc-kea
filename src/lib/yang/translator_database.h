@@ -213,7 +213,7 @@ protected:
                          isc::data::ConstElementPtr elem);
 };
 
-}; // end of namespace isc::yang
-}; // end of namespace isc
+} // end of namespace isc::yang
+} // end of namespace isc
 
 #endif // ISC_TRANSLATOR_DATABASE_H

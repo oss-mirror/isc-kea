@@ -373,4 +373,4 @@ TEST_F(TranslatorPdPoolsTest, getListKea) {
               "\"2001:db8:0:2000::\", \"prefix-len\": 56 } ]");
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

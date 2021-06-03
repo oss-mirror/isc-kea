@@ -37,6 +37,7 @@ static const StatsDuration& dur1245(hours(1) + minutes(2) + seconds(45));
 /// before the test and any statistics are wiped out after it.
 class StatsMgrTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     ///
     /// Makes sure that the Statistics Manager is instantiated.

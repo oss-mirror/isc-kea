@@ -343,4 +343,4 @@ TEST_F(TranslatorDatabasesTest, setEmpties) {
     EXPECT_FALSE(databases);
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

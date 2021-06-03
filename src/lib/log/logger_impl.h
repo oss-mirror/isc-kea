@@ -65,7 +65,6 @@ public:
     /// \param name Name of the logger.
     LoggerImpl(const std::string& name);
 
-
     /// \brief Destructor
     virtual ~LoggerImpl();
 
@@ -73,12 +72,10 @@ public:
     /// \brief Version
     static std::string getVersion();
 
-
     /// \brief Get the full name of the logger (including the root name)
     virtual std::string getName() {
         return (name_);
     }
-
 
     /// \brief Set Severity Level for Logger
     ///
@@ -195,6 +192,5 @@ private:
 
 } // namespace log
 } // namespace isc
-
 
 #endif // LOGGER_IMPL_H

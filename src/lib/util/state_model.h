@@ -60,6 +60,7 @@ enum StatePausing {
 /// the state model should be paused when entering this state.
 class State : public LabeledValue {
 public:
+
     /// @brief Constructor
     ///
     /// @param value is the numeric value of the state
@@ -117,6 +118,7 @@ typedef boost::shared_ptr<State> StatePtr;
 /// text labels, and their handlers.
 class StateSet : public LabeledValueSet {
 public:
+
     /// @brief Constructor
     StateSet() = default;
 

@@ -36,6 +36,7 @@ public:
 
 class BufferAppenderTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     BufferAppenderTest() : buffer_appender1(new TestBufferAppender()),
                       appender1(buffer_appender1),

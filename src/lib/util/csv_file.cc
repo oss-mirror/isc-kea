@@ -555,6 +555,5 @@ CSVRow::unescapeCharacters(const std::string& escaped_str) {
     return(ss.str());
 }
 
-
 } // end of isc::util namespace
 } // end of isc namespace

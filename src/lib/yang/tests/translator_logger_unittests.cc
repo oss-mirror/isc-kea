@@ -181,4 +181,4 @@ TEST_F(TranslatorLoggersTest, set) {
 
 /// @todo: Implement a test that will cover multiple loggers.
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

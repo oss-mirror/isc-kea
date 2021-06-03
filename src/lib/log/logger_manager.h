@@ -38,6 +38,7 @@ class LoggerManagerImpl;
 
 class LoggerManager : public boost::noncopyable {
 public:
+
     /// \brief Constructor
     LoggerManager();
 
@@ -168,6 +169,5 @@ private:
 
 } // namespace log
 } // namespace isc
-
 
 #endif // LOGGER_MANAGER_H

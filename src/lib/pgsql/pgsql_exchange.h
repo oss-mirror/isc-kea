@@ -197,6 +197,7 @@ typedef boost::shared_ptr<PsqlBindArray> PsqlBindArrayPtr;
 /// database, and for retrieving column values from rows of a result set.
 class PgSqlExchange {
 public:
+
     /// @brief Constructor
     PgSqlExchange(const size_t num_columns = 0) : columns_(num_columns) {
     }

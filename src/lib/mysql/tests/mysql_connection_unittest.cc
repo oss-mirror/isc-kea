@@ -20,6 +20,7 @@ namespace {
 /// @brief RAII wrapper over MYSQL_RES obtained from MySQL library functions like
 /// mysql_use_result().
 struct MySqlResult {
+
     /// @brief Constructor
     MySqlResult(MYSQL_RES* result) : result_(result) {
     }
@@ -577,6 +578,7 @@ TEST_F(MySqlConnectionWithPrimaryKeyTest, deleteByValue) {
 /// @brief Test fixture class for @c MySqlConnection class methods.
 class MySqlSchemaTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     MySqlSchemaTest() {
         // Ensure we have the proper schema.

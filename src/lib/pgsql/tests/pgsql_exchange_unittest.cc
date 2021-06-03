@@ -923,4 +923,4 @@ TEST_F(PgSqlBasicsTest, timeStampTest) {
                                                       MAX_DB_TIME), BadValue);
 }
 
-}; // namespace
+} // namespace

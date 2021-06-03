@@ -20,6 +20,7 @@ namespace util {
 template<typename Mutex>
 class UnlockGuard : public boost::noncopyable {
 public:
+
     /// @brief Constructor.
     ///
     /// Unlock mutex object on constructor.

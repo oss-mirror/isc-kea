@@ -203,4 +203,5 @@ TEST_F(PIDFileTest, noDeleteFile) {
     // Delete a file we haven't created
     pid_file.deleteFile();
 }
+
 } // end of anonymous namespace

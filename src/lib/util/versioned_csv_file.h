@@ -22,6 +22,7 @@ public:
 /// @brief Contains the metadata for a single column in a file.
 class VersionedColumn {
 public:
+
     /// @brief Constructor
     ///
     /// @param name Name of the column.
@@ -309,7 +310,6 @@ private:
     /// @brief The state of the input schema in relation to the current schema
     enum InputSchemaState input_schema_state_;
 };
-
 
 } // namespace isc::util
 } // namespace isc

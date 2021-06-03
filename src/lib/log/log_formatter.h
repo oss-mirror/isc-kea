@@ -118,8 +118,8 @@ private:
     /// \brief Which will be the next placeholder to replace
     unsigned nextPlaceholder_;
 
-
 public:
+
     /// \brief Constructor of "active" formatter
     ///
     /// This will create a formatter. If the arguments are set, it

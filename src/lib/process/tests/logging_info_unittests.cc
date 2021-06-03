@@ -50,6 +50,7 @@ TEST(LoggingDestination, equals) {
 /// @brief Test fixture class for testing @c LoggingInfo.
 class LoggingInfoTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LoggingInfoTest() = default;
 

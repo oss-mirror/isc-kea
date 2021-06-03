@@ -171,10 +171,12 @@ public:
 /// See description of \c SocketSessionForwarder for the expected interface.
 class BaseSocketSessionForwarder  {
 protected:
+
     /// @brief Constructor
     BaseSocketSessionForwarder() = default;
 
 public:
+
     /// @brief Destructor
     virtual ~BaseSocketSessionForwarder() = default;
 
@@ -195,9 +197,9 @@ public:
 /// See the description of \ref SocketSessionUtility for other details of how
 /// the session forwarding works.
 class SocketSessionForwarder : boost::noncopyable,
-                               public BaseSocketSessionForwarder
-{
+                               public BaseSocketSessionForwarder {
 public:
+
     /// The constructor.
     ///
     /// It's constructed with path information of the intended receiver,
@@ -424,6 +426,7 @@ private:
 /// the session forwarding works.
 class SocketSessionReceiver : boost::noncopyable {
 public:
+
     /// The constructor.
     ///
     /// \exception SocketSessionError Any error on an operation that is
