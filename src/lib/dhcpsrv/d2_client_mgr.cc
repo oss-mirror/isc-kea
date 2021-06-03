@@ -389,6 +389,5 @@ D2ClientMgr::runReadyIO() {
     name_change_sender_->runReadyIO();
 }
 
-};  // namespace dhcp
-
-};  // namespace isc
+}  // namespace dhcp
+}  // namespace isc

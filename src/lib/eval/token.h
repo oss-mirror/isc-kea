@@ -77,6 +77,9 @@ public:
     /// @param values - stack of values with previously evaluated tokens
     virtual void evaluate(Pkt& pkt, ValueStack& values) = 0;
 
+    /// @brief Constructor
+    Token() = default;
+
     /// @brief Virtual destructor
     virtual ~Token() = default;
 

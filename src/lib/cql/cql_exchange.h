@@ -60,6 +60,7 @@ public:
 // @brief Representation of a Cassandra User Defined Type
 class Udt : public AnyArray {
 public:
+
     /// @brief Parameterized constructor
     Udt(const CqlConnection& connection, const std::string& name);
 
@@ -244,6 +245,7 @@ public:
 /// @brief Exchange used to retrieve schema version from the keyspace.
 class CqlVersionExchange : public virtual CqlExchange {
 public:
+
     /// @brief Constructor
     ///
     /// Specifies table columns.

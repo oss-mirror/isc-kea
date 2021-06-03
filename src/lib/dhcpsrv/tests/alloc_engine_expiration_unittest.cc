@@ -161,6 +161,7 @@ public:
 
     /// @brief Type definition for the lease algorithm.
     typedef std::function<bool (const LeasePtrType)> LeaseAlgorithmFun;
+
     /// @brief type definition for the lease index algorithm.
     typedef std::function<bool (const size_t)> IndexAlgorithmFun;
 
@@ -2329,4 +2330,4 @@ TEST_F(ExpirationAllocEngine4Test, reclaimDeclinedHook2) {
     testReclaimDeclinedHook(true); // true = use skip callout
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

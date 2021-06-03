@@ -67,8 +67,7 @@ namespace netconf {
 ///
 /// Acts as a storage class containing the basic attributes which
 /// describe a Control Socket.
-class CfgControlSocket : public isc::data::UserContext,
-    public isc::data::CfgToElement {
+class CfgControlSocket : public isc::data::UserContext, public isc::data::CfgToElement {
 public:
     /// @brief Defines the list of possible constrol socket types.
     enum Type {
@@ -149,6 +148,7 @@ typedef boost::shared_ptr<CfgControlSocket> CfgControlSocketPtr;
 /// the Control Socket which describe a Managed CfgServer.
 class CfgServer : public isc::data::UserContext, public isc::data::CfgToElement {
 public:
+
     /// @brief Constructor.
     ///
     /// @param model The model name.
@@ -301,7 +301,7 @@ public:
     CfgServerPtr parse(data::ConstElementPtr server_config);
 };
 
-}; // end of isc::netconf namespace
-}; // end of isc namespace
+} // end of isc::netconf namespace
+} // end of isc namespace
 
 #endif // NETCONF_CONFIG_H

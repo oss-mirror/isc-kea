@@ -28,6 +28,7 @@ namespace {
 /// @brief Test fixture for testing loading and unloading the RunScript library.
 class LibLoadTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LibLoadTest() {
         reset();

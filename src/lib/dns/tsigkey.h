@@ -55,6 +55,7 @@ class Name;
 /// and more intuitive representations (e.g. strings) for algorithms.
 class TSIGKey {
 public:
+
     ///
     /// \name Constructors, Assignment Operator and Destructor.
     ///
@@ -293,6 +294,7 @@ private:
     TSIGKeyRing(const TSIGKeyRing& source);
     TSIGKeyRing& operator=(const TSIGKeyRing& source);
 public:
+
     /// \brief The default constructor.
     ///
     /// This constructor never throws an exception.

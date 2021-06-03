@@ -73,6 +73,7 @@ public:
 ///   the internal resources for different sets of parameters.
 class NSEC3Hash {
 protected:
+
     /// \brief The default constructor.
     ///
     /// This is defined as protected to prevent this class from being directly
@@ -202,6 +203,7 @@ public:
 /// this condition can be loosened.
 class NSEC3HashCreator {
 protected:
+
     /// \brief The default constructor.
     ///
     /// Make very sure this isn't directly instantiated by making it protected
@@ -209,6 +211,7 @@ protected:
     NSEC3HashCreator() = default;
 
 public:
+
     /// \brief The destructor.
     ///
     /// This does nothing; defined only for allowing derived classes to

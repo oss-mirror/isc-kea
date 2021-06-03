@@ -89,7 +89,6 @@ public:
         NEXT_STEP_PARK = 3      ///< park the packet
     };
 
-
     /// Typedef to allow abbreviation of iterator specification in methods.
     /// The std::string is the argument name and the "boost::any" is the
     /// corresponding value associated with it.
@@ -503,6 +502,5 @@ private:
 
 } // namespace hooks
 } // namespace isc
-
 
 #endif // CALLOUT_HANDLE_H

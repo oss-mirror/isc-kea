@@ -37,6 +37,7 @@ namespace dhcp {
 class CfgHosts : public BaseHostDataSource, public WritableHostDataSource,
                  public isc::data::CfgToElement {
 public:
+
     /// @brief Constructor.
     CfgHosts() = default;
 

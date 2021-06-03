@@ -140,6 +140,7 @@ public:
     /// (e.g. sequential or based on random function).
     class NumberGenerator {
     public:
+
         /// \brief Constructor.
         NumberGenerator() = default;
 

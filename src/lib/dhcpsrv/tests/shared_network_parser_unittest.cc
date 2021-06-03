@@ -41,6 +41,9 @@ public:
         IOAddressList addresses_;
     };
 
+    /// @brief constructor
+    SharedNetworkParserTest() = default;
+
     /// @brief virtual destructor
     virtual ~SharedNetworkParserTest() = default;
 

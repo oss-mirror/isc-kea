@@ -188,7 +188,7 @@ public:
     /// Public interface.
 
     /// @brief Constructor.
-    ClientHandler();
+    ClientHandler() = default;
 
     /// @brief Destructor.
     ///

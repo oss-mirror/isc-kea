@@ -28,9 +28,10 @@ namespace {
 /// @brief Database Access Parser test fixture class
 class DbAccessParserTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
-    DbAccessParserTest() {
-    }
+    DbAccessParserTest() = default;
+
     /// @brief Destructor
     ///
     /// As some of the tests have the side-effect of altering the logging
@@ -749,4 +750,4 @@ TEST_F(DbAccessParserTest, multipleHost) {
                       config2);
 }
 
-};  // Anonymous namespace
+}  // Anonymous namespace

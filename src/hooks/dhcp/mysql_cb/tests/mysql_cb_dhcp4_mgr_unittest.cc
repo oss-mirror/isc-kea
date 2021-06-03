@@ -24,6 +24,7 @@ namespace {
 /// @brief Test fixture class for @c MySqlConfigBackendDHCPv4Mgr.
 class MySqlConfigBackendDHCPv4MgrTest : public GenericBackendTest {
 public:
+
     /// @brief Constructor.
     MySqlConfigBackendDHCPv4MgrTest() {
         // Recreate a fresh mgr.

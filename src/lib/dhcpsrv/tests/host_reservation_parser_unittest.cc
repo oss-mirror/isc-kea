@@ -43,6 +43,7 @@ namespace {
 /// @brief Test fixture class for @c HostReservationParser.
 class HostReservationParserTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     HostReservationParserTest() = default;
 

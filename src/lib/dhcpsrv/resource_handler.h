@@ -171,6 +171,7 @@ private:
 /// @brief Resource race avoidance RAII handler for DHCPv4.
 class ResourceHandler4 : public ResourceHandler {
 public:
+
     /// @brief Constructor.
     ResourceHandler4() = default;
 

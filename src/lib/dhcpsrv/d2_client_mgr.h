@@ -79,6 +79,7 @@ std::function<void(const dhcp_ddns::NameChangeSender::Result result,
 class D2ClientMgr : public dhcp_ddns::NameChangeSender::RequestSendHandler,
                     boost::noncopyable {
 public:
+
     /// @brief Constructor
     ///
     /// Default constructor which constructs an instance which has DHCP-DDNS

@@ -24,6 +24,7 @@ using namespace isc::asiolink;
 // or not.
 class IntervalTimerTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     IntervalTimerTest() :
         io_service_(), timer_called_(false), timer_cancel_success_(false) {

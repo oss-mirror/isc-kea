@@ -31,6 +31,7 @@ namespace agent {
 /// instructs the agent to start a specific service.
 class CtrlAgentProcess : public process::DProcessBase {
 public:
+
     /// @brief Constructor
     ///
     /// @param name name is a text label for the process. Generally used
@@ -149,7 +150,7 @@ private:
 /// @brief Defines a shared pointer to CtrlAgentProcess.
 typedef boost::shared_ptr<CtrlAgentProcess> CtrlAgentProcessPtr;
 
-}; // namespace isc::agent
-}; // namespace isc
+} // namespace isc::agent
+} // namespace isc
 
 #endif // CTRL_AGENT_PROCESS_H

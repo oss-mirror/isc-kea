@@ -54,10 +54,12 @@ class NSEC3HashRFC5155 : boost::noncopyable, public NSEC3Hash {
 private:
     // This is the algorithm number for SHA1/NSEC3 as defined in RFC5155.
     static const uint8_t NSEC3_HASH_SHA1 = 1;
+
     // For digest_ allocation
     static const size_t DEFAULT_DIGEST_LENGTH = 32;
 
 public:
+
     /// @brief Constructor
     NSEC3HashRFC5155(uint8_t algorithm, uint16_t iterations,
                      const uint8_t* salt_data, size_t salt_length) :

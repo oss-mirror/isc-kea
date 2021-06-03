@@ -55,12 +55,14 @@ private:
     IOSocket(const IOSocket& source);
     IOSocket& operator=(const IOSocket& source);
 protected:
+
     /// \brief The default constructor.
     ///
     /// This is intentionally defined as \c protected as this base class
     /// should never be instantiated (except as part of a derived class).
     IOSocket() = default;
 public:
+
     /// The destructor.
     virtual ~IOSocket() = default;
     //@}

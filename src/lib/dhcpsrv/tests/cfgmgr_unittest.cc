@@ -261,6 +261,7 @@ TEST(ValueStorageTest, StringTesting) {
 
 class CfgMgrTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     CfgMgrTest() {
         // make sure we start with a clean configuration

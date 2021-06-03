@@ -21,6 +21,7 @@ namespace test {
 /// of the existing file and remove existing file (cleanup after unit test).
 class LeaseFileIO {
 public:
+
     /// @brief Constructor
     ///
     /// @param filename Absolute path to the file.

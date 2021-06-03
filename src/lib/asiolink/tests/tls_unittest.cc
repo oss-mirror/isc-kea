@@ -46,6 +46,7 @@ const char KEA_TLS_CHECK_VERBOSE[] = "KEA_TLS_CHECK_VERBOSE";
 /// @brief Test TLS context class exposing protected methods.
 class TestTlsContext : public TlsContext {
 public:
+
     /// @brief Constructor.
     ///
     /// @param role The TLS role client or server.
@@ -69,6 +70,7 @@ public:
     /// @brief State part.
     class State {
     public:
+
         /// @brief Constructor.
         State() : called_(false), error_code_() {
         }

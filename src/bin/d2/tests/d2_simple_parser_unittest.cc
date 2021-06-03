@@ -304,6 +304,7 @@ TEST_F(D2SimpleParserTest, globalD2Defaults) {
 /// @brief Test fixture class for testing TSIGKeyInfo parsing.
 class TSIGKeyInfoParserTest : public D2SimpleParserTest {
 public:
+
     /// @brief Constructor
     TSIGKeyInfoParserTest()
         : D2SimpleParserTest(D2ParserContext::PARSER_TSIG_KEY) {
@@ -348,10 +349,10 @@ public:
     TSIGKeyInfoPtr key_;
 };
 
-
 /// @brief Test fixture class for testing TSIGKeyInfo list parsing.
 class TSIGKeyInfoListParserTest : public D2SimpleParserTest {
 public:
+
     /// @brief Constructor
     TSIGKeyInfoListParserTest()
         : D2SimpleParserTest(D2ParserContext::PARSER_TSIG_KEYS) {
@@ -400,6 +401,7 @@ public:
 /// @brief Test fixture class for testing DnsServerInfo parsing.
 class DnsServerInfoParserTest : public D2SimpleParserTest {
 public:
+
     /// @brief Constructor
     DnsServerInfoParserTest()
         : D2SimpleParserTest(D2ParserContext::PARSER_DNS_SERVER) {
@@ -492,7 +494,6 @@ public:
     DnsServerInfoStoragePtr servers_;
 };
 
-
 /// @brief Test fixture class for testing DDnsDomain parsing.
 class DdnsDomainParserTest : public D2SimpleParserTest {
 public:
@@ -559,6 +560,7 @@ public:
 
 class DdnsDomainListParserTest : public DdnsDomainParserTest {
 public:
+
     /// @brief Constructor
     DdnsDomainListParserTest()
         // We need the list context type to parse lists correctly
@@ -1189,4 +1191,4 @@ TEST_F(DdnsDomainListParserTest, duplicateDomain) {
                "Duplicate domain specified:example.com (<string>:1:115)");
 }
 
-};
+}

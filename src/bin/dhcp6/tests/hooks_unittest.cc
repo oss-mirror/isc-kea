@@ -113,7 +113,6 @@ TEST_F(Dhcpv6SrvTest, Hooks) {
 /// fields are declared static. It is still better to keep them as
 /// one class rather than unrelated collection of global objects.
 class HooksDhcpv6SrvTest : public Dhcpv6SrvTest {
-
 public:
 
     /// @brief Constructor creates Dhcpv6Srv and prepares buffers for callouts
@@ -985,6 +984,7 @@ bool HooksDhcpv6SrvTest::callback_resp_options_copy_;
 /// @brief Fixture class used to do basic library load/unload tests
 class LoadUnloadDhcpv6SrvTest : public Dhcpv6SrvTest {
 public:
+
     /// @brief Pointer to the tested server object
     boost::shared_ptr<NakedDhcpv6Srv> server_;
 

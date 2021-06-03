@@ -221,6 +221,7 @@ typedef boost::shared_ptr<LeaseStatsRow> LeaseStatsRowPtr;
 /// of those classes for details.
 class LeaseMgr {
 public:
+
     /// @brief Constructor
     LeaseMgr() = default;
 

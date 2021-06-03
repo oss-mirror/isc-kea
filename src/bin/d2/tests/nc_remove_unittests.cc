@@ -26,6 +26,7 @@ namespace {
 // to protected methods.
 class NameRemoveStub : public NameRemoveTransaction {
 public:
+
     /// @brief Constructor
     NameRemoveStub(asiolink::IOServicePtr& io_service,
                    dhcp_ddns::NameChangeRequestPtr& ncr,
@@ -185,6 +186,7 @@ typedef boost::shared_ptr<NameRemoveStub> NameRemoveStubPtr;
 /// aspects of NameRemoveTransaction.
 class NameRemoveTransactionTest : public TransactionTest {
 public:
+
     /// @brief Constructor
     NameRemoveTransactionTest() = default;
 

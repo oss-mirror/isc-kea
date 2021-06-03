@@ -203,7 +203,6 @@ PktFilter6Stub::send(const Iface&, uint16_t, const Pkt6Ptr&) {
     return (0);
 }
 
-
 } // end of isc::dhcp::test namespace
 } // end of isc::dhcp namespace
 } // end of isc namespace

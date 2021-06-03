@@ -72,6 +72,7 @@ class LibraryManager;
 
 class LibraryManager {
 public:
+
     /// @brief Constructor
     ///
     /// This constructor is used by external agencies (i.e. the

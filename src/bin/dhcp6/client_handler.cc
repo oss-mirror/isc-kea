@@ -71,9 +71,6 @@ ClientHandler::del(const DuidPtr& duid) {
     clients_.erase(duid->getDuid());
 }
 
-ClientHandler::ClientHandler() : client_(), locked_() {
-}
-
 ClientHandler::~ClientHandler() {
     try {
         if (locked_) {

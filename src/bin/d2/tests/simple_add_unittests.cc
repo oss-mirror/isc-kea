@@ -25,6 +25,7 @@ namespace {
 // to protected methods.
 class SimpleAddStub : public SimpleAddTransaction {
 public:
+
     /// @brief Constructor
     SimpleAddStub(asiolink::IOServicePtr& io_service,
                   dhcp_ddns::NameChangeRequestPtr& ncr,
@@ -182,6 +183,7 @@ typedef boost::shared_ptr<SimpleAddStub> SimpleAddStubPtr;
 /// aspects of SimpleAddTransaction.
 class SimpleAddTransactionTest : public TransactionTest {
 public:
+
     /// @brief Constructor
     SimpleAddTransactionTest() = default;
 

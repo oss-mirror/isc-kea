@@ -107,8 +107,8 @@ public:
     D2Dhcpv4Srv srv_;
 };
 
-}; // end of isc::dhcp::test namespace
-}; // end of isc::dhcp namespace
-}; // end of isc namespace
+} // end of isc::dhcp::test namespace
+} // end of isc::dhcp namespace
+} // end of isc namespace
 
 #endif // D2_UNITTEST_H

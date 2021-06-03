@@ -46,12 +46,14 @@ private:
     IOEndpoint(const IOEndpoint& source);
     IOEndpoint& operator=(const IOEndpoint& source);
 protected:
+
     /// \brief The default constructor.
     ///
     /// This is intentionally defined as \c protected as this base class
     /// should never be instantiated (except as part of a derived class).
     IOEndpoint() = default;
 public:
+
     /// The destructor.
     virtual ~IOEndpoint() = default;
     //@}

@@ -32,6 +32,7 @@ namespace  {
 /// @brief Test fixture class for @c QueryFilter class.
 class QueryFilterTest : public HATest {
 public:
+
     /// @brief Constructor.
     QueryFilterTest() {
         MultiThreadingMgr::instance().setMode(false);

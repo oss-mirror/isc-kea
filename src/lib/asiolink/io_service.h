@@ -41,6 +41,7 @@ private:
     IOService(const IOService& source);
     IOService& operator=(const IOService& source);
 public:
+
     /// \brief The constructor
     IOService();
 

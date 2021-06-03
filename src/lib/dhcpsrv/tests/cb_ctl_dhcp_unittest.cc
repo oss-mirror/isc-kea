@@ -40,6 +40,7 @@ namespace {
 /// @c false when setting IP reservations unique/non-unique mode.
 class NonUniqueHostDataSource : public MemHostDataSource {
 public:
+
     /// @brief Constructor
     NonUniqueHostDataSource() = default;
 

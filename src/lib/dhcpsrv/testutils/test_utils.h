@@ -59,6 +59,7 @@ int findLastSocketFd();
 /// of scope closes all file descriptors which were opened by the constructor.
 class FillFdHoles {
 public:
+
     /// @brief Constructor
     ///
     /// Holes between 0 and the specified limit will be filled by opening

@@ -34,6 +34,7 @@ namespace http {
 /// if creating new instance for each request is not required or undesired.
 class HttpResponseCreatorFactory {
 public:
+
     /// @brief Constructor.
     HttpResponseCreatorFactory() = default;
 

@@ -36,10 +36,13 @@ class D2ClientMgrTest : public D2ClientMgr, public ::testing::Test {
 public:
     /// @brief If true simulates a send which completed with a failed status.
     bool simulate_send_failure_;
+
     /// @brief If true causes an exception throw in the client error handler.
     bool error_handler_throw_;
+
     /// @brief Tracks the number times the completion handler is called.
     int callback_count_;
+
     /// @brief Tracks the number of times the client error handler was called.
     int error_handler_count_;
 

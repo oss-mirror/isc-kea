@@ -70,6 +70,9 @@ class Iface;
 class PktFilter6 {
 public:
 
+    /// @brief Constructor.
+    PktFilter6() = default;
+
     /// @brief Virtual Destructor.
     virtual ~PktFilter6() = default;
 

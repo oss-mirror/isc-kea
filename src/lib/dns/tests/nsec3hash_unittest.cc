@@ -32,6 +32,8 @@ const char* const nsec3_common = "2T7B4G4VSA5SMI47K61MV5BV1A22BOJR A RRSIG";
 
 class NSEC3HashTest : public ::testing::Test {
 protected:
+
+    /// @brief Constructor
     NSEC3HashTest() :
         test_hash(NSEC3Hash::create(generic::NSEC3PARAM("1 0 12 aabbccdd"))),
         test_hash_nsec3(NSEC3Hash::create(generic::NSEC3
@@ -42,6 +44,7 @@ protected:
         test_hash_args.reset(NSEC3Hash::create(1, 12, salt, sizeof(salt)));
     }
 
+    /// @brief Destructor
     ~NSEC3HashTest() {
         try {
             // Make sure we reset the hash creator to the default

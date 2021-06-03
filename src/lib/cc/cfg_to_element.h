@@ -27,6 +27,10 @@ namespace data {
 /// @brief Abstract class for configuration Cfg_* classes
 ///
 struct CfgToElement {
+
+    /// Constructor
+    CfgToElement() = default;
+
     /// Destructor
     virtual ~CfgToElement() = default;
 

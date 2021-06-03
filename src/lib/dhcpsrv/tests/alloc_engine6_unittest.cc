@@ -3957,6 +3957,7 @@ TEST_F(AllocEngine6Test, bothHostReservedPrefix) {
 /// extended info tests.
 class AllocEngine6ExtendedInfoTest : public AllocEngine6Test {
 public:
+
     /// @brief Constructor
     AllocEngine6ExtendedInfoTest()
         : engine_(AllocEngine::ALLOC_ITERATIVE, 100, true), duid1_(), duid2_(),

@@ -23,6 +23,7 @@ namespace test {
 /// work, just several are implemented. Those are used in the tests.
 class MemHostDataSource : public virtual BaseHostDataSource {
 public:
+
     /// @brief Constructor.
     MemHostDataSource() : next_host_id_(0) {
     }

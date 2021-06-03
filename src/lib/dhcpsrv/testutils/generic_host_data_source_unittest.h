@@ -537,6 +537,7 @@ public:
 
 class HostMgrDbLostCallbackTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     HostMgrDbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),
@@ -696,6 +697,7 @@ public:
     virtual ~HostMgrTest() = default;
 
 protected:
+
     /// @brief Constructor
     HostMgrTest() = default;
 

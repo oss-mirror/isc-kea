@@ -196,6 +196,7 @@ public:
 /// near future.
 class JSONFileBackendTest : public isc::dhcp::test::BaseServerTest {
 public:
+
     /// @brief Constructor
     JSONFileBackendTest() = default;
 

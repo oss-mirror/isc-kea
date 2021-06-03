@@ -23,6 +23,7 @@ namespace asiolink {
 class IOSignalSetImpl : public boost::enable_shared_from_this<IOSignalSetImpl>,
                         public boost::noncopyable {
 public:
+
     /// @brief Constructor.
     ///
     /// @param io_service the process IO service.

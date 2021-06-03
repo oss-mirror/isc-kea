@@ -267,8 +267,8 @@ private:
     PktFilter6Ptr packet_filter6_;
 };
 
-};
-};
-};
+}
+}
+}
 
 #endif // IFACE_MGR_TEST_CONFIG_H

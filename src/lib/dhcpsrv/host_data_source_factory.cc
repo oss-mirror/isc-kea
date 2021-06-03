@@ -193,6 +193,7 @@ namespace {
 
 #ifdef HAVE_MYSQL
 struct MySqlHostDataSourceInit {
+
     // Constructor registers
     MySqlHostDataSourceInit() {
         HostDataSourceFactory::registerFactory("mysql", factory, true);
@@ -221,6 +222,7 @@ MySqlHostDataSourceInit mysql_init_;
 
 #ifdef HAVE_PGSQL
 struct PgSqlHostDataSourceInit {
+
     // Constructor registers
     PgSqlHostDataSourceInit() {
         HostDataSourceFactory::registerFactory("postgresql", factory, true);
@@ -249,6 +251,7 @@ PgSqlHostDataSourceInit pgsql_init_;
 
 #ifdef HAVE_CQL
 struct CqlHostDataSourceInit {
+
     // Constructor registers
     CqlHostDataSourceInit() {
         HostDataSourceFactory::registerFactory("cql", factory, true);

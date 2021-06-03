@@ -1203,5 +1203,4 @@ TEST_F(CfgHostsTest, duplicatesSubnet6DUID) {
                                              "foo.example.com"))));
 }
 
-
 } // end of anonymous namespace

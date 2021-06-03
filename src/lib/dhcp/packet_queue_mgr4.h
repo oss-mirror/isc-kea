@@ -25,7 +25,7 @@ public:
     /// @brief Logical name of the pre-registered, default queue implementation
     static const std::string DEFAULT_QUEUE_TYPE4;
 
-    /// @brief constructor.
+    /// @brief Constructor.
     ///
     /// It registers a default factory for DHCPv4 queues. 
     PacketQueueMgr4();

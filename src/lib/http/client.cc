@@ -808,6 +808,7 @@ private:
     /// @brief Encapsulates connections and requests for a given URL
     class Destination {
     public:
+
         /// @brief Constructor
         ///
         /// @param url server URL of this destination
@@ -1733,6 +1734,7 @@ namespace http {
 /// @brief HttpClient implementation.
 class HttpClientImpl {
 public:
+
     /// @brief Constructor.
     ///
     /// If single-threading:

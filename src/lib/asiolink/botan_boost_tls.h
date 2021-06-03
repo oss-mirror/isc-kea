@@ -116,8 +116,7 @@ TlsStreamBase(IOService& service, TlsContextPtr context)
 ///
 /// @tparam callback The callback.
 template <typename Callback>
-class TlsStream : public TlsStreamBase<Callback, TlsStreamImpl>
-{
+class TlsStream : public TlsStreamBase<Callback, TlsStreamImpl> {
 public:
 
     /// @brief Type of the base.

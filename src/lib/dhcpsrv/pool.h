@@ -28,8 +28,8 @@ namespace dhcp {
 /// Stores information about pool of IPv4 or IPv6 addresses.
 /// That is a basic component of a configuration.
 class Pool : public isc::data::UserContext, public isc::data::CfgToElement {
-
 public:
+
     /// @note:
     /// PoolType enum was removed. Please use Lease::Type instead
 

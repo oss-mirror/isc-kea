@@ -277,6 +277,5 @@ void Dhcp4o6IpcBase::send(const Pkt6Ptr& pkt) {
    }
 }
 
-};  // namespace dhcp
-
-};  // namespace isc
+}  // namespace dhcp
+}  // namespace isc

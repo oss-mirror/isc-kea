@@ -2701,6 +2701,7 @@ TEST_F(DORATest, storeExtendedInfoDisabledMultiThreading) {
 /// @brief Test fixture class for the test utilizing MySQL database backend.
 class DORAMySQLTest : public DORATest {
 public:
+
     /// @brief Constructor.
     ///
     /// Recreates MySQL schema for a test.
@@ -2747,6 +2748,7 @@ TEST_F(DORAMySQLTest, multiStageBootMultiThreading) {
 /// @brief Test fixture class for the test utilizing PostgreSQL database backend.
 class DORAPgSQLTest : public DORATest {
 public:
+
     /// @brief Constructor.
     ///
     /// Recreates PgSQL schema for a test.
@@ -2792,6 +2794,7 @@ TEST_F(DORAPgSQLTest, multiStageBootMultiThreading) {
 // --with-cql.
 class DORACQLTest : public DORATest {
 public:
+
     /// @brief Constructor.
     ///
     /// Recreates CQL schema for a test.

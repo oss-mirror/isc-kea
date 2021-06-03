@@ -21,6 +21,7 @@ namespace ph = std::placeholders;
 /// @brief Test fixture for exercising DbLostCallback invocation
 class DatabaseConnectionCallbackTest : public ::testing::Test {
 public:
+
     /// Constructor
     DatabaseConnectionCallbackTest()
         : db_reconnect_ctl_(0) {

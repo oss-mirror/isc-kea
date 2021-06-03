@@ -301,7 +301,6 @@ private:
 
     /// @brief Holds the original data directory.
     std::string original_datadir_;
-
 };
 
 class Dhcpv4SrvTest : public BaseServerTest {

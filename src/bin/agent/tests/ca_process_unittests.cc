@@ -25,6 +25,7 @@ namespace {
 /// @brief CtrlAgentProcess test fixture class.
 class CtrlAgentProcessTest : public CtrlAgentProcess, public ::testing::Test  {
 public:
+
     /// @brief Constructor
     CtrlAgentProcessTest() :
         CtrlAgentProcess("agent-test",
@@ -84,6 +85,5 @@ TEST_F(CtrlAgentProcessTest, shutdown) {
     EXPECT_TRUE(elapsed.total_milliseconds() >= 100 &&
                 elapsed.total_milliseconds() <= 400);
 }
-
 
 }

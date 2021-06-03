@@ -101,6 +101,7 @@ const size_t DEFAULT_CONNECTION_TIMEOUT = 10000;
 
 class CtrlDhcpv6SrvTest : public BaseServerTest {
 public:
+
     /// @brief Constructor
     CtrlDhcpv6SrvTest()
         : BaseServerTest() {
@@ -2017,4 +2018,4 @@ TEST_F(CtrlChannelDhcpv6SrvTest, connectionTimeoutNoData) {
               "\"Connection over control channel timed out\" }", response);
 }
 
-} // End of anonymous namespace
+} // end of anonymous namespace

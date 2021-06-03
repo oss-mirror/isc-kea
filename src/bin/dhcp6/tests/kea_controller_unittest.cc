@@ -188,6 +188,7 @@ public:
 
 class JSONFileBackendTest : public dhcp::test::BaseServerTest {
 public:
+
     /// @brief Constructor
     JSONFileBackendTest()
         : BaseServerTest() {
@@ -1085,4 +1086,4 @@ TEST_F(JSONFileBackendMySQLTest, reconfigureBackendMemfileToMySQL) {
 
 #endif
 
-} // End of anonymous namespace
+} // end of anonymous namespace

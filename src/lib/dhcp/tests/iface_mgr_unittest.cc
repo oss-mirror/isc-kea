@@ -357,11 +357,13 @@ public:
 /// test failure path.
 class IfaceMgrTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     IfaceMgrTest()
         : errors_count_(0) {
     }
 
+    /// @brief Destructor.
     ~IfaceMgrTest() = default;
 
     /// @brief Tests the number of IPv6 sockets on interface

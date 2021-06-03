@@ -227,7 +227,6 @@ protected:
     virtual bool isSupportedIdentifier(const std::string& id_name) const;
 };
 
-
 }
 } // end of namespace isc
 

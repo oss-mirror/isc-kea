@@ -166,6 +166,7 @@ namespace {
 /// Test fixture class (code from Dhcp6ParserTest)
 class Dhcp6GetConfigTest : public ::testing::TestWithParam<size_t> {
 public:
+
     /// @brief Constructor
     Dhcp6GetConfigTest() : rcode_(-1), srv_(0) {
         // srv_(0) means to not open any sockets. We don't want to

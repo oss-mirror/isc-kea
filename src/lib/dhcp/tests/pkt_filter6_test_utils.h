@@ -145,8 +145,8 @@ public:
 
 };
 
-}; // end of isc::dhcp::test namespace
-}; // end of isc::dhcp namespace
-}; // end of isc namespace
+} // end of isc::dhcp::test namespace
+} // end of isc::dhcp namespace
+} // end of isc namespace
 
 #endif // PKT_FILTER6_TEST_UTILS_H

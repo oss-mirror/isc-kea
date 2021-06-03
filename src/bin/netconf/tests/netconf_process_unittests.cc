@@ -25,6 +25,7 @@ namespace {
 /// @brief NetconfProcess test fixture class.
 class NetconfProcessTest : public NetconfProcess, public ::testing::Test  {
 public:
+
     /// @brief Constructor
     NetconfProcessTest() :
         NetconfProcess("netconf-test",

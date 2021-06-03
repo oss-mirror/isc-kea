@@ -41,6 +41,7 @@ enum ExchangeDataType {
 /// @brief Base class for backend exchanges.
 class SqlExchange {
 public:
+
     /// @brief Constructor
     SqlExchange() = default;
 

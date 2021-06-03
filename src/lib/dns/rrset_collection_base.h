@@ -93,6 +93,9 @@ public:
          const isc::dns::RRType& rrtype)
         const = 0;
 
+    /// \brief Constructor
+    RRsetCollectionBase() = default;
+
     /// \brief Destructor
     virtual ~RRsetCollectionBase() = default;
 
@@ -112,6 +115,7 @@ protected:
     /// iterator only.
     class Iter {
     public:
+
         /// @brief Constructor
         Iter() = default;
 

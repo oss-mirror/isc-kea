@@ -561,4 +561,4 @@ TEST_F(DNSClientTest, DISABLED_concurrentSendReceive) {
     runSendReceiveTest(false, true);
 }
 
-} // End of anonymous namespace
+} // end of anonymous namespace

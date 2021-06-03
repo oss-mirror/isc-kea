@@ -36,6 +36,7 @@ namespace {
 class HooksManagerTest : public ::testing::Test,
                          public HooksCommonTestClass {
 public:
+
     /// @brief Constructor
     ///
     /// Reset the hooks manager.  The hooks manager is a singleton, so needs
@@ -1079,6 +1080,5 @@ TEST_F(HooksManagerTest, UnloadBeforeUnpark) {
     // Callback should not be called.
     EXPECT_FALSE(unparked);
 }
-
 
 } // Anonymous namespace

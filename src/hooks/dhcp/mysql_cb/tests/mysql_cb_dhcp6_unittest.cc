@@ -4342,6 +4342,7 @@ TEST_F(MySqlConfigBackendDHCPv6Test, multipleAuditEntries) {
 
 class MySqlConfigBackendDHCPv6DbLostCallbackTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     MySqlConfigBackendDHCPv6DbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),

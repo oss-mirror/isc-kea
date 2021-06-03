@@ -39,13 +39,15 @@ typedef boost::shared_ptr<TlsContext> TlsContextPtr;
 /// @brief TLS context base class.
 class TlsContextBase : private boost::noncopyable {
 public:
+
     /// @brief Destructor.
     virtual ~TlsContextBase() = default;
 
     /// @brief Create a fresh context.
     ///
     /// @param role The TLS role client or server.
-    explicit TlsContextBase(TlsRole role) : role_(role) { }
+    explicit TlsContextBase(TlsRole role) : role_(role) {
+    }
 
     /// @brief Returns the role.
     TlsRole getRole() const {

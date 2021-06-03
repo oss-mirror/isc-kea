@@ -25,6 +25,7 @@ typedef boost::shared_ptr<data::StampedElement> StampedElementPtr;
 template<typename ConfigBackendType>
 class TestConfigBackend : public ConfigBackendType {
 public:
+
     /// @brief Constructor
     ///
     /// @param params database connection parameters

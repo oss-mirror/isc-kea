@@ -17,6 +17,7 @@ namespace dhcp {
 /// Only the insert() method is required to use the cache.
 class CacheHostDataSource : public virtual BaseHostDataSource {
 public:
+
     /// @brief Constructor.
     CacheHostDataSource() = default;
 

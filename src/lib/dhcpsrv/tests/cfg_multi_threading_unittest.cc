@@ -29,6 +29,7 @@ public:
     virtual ~CfgMultiThreadingTest() = default;
 
 protected:
+
     /// @brief Constructor
     CfgMultiThreadingTest() = default;
 

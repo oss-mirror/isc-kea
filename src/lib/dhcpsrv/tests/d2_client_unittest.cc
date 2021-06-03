@@ -341,6 +341,7 @@ TEST(D2ClientMgr, ipv6Config) {
 /// influenced by DDNS parameters.
 class D2ClientMgrParamsTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     D2ClientMgrParamsTest() = default;
 

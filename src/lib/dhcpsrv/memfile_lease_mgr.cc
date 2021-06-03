@@ -259,6 +259,7 @@ LFCSetup::getExitStatus() const {
 ///
 class MemfileLeaseStatsQuery : public LeaseStatsQuery {
 public:
+
     /// @brief Constructor for all subnets query
     ///
     MemfileLeaseStatsQuery()
@@ -327,6 +328,7 @@ protected:
 ///
 class MemfileLeaseStatsQuery4 : public MemfileLeaseStatsQuery {
 public:
+
     /// @brief Constructor for an all subnets query
     ///
     /// @param storage4 A pointer to the v4 lease storage to be counted
@@ -469,6 +471,7 @@ private:
 ///
 class MemfileLeaseStatsQuery6 : public MemfileLeaseStatsQuery {
 public:
+
     /// @brief Constructor
     ///
     /// @param storage6 A pointer to the v6 lease storage to be counted

@@ -69,6 +69,7 @@ class LibraryManager;
 
 class LibraryManagerCollection {
 public:
+
     /// @brief Constructor
     ///
     /// @param libraries List of libraries that this collection will manage.

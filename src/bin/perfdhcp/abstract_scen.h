@@ -20,14 +20,13 @@ namespace perfdhcp {
 /// This class must be inherited by scenario classes.
 class AbstractScen : public boost::noncopyable {
 public:
+
     /// \brief Default and the only constructor of AbstractScen.
     ///
     /// \param options reference to command options,
     /// \param socket reference to a socket.
     AbstractScen(CommandOptions& options, BasePerfSocket &socket) :
-        options_(options),
-        tc_(options, socket)
-    {
+        options_(options), tc_(options, socket) {
         if (options_.getIpVersion() == 4) {
             stage1_xchg_ = ExchangeType::DO;
             stage2_xchg_ = ExchangeType::RA;
@@ -56,7 +55,6 @@ protected:
     ExchangeType stage1_xchg_;
     ExchangeType stage2_xchg_;
 };
-
 
 }
 }

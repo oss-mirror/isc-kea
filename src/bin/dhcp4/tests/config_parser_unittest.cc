@@ -276,6 +276,7 @@ protected:
     }
 
 public:
+
     /// @brief Constructor
     Dhcp4ParserTest()
     : rcode_(-1) {
@@ -286,8 +287,6 @@ public:
         // Create fresh context.
         resetConfiguration();
     }
-
-public:
 
     // Checks if the result of DHCP server configuration has
     // expected code (0 for success, other for failures).

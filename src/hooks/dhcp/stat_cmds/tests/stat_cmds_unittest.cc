@@ -36,6 +36,7 @@ namespace {
 /// @brief Test fixture for testing loading and unloading the library
 class LibLoadTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LibLoadTest(std::string lib_filename)
         : lib_name_(lib_filename), start_time_(second_clock::universal_time()) {

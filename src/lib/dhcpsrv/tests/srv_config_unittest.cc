@@ -40,6 +40,7 @@ const int TEST_SUBNETS_NUM = 3;
 /// @brief Test fixture class for testing configuration data storage.
 class SrvConfigTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     ///
     /// Creates IPv4 and IPv6 subnets for unit test. The number of subnets
@@ -84,7 +85,6 @@ public:
         ref_dictionary_->addClass("cc3", ExpressionPtr(),
                                   "", false, false, CfgOptionPtr());
     }
-
 
     /// @brief Destructor.
     virtual ~SrvConfigTest() = default;

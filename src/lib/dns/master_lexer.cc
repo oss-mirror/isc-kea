@@ -364,6 +364,7 @@ State::getParenCount(const MasterLexer& lexer) const {
 namespace {
 class CRLF : public State {
 public:
+
     /// @brief Constructor
     CRLF() = default;
 
@@ -394,6 +395,7 @@ public:
 
 class String : public State {
 public:
+
     /// @brief Constructor
     String() = default;
 
@@ -407,6 +409,7 @@ public:
 
 class QString : public State {
 public:
+
     /// @brief Constructor
     QString() = default;
 
@@ -420,6 +423,7 @@ public:
 
 class Number : public State {
 public:
+
     /// @brief Constructor
     Number() = default;
 

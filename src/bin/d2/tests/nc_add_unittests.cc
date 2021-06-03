@@ -25,6 +25,7 @@ namespace {
 // to protected methods.
 class NameAddStub : public NameAddTransaction {
 public:
+
     /// @brief Constructor
     NameAddStub(asiolink::IOServicePtr& io_service,
                 dhcp_ddns::NameChangeRequestPtr& ncr,
@@ -184,6 +185,7 @@ typedef boost::shared_ptr<NameAddStub> NameAddStubPtr;
 /// aspects of NameAddTransaction.
 class NameAddTransactionTest : public TransactionTest {
 public:
+
     /// @brief Constructor
     NameAddTransactionTest() = default;
 
@@ -1783,6 +1785,5 @@ TEST_F(NameAddTransactionTest, replacingRevPtrsHandler_BuildRequestException) {
     EXPECT_EQ(NameChangeTransaction::UPDATE_FAILED_EVT,
               name_add->getNextEvent());
 }
-
 
 }

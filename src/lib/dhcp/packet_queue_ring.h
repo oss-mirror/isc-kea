@@ -225,6 +225,7 @@ private:
 ///
 class PacketQueueRing4 : public PacketQueueRing<Pkt4Ptr> {
 public:
+
     /// @brief Constructor
     ///
     /// @param queue_type logical name of the queue implementation
@@ -245,6 +246,7 @@ public:
 ///
 class PacketQueueRing6 : public PacketQueueRing<Pkt6Ptr> {
 public:
+
     /// @brief Constructor
     ///
     /// @param queue_type logical name of the queue implementation

@@ -112,6 +112,7 @@ void pathReplacer(ConstElementPtr d2_cfg) {
 /// Test fixture class
 class D2GetConfigTest : public ConfigParseTest {
 public:
+
     /// @brief Constructor
     D2GetConfigTest()
     : rcode_(-1) {

@@ -31,6 +31,7 @@ CryptoLink::~CryptoLink() {
 /// \brief OpenSSL implementation of RNG.
 class RNGImpl : public RNG {
 public:
+
     /// @brief Constructor
     RNGImpl() = default;
 

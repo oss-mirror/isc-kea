@@ -41,6 +41,7 @@ public:
     /// allocated for this array is freed at the end o the scope.
     class ArgvPtr {
     public:
+
         /// \brief Constructor.
         ///
         /// \param argv array of C-strings.

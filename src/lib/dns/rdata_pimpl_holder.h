@@ -18,6 +18,7 @@ namespace rdata {
 template <typename T>
 class RdataPimplHolder : boost::noncopyable {
 public:
+
     /// @brief Constructor
     RdataPimplHolder(T* obj = NULL) :
         obj_(obj) {

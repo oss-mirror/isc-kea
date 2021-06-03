@@ -101,4 +101,4 @@ TEST_F(DataFileTest, readFileError) {
     EXPECT_THROW(Element::fromJSONFile("no-such-file.txt"), isc::InvalidOperation);
 }
 
-};
+}

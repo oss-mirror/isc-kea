@@ -42,6 +42,7 @@ namespace {
 class LibraryManagerTest : public ::testing::Test,
                            public HooksCommonTestClass {
 public:
+
     /// @brief Constructor
     ///
     /// Initializes the CalloutManager object used in the tests.  It sets it

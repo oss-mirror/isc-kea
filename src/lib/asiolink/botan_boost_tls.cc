@@ -31,6 +31,7 @@ using KeaCertificateStoreFile = Botan::Flatfile_Certificate_Store;
 // Class of Kea credential managers.
 class KeaCredentialsManager : public Botan::Credentials_Manager {
 public:
+
     // Constructor.
     KeaCredentialsManager() : store_(), use_stores_(true), certs_(), key_() {
     }
@@ -144,6 +145,7 @@ public:
 // Use Strict_Policy?
 class KeaPolicy : public Botan::TLS::Default_Policy {
 public:
+
     // Constructor.
     KeaPolicy() : prefer_rsa_(true) {
     }
@@ -195,6 +197,7 @@ KeaPolicy::AllowedSignatureMethodsECDSA = { "ECDSA", "RSA", "DSA" };
 // Class of Botan TLS context implementations.
 class TlsContextImpl {
 public:
+
     // Constructor.
     TlsContextImpl() : cred_mgr_(), rng_(), sess_mgr_(), policy_() {
     }

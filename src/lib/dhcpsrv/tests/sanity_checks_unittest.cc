@@ -26,6 +26,7 @@ using namespace isc::dhcp::test;
 
 class SanityChecksTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     SanityChecksTest() {
         LeaseMgrFactory::destroy();

@@ -55,6 +55,7 @@ const uint16_t OPTION_CM_MAC = 1026;
 
 class LibDhcpTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     ///
     /// Removes runtime option definitions.

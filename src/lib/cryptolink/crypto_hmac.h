@@ -26,6 +26,7 @@ class HMACImpl;
 ///
 class HMAC : private boost::noncopyable {
 private:
+
     /// \brief Constructor from a secret and a hash algorithm
     ///
     /// \exception UnsupportedAlgorithmException if the given algorithm
@@ -49,6 +50,7 @@ private:
                                         const HashAlgorithm);
 
 public:
+
     /// \brief Destructor
     ~HMAC();
 

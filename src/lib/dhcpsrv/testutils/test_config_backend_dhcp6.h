@@ -38,6 +38,7 @@ namespace test {
 /// This backend stores server configuration information in memory.
 class TestConfigBackendDHCPv6 : public TestConfigBackend<ConfigBackendDHCPv6> {
 public:
+
     /// @brief Constructor
     ///
     /// @param params Database connection parameters.

@@ -24,6 +24,7 @@ namespace {
 /// @brief Test fixture class for @c DHCPQueueControlParser
 class DHCPQueueControlParserTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     DHCPQueueControlParserTest() = default;
 
@@ -210,4 +211,4 @@ TEST_F(DHCPQueueControlParserTest, multiThreading) {
     EXPECT_EQ("false", queue_control->get("enable-queue")->str());
 }
 
-}; // anonymous namespace
+} // anonymous namespace

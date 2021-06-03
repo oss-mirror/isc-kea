@@ -47,6 +47,7 @@ constexpr time_t DEC_2030_TIME = 1923222072;
 /// @brief Test fixture for testing loading and unloading the flex-id library
 class LibLoadTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LibLoadTest(std::string lib_filename)
         : lib_name_(lib_filename) {

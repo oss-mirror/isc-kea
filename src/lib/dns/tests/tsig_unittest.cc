@@ -83,6 +83,7 @@ public:
 
 class TSIGTest : public ::testing::Test {
 protected:
+
     /// @brief Constructor
     TSIGTest() :
         tsig_ctx(NULL), qid(0x2d65), test_name("www.example.com"),

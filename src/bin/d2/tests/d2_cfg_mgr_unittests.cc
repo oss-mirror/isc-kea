@@ -45,6 +45,7 @@ std::string testDataFile(const std::string& name) {
 /// results, and accessing the configuration context.
 class D2CfgMgrTest : public ConfigParseTest {
 public:
+
     /// @brief Constructor
     D2CfgMgrTest() : cfg_mgr_(new D2CfgMgr()), d2_params_() {
     }

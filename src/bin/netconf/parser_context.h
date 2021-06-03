@@ -34,8 +34,7 @@ namespace netconf {
 /// parse only content of the Netconf-agent object, which is a subset
 /// of full grammar (this will be very useful for unit-tests to not duplicate
 /// unnecessary parts of the config file).
-class ParserContext
-{
+class ParserContext {
 public:
 
     /// @brief Defines currently supported scopes

@@ -84,6 +84,7 @@ namespace dhcp {
 /// however, be properly documented.
 class ConfigBackendDHCPv4 : public cb::BaseConfigBackend {
 public:
+
     /// @brief Constructor
     ConfigBackendDHCPv4() = default;
 

@@ -526,6 +526,7 @@ public:
 
 class LeaseMgrDbLostCallbackTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LeaseMgrDbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),

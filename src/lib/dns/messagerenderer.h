@@ -94,8 +94,9 @@ public:
         CASE_INSENSITIVE,  //!< Compress names case-insensitive manner (default)
         CASE_SENSITIVE     //!< Compress names case-sensitive manner
     };
+
 protected:
-    ///
+
     /// \name Constructors and Destructor
     //@{
     /// \brief The default constructor.
@@ -105,6 +106,7 @@ protected:
     AbstractMessageRenderer();
 
 public:
+
     /// \brief The destructor.
     virtual ~AbstractMessageRenderer() = default;
     //@}
@@ -354,7 +356,7 @@ public:
 /// pre-existing portion of the buffer contains DNS names, these names won't
 /// be considered for name compression.
 class MessageRenderer : public AbstractMessageRenderer,
-    public boost::noncopyable { // Can crash if copied
+                        public boost::noncopyable { // Can crash if copied
 public:
     using AbstractMessageRenderer::CASE_INSENSITIVE;
     using AbstractMessageRenderer::CASE_SENSITIVE;

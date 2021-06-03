@@ -197,7 +197,7 @@ private:
     void startLogger(const bool test_mode) const;
 };
 
-}; // namespace isc::lfc
-}; // namespace isc
+} // namespace isc::lfc
+} // namespace isc
 
 #endif // LFC_CONTROLLER_H

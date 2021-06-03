@@ -120,6 +120,7 @@ public:
 /// Test fixture class
 class NetconfGetCfgTest : public ConfigParseTest {
 public:
+
     /// @brief Constructor
     NetconfGetCfgTest()
     : rcode_(-1) {

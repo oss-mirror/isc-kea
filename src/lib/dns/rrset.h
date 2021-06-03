@@ -162,12 +162,15 @@ private:
     AbstractRRset(const AbstractRRset& source);
     AbstractRRset& operator=(const AbstractRRset& source);
 protected:
+
     /// \brief The default constructor.
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
     AbstractRRset() = default;
+
 public:
+
     /// The destructor.
     virtual ~AbstractRRset() = default;
     //@}
@@ -563,12 +566,15 @@ class RdataIterator {
     /// defined as private to make it explicit that this is a pure base class.
     //@{
 protected:
+
     /// \brief The default constructor.
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
     RdataIterator() = default;
+
 public:
+
     /// \brief Destructor
     virtual ~RdataIterator() = default;
 private:
@@ -639,6 +645,7 @@ private:
     BasicRRset(const BasicRRset& source);
     BasicRRset& operator=(const BasicRRset& source);
 public:
+
     /// \brief Constructor from (mostly) fixed parameters of the RRset.
     ///
     /// This constructor is normally expected to be exception free, but
@@ -847,6 +854,7 @@ private:
 /// QNAME/QTYPE/QCLASS as a single object.
 class RRset : public BasicRRset {
 public:
+
     /// \brief Constructor
     RRset(const Name& name, const RRClass& rrclass,
           const RRType& rrtype, const RRTTL& ttl);

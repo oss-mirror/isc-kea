@@ -23,6 +23,7 @@ namespace cryptolink {
 /// of the HMAC corresponding method.
 class HMACImpl {
 public:
+
     /// @brief Constructor from a secret and a hash algorithm
     ///
     /// See constructor of the @ref isc::cryptolink::HMAC class for details.

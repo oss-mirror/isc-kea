@@ -46,6 +46,7 @@ public:
 /// @brief Embodies a single client class definition
 class ClientClassDef : public data::UserContext, public isc::data::CfgToElement {
 public:
+
     /// @brief Constructor
     ///
     /// @param name Name to assign to this class

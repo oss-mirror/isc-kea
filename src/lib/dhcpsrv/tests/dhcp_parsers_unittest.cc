@@ -52,6 +52,7 @@ namespace {
 /// @brief DHCP Parser test fixture class
 class DhcpParserTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     DhcpParserTest() {
         resetIfaceCfg();
@@ -165,6 +166,7 @@ TEST_F(DhcpParserTest, MacSourcesDuplicate) {
 /// by dhcp servers.
 class ParseConfigTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     ParseConfigTest()
         :family_(AF_INET6) {
@@ -3080,4 +3082,4 @@ TEST_F(ParseConfigTest, defaultSharedNetwork6) {
 // (see CtrlDhcpv4SrvTest.commandSocketBasic in
 // src/bin/dhcp4/tests/ctrl_dhcp4_srv_unittest.cc).
 
-};  // Anonymous namespace
+}  // Anonymous namespace

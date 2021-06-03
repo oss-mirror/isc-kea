@@ -32,6 +32,7 @@ namespace {
 /// @brief Test fixture for testing loading and unloading the HA library
 class LibLoadTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LibLoadTest() {
         reset();

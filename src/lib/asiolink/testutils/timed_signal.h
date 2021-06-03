@@ -23,6 +23,7 @@ namespace test {
 /// send (raise) the signal to the current process.
 class TimedSignal {
 public:
+
     /// @brief Constructor
     ///
     /// @param io_service  IOService to run the timer

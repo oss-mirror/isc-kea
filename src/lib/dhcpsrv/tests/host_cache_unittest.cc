@@ -100,6 +100,7 @@ typedef boost::shared_ptr<TestHostCache> TestHostCachePtr;
 /// @brief Test data source class.
 class TestHostDataSource : public MemHostDataSource {
 public:
+
     /// @brief Constructor
     TestHostDataSource() = default;
 
@@ -744,6 +745,7 @@ typedef boost::shared_ptr<TestOneBackend> TestOneBackendPtr;
 /// This class looks like a cache but throws when insert() is called.
 class TestNoCache : public MemHostDataSource, public CacheHostDataSource {
 public:
+
     /// Constructor
     TestNoCache() = default;
 
@@ -1004,4 +1006,4 @@ TEST_F(NegativeCacheTest, get6withNegativeCaching) {
     testGet6();
 }
 
-}; // end of anonymous namespace
+} // end of anonymous namespace

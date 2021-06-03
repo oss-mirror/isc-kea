@@ -652,7 +652,7 @@ typedef boost::shared_ptr<Lease6Collection> Lease6CollectionPtr;
 std::ostream&
 operator<<(std::ostream& os, const Lease& lease);
 
-}; // end of isc::dhcp namespace
-}; // end of isc namespace
+} // end of isc::dhcp namespace
+} // end of isc namespace
 
 #endif // LEASE_H

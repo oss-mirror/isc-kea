@@ -798,7 +798,7 @@ private:
 /// @brief A pointer to either Pkt4 or Pkt6 packet
 typedef boost::shared_ptr<isc::dhcp::Pkt> PktPtr;
 
-}; // namespace isc::dhcp
-}; // namespace isc
+} // namespace isc::dhcp
+} // namespace isc
 
 #endif

@@ -97,6 +97,7 @@ public:
     /// This is an abstract class.
     class Callback {
     public:
+
         /// \brief Default Constructor
         Callback() = default;
 

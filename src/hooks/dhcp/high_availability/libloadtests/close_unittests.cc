@@ -100,6 +100,7 @@ TestHooks testHooks;
 /// @brief Test fixture for testing closing the HA library
 class CloseHATest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     CloseHATest() = default;
 

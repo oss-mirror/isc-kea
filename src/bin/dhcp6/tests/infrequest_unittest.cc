@@ -112,6 +112,7 @@ const char* CONFIGS[] = {
 /// Request-Reply.
 class InfRequestTest : public Dhcpv6SrvTest {
 public:
+
     /// @brief Constructor.
     ///
     /// Sets up fake interfaces.

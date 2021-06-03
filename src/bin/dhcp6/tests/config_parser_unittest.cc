@@ -362,6 +362,7 @@ protected:
     }
 
 public:
+
     /// @brief Constructor
     Dhcp6ParserTest() :rcode_(-1), srv_(0) {
         // srv_(0) means to not open any sockets. We don't want to

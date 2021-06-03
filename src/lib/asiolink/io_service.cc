@@ -44,6 +44,7 @@ private:
     IOServiceImpl(const IOService& source);
     IOServiceImpl& operator=(const IOService& source);
 public:
+
     /// \brief The constructor
     IOServiceImpl() :
         io_service_(),

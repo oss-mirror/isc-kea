@@ -90,6 +90,7 @@ struct SectionIteratorImpl;
 template <typename T>
 class SectionIterator : public std::iterator<std::input_iterator_tag, T> {
 public:
+
     /// @brief Constructor
     SectionIterator() : impl_(NULL) {
     }
@@ -256,15 +257,19 @@ public:
     /// mode from \c PARSE to \c RENDER, and vice versa.
     //@{
 public:
+
     /// \brief The constructor.
     /// The mode of the message is specified by the \c mode parameter.
     Message(Mode mode);
+
     /// \brief The destructor.
     ~Message();
+
 private:
     Message(const Message& source);
     Message& operator=(const Message& source);
     //@}
+
 public:
     /// \brief Return whether the specified header flag bit is set in the
     /// header section.

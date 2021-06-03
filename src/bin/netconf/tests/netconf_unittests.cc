@@ -51,6 +51,7 @@ typedef boost::shared_ptr<thread> ThreadPtr;
 /// @brief Test version of the NetconfAgent class.
 class NakedNetconfAgent : public NetconfAgent {
 public:
+
     /// @brief Constructor.
     NakedNetconfAgent() = default;
 
@@ -177,6 +178,7 @@ public:
 /// @brief Special test fixture for logging tests.
 class NetconfAgentLogTest : public dhcp::test::LogContentTest {
 public:
+
     /// @brief Constructor.
     NetconfAgentLogTest()
         : io_service_(new IOService()),

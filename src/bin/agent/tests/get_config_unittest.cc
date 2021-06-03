@@ -120,6 +120,7 @@ public:
 /// Test fixture class
 class CtrlAgentGetCfgTest : public ConfigParseTest {
 public:
+
     /// @brief Constructor
     CtrlAgentGetCfgTest()
     : rcode_(-1) {

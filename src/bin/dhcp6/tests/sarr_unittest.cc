@@ -221,6 +221,7 @@ const char* CONFIGS[] = {
 /// Request-Reply and 2-way exchange: Solicit-Reply.
 class SARRTest : public Dhcpv6SrvTest {
 public:
+
     /// @brief Constructor.
     ///
     /// Sets up fake interfaces.

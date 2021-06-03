@@ -22,6 +22,7 @@ namespace isc {
 ///
 class Exception : public std::exception {
 public:
+
     ///
     /// \name Constructors and Destructor
     ///

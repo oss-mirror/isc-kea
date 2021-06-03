@@ -27,6 +27,7 @@ const long TEST_TIMEOUT = 10000;
 /// @brief Simple test fixture for testing HttpThreadPool.
 class HttpThreadPoolTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     HttpThreadPoolTest()
         : io_service_(new IOService()) {

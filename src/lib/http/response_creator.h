@@ -37,6 +37,7 @@ typedef boost::shared_ptr<HttpResponseCreator> HttpResponseCreatorPtr;
 /// @c createHttpResponse method.
 class HttpResponseCreator {
 public:
+
     /// @brief Constructor.
     HttpResponseCreator() = default;
 

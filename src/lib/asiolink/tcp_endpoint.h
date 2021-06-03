@@ -22,6 +22,7 @@ namespace asiolink {
 /// Other notes about \c TCPEndpoint applies to this class, too.
 class TCPEndpoint : public IOEndpoint {
 public:
+
     ///
     /// \name Constructors and Destructor.
     ///
@@ -65,8 +66,8 @@ public:
     /// \param asio_endpoint The ASIO representation of the TCP endpoint.
     TCPEndpoint(const boost::asio::ip::tcp::endpoint& asio_endpoint) :
         asio_endpoint_placeholder_(new boost::asio::ip::tcp::endpoint(asio_endpoint)),
-        asio_endpoint_(*asio_endpoint_placeholder_) {
-    }
+        asio_endpoint_(*asio_endpoint_placeholder_)
+    {}
 
     /// \brief The destructor.
     virtual ~TCPEndpoint() {

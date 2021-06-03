@@ -52,6 +52,7 @@ public:
     /// Per option configuration.
     class OptionConfig {
     public:
+
         /// @brief Constructor.
         ///
         /// @param code the option code.

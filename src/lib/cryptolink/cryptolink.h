@@ -228,9 +228,11 @@ private:
     static CryptoLink& getCryptoLinkInternal();
 
     /// @brief Constructor
-    // To prevent people constructing their own, we make the constructor
-    // private too.
-    CryptoLink() : impl_(NULL) {}
+    ///
+    /// To prevent people constructing their own, we make the constructor
+    /// private too.
+    CryptoLink() : impl_(NULL) {
+    }
 
     /// @brief Destructor
     ~CryptoLink();

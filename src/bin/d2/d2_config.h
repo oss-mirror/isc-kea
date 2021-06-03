@@ -141,6 +141,7 @@ public:
 /// @brief Acts as a storage vault for D2 global scalar parameters
 class D2Params {
 public:
+
     /// @brief Constructor
     ///
     /// @param ip_address IP address at which D2 should listen for NCRs
@@ -529,6 +530,7 @@ typedef boost::shared_ptr<DnsServerInfoStorage> DnsServerInfoStoragePtr;
 /// validation and matching capabilities.
 class DdnsDomain : public isc::data::UserContext, public isc::data::CfgToElement {
 public:
+
     /// @brief Constructor
     ///
     /// @param name is the domain name of the domain.
@@ -889,8 +891,7 @@ public:
                                const TSIGKeyInfoMapPtr keys);
 };
 
-
-}; // end of isc::d2 namespace
-}; // end of isc namespace
+} // end of isc::d2 namespace
+} // end of isc namespace
 
 #endif // D2_CONFIG_H

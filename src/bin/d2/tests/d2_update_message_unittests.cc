@@ -28,6 +28,7 @@ namespace {
  /// @brief Test fixture class for testing D2UpdateMessage object
 class D2UpdateMessageTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     //
     // Does nothing.
@@ -691,6 +692,5 @@ TEST_F(D2UpdateMessageTest, allValidTSIG) {
                                    InvalidQRFlag);
     }
 }
-
 
 } // End of anonymous namespace

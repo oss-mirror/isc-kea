@@ -24,6 +24,7 @@ namespace netconf {
 /// to JSON commands sent to the respective Kea servers.
 class NetconfProcess : public process::DProcessBase {
 public:
+
     /// @brief Constructor
     ///
     /// @param name name is a text label for the process. Generally used
@@ -103,7 +104,7 @@ private:
 /// @brief Defines a shared pointer to NetconfProcess.
 typedef boost::shared_ptr<NetconfProcess> NetconfProcessPtr;
 
-}; // namespace isc::netconf
-}; // namespace isc
+} // namespace isc::netconf
+} // namespace isc
 
 #endif // NETCONF_PROCESS_H

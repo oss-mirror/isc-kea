@@ -28,10 +28,13 @@ namespace test {
 /// the data that is accessible via callouts.
 class HookAllocEngine6Test : public AllocEngine6Test {
 public:
+
+    /// @brief Constructor
     HookAllocEngine6Test() {
         resetCalloutBuffers();
     }
 
+    /// @brief Destructor
     virtual ~HookAllocEngine6Test() {
         try {
             resetCalloutBuffers();
@@ -347,12 +350,15 @@ TEST_F(HookAllocEngine6Test, skip_lease6_select) {
 /// src/bin/dhcp4/tests/dhcp4_srv_unittest.cc
 class HookAllocEngine4Test : public AllocEngine4Test {
 public:
+
+    /// @brief Constructor
     HookAllocEngine4Test() {
         // The default context is not used in these tests.
         ctx_.callout_handle_.reset();
         resetCalloutBuffers();
     }
 
+    /// @brief Destructor
     virtual ~HookAllocEngine4Test() {
         try {
             resetCalloutBuffers();

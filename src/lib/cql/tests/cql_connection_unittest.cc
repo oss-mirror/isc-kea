@@ -27,6 +27,7 @@ using isc::db::CqlConnection;
 
 class CqlConnectionTest {
 public:
+
     /// @brief Constructor
     CqlConnectionTest() = default;
 

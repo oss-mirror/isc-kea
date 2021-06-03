@@ -44,6 +44,7 @@ typedef boost::shared_ptr<NetconfAgent> NetconfAgentPtr;
 ///  - on shutdown close subscriptions.
 class NetconfAgent {
 public:
+
     /// @brief Constructor.
     NetconfAgent();
 

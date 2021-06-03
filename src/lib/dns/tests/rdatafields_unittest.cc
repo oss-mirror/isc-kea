@@ -332,6 +332,7 @@ TEST_F(RdataFieldsTest, getFieldSpecWithBadFieldId) {
 class DummyRdata : public Rdata {
 public:
     enum Mode { CLEAR, SKIP, TRIM };
+
     /// @brief Constructor
     explicit DummyRdata(Mode mode) : mode_(mode) {
     }

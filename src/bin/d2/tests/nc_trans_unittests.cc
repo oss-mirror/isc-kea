@@ -267,6 +267,7 @@ typedef boost::shared_ptr<NameChangeStub> NameChangeStubPtr;
 /// aspects of NameChangeTransaction.
 class NameChangeTransactionTest : public TransactionTest {
 public:
+
     /// @brief Constructor
     NameChangeTransactionTest() = default;
 
@@ -1266,4 +1267,4 @@ TEST_F(NameChangeTransactionTest, addPtrRdata) {
     EXPECT_EQ(ncr->getFqdn(), rdata_it->getCurrent().toText());
 }
 
-}; // anonymous namespace
+} // anonymous namespace

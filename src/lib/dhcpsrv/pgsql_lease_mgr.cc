@@ -374,6 +374,7 @@ namespace dhcp {
 /// database.
 class PgSqlLeaseExchange : public PgSqlExchange {
 public:
+
     /// @brief Constructor
     PgSqlLeaseExchange()
         : addr_str_(""), hwaddr_length_(0), hwaddr_(hwaddr_length_),

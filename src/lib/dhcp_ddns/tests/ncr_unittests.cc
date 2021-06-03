@@ -337,6 +337,7 @@ TEST(NameChangeRequestTest, dhcidTest) {
 /// @brief Test fixture class for testing DHCID creation.
 class DhcidTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     DhcidTest() {
         const uint8_t fqdn_data[] = {

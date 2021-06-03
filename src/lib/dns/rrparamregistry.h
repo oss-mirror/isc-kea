@@ -60,12 +60,15 @@ class AbstractRdataFactory {
     ///
     //@{
 protected:
+
     /// The default constructor
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
     AbstractRdataFactory() = default;
+
 public:
+
     /// The destructor.
     virtual ~AbstractRdataFactory() = default;
     //@}
@@ -175,6 +178,7 @@ class RRParamRegistry {
     /// These are intentionally hidden (see the class description).
     //@{
 private:
+
     /// @brief Constructor
     RRParamRegistry();
 
@@ -184,6 +188,7 @@ private:
     /// @brief Destructor
     ~RRParamRegistry();
     //@}
+
 public:
     ///
     /// \brief Return the singleton instance of \c RRParamRegistry.

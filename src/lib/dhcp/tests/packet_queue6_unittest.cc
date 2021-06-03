@@ -29,6 +29,7 @@ namespace {
 /// mechanics.
 class TestQueue6 : public PacketQueueRing6 {
 public:
+
     /// @brief Constructor
     ///
     /// @param queue_size maximum number of packets the queue can hold

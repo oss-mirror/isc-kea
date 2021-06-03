@@ -26,6 +26,7 @@ class HashImpl;
 ///
 class Hash : private boost::noncopyable {
 private:
+
     /// \brief Constructor from a hash algorithm
     ///
     /// \exception UnsupportedAlgorithmException if the given algorithm
@@ -39,6 +40,7 @@ private:
     friend Hash* CryptoLink::createHash(const HashAlgorithm);
 
 public:
+
     /// \brief Destructor
     ~Hash();
 

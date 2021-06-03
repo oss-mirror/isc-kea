@@ -17,6 +17,7 @@ namespace dhcp {
 /// but it may be expanded in the future.
 class LeaseFileStats {
 public:
+
     /// @brief Constructor
     ///
     /// Initializes the stats variables to zeros

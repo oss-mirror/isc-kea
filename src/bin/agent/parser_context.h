@@ -33,8 +33,7 @@ namespace agent {
 /// parse only content of the Control-agent object, which is a subset
 /// of full grammar (this will be very useful for unit-tests to not duplicate
 /// unnecessary parts of the config file).
-class ParserContext
-{
+class ParserContext {
 public:
 
     /// @brief Defines currently supported scopes
@@ -59,7 +58,7 @@ public:
     /// @brief Default constructor.
     ParserContext();
 
-    /// @brief destructor
+    /// @brief destructor.
     virtual ~ParserContext() = default;
 
     /// @brief JSON elements being parsed.

@@ -37,6 +37,7 @@ namespace {
 /// @brief Test fixture for exercising the DHCPv4 Packet Queue Manager (PQM)
 class PacketQueueMgr4Test : public ::testing::Test {
 public:
+
     /// @brief Constructor
     ///
     /// Note that it instantiates the PQM singleton.

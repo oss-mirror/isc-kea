@@ -76,6 +76,7 @@ public:
     /// exchange is complete (@see @c DNSClient).
     class Callback {
     public:
+
         // @brief Constructor.
         Callback() = default;
 

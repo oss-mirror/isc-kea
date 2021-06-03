@@ -165,8 +165,8 @@ public:
 
     /// @brief Constructor
     //
-    // Instantiates the listener member and the test timer. The timer is used
-    // to ensure a test doesn't go awry and hang forever.
+    /// Instantiates the listener member and the test timer. The timer is used
+    /// to ensure a test doesn't go awry and hang forever.
     NameChangeUDPListenerTest()
         : io_service_(), result_(NameChangeListener::SUCCESS),
           test_timer_(io_service_) {
@@ -180,6 +180,7 @@ public:
                           TEST_TIMEOUT);
     }
 
+    /// @brief Destructor
     virtual ~NameChangeUDPListenerTest() = default;
 
     /// @brief Converts JSON string into an NCR and sends it to the listener.
@@ -290,11 +291,14 @@ public:
 /// @brief Text fixture for testing NameChangeUDPListener
 class NameChangeUDPSenderBasicTest : public virtual ::testing::Test {
 public:
+
+    /// @brief Constructor
     NameChangeUDPSenderBasicTest() {
         // Disable multi-threading
         MultiThreadingMgr::instance().setMode(false);
     }
 
+    /// @brief Destructor
     ~NameChangeUDPSenderBasicTest() {
         try {
             // Disable multi-threading
@@ -966,6 +970,7 @@ public:
     std::vector<NameChangeRequestPtr> sent_ncrs_;
     std::vector<NameChangeRequestPtr> received_ncrs_;
 
+    /// @brief Constructor
     NameChangeUDPTest()
         : io_service_(), recv_result_(NameChangeListener::SUCCESS),
           send_result_(NameChangeSender::SUCCESS), test_timer_(io_service_) {
@@ -988,6 +993,7 @@ public:
         MultiThreadingMgr::instance().setMode(false);
     }
 
+    /// @brief Destructor
     ~NameChangeUDPTest() {
         try {
             // Disable multi-threading

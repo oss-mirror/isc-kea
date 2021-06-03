@@ -415,6 +415,7 @@ namespace {
 
 class BasicRdataIterator : public RdataIterator {
 public:
+
     /// @brief Constructor.
     BasicRdataIterator(const std::vector<rdata::ConstRdataPtr>& datavector) :
         datavector_(&datavector), it_(datavector_->begin()) {

@@ -33,6 +33,7 @@ typedef boost::shared_ptr<D2CfgContext> D2CfgContextPtr;
 /// It is derived from the context base class, ConfigBase.
 class D2CfgContext : public process::ConfigBase {
 public:
+
     /// @brief Constructor
     D2CfgContext();
 
@@ -160,6 +161,7 @@ typedef boost::shared_ptr<DdnsDomainListMgr> DdnsDomainListMgrPtr;
 /// and retrieving the information on demand.
 class D2CfgMgr : public process::DCfgMgrBase {
 public:
+
     /// @brief Reverse zone suffix added to IPv4 addresses for reverse lookups
     /// @todo This should be configurable.
     static const char* IPV4_REV_ZONE_SUFFIX;

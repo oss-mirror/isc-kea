@@ -81,7 +81,6 @@ public:
     /// defines option universe DHCPv4 or DHCPv6
     enum Universe { V4, V6 };
 
-
     /// @brief a factory function prototype
     ///
     /// @param u option universe (DHCPv4 or DHCPv6)

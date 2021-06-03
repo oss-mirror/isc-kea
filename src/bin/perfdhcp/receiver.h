@@ -53,6 +53,7 @@ private:
     uint8_t ip_version_;
 
 public:
+
     /// \brief Constructor.
     ///
     /// \param socket A socket for receiving packets.

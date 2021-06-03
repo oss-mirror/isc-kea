@@ -129,6 +129,7 @@ class Rdata {
     /// own versions of these methods.
     //@{
 protected:
+
     /// The default constructor.
     ///
     /// This is intentionally defined as \c protected as this base class should
@@ -137,10 +138,12 @@ protected:
     /// either, because an \c Rdata object without concrete data isn't
     /// meaningful.
     Rdata() = default;
+
 private:
     Rdata(const Rdata& source);
     void operator=(const Rdata& source);
 public:
+
     /// The destructor.
     virtual ~Rdata() = default;
     //@}
@@ -248,6 +251,7 @@ struct GenericImpl;
 /// assuming any structure.
 class Generic : public Rdata {
 public:
+
     ///
     /// \name Constructors, Assignment Operator and Destructor.
     ///
@@ -290,6 +294,7 @@ public:
     /// \param rdata_len The length in buffer of the \c Rdata.  In bytes.
     Generic(isc::util::InputBuffer& buffer, size_t rdata_len);
 
+    ///
     /// \brief Constructor from master lexer.
     ///
     Generic(MasterLexer& lexer, const Name* name,

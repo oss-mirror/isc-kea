@@ -223,6 +223,7 @@ private:
     RdataFields& operator=(const RdataFields& source);
 
 public:
+
     /// Constructor from Rdata.
     ///
     /// This constructor converts the data of a given \c Rdata object into

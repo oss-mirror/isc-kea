@@ -64,6 +64,7 @@ namespace {
 // it's hopefully an acceptable practice.
 class RdataFieldComposer : public AbstractMessageRenderer {
 public:
+
     /// @brief Constructor
     RdataFieldComposer() :
         truncated_(false), length_limit_(65535),
@@ -230,6 +231,7 @@ void
 RdataFields::toWire(OutputBuffer& buffer) const {
     buffer.writeData(data_, data_length_);
 }
+
 } // end of namespace rdata
 } // end of namespace dns
 } // end of namespace isc

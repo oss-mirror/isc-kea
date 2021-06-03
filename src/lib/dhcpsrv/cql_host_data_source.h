@@ -58,6 +58,7 @@ typedef boost::shared_ptr<CqlHostDataSourceImpl> CqlHostDataSourceImplPtr;
 /// cases.
 class CqlHostDataSource : public BaseHostDataSource {
 public:
+
     /// @brief Constructor
     ///
     /// Uses the following keywords in the parameters passed to it to

@@ -131,10 +131,6 @@ ClientHandler::del(const HWAddrPtr& hwaddr) {
     clients_hwaddr_.erase(it);
 }
 
-ClientHandler::ClientHandler()
-    : client_(), locked_client_id_(), locked_hwaddr_() {
-}
-
 ClientHandler::~ClientHandler() {
     try {
         bool unlocked = false;

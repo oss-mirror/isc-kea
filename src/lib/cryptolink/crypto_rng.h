@@ -21,6 +21,7 @@ namespace cryptolink {
 ///
 class RNG : private boost::noncopyable {
 public:
+
     /// \brief Constructor from a Random Number Generator
     ///
     /// \exception LibraryError if there was any unexpected exception

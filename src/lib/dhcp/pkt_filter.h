@@ -44,7 +44,10 @@ class Iface;
 class PktFilter {
 public:
 
-    /// @brief Virtual Destructor
+    /// @brief Constructor.
+    PktFilter() = default;
+
+    /// @brief Virtual Destructor.
     virtual ~PktFilter() = default;
 
     /// @brief Check if packet can be sent to the host without address directly.

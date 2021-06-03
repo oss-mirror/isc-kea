@@ -28,6 +28,7 @@ using isc::UnitTestUtil;
 namespace {
 class UnitTestUtilConfig {
 private:
+
     // This is a singleton object and cannot be constructed explicitly.
     /// @brief Constructor
     UnitTestUtilConfig() = default;
@@ -37,6 +38,7 @@ private:
 
     /// @brief Destructor
     ~UnitTestUtilConfig() = default;
+
 public:
     /// Return a singleton unit test configuration object.  On first invocation
     /// one will be constructed.

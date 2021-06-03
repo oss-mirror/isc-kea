@@ -126,7 +126,6 @@ GenericBackendTest::checkConfiguredGlobal(const SrvConfigPtr& srv_cfg,
     checkConfiguredGlobal(srv_cfg, exp_global->getName(), exp_global->getElementValue());
 }
 
-
 } // end of namespace isc::dhcp::test
 } // end of namespace isc::dhcp
 } // end of namespace isc

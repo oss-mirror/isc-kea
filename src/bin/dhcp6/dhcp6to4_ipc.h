@@ -20,6 +20,7 @@ namespace dhcp {
 /// @brief Handles DHCPv4-over-DHCPv6 IPC on the DHCPv6 server side
 class Dhcp6to4Ipc : public Dhcp4o6IpcBase {
 protected:
+
     /// @brief Constructor
     ///
     /// Default constructor

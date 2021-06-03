@@ -37,6 +37,7 @@ typedef std::map<UserId,UserPtr> UserMap;
 /// may be updated by loading it from a data source, such as a file.
 class UserRegistry {
 public:
+
     /// @brief Constructor
     ///
     /// Creates a new registry with an empty list of users and no data source.

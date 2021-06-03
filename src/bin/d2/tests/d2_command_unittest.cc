@@ -70,6 +70,7 @@ public:
     }
 
 private:
+
     /// @brief Constructor
     NakedD2Controller() = default;
 };

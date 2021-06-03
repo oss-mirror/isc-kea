@@ -25,6 +25,7 @@ class IOSignalSetImpl;
 /// as a ready event with a callback using boost ASIO.
 class IOSignalSet {
 public:
+
     /// @brief Constructor.
     ///
     /// @param io_service IOService to which to send the signal.

@@ -32,8 +32,7 @@ public:
 };
 
 /// @brief Evaluation context, an interface to the expression evaluation.
-class D2ParserContext
-{
+class D2ParserContext {
 public:
 
     /// @brief Defines currently supported scopes

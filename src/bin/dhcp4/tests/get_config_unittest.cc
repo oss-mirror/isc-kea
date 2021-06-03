@@ -11308,6 +11308,7 @@ namespace {
 /// Test fixture class (code from Dhcp4ParserTest)
 class Dhcp4GetConfigTest : public ::testing::TestWithParam<size_t> {
 public:
+
     /// @brief Constructor
     Dhcp4GetConfigTest()
     : rcode_(-1) {

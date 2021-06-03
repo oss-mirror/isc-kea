@@ -35,6 +35,7 @@ namespace {
 /// they can be invoked directly in test routines.
 class D2UpdateMgrWrapper : public D2UpdateMgr {
 public:
+
     /// @brief Constructor
     ///
     /// Parameters match those needed by D2UpdateMgr.

@@ -31,6 +31,7 @@ namespace config {
 /// is (or will be) enabled when creating instances of this class.
 class CmdHttpListener {
 public:
+
     /// @brief Constructor
     CmdHttpListener(const asiolink::IOAddress& address, const uint16_t port,
                     const uint16_t thread_pool_size = 1);

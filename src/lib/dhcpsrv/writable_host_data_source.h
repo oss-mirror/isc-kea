@@ -20,6 +20,7 @@ namespace dhcp {
 /// return the const objects.
 class WritableHostDataSource {
 public:
+
     /// @brief Constructor
     WritableHostDataSource() = default;
 

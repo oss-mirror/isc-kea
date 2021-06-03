@@ -125,6 +125,7 @@ namespace dhcp {
 ///     hosts table.
 class CqlHostExchange : public virtual CqlExchange {
 public:
+
     /// @brief Constructor
     ///
     /// Specifies table columns.
@@ -2044,6 +2045,7 @@ CqlHostExchange::retrieveOption() const {
 /// This class is encapsulate all the Cassandra communication details.
 class CqlHostDataSourceImpl {
 public:
+
     /// @brief Constructor.
     ///
     /// This constructor opens database connection and initializes

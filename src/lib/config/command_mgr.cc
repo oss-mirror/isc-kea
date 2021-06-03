@@ -647,7 +647,6 @@ CommandMgr::getControlSocketFD() {
     return (impl_->acceptor_ ? impl_->acceptor_->getNative() : -1);
 }
 
-
 CommandMgr&
 CommandMgr::instance() {
     static CommandMgr cmd_mgr;
@@ -664,6 +663,5 @@ CommandMgr::setConnectionTimeout(const long timeout) {
     impl_->timeout_ = timeout;
 }
 
-
-}; // end of isc::config
-}; // end of isc
+} // end of isc::config
+} // end of isc

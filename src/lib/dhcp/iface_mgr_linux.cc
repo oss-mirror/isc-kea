@@ -53,8 +53,7 @@ namespace {
 ///
 /// See IfaceMgr::detectIfaces() (Linux implementation, towards the end of this
 /// file) for example usage.
-class Netlink
-{
+class Netlink {
 public:
 
 /// @brief Holds pointers to netlink messages.

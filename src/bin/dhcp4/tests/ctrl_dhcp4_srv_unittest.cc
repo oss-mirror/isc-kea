@@ -1985,4 +1985,4 @@ TEST_F(CtrlChannelDhcpv4SrvTest, connectionTimeoutNoData) {
               "\"Connection over control channel timed out\" }", response);
 }
 
-} // End of anonymous namespace
+} // end of anonymous namespace

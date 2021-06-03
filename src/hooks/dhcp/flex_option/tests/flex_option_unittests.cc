@@ -67,6 +67,7 @@ typedef boost::shared_ptr<TestFlexOptionImpl> TestFlexOptionImplPtr;
 /// @brief Test fixture for testing the Flex Option library.
 class FlexOptionTest : public ::testing::Test {
 public:
+
     /// @brief Constructor.
     FlexOptionTest() {
         impl_.reset(new TestFlexOptionImpl());

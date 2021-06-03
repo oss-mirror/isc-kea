@@ -45,6 +45,7 @@ typedef boost::shared_ptr<thread> ThreadPtr;
 /// This class exposes the constructor taking the output stream.
 class TestStdoutControlSocket : public StdoutControlSocket {
 public:
+
     /// @brief Constructor.
     ///
     /// @param ctrl_sock The control socket configuration.
@@ -506,10 +507,9 @@ public:
 /// @brief Test fixture class for http control sockets.
 class HttpControlSocketTest : public ThreadedTest {
 public:
+
     /// @brief Constructor
-    HttpControlSocketTest()
-        : ThreadedTest(), io_service_() {
-    }
+    HttpControlSocketTest() = default;
 
     /// @brief Destructor.
     virtual ~HttpControlSocketTest() {

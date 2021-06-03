@@ -15,7 +15,8 @@
 #include <stdexcept>
 #include <exceptions/exceptions.h>
 
-namespace isc { namespace data {
+namespace isc {
+namespace data {
 
 class Element;
 // todo: describe the rationale behind ElementPtr?
@@ -64,7 +65,6 @@ public:
 /// the type in question.
 ///
 class Element {
-
 public:
     /// @brief Represents the position of the data element within a
     /// configuration string.
@@ -815,7 +815,10 @@ std::ostream& operator<<(std::ostream& out, const Element& e);
 
 bool operator==(const Element& a, const Element& b);
 bool operator!=(const Element& a, const Element& b);
-} }
+
+}
+}
+
 #endif // ISC_DATA_H
 
 // Local Variables:

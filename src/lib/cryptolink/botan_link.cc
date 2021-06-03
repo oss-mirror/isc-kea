@@ -33,10 +33,13 @@ CryptoLink::~CryptoLink() {
 /// \brief Botan implementation of RNG.
 class RNGImpl : public RNG {
 public:
+
+    /// @brief Constructor
     RNGImpl() {
         rng.reset(new Botan::AutoSeeded_RNG());
     }
 
+    /// @brief Destructor
     ~RNGImpl() = default;
 
 private:

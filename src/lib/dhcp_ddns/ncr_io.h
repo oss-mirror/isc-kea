@@ -183,6 +183,9 @@ public:
     class RequestReceiveHandler {
     public:
 
+        /// @brief Constructor
+        RequestReceiveHandler() = default;
+
         /// @brief Function operator implementing a NCR receive callback.
         ///
         /// This method allows the application to receive the inbound
@@ -198,6 +201,7 @@ public:
         virtual void operator ()(const Result result,
                                  NameChangeRequestPtr& ncr) = 0;
 
+        /// @brief Destructor
         virtual ~RequestReceiveHandler() = default;
     };
 
@@ -486,6 +490,9 @@ public:
     class RequestSendHandler {
     public:
 
+        /// @brief Constructor
+        RequestSendHandler() = default;
+
         /// @brief Function operator implementing a NCR send callback.
         ///
         /// This method allows the application to receive the outcome of
@@ -500,6 +507,7 @@ public:
         virtual void operator ()(const Result result,
                                  NameChangeRequestPtr& ncr) = 0;
 
+        /// @brief Destructor
         virtual ~RequestSendHandler() = default;
     };
 

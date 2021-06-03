@@ -1563,7 +1563,7 @@ private:
     isc::util::WatchedThreadPtr dhcp_receiver_;
 };
 
-}; // namespace isc::dhcp
-}; // namespace isc
+} // namespace isc::dhcp
+} // namespace isc
 
 #endif // IFACE_MGR_H

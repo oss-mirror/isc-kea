@@ -32,8 +32,7 @@ public:
 };
 
 /// @brief Evaluation context, an interface to the expression evaluation.
-class Parser4Context
-{
+class Parser4Context {
 public:
 
     /// @brief Defines currently supported scopes
@@ -396,7 +395,7 @@ public:
     isc::data::ElementPtr parseCommon();
 };
 
-}; // end of isc::eval namespace
-}; // end of isc namespace
+} // end of isc::eval namespace
+} // end of isc namespace
 
 #endif

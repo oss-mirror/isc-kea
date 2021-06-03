@@ -134,6 +134,7 @@ private:
 /// @brief "naked" Dhcpv6Srv class that exposes internal members
 class NakedDhcpv6Srv: public isc::dhcp::Dhcpv6Srv {
 public:
+
     /// @brief Constructor
     NakedDhcpv6Srv(uint16_t port) : isc::dhcp::Dhcpv6Srv(port) {
         // Open the "memfile" database for leases

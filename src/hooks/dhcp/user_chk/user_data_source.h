@@ -25,6 +25,7 @@ public:
 /// from an IO source such as a file.
 class UserDataSource {
 public:
+
     /// @brief Constructor.
     UserDataSource() = default;
 

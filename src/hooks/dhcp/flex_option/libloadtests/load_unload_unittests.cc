@@ -29,6 +29,7 @@ namespace {
 /// @brief Test fixture for testing loading and unloading the flex-option library
 class LibLoadTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     LibLoadTest() {
         reset();

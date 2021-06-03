@@ -24,6 +24,7 @@ namespace run_script {
 /// @brief Run Script implementation.
 class RunScriptImpl {
 public:
+
     /// @brief Constructor.
     RunScriptImpl();
 
@@ -236,4 +237,5 @@ typedef boost::shared_ptr<RunScriptImpl> RunScriptImplPtr;
 
 } // namespace run_script
 } // namespace isc
+
 #endif

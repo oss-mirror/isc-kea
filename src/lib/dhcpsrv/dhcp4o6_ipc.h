@@ -68,6 +68,7 @@ public:
     };
 
 protected:
+
     /// @brief Constructor
     ///
     /// Default constructor

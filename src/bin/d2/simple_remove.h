@@ -345,7 +345,6 @@ protected:
 /// @brief Defines a pointer to a SimpleRemoveTransaction.
 typedef boost::shared_ptr<SimpleRemoveTransaction> SimpleRemoveTransactionPtr;
 
-
 } // namespace isc::d2
 } // namespace isc
 #endif

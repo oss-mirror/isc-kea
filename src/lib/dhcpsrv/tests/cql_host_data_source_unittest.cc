@@ -775,6 +775,7 @@ TEST_F(CqlHostDataSourceTest, testMultipleHosts6) {
 /// CQL as alternate host data source.
 class CQLHostMgrTest : public HostMgrTest {
 protected:
+
     /// @brief Constructor
     CQLHostMgrTest() = default;
 

@@ -529,4 +529,4 @@ TEST_F(DUIDFactoryTest, override) {
     testEN("000009BF", "12131415");
 }
 
-} // End anonymous namespace
+} // end of anonymous namespace

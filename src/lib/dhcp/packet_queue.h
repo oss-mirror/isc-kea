@@ -55,7 +55,8 @@ public:
     /// queue.  It is the logical name used to register queue
     /// implementations.
     explicit PacketQueue(const std::string& queue_type)
-        :  queue_type_(queue_type) {}
+        : queue_type_(queue_type) {
+    }
 
     /// Virtual destructor
     virtual ~PacketQueue() = default;
@@ -136,7 +137,7 @@ typedef boost::shared_ptr<PacketQueue<Pkt4Ptr>> PacketQueue4Ptr;
 /// DHCPv6 packet queue factories.
 typedef boost::shared_ptr<PacketQueue<Pkt6Ptr>> PacketQueue6Ptr;
 
-}; // namespace isc::dhcp
-}; // namespace isc
+} // namespace isc::dhcp
+} // namespace isc
 
 #endif // PACKET_QUEUE_H

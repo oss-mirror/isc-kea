@@ -38,6 +38,7 @@ public:
 
     /// @brief Defines the text label hardware address id type.
     static const char* HW_ADDRESS_STR;
+
     /// @brief Define the text label DUID id type.
     static const char* DUID_STR;
 

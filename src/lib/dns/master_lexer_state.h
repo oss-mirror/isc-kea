@@ -47,6 +47,7 @@ namespace master_lexer_internal {
 /// this library are expected to use this class.
 class State {
 public:
+
     /// \brief Constructor.
     State() = default;
 

@@ -171,7 +171,6 @@ protected:
 
     /// @brief Pointer to the high availability service (state machine).
     HAServicePtr service_;
-
 };
 
 /// @brief Pointer to the High Availability hooks library implementation.

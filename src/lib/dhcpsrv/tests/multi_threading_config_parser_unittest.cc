@@ -32,6 +32,7 @@ public:
     virtual ~MultiThreadingConfigParserTest() = default;
 
 protected:
+
     /// @brief Constructor
     MultiThreadingConfigParserTest() = default;
 

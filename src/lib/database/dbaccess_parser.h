@@ -24,6 +24,7 @@ namespace db {
 /// "config-database" elements, and comprises a map of strings.
 class DbAccessParser: public isc::data::SimpleParser {
 public:
+
     /// @brief Constructor
     DbAccessParser() = default;
 
