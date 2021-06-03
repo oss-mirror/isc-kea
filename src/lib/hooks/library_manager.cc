@@ -50,20 +50,23 @@ LibraryManager::LibraryManager(const std::string& name, int index,
 // The only method to do so is "validateLibrary", which takes care not to call
 // methods requiring a non-NULL manager.
 LibraryManager::LibraryManager(const std::string& name)
-        : dl_handle_(NULL), index_(-1), manager_(), library_name_(name)
-{}
+        : dl_handle_(NULL), index_(-1), manager_(), library_name_(name) {
+}
 
 // Destructor.
 LibraryManager::~LibraryManager() {
-    if (index_ >= 0) {
-        // LibraryManager instantiated to load a library, so ensure that
-        // it is unloaded before exiting.
-        static_cast<void>(prepareUnloadLibrary());
-    }
+    try {
+        if (index_ >= 0) {
+            // LibraryManager instantiated to load a library, so ensure that
+            // it is unloaded before exiting.
+            static_cast<void>(prepareUnloadLibrary());
+        }
 
-    // LibraryManager instantiated to validate a library, so just ensure
-    // that it is closed before exiting.
-    static_cast<void>(closeLibrary());
+        // LibraryManager instantiated to validate a library, so just ensure
+        // that it is closed before exiting.
+        static_cast<void>(closeLibrary());
+    } catch (...) {
+    }
 }
 
 // Open the library

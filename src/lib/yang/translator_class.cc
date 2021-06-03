@@ -28,9 +28,6 @@ TranslatorClass::TranslatorClass(S_Session session, const string& model)
       TranslatorOptionDefList(session, model) {
 }
 
-TranslatorClass::~TranslatorClass() {
-}
-
 ElementPtr
 TranslatorClass::getClass(const string& xpath) {
     try {
@@ -171,9 +168,6 @@ TranslatorClasses::TranslatorClasses(S_Session session, const string& model)
       TranslatorOptionDef(session, model),
       TranslatorOptionDefList(session, model),
       TranslatorClass(session, model) {
-}
-
-TranslatorClasses::~TranslatorClasses() {
 }
 
 ConstElementPtr

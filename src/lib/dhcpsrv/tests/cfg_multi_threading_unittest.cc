@@ -29,6 +29,11 @@ public:
     virtual ~CfgMultiThreadingTest() = default;
 
 protected:
+    /// @brief Constructor
+    CfgMultiThreadingTest() = default;
+
+    /// @brief Destructor
+    virtual ~CfgMultiThreadingTest() = default;
 
     /// @brief Setup for each test.
     ///

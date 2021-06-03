@@ -89,7 +89,10 @@ HttpConnection::HttpConnection(asiolink::IOService& io_service,
 }
 
 HttpConnection::~HttpConnection() {
-    close();
+    try {
+        close();
+    } catch (...) {
+    }
 }
 
 void

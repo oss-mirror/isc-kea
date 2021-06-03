@@ -73,7 +73,10 @@ public:
     explicit CqlLeaseMgr(const db::DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor (closes database)
-    virtual ~CqlLeaseMgr();
+    ///
+    /// There is no need to close the database in this destructor: it is
+    /// closed in the destructor of the dbconn_ member variable.
+    virtual ~CqlLeaseMgr() = default;
 
     /// @brief Local version of getDBVersion() class method
     static std::string getDBVersion();

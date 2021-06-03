@@ -64,9 +64,6 @@ ClientClassDef::ClientClassDef(const ClientClassDef& rhs)
     filename_ = rhs.filename_;
 }
 
-ClientClassDef::~ClientClassDef() {
-}
-
 std::string
 ClientClassDef::getName() const {
     return (name_);
@@ -230,9 +227,6 @@ ClientClassDictionary::ClientClassDictionary(const ClientClassDictionary& rhs)
         ClientClassDefPtr copy(new ClientClassDef(*cclass));
         addClass(copy);
     }
-}
-
-ClientClassDictionary::~ClientClassDictionary() {
 }
 
 void

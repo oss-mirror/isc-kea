@@ -28,9 +28,12 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     TLSA(uint8_t certificate_usage, uint8_t selector,
          uint8_t matching_type, const std::string& certificate_assoc_data);
     TLSA& operator=(const TLSA& source);
+
+    /// \brief Destructor
     ~TLSA();
 
     ///

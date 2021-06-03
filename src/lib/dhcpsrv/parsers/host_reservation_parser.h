@@ -18,8 +18,11 @@ namespace dhcp {
 class HostReservationParser : public isc::data::SimpleParser {
 public:
 
+    /// @brief Constructor.
+    HostReservationParser() = default;
+
     /// @brief Destructor.
-    virtual ~HostReservationParser() { }
+    virtual ~HostReservationParser() = default;
 
     /// @brief Parses a single entry for host reservation.
     ///
@@ -141,10 +144,10 @@ class HostReservationIdsParser : public isc::data::SimpleParser {
 public:
 
     /// @brief Constructor.
-    HostReservationIdsParser();
+    HostReservationIdsParser() = default;
 
     /// @brief Destructor.
-    virtual ~HostReservationIdsParser() { }
+    virtual ~HostReservationIdsParser() = default;
 
     /// @brief Parses a list of host identifiers.
     ///

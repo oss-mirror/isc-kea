@@ -229,13 +229,15 @@ BasicRRsetImpl::toWire(AbstractMessageRenderer& renderer, size_t limit) const {
 }
 
 BasicRRset::BasicRRset(const Name& name, const RRClass& rrclass,
-                       const RRType& rrtype, const RRTTL& ttl)
-{
+                       const RRType& rrtype, const RRTTL& ttl) {
     impl_ = new BasicRRsetImpl(name, rrclass, rrtype, ttl);
 }
 
 BasicRRset::~BasicRRset() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void
@@ -349,12 +351,9 @@ BasicRRset::toWire(AbstractMessageRenderer& renderer) const {
 
 RRset::RRset(const Name& name, const RRClass& rrclass,
             const RRType& rrtype, const RRTTL& ttl) :
-    BasicRRset(name, rrclass, rrtype, ttl)
-{
+    BasicRRset(name, rrclass, rrtype, ttl) {
     rrsig_ = RRsetPtr();
 }
-
-RRset::~RRset() {}
 
 unsigned int
 RRset::getRRsigDataCount() const {
@@ -418,10 +417,11 @@ class BasicRdataIterator : public RdataIterator {
 public:
     /// @brief Constructor.
     BasicRdataIterator(const std::vector<rdata::ConstRdataPtr>& datavector) :
-        datavector_(&datavector), it_(datavector_->begin()) {}
+        datavector_(&datavector), it_(datavector_->begin()) {
+    }
 
     /// @brief Destructor.
-    ~BasicRdataIterator() {}
+    ~BasicRdataIterator() = default;
 
     /// @brief Set iterator at first position.
     virtual void first() {

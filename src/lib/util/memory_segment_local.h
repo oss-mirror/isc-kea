@@ -29,7 +29,7 @@ public:
     }
 
     /// \brief Destructor
-    virtual ~MemorySegmentLocal() {}
+    virtual ~MemorySegmentLocal() = default;
 
     /// \brief Allocate/acquire a segment of memory. The source of the
     /// memory is libc's malloc().

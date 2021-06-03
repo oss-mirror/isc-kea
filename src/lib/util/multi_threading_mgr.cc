@@ -15,9 +15,6 @@ MultiThreadingMgr::MultiThreadingMgr()
     : enabled_(false), critical_section_count_(0), thread_pool_size_(0) {
 }
 
-MultiThreadingMgr::~MultiThreadingMgr() {
-}
-
 MultiThreadingMgr&
 MultiThreadingMgr::instance() {
     static MultiThreadingMgr manager;
@@ -178,7 +175,10 @@ MultiThreadingCriticalSection::MultiThreadingCriticalSection() {
 }
 
 MultiThreadingCriticalSection::~MultiThreadingCriticalSection() {
-    MultiThreadingMgr::instance().exitCriticalSection();
+    try {
+        MultiThreadingMgr::instance().exitCriticalSection();
+    } catch (...) {
+    }
 }
 
 void

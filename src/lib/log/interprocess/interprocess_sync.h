@@ -50,11 +50,11 @@ public:
     /// identical among the various processes that need to be
     /// synchronized for the same task.
     InterprocessSync(const std::string& task_name) :
-        task_name_(task_name), is_locked_(false)
-    {}
+        task_name_(task_name), is_locked_(false) {
+    }
 
     /// \brief Destructor
-    virtual ~InterprocessSync() {}
+    virtual ~InterprocessSync() = default;
 
 protected:
     /// \brief Acquire the lock (blocks if something else has acquired a
@@ -92,13 +92,17 @@ public:
     /// \param sync The sync object which has to be locked/unlocked by
     /// this locker object.
     InterprocessSyncLocker(InterprocessSync& sync) :
-        sync_(sync)
-    {}
+        sync_(sync) {
+    }
 
     /// \brief Destructor
     ~InterprocessSyncLocker() {
-        if (isLocked())
-            unlock();
+        try {
+            if (isLocked()) {
+                unlock();
+            }
+        } catch (...) {
+        }
     }
 
     /// \brief Acquire the lock (blocks if something else has acquired a

@@ -70,7 +70,6 @@ struct PsqlBindArray {
     /// @return Returns true if there are no entries in the array, false
     /// otherwise.
     bool empty() const {
-
         return (values_.empty());
     }
 
@@ -186,7 +185,6 @@ struct PsqlBindArray {
 private:
     /// @brief vector of strings which supplied the values
     std::vector<ConstStringPtr> bound_strs_;
-
 };
 
 /// @brief Defines a smart pointer to PsqlBindArray
@@ -200,10 +198,11 @@ typedef boost::shared_ptr<PsqlBindArray> PsqlBindArrayPtr;
 class PgSqlExchange {
 public:
     /// @brief Constructor
-    PgSqlExchange(const size_t num_columns = 0) : columns_(num_columns) {}
+    PgSqlExchange(const size_t num_columns = 0) : columns_(num_columns) {
+    }
 
     /// @brief Destructor
-    virtual ~PgSqlExchange(){}
+    virtual ~PgSqlExchange() = default;
 
     /// @brief Converts time_t value to a text representation in local time.
     ///
@@ -396,7 +395,7 @@ protected:
     std::vector<std::string>columns_;
 };
 
-}; // end of isc::db namespace
-}; // end of isc namespace
+} // end of isc::db namespace
+} // end of isc namespace
 
 #endif // PGSQL_EXCHANGE_H

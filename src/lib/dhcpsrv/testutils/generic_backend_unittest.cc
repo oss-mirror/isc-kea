@@ -23,7 +23,10 @@ GenericBackendTest::GenericBackendTest() {
 }
 
 GenericBackendTest::~GenericBackendTest() {
-    LibDHCP::clearRuntimeOptionDefs();
+    try {
+        LibDHCP::clearRuntimeOptionDefs();
+    } catch (...) {
+    }
 }
 
 OptionDescriptor

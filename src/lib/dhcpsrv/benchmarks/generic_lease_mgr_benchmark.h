@@ -36,7 +36,7 @@ public:
     GenericLeaseMgrBenchmark();
 
     /// Virtual destructor
-    virtual ~GenericLeaseMgrBenchmark();
+    virtual ~GenericLeaseMgrBenchmark() = default;
 
     /// @brief set up code for initializing IPv4 version of a benchmark
     ///

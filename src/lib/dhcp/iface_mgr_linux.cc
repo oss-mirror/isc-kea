@@ -85,11 +85,13 @@ public:
 /// };
     typedef boost::array<struct rtattr*, IFLA_MAX + 1> RTattribPtrs;
 
+    /// @brief Constructor
     Netlink() : fd_(-1), seq_(0), dump_(0) {
         memset(&local_, 0, sizeof(struct sockaddr_nl));
         memset(&peer_, 0, sizeof(struct sockaddr_nl));
     }
 
+    /// @brief Destructor
     ~Netlink() {
         try {
             rtnl_close_socket();

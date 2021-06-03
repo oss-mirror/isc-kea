@@ -42,8 +42,8 @@ public:
     /// @param what a description (type) of the exception.
     Exception(const char* file, size_t line, const std::string& what);
 
-    /// The destructor
-    virtual ~Exception() throw() {}
+    /// \brief Destructor
+    virtual ~Exception() throw() = default;
     //@}
 private:
     ///

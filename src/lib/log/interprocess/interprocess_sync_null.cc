@@ -12,9 +12,6 @@ namespace isc {
 namespace log {
 namespace interprocess {
 
-InterprocessSyncNull::~InterprocessSyncNull() {
-}
-
 bool
 InterprocessSyncNull::lock() {
     is_locked_ = true;

@@ -1748,7 +1748,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~CqlLeaseStatsQuery() {};
+    virtual ~CqlLeaseStatsQuery() = default;
 
     /// @brief Creates the lease statistical data result set
     ///
@@ -2117,11 +2117,6 @@ CqlLeaseMgr::CqlLeaseMgr(const DatabaseConnection::ParameterMap &parameters)
     dbconn_.prepareStatements(CqlLease4Exchange::tagged_statements_);
     dbconn_.prepareStatements(CqlLease6Exchange::tagged_statements_);
     dbconn_.prepareStatements(CqlLeaseStatsQuery::tagged_statements_);
-}
-
-CqlLeaseMgr::~CqlLeaseMgr() {
-    // There is no need to close the database in this destructor: it is
-    // closed in the destructor of the dbconn_ member variable.
 }
 
 std::string

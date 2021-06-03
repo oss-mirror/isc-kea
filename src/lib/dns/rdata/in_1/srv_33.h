@@ -42,7 +42,7 @@ public:
     /// intact.
     SRV& operator=(const SRV& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~SRV();
 
     ///

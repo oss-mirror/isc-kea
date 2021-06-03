@@ -22,9 +22,6 @@ StopwatchImpl::StopwatchImpl()
       cumulative_time_(microseconds(0)) {
 }
 
-StopwatchImpl::~StopwatchImpl() {
-}
-
 void
 StopwatchImpl::start() {
     // If stopwatch is "stopped", start it.

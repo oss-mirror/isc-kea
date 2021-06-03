@@ -29,9 +29,14 @@ namespace {
 class UnitTestUtilConfig {
 private:
     // This is a singleton object and cannot be constructed explicitly.
-    UnitTestUtilConfig() {}
-    UnitTestUtilConfig(const UnitTestUtilConfig& source);
-    ~UnitTestUtilConfig() {}
+    /// @brief Constructor
+    UnitTestUtilConfig() = default;
+
+    /// @brief Copy constructor
+    UnitTestUtilConfig(const UnitTestUtilConfig& source) = default;
+
+    /// @brief Destructor
+    ~UnitTestUtilConfig() = default;
 public:
     /// Return a singleton unit test configuration object.  On first invocation
     /// one will be constructed.

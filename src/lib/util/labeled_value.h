@@ -50,7 +50,7 @@ public:
     /// @brief Destructor.
     ///
     /// Destructor is virtual to permit derivations.
-    virtual ~LabeledValue();
+    virtual ~LabeledValue() = default;
 
     /// @brief Gets the integer value of this instance.
     ///
@@ -119,12 +119,12 @@ public:
     /// @brief Constructor
     ///
     /// Constructs an empty set.
-    LabeledValueSet();
+    LabeledValueSet() = default;
 
     /// @brief Destructor
     ///
     /// Destructor is virtual to permit derivations.
-    virtual ~LabeledValueSet();
+    virtual ~LabeledValueSet() = default;
 
     /// @brief Adds the given entry to the set
     ///

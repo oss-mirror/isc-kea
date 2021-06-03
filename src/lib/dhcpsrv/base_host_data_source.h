@@ -94,8 +94,11 @@ public:
         ID_DUID = 1    ///< DUID/client-id
     };
 
-    /// @brief Default destructor implementation.
-    virtual ~BaseHostDataSource() { }
+    /// @brief Constructor.
+    BaseHostDataSource() = default;
+
+    /// @brief Default destructor.
+    virtual ~BaseHostDataSource() = default;
 
     /// @brief Return all hosts connected to any subnet for which reservations
     /// have been made using a specified identifier.

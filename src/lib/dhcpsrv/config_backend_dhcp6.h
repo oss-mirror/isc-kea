@@ -85,9 +85,11 @@ namespace dhcp {
 /// however, be properly documented.
 class ConfigBackendDHCPv6 : public cb::BaseConfigBackend {
 public:
+    /// @brief Constructor
+    ConfigBackendDHCPv6() = default;
 
     /// @brief Virtual destructor.
-    virtual ~ConfigBackendDHCPv6() { }
+    virtual ~ConfigBackendDHCPv6() = default;
 
     /// @brief Retrieves a single subnet by subnet_prefix.
     ///

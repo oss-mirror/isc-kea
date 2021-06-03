@@ -47,11 +47,14 @@ namespace master_lexer_internal {
 /// this library are expected to use this class.
 class State {
 public:
+    /// \brief Constructor.
+    State() = default;
+
     /// \brief Virtual destructor.
     ///
     /// In our usage this actually doesn't matter, but some compilers complain
     /// about it and we need to silence them.
-    virtual ~State() {}
+    virtual ~State() = default;
 
     /// \brief Begin state transitions to get the next token.
     ///

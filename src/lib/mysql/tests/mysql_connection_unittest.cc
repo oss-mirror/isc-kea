@@ -20,11 +20,16 @@ namespace {
 /// @brief RAII wrapper over MYSQL_RES obtained from MySQL library functions like
 /// mysql_use_result().
 struct MySqlResult {
+    /// @brief Constructor
     MySqlResult(MYSQL_RES* result) : result_(result) {
     }
 
+    /// @brief Destructor
     ~MySqlResult() {
-        mysql_free_result(result_);
+        try {
+            mysql_free_result(result_);
+        } catch (...) {
+        }
     }
 
     MYSQL_RES* const result_;
@@ -109,8 +114,11 @@ public:
     ///
     /// Removes test table from the database.
     virtual ~MySqlConnectionTest() {
-        conn_.rollback();
-        dropTestTable();
+        try {
+            conn_.rollback();
+            dropTestTable();
+        } catch (...) {
+        }
     }
 
     /// @brief Creates test table @c mysql_connection_test.
@@ -577,7 +585,10 @@ public:
 
     /// @brief Destructor.
     virtual ~MySqlSchemaTest() {
-        destroyMySQLSchema();
+        try {
+            destroyMySQLSchema();
+        } catch (...) {
+        }
     }
 };
 

@@ -27,11 +27,12 @@ using namespace std;
 /// Or maybe we can trust the boost implementation
 class UniformRandomIntegerGeneratorTest : public ::testing::Test {
 public:
-    UniformRandomIntegerGeneratorTest():
-        gen_(min_, max_)
-    {
+    /// @brief Constructor
+    UniformRandomIntegerGeneratorTest() : gen_(min_, max_) {
     }
-    virtual ~UniformRandomIntegerGeneratorTest(){}
+
+    /// @brief Destructor
+    virtual ~UniformRandomIntegerGeneratorTest() = default;
 
     int gen() { return (gen_()); }
     int max() const { return (max_); }
@@ -79,11 +80,11 @@ TEST_F(UniformRandomIntegerGeneratorTest, IntegerRange) {
 /// \brief Test Fixture Class for weighted random number generator
 class WeightedRandomIntegerGeneratorTest : public ::testing::Test {
 public:
-    WeightedRandomIntegerGeneratorTest()
-    { }
+    /// @brief Constructor
+    WeightedRandomIntegerGeneratorTest() = default;
 
-    virtual ~WeightedRandomIntegerGeneratorTest()
-    { }
+    /// @brief Destructor
+    virtual ~WeightedRandomIntegerGeneratorTest() = default;
 };
 
 // Test of the weighted random number generator constructor

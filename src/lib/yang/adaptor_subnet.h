@@ -31,10 +31,10 @@ class AdaptorSubnet {
 public:
 
     /// @brief Constructor.
-    AdaptorSubnet();
+    AdaptorSubnet() = default;
 
     /// @brief Destructor.
-    virtual ~AdaptorSubnet();
+    virtual ~AdaptorSubnet() = default;
 
     /// @brief Collect a subnet ID.
     ///

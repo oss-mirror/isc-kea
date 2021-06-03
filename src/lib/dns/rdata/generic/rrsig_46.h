@@ -34,6 +34,8 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
     RRSIG& operator=(const RRSIG& source);
+
+    /// \brief Destructor
     ~RRSIG();
 
     // specialized methods

@@ -51,8 +51,7 @@ public:
         }
     }
 
-    HINFOImpl(MasterLexer& lexer)
-    {
+    HINFOImpl(MasterLexer& lexer) {
         parseHINFOData(lexer);
     }
 
@@ -89,13 +88,23 @@ HINFO::HINFO(MasterLexer& lexer, const Name*,
 {}
 
 HINFO&
-HINFO::operator=(const HINFO& source)
-{
-    impl_.reset(new HINFOImpl(*source.impl_));
+HINFO::operator=(const HINFO& source) {
+    if (this == &source) {
+        return (*this);
+    }
+
+    HINFOImpl* newimpl = new HINFOImpl(*source.impl_);
+    delete impl_;
+    impl_ = newimpl;
+
     return (*this);
 }
 
 HINFO::~HINFO() {
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 std::string

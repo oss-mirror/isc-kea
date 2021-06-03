@@ -22,10 +22,10 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
 
-    //We can use the default destructor.
-    //virtual ~A() {}
+    // We can use the default destructor.
+    // virtual ~A() = default
     // notyet:
-    //const struct in_addr& getAddress() const { return (addr_); }
+    // const struct in_addr& getAddress() const { return (addr_); }
 private:
     uint32_t addr_;             // raw IPv4 address (network byte order)
 };

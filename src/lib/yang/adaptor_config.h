@@ -22,15 +22,14 @@ namespace yang {
 /// as preProcess4 and preProcess6 class methods, filling some required
 /// (by YANG) fields (e.g. subnet IDs, or option code and space), or
 /// transforming a hand-written JSON configuration into a canonical form.
-class AdaptorConfig : public AdaptorHost, public AdaptorOption,
-    public AdaptorSubnet {
+class AdaptorConfig : public AdaptorHost, public AdaptorOption, public AdaptorSubnet {
 public:
 
     /// @brief Constructor.
-    AdaptorConfig();
+    AdaptorConfig() = default;
 
     /// @brief Destructor.
-    virtual ~AdaptorConfig();
+    virtual ~AdaptorConfig() = default;
 
     /// @brief Pre process a DHCPv4 configuration.
     ///

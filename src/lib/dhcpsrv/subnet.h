@@ -329,7 +329,7 @@ protected:
     ///
     /// A virtual destructor is needed because other classes
     /// derive from this class.
-    virtual ~Subnet() { };
+    virtual ~Subnet() = default;
 
     /// @brief keeps the subnet-id value.
     ///

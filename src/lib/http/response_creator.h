@@ -37,11 +37,13 @@ typedef boost::shared_ptr<HttpResponseCreator> HttpResponseCreatorPtr;
 /// @c createHttpResponse method.
 class HttpResponseCreator {
 public:
+    /// @brief Constructor.
+    HttpResponseCreator() = default;
 
     /// @brief Destructor.
     ///
     /// Classes with virtual functions need virtual destructors.
-    virtual ~HttpResponseCreator() { };
+    virtual ~HttpResponseCreator() = default;
 
     /// @brief Create HTTP response from HTTP request received.
     ///
@@ -104,7 +106,6 @@ protected:
     /// @return Pointer to an object representing HTTP response.
     virtual HttpResponsePtr
     createDynamicHttpResponse(HttpRequestPtr request) = 0;
-
 };
 
 } // namespace http

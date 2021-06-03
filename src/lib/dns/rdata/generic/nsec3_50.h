@@ -31,6 +31,8 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
     NSEC3& operator=(const NSEC3& source);
+
+    /// \brief Destructor
     ~NSEC3();
 
     uint8_t getHashalg() const;

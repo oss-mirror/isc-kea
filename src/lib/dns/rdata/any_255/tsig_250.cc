@@ -362,7 +362,10 @@ TSIG::operator=(const TSIG& source) {
 }
 
 TSIG::~TSIG() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Convert the \c TSIG to a string.

@@ -121,7 +121,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorDatabase();
+    virtual ~TranslatorDatabase() = default;
 
     /// @brief Get and translate a database access from YANG to JSON.
     ///
@@ -178,7 +178,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorDatabases();
+    virtual ~TranslatorDatabases() = default;
 
     /// @brief Get and translate database accesses from YANG to JSON.
     ///

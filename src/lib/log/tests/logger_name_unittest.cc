@@ -25,11 +25,18 @@ using namespace isc::log;
 
 class LoggerNameTest : public ::testing::Test {
 public:
+
+    /// @brief Constructor
     LoggerNameTest() :
-        name_(getRootLoggerName())
-    {}
+        name_(getRootLoggerName()) {
+    }
+
+    /// @brief Destructor
     ~LoggerNameTest() {
-        setRootLoggerName(name_);
+        try {
+            setRootLoggerName(name_);
+        } catch (...) {
+        }
     }
 
 private:

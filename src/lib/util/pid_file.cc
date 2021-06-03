@@ -19,9 +19,6 @@ PIDFile::PIDFile(const std::string& filename)
     : filename_(filename) {
 }
 
-PIDFile::~PIDFile() {
-}
-
 int
 PIDFile::check() const {
     std::ifstream fs(filename_.c_str());

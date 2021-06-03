@@ -84,7 +84,7 @@ public:
     }
 
     /// \brief Destructor
-    ~MessageException() {}
+    ~MessageException() = default;
 
     /// \brief Return Message ID
     ///

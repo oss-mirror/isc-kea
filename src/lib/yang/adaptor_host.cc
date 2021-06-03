@@ -23,12 +23,6 @@ const string
 AdaptorHost::STD_CHARACTERS =
     "0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.@_";
 
-AdaptorHost::AdaptorHost() {
-}
-
-AdaptorHost::~AdaptorHost() {
-}
-
 void
 AdaptorHost::quoteIdentifier(ElementPtr host) {
     ConstElementPtr flex_id = host->get("flex-id");

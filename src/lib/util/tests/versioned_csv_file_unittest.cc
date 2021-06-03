@@ -77,7 +77,10 @@ VersionedCSVFileTest::VersionedCSVFileTest()
 }
 
 VersionedCSVFileTest::~VersionedCSVFileTest() {
-    static_cast<void>(removeFile());
+    try {
+        static_cast<void>(removeFile());
+    } catch (...) {
+    }
 }
 
 std::string

@@ -37,8 +37,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~DCtorTestCfgMgr() {
-    }
+    virtual ~DCtorTestCfgMgr() = default;
 
     /// @brief Dummy implementation as this method is abstract.
     virtual ConfigPtr createNewContext() {
@@ -60,12 +59,11 @@ class DStubCfgMgrTest : public ConfigParseTest {
 public:
 
     /// @brief Constructor
-    DStubCfgMgrTest():cfg_mgr_(new DStubCfgMgr) {
+    DStubCfgMgrTest() : cfg_mgr_(new DStubCfgMgr) {
     }
 
     /// @brief Destructor
-    ~DStubCfgMgrTest() {
-    }
+    ~DStubCfgMgrTest() = default;
 
     /// @brief Convenience method which returns a DStubContextPtr to the
     /// configuration context.

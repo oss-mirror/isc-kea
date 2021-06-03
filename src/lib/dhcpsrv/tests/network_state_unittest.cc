@@ -34,13 +34,16 @@ public:
 
     /// @brief Destructor.
     virtual ~NetworkStateTest() {
-        // Cancel timers.
-        TimerMgr::instance()->unregisterTimers();
-        // Make sure IO service will stop when no timers are scheduled.
-        io_service_->stopWork();
-        // Run outstanding tasks.
-        io_service_->run();
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            // Cancel timers.
+            TimerMgr::instance()->unregisterTimers();
+            // Make sure IO service will stop when no timers are scheduled.
+            io_service_->stopWork();
+            // Run outstanding tasks.
+            io_service_->run();
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 
     /// @brief This test verifies the default is enable state.

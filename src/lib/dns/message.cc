@@ -380,11 +380,14 @@ MessageImpl::toWire(AbstractMessageRenderer& renderer, TSIGContext* tsig_ctx) {
 }
 
 Message::Message(Mode mode) :
-    impl_(new MessageImpl(mode))
-{}
+    impl_(new MessageImpl(mode)) {
+}
 
 Message::~Message() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 bool
@@ -1042,7 +1045,10 @@ SectionIterator<T>::SectionIterator(const SectionIteratorImpl<T>& impl) {
 
 template <typename T>
 SectionIterator<T>::~SectionIterator() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 template <typename T>

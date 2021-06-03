@@ -1300,7 +1300,10 @@ public:
     ///
     /// Clears current configuration.
     virtual ~HostReservationIdsParserTest() {
-        CfgMgr::instance().clear();
+        try {
+            CfgMgr::instance().clear();
+        } catch (...) {
+        }
     }
 
     /// @brief Test verifies that invalid configuration causes an error.

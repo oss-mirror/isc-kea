@@ -123,7 +123,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorHost();
+    virtual ~TranslatorHost() = default;
 
     /// @brief Get and translate a host reservation from YANG to JSON.
     ///
@@ -174,7 +174,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorHosts();
+    virtual ~TranslatorHosts() = default;
 
     /// @brief Get and translate host reservations from YANG to JSON.
     ///

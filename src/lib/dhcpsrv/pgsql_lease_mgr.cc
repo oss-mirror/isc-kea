@@ -374,7 +374,7 @@ namespace dhcp {
 /// database.
 class PgSqlLeaseExchange : public PgSqlExchange {
 public:
-
+    /// @brief Constructor
     PgSqlLeaseExchange()
         : addr_str_(""), hwaddr_length_(0), hwaddr_(hwaddr_length_),
           valid_lifetime_(0), valid_lifetime_str_(""), expire_(0),
@@ -383,7 +383,8 @@ public:
           user_context_("") {
     }
 
-    virtual ~PgSqlLeaseExchange(){}
+    /// @brief Destructor
+    virtual ~PgSqlLeaseExchange() = default;
 
 protected:
 
@@ -1042,7 +1043,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~PgSqlLeaseStatsQuery() {};
+    virtual ~PgSqlLeaseStatsQuery() = default;
 
     /// @brief Creates the lease statistical data result set
     ///
@@ -1204,12 +1205,15 @@ PgSqlLeaseMgr::PgSqlLeaseContextAlloc::PgSqlLeaseContextAlloc(
 }
 
 PgSqlLeaseMgr::PgSqlLeaseContextAlloc::~PgSqlLeaseContextAlloc() {
-    if (MultiThreadingMgr::instance().getMode()) {
-        // multi-threaded
-        lock_guard<mutex> lock(mgr_.pool_->mutex_);
-        mgr_.pool_->pool_.push_back(ctx_);
+    try {
+        if (MultiThreadingMgr::instance().getMode()) {
+            // multi-threaded
+            lock_guard<mutex> lock(mgr_.pool_->mutex_);
+            mgr_.pool_->pool_.push_back(ctx_);
+        }
+        // If running in single-threaded mode, there's nothing to do here.
+    } catch (...) {
     }
-    // If running in single-threaded mode, there's nothing to do here.
 }
 
 // PgSqlLeaseMgr Constructor and Destructor
@@ -1237,9 +1241,6 @@ PgSqlLeaseMgr::PgSqlLeaseMgr(const DatabaseConnection::ParameterMap& parameters)
     // Create an initial context.
     pool_.reset(new PgSqlLeaseContextPool());
     pool_->pool_.push_back(createContext());
-}
-
-PgSqlLeaseMgr::~PgSqlLeaseMgr() {
 }
 
 bool

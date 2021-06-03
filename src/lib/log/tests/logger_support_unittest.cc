@@ -14,13 +14,15 @@ using namespace isc::log;
 
 class LoggerSupportTest : public ::testing::Test {
 protected:
+    /// @brief Constructor
     LoggerSupportTest() {
         // Logger initialization is done in main().  As logging tests may
         // alter the default logging output, it is reset here.
         setDefaultLoggingOutput();
     }
-    ~LoggerSupportTest() {
-    }
+
+    /// @brief Destructor
+    ~LoggerSupportTest() = default;
 };
 
 // Check that the initialized flag can be manipulated.  This is a bit chicken-

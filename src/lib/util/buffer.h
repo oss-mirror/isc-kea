@@ -303,8 +303,7 @@ public:
     OutputBuffer(size_t len) :
         buffer_(NULL),
         size_(0),
-        allocated_(len)
-    {
+        allocated_(len) {
         // We use malloc and free instead of C++ new[] and delete[].
         // This way we can use realloc, which may in fact do it without a copy.
         if (allocated_ != 0) {
@@ -325,8 +324,7 @@ public:
     OutputBuffer(const OutputBuffer& other) :
         buffer_(NULL),
         size_(other.size_),
-        allocated_(other.allocated_)
-    {
+        allocated_(other.allocated_) {
         if (allocated_ != 0) {
             buffer_ = static_cast<uint8_t*>(malloc(allocated_));
             if (buffer_ == NULL) {

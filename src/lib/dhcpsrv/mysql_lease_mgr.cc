@@ -1570,7 +1570,10 @@ public:
 
     /// @brief Destructor
     virtual ~MySqlLeaseStatsQuery() {
-        (void) mysql_stmt_free_result(statement_);
+        try {
+            (void) mysql_stmt_free_result(statement_);
+        } catch (...) {
+        }
     }
 
     /// @brief Creates the IPv4 lease statistical data result set
@@ -1770,12 +1773,15 @@ MySqlLeaseMgr::MySqlLeaseContextAlloc::MySqlLeaseContextAlloc(
 }
 
 MySqlLeaseMgr::MySqlLeaseContextAlloc::~MySqlLeaseContextAlloc() {
-    if (MultiThreadingMgr::instance().getMode()) {
-        // multi-threaded
-        lock_guard<mutex> lock(mgr_.pool_->mutex_);
-        mgr_.pool_->pool_.push_back(ctx_);
+    try {
+        if (MultiThreadingMgr::instance().getMode()) {
+            // multi-threaded
+            lock_guard<mutex> lock(mgr_.pool_->mutex_);
+            mgr_.pool_->pool_.push_back(ctx_);
+        }
+        // If running in single-threaded mode, there's nothing to do here.
+    } catch (...) {
     }
-    // If running in single-threaded mode, there's nothing to do here.
 }
 
 // MySqlLeaseMgr Constructor and Destructor
@@ -1803,9 +1809,6 @@ MySqlLeaseMgr::MySqlLeaseMgr(const DatabaseConnection::ParameterMap& parameters)
     // Create an initial context.
     pool_.reset(new MySqlLeaseContextPool());
     pool_->pool_.push_back(createContext());
-}
-
-MySqlLeaseMgr::~MySqlLeaseMgr() {
 }
 
 bool

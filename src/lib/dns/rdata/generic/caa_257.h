@@ -28,8 +28,12 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     CAA(uint8_t flags, const std::string& tag, const std::string& value);
+
     CAA& operator=(const CAA& source);
+
+    /// \brief Destructor
     ~CAA();
 
     ///

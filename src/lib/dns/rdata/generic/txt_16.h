@@ -30,6 +30,8 @@ public:
     // END_COMMON_MEMBERS
 
     TXT& operator=(const TXT& source);
+
+    /// \brief Destructor
     ~TXT();
 
 private:

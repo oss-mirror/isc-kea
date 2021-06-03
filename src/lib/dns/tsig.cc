@@ -243,8 +243,7 @@ const size_t MESSAGE_HEADER_LEN = 12;
 void
 TSIGContext::TSIGContextImpl::digestDNSMessage(HMACPtr hmac,
                                                uint16_t qid, const void* data,
-                                               size_t data_len) const
-{
+                                               size_t data_len) const {
     OutputBuffer buffer(MESSAGE_HEADER_LEN);
     const uint8_t* msgptr = static_cast<const uint8_t*>(data);
 
@@ -266,13 +265,11 @@ TSIGContext::TSIGContextImpl::digestDNSMessage(HMACPtr hmac,
     hmac->update(msgptr, data_len - MESSAGE_HEADER_LEN);
 }
 
-TSIGContext::TSIGContext(const TSIGKey& key) : impl_(new TSIGContextImpl(key))
-{
+TSIGContext::TSIGContext(const TSIGKey& key) : impl_(new TSIGContextImpl(key)) {
 }
 
 TSIGContext::TSIGContext(const Name& key_name, const Name& algorithm_name,
-                         const TSIGKeyRing& keyring) : impl_(NULL)
-{
+                         const TSIGKeyRing& keyring) : impl_(NULL) {
     const TSIGKeyRing::FindResult result(keyring.find(key_name,
                                                       algorithm_name));
     if (result.code == TSIGKeyRing::NOTFOUND) {
@@ -288,7 +285,10 @@ TSIGContext::TSIGContext(const Name& key_name, const Name& algorithm_name,
 }
 
 TSIGContext::~TSIGContext() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 size_t

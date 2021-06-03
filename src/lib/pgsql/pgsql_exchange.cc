@@ -150,7 +150,7 @@ time_t
 PgSqlExchange::convertFromDatabaseTime(const std::string& db_time_val) {
     // Convert string time value to time_t
     time_t new_time;
-    try  {
+    try {
         new_time = (boost::lexical_cast<time_t>(db_time_val));
     } catch (const std::exception& ex) {
         isc_throw(BadValue, "Database time value is invalid: " << db_time_val);
@@ -297,5 +297,5 @@ PgSqlExchange::dumpRow(const PgSqlResult& r, int row) {
     return (stream.str());
 }
 
-}; // end of isc::db namespace
-}; // end of isc namespace
+} // end of isc::db namespace
+} // end of isc namespace

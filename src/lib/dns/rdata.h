@@ -136,13 +136,13 @@ protected:
     /// cases, the derived class wouldn't define a public default constructor
     /// either, because an \c Rdata object without concrete data isn't
     /// meaningful.
-    Rdata() {}
+    Rdata() = default;
 private:
     Rdata(const Rdata& source);
     void operator=(const Rdata& source);
 public:
     /// The destructor.
-    virtual ~Rdata() {};
+    virtual ~Rdata() = default;
     //@}
 
     ///

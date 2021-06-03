@@ -106,7 +106,7 @@ protected:
 
 public:
     /// \brief The destructor.
-    virtual ~AbstractMessageRenderer() {}
+    virtual ~AbstractMessageRenderer() = default;
     //@}
 protected:
     /// \brief Return the output buffer we render into.
@@ -359,9 +359,12 @@ public:
     using AbstractMessageRenderer::CASE_INSENSITIVE;
     using AbstractMessageRenderer::CASE_SENSITIVE;
 
+    /// @brief Constructor
     MessageRenderer();
 
+    /// @brief Destructor
     virtual ~MessageRenderer();
+
     virtual bool isTruncated() const;
     virtual size_t getLengthLimit() const;
     virtual CompressMode getCompressMode() const;

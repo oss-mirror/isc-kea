@@ -30,6 +30,8 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
     DNSKEY& operator=(const DNSKEY& source);
+
+    /// \brief Destructor
     ~DNSKEY();
 
     ///

@@ -15,16 +15,6 @@ using namespace std;
 namespace isc {
 namespace log {
 
-// Constructor
-
-MessageDictionary::MessageDictionary() : dictionary_(), empty_("") {
-}
-
-// (Virtual) Destructor
-
-MessageDictionary::~MessageDictionary() {
-}
-
 // Add message and note if ID already exists
 
 bool

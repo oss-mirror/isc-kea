@@ -34,7 +34,10 @@ public:
 
     /// @brief Destructor.
     virtual ~HttpThreadPoolTest() {
-        io_service_->stop();
+        try {
+            io_service_->stop();
+        } catch (...) {
+        }
     }
 
     /// @brief IOService instance used by thread pools.

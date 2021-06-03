@@ -24,9 +24,6 @@ TranslatorLogger::TranslatorLogger(S_Session session, const string& model)
     : TranslatorBasic(session, model) {
 }
 
-TranslatorLogger::~TranslatorLogger() {
-}
-
 ElementPtr
 TranslatorLogger::getLogger(const string& xpath) {
     try {
@@ -210,9 +207,6 @@ TranslatorLogger::setOutputOptions(const string& xpath, ConstElementPtr elem) {
 TranslatorLoggers::TranslatorLoggers(S_Session session, const string& model)
     : TranslatorBasic(session, model),
       TranslatorLogger(session, model) {
-}
-
-TranslatorLoggers::~TranslatorLoggers() {
 }
 
 ConstElementPtr

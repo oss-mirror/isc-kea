@@ -50,8 +50,7 @@ public:
     }
 
     /// @brief virtual Destructor
-    virtual ~D2ClientMgrTest(){
-    }
+    virtual ~D2ClientMgrTest() = default;
 
     /// @brief Updates the D2ClientMgr's configuration to DDNS enabled.
     ///

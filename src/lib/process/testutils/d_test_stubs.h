@@ -303,7 +303,8 @@ private:
     bool use_alternate_parser_;
 
 public:
-    virtual ~DStubController();
+    /// @brief Destructor
+    virtual ~DStubController() = default;
 };
 
 /// @brief Defines a pointer to a DStubController.
@@ -339,17 +340,20 @@ public:
     /// Note the controller singleton is destroyed. This is essential to ensure
     /// a clean start between tests.
     virtual ~DControllerTest() {
-        // Some unit tests update the logging configuration which has a side
-        // effect that all subsequent tests print the output to stdout. This
-        // is to ensure that the logging settings are back to default.
-        isc::log::setDefaultLoggingOutput();
+        try {
+            // Some unit tests update the logging configuration which has a side
+            // effect that all subsequent tests print the output to stdout. This
+            // is to ensure that the logging settings are back to default.
+            isc::log::setDefaultLoggingOutput();
 
-        if (write_timer_) {
-            write_timer_->cancel();
+            if (write_timer_) {
+                write_timer_->cancel();
+            }
+
+            getController().reset();
+            static_cast<void>(remove(CFG_TEST_FILE));
+        } catch (...) {
         }
-
-        getController().reset();
-        static_cast<void>(remove(CFG_TEST_FILE));
     }
 
     /// @brief Convenience method that destructs and then recreates the
@@ -595,10 +599,10 @@ class DStubContext : public ConfigBase {
 public:
 
     /// @brief Constructor
-    DStubContext();
+    DStubContext() = default;
 
     /// @brief Destructor
-    virtual ~DStubContext();
+    virtual ~DStubContext() = default;
 
     /// @brief Creates a clone of a DStubContext.
     ///
@@ -607,7 +611,7 @@ public:
 
 protected:
     /// @brief Copy constructor
-    DStubContext(const DStubContext& rhs);
+    DStubContext(const DStubContext& rhs) = default;
 
 private:
     /// @brief Private assignment operator, not implemented.
@@ -645,7 +649,7 @@ public:
     DStubCfgMgr();
 
     /// @brief Destructor
-    virtual ~DStubCfgMgr();
+    virtual ~DStubCfgMgr() = default;
 
     /// @brief Pretends to parse the config
     ///
@@ -681,12 +685,10 @@ class ConfigParseTest : public ::testing::Test {
 public:
 
     /// @brief Constructor
-    ConfigParseTest(){
-    }
+    ConfigParseTest() = default;
 
     /// @brief Destructor
-    ~ConfigParseTest() {
-    }
+    ~ConfigParseTest() = default;
 
     /// @brief Converts a given JSON string into an Element set and stores the
     /// result the member variable, config_set_.

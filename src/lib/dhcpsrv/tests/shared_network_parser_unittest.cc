@@ -42,7 +42,7 @@ public:
     };
 
     /// @brief virtual destructor
-    virtual ~SharedNetworkParserTest(){};
+    virtual ~SharedNetworkParserTest() = default;
 
     /// @brief Fetch valid shared network configuration JSON text
     virtual std::string getWorkingConfig() const = 0;

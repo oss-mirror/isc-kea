@@ -294,7 +294,7 @@ protected:
     CfgMgr();
 
     /// @brief virtual destructor
-    virtual ~CfgMgr();
+    virtual ~CfgMgr() = default;
 
 private:
 

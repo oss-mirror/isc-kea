@@ -72,7 +72,10 @@ LoggerManager::LoggerManager() {
 
 // Destructor - get rid of the implementation class
 LoggerManager::~LoggerManager() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 // Initialize processing

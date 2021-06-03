@@ -196,7 +196,10 @@ SRV::operator=(const SRV& source) {
 }
 
 SRV::~SRV() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Convert the \c SRV to a string.

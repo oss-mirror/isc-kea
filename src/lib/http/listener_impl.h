@@ -53,8 +53,7 @@ public:
                      const long idle_timeout);
 
     /// @brief Virtual destructor.
-    virtual ~HttpListenerImpl() {
-    }
+    virtual ~HttpListenerImpl() = default;
 
     /// @brief Returns reference to the current listener endpoint.
     const asiolink::TCPEndpoint& getEndpoint() const;

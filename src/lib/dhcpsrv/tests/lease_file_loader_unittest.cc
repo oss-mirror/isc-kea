@@ -317,7 +317,10 @@ LeaseFileLoaderTest::LeaseFileLoaderTest()
 }
 
 LeaseFileLoaderTest::~LeaseFileLoaderTest() {
-    CfgMgr::instance().clear();
+    try {
+        CfgMgr::instance().clear();
+    } catch (...) {
+    }
 }
 
 std::string

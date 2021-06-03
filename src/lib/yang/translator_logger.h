@@ -106,7 +106,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorLogger();
+    virtual ~TranslatorLogger() = default;
 
     /// @brief Get and translate a logger from YANG to JSON.
     ///
@@ -184,7 +184,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorLoggers();
+    virtual ~TranslatorLoggers() = default;
 
     /// @brief Get and translate loggeres from YANG to JSON.
     ///

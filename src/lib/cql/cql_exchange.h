@@ -149,6 +149,7 @@ struct CqlFunction {
 /// the same exchange if they have the same columns.
 class CqlExchange : public virtual SqlExchange {
 public:
+
     /// @brief Constructor
     ///
     /// Empty body. Derived constructors specify table columns.

@@ -70,7 +70,7 @@ public:
     ///
     /// Removes HTTP clients, unregisters commands, disables MT.
     virtual ~CmdHttpListenerTest() {
-            try {
+        try {
             // Wipe out the listener.
             listener_.reset();
 

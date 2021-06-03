@@ -113,7 +113,7 @@ public:
     PgSqlLeaseMgr(const db::DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor (closes database)
-    virtual ~PgSqlLeaseMgr();
+    virtual ~PgSqlLeaseMgr() = default;
 
     /// @brief Create a new context.
     ///

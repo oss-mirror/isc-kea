@@ -3991,7 +3991,7 @@ public:
     }
 
     /// @brief Destructor
-    virtual ~AllocEngine6ExtendedInfoTest(){};
+    virtual ~AllocEngine6ExtendedInfoTest() = default;
 
     /// Configuration elements. These are initialized in the constructor
     /// and are used throughout the tests.

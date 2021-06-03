@@ -28,11 +28,10 @@ public:
     static const int WORKER_MAX_PASSES;
 
     /// @brief Constructor.
-    WatchedThreadTest() {}
+    WatchedThreadTest() = default;
 
     /// @brief Destructor.
-    ~WatchedThreadTest() {
-    }
+    ~WatchedThreadTest() = default;
 
     /// @brief Sleeps for a given number of event periods sleep
     /// Each period is 50 ms.

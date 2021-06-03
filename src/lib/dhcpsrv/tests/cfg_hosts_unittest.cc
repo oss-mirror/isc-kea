@@ -94,7 +94,10 @@ CfgHostsTest::CfgHostsTest() {
 }
 
 CfgHostsTest::~CfgHostsTest() {
-    CfgMgr::instance().setFamily(AF_INET);
+    try {
+        CfgMgr::instance().setFamily(AF_INET);
+    } catch (...) {
+    }
 }
 
 IOAddress

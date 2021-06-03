@@ -46,7 +46,7 @@ public:
     /// intact.
     SPF& operator=(const SPF& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~SPF();
 
     ///

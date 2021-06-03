@@ -89,7 +89,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorOptionDef();
+    virtual ~TranslatorOptionDef() = default;
 
     /// @brief Get and translate an option definition from YANG to JSON.
     ///
@@ -143,7 +143,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorOptionDefList();
+    virtual ~TranslatorOptionDefList() = default;
 
     /// @brief Get and translate option definition list from YANG to JSON.
     ///

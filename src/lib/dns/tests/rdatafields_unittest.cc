@@ -332,9 +332,17 @@ TEST_F(RdataFieldsTest, getFieldSpecWithBadFieldId) {
 class DummyRdata : public Rdata {
 public:
     enum Mode { CLEAR, SKIP, TRIM };
-    explicit DummyRdata(Mode mode) : mode_(mode) {}
-    DummyRdata(const DummyRdata& source) : Rdata(), mode_(source.mode_) {}
-    virtual ~DummyRdata() {}
+    /// @brief Constructor
+    explicit DummyRdata(Mode mode) : mode_(mode) {
+    }
+
+    /// @brief Copy constructor
+    DummyRdata(const DummyRdata& source) : Rdata(), mode_(source.mode_) {
+    }
+
+    /// @brief Destructor
+    virtual ~DummyRdata() = default;
+
     virtual void toWire(AbstractMessageRenderer& renderer) const {
         // call the unexpected method corresponding to the test mode.
         // method parameters don't matter.

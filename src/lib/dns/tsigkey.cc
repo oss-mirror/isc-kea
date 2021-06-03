@@ -207,7 +207,10 @@ TSIGKey::operator=(const TSIGKey& source) {
 }
 
 TSIGKey::~TSIGKey() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 const Name&
@@ -316,7 +319,10 @@ TSIGKeyRing::TSIGKeyRing() : impl_(new TSIGKeyRingImpl) {
 }
 
 TSIGKeyRing::~TSIGKeyRing() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 unsigned int

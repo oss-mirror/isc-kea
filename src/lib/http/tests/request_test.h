@@ -37,8 +37,7 @@ public:
     /// @brief Destructor.
     ///
     /// Does nothing.
-    virtual ~HttpRequestTestBase() {
-    }
+    virtual ~HttpRequestTestBase() = default;
 
     /// @brief Initializes HTTP request context with basic information.
     ///

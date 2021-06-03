@@ -145,6 +145,7 @@ LFCSetup::~LFCSetup() {
         // we don't want an error message output during shutdown.
         LOG_DEBUG(dhcpsrv_logger, DHCPSRV_DBG_TRACE,
                   DHCPSRV_MEMFILE_LFC_UNREGISTER_TIMER_FAILED).arg(ex.what());
+    } catch (...) {
     }
 }
 
@@ -262,14 +263,14 @@ public:
     ///
     MemfileLeaseStatsQuery()
         : rows_(0), next_pos_(rows_.end()) {
-    };
+    }
 
     /// @brief Constructor for single subnet query
     ///
     /// @param subnet_id ID of the desired subnet
     MemfileLeaseStatsQuery(const SubnetID& subnet_id)
         : LeaseStatsQuery(subnet_id), rows_(0), next_pos_(rows_.end()) {
-    };
+    }
 
     /// @brief Constructor for subnet range query
     ///
@@ -277,10 +278,10 @@ public:
     /// @param last_subnet_id ID of the last subnet in the desired range
     MemfileLeaseStatsQuery(const SubnetID& first_subnet_id, const SubnetID& last_subnet_id)
         : LeaseStatsQuery(first_subnet_id, last_subnet_id), rows_(0), next_pos_(rows_.end()) {
-    };
+    }
 
     /// @brief Destructor
-    virtual ~MemfileLeaseStatsQuery() {};
+    virtual ~MemfileLeaseStatsQuery() = default;
 
     /// @brief Fetches the next row in the result set
     ///
@@ -331,7 +332,7 @@ public:
     /// @param storage4 A pointer to the v4 lease storage to be counted
     MemfileLeaseStatsQuery4(Lease4Storage& storage4)
         : MemfileLeaseStatsQuery(), storage4_(storage4) {
-    };
+    }
 
     /// @brief Constructor for a single subnet query
     ///
@@ -339,7 +340,7 @@ public:
     /// @param subnet_id ID of the desired subnet
     MemfileLeaseStatsQuery4(Lease4Storage& storage4, const SubnetID& subnet_id)
         : MemfileLeaseStatsQuery(subnet_id), storage4_(storage4) {
-    };
+    }
 
     /// @brief Constructor for a subnet range query
     ///
@@ -349,10 +350,10 @@ public:
     MemfileLeaseStatsQuery4(Lease4Storage& storage4, const SubnetID& first_subnet_id,
                             const SubnetID& last_subnet_id)
         : MemfileLeaseStatsQuery(first_subnet_id, last_subnet_id), storage4_(storage4) {
-    };
+    }
 
     /// @brief Destructor
-    virtual ~MemfileLeaseStatsQuery4() {};
+    virtual ~MemfileLeaseStatsQuery4() = default;
 
     /// @brief Creates the IPv4 lease statistical data result set
     ///
@@ -473,7 +474,7 @@ public:
     /// @param storage6 A pointer to the v6 lease storage to be counted
     MemfileLeaseStatsQuery6(Lease6Storage& storage6)
         : MemfileLeaseStatsQuery(), storage6_(storage6) {
-    };
+    }
 
     /// @brief Constructor for a single subnet query
     ///
@@ -481,7 +482,7 @@ public:
     /// @param subnet_id ID of the desired subnet
     MemfileLeaseStatsQuery6(Lease6Storage& storage6, const SubnetID& subnet_id)
         : MemfileLeaseStatsQuery(subnet_id), storage6_(storage6) {
-    };
+    }
 
     /// @brief Constructor for a subnet range query
     ///
@@ -491,10 +492,10 @@ public:
     MemfileLeaseStatsQuery6(Lease6Storage& storage6, const SubnetID& first_subnet_id,
                             const SubnetID& last_subnet_id)
         : MemfileLeaseStatsQuery(first_subnet_id, last_subnet_id), storage6_(storage6) {
-    };
+    }
 
     /// @brief Destructor
-    virtual ~MemfileLeaseStatsQuery6() {};
+    virtual ~MemfileLeaseStatsQuery6() = default;
 
     /// @brief Creates the IPv6 lease statistical data result set
     ///
@@ -668,13 +669,16 @@ Memfile_LeaseMgr::Memfile_LeaseMgr(const DatabaseConnection::ParameterMap& param
 }
 
 Memfile_LeaseMgr::~Memfile_LeaseMgr() {
-    if (lease_file4_) {
-        lease_file4_->close();
-        lease_file4_.reset();
-    }
-    if (lease_file6_) {
-        lease_file6_->close();
-        lease_file6_.reset();
+    try {
+        if (lease_file4_) {
+            lease_file4_->close();
+            lease_file4_.reset();
+        }
+        if (lease_file6_) {
+            lease_file6_->close();
+            lease_file6_.reset();
+        }
+    } catch (...) {
     }
 }
 

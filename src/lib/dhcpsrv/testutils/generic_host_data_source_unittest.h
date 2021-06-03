@@ -50,7 +50,7 @@ public:
     };
 
     /// @brief Default constructor.
-    GenericHostDataSourceTest();
+    GenericHostDataSourceTest() = default;
 
     /// @brief Virtual destructor.
     virtual ~GenericHostDataSourceTest() = default;
@@ -537,6 +537,7 @@ public:
 
 class HostMgrDbLostCallbackTest : public ::testing::Test {
 public:
+    /// @brief Constructor
     HostMgrDbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),
           db_failed_callback_called_(0),
@@ -549,13 +550,17 @@ public:
         isc::dhcp::CfgMgr::instance().clear();
     }
 
+    /// @brief Destructor
     virtual ~HostMgrDbLostCallbackTest() {
-        isc::db::DatabaseConnection::db_lost_callback_ = 0;
-        isc::db::DatabaseConnection::db_recovered_callback_ = 0;
-        isc::db::DatabaseConnection::db_failed_callback_ = 0;
-        isc::dhcp::HostMgr::setIOService(isc::asiolink::IOServicePtr());
-        isc::dhcp::TimerMgr::instance()->unregisterTimers();
-        isc::dhcp::CfgMgr::instance().clear();
+        try {
+            isc::db::DatabaseConnection::db_lost_callback_ = 0;
+            isc::db::DatabaseConnection::db_recovered_callback_ = 0;
+            isc::db::DatabaseConnection::db_failed_callback_ = 0;
+            isc::dhcp::HostMgr::setIOService(isc::asiolink::IOServicePtr());
+            isc::dhcp::TimerMgr::instance()->unregisterTimers();
+            isc::dhcp::CfgMgr::instance().clear();
+        } catch (...) {
+        }
     }
 
     /// @brief Prepares the class for a test.
@@ -691,6 +696,11 @@ public:
     virtual ~HostMgrTest() = default;
 
 protected:
+    /// @brief Constructor
+    HostMgrTest() = default;
+
+    /// @brief Destructor
+    virtual ~HostMgrTest() = default;
 
     /// @brief Prepares the class for a test.
     ///

@@ -35,6 +35,7 @@ public:
     // END_COMMON_MEMBERS
 
     // NAPTR specific methods
+    /// \brief Destructor
     ~NAPTR();
 
     NAPTR& operator=(const NAPTR& source);
@@ -52,7 +53,7 @@ private:
     template <typename T>
     void toWireHelper(T& outputer) const;
 
-    boost::scoped_ptr<NAPTRImpl> impl_;
+    NAPTRImpl* impl_;
 };
 
 // END_RDATA_NAMESPACE

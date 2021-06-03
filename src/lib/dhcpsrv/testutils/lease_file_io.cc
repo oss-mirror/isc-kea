@@ -21,8 +21,11 @@ LeaseFileIO::LeaseFileIO(const std::string& filename, const bool recreate)
 }
 
 LeaseFileIO::~LeaseFileIO() {
-    if (recreate_) {
-        removeFile();
+    try {
+        if (recreate_) {
+            removeFile();
+        }
+    } catch (...) {
     }
 }
 

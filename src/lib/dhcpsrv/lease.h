@@ -111,7 +111,7 @@ struct Lease : public isc::data::UserContext, public isc::data::CfgToElement {
           const HWAddrPtr& hwaddr);
 
     /// @brief Destructor
-    virtual ~Lease() {}
+    virtual ~Lease() = default;
 
     /// @brief IPv4 ot IPv6 address
     ///

@@ -78,7 +78,7 @@ protected:
     /// This is defined as protected to prevent this class from being directly
     /// instantiated even if the class definition is modified (accidentally
     /// or intentionally) to have no pure virtual methods.
-    NSEC3Hash() {}
+    NSEC3Hash() = default;
 
 public:
     /// \brief Factory method of NSECHash from NSEC3PARAM RDATA.
@@ -120,7 +120,7 @@ public:
                              const uint8_t* salt_data, size_t salt_length);
 
     /// \brief The destructor.
-    virtual ~NSEC3Hash() {}
+    virtual ~NSEC3Hash() = default;
 
     /// \brief Calculate the NSEC3 hash (Name variant).
     ///
@@ -206,14 +206,14 @@ protected:
     ///
     /// Make very sure this isn't directly instantiated by making it protected
     /// even if this class is modified to lose all pure virtual methods.
-    NSEC3HashCreator() {}
+    NSEC3HashCreator() = default;
 
 public:
     /// \brief The destructor.
     ///
     /// This does nothing; defined only for allowing derived classes to
     /// specialize its behavior.
-    virtual ~NSEC3HashCreator() {}
+    virtual ~NSEC3HashCreator() = default;
 
     /// \brief Factory method of NSECHash from NSEC3PARAM RDATA.
     ///

@@ -156,8 +156,8 @@ public:
     /// @throw BadValue if either value given is 0 or if last <= first.
     LeaseStatsQuery(const SubnetID& first_subnet_id, const SubnetID& last_subnet_id);
 
-    /// @brief virtual destructor
-    virtual ~LeaseStatsQuery() {};
+    /// @brief Virtual destructor
+    virtual ~LeaseStatsQuery() = default;
 
     /// @brief Executes the query
     ///
@@ -222,13 +222,10 @@ typedef boost::shared_ptr<LeaseStatsRow> LeaseStatsRowPtr;
 class LeaseMgr {
 public:
     /// @brief Constructor
-    ///
-    LeaseMgr()
-    {}
+    LeaseMgr() = default;
 
     /// @brief Destructor
-    virtual ~LeaseMgr()
-    {}
+    virtual ~LeaseMgr() = default;
 
     /// @brief Class method to return extended version info
     /// This class method must be redeclared and redefined in derived classes

@@ -55,7 +55,7 @@ public:
                 CheckDefined check_defined = acceptAll);
 
     /// @brief destructor
-    virtual ~EvalContext();
+    virtual ~EvalContext() = default;
 
     /// @brief Accept all client class names
     ///

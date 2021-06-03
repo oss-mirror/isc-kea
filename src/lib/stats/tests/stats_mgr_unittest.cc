@@ -38,6 +38,7 @@ static const StatsDuration& dur1245(hours(1) + minutes(2) + seconds(45));
 class StatsMgrTest : public ::testing::Test {
 public:
     /// @brief Constructor
+    ///
     /// Makes sure that the Statistics Manager is instantiated.
     StatsMgrTest() {
         StatsMgr::instance();
@@ -45,11 +46,15 @@ public:
     }
 
     /// @brief Destructor
+    ///
     /// Removes all statistics and restores class defaults.
     ~StatsMgrTest() {
-        StatsMgr::instance().removeAll();
-        StatsMgr::instance().setMaxSampleAgeDefault(StatsDuration::zero());
-        StatsMgr::instance().setMaxSampleCountDefault(20);
+        try {
+            StatsMgr::instance().removeAll();
+            StatsMgr::instance().setMaxSampleAgeDefault(StatsDuration::zero());
+            StatsMgr::instance().setMaxSampleCountDefault(20);
+        } catch (...) {
+        }
     }
 };
 

@@ -45,9 +45,6 @@ TranslatorConfig::TranslatorConfig(S_Session session, const string& model)
       TranslatorLoggers(session, model) {
 }
 
-TranslatorConfig::~TranslatorConfig() {
-}
-
 ElementPtr
 TranslatorConfig::getConfig() {
     try {

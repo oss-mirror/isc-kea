@@ -137,15 +137,18 @@ public:
     ///
     /// destroys lease manager backend.
     virtual ~MemfileLeaseMgrTest() {
-        // Stop TimerMgr worker thread if it is running.
-        // Make sure there are no timers registered.
-        timer_mgr_->unregisterTimers();
-        LeaseMgrFactory::destroy();
-        // Remove lease files and products of Lease File Cleanup.
-        removeFiles(getLeaseFilePath("leasefile4_0.csv"));
-        removeFiles(getLeaseFilePath("leasefile6_0.csv"));
-        // Disable multi-threading.
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            // Stop TimerMgr worker thread if it is running.
+            // Make sure there are no timers registered.
+            timer_mgr_->unregisterTimers();
+            LeaseMgrFactory::destroy();
+            // Remove lease files and products of Lease File Cleanup.
+            removeFiles(getLeaseFilePath("leasefile4_0.csv"));
+            removeFiles(getLeaseFilePath("leasefile6_0.csv"));
+            // Disable multi-threading.
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 
     /// @brief Remove files being products of Lease File Cleanup.

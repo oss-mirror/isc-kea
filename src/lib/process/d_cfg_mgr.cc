@@ -39,9 +39,6 @@ DCfgMgrBase::DCfgMgrBase(ConfigPtr context) {
     setContext(context);
 }
 
-DCfgMgrBase::~DCfgMgrBase() {
-}
-
 void
 DCfgMgrBase::resetContext() {
     ConfigPtr context = createNewContext();

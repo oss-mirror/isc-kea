@@ -48,7 +48,7 @@ public:
     /// intact.
     DLV& operator=(const DLV& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~DLV();
 
     /// \brief Return the value of the Tag field.

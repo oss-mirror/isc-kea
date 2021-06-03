@@ -94,7 +94,7 @@ public:
         const = 0;
 
     /// \brief Destructor
-    virtual ~RRsetCollectionBase() {}
+    virtual ~RRsetCollectionBase() = default;
 
 protected:
     class Iter; // forward declaration
@@ -112,7 +112,11 @@ protected:
     /// iterator only.
     class Iter {
     public:
-        virtual ~Iter() {};
+        /// @brief Constructor
+        Iter() = default;
+
+        /// @brief Destructor
+        virtual ~Iter() = default;
 
         /// \brief Returns the \c AbstractRRset currently pointed to by
         /// the iterator.

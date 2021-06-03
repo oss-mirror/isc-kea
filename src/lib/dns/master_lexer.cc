@@ -131,7 +131,10 @@ MasterLexer::MasterLexer() : impl_(new MasterLexerImpl) {
 }
 
 MasterLexer::~MasterLexer() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 bool
@@ -361,8 +364,14 @@ State::getParenCount(const MasterLexer& lexer) const {
 namespace {
 class CRLF : public State {
 public:
-    CRLF() {}
-    virtual ~CRLF() {}          // see the base class for the destructor
+    /// @brief Constructor
+    CRLF() = default;
+
+    /// @brief Destructor
+    ///
+    /// see the base class for the destructor
+    virtual ~CRLF() = default;
+
     virtual void handle(MasterLexer& lexer) const {
         // We've just seen '\r'.  If this is part of a sequence of '\r\n',
         // we combine them as a single END-OF-LINE.  Otherwise we treat the
@@ -385,22 +394,38 @@ public:
 
 class String : public State {
 public:
-    String() {}
-    virtual ~String() {}      // see the base class for the destructor
+    /// @brief Constructor
+    String() = default;
+
+    /// @brief Destructor
+    ///
+    /// see the base class for the destructor
+    virtual ~String() = default;
+
     virtual void handle(MasterLexer& lexer) const;
 };
 
 class QString : public State {
 public:
-    QString() {}
-    virtual ~QString() {}      // see the base class for the destructor
+    /// @brief Constructor
+    QString() = default;
+
+    /// @brief Destructor
+    ///
+    /// see the base class for the destructor
+    virtual ~QString() = default;
+
     virtual void handle(MasterLexer& lexer) const;
 };
 
 class Number : public State {
 public:
-    Number() {}
-    virtual ~Number() {}
+    /// @brief Constructor
+    Number() = default;
+
+    /// @brief Destructor
+    virtual ~Number() = default;
+
     virtual void handle(MasterLexer& lexer) const;
 };
 

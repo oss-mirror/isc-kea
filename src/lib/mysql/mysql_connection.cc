@@ -34,10 +34,13 @@ MySqlTransaction::MySqlTransaction(MySqlConnection& conn)
 }
 
 MySqlTransaction::~MySqlTransaction() {
-    // Rollback if the MySqlTransaction::commit wasn't explicitly
-    // called.
-    if (!committed_) {
-        conn_.rollback();
+    try {
+        // Rollback if the MySqlTransaction::commit wasn't explicitly
+        // called.
+        if (!committed_) {
+            conn_.rollback();
+        }
+    } catch (...) {
     }
 }
 
@@ -362,17 +365,20 @@ void MySqlConnection::clearStatements() {
 
 /// @brief Destructor
 MySqlConnection::~MySqlConnection() {
-    // Free up the prepared statements, ignoring errors. (What would we do
-    // about them? We're destroying this object and are not really concerned
-    // with errors on a database connection that is about to go away.)
-    for (int i = 0; i < statements_.size(); ++i) {
-        if (statements_[i] != NULL) {
-            (void) mysql_stmt_close(statements_[i]);
-            statements_[i] = NULL;
+    try {
+        // Free up the prepared statements, ignoring errors. (What would we do
+        // about them? We're destroying this object and are not really concerned
+        // with errors on a database connection that is about to go away.)
+        for (int i = 0; i < statements_.size(); ++i) {
+            if (statements_[i] != NULL) {
+                (void) mysql_stmt_close(statements_[i]);
+                statements_[i] = NULL;
+            }
         }
+        statements_.clear();
+        text_statements_.clear();
+    } catch (...) {
     }
-    statements_.clear();
-    text_statements_.clear();
 }
 
 // Time conversion methods.

@@ -32,10 +32,10 @@ class TranslatorSubnetsTest :
 public:
 
     /// Constructor.
-    TranslatorSubnetsTest() { }
+    TranslatorSubnetsTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorSubnetsTest() { }
+    virtual ~TranslatorSubnetsTest() = default;
 };
 
 // This test verifies that an empty subnet list can be properly

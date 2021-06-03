@@ -83,6 +83,7 @@ public:
 
 class TSIGTest : public ::testing::Test {
 protected:
+    /// @brief Constructor
     TSIGTest() :
         tsig_ctx(NULL), qid(0x2d65), test_name("www.example.com"),
         badkey_name("badkey.example.com"), test_class(RRClass::IN()),
@@ -91,8 +92,7 @@ protected:
         dummy_record(badkey_name, any::TSIG(TSIGKey::HMACMD5_NAME(),
                                             0x4da8877a,
                                             TSIGContext::DEFAULT_FUDGE,
-                                            0, NULL, qid, 0, 0, NULL))
-    {
+                                            0, NULL, qid, 0, 0, NULL)) {
         // Make sure we use the system time by default so that we won't be
         // confused due to other tests that tweak the time.
         isc::util::detail::gettimeFunction = NULL;
@@ -107,8 +107,13 @@ protected:
                                                       &secret[0],
                                                       secret.size())));
     }
+
+    /// @brief Destructor
     ~TSIGTest() {
-        isc::util::detail::gettimeFunction = NULL;
+        try {
+            isc::util::detail::gettimeFunction = NULL;
+        } catch (...) {
+        }
     }
 
     // Many of the tests below create some DNS message and sign it under

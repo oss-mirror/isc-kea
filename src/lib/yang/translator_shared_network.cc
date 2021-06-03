@@ -35,9 +35,6 @@ TranslatorSharedNetwork::TranslatorSharedNetwork(S_Session session,
       TranslatorSubnets(session, model) {
 }
 
-TranslatorSharedNetwork::~TranslatorSharedNetwork() {
-}
-
 ElementPtr
 TranslatorSharedNetwork::getSharedNetwork(const string& xpath) {
     try {
@@ -342,9 +339,6 @@ TranslatorSharedNetworks::TranslatorSharedNetworks(S_Session session,
       TranslatorSubnet(session, model),
       TranslatorSubnets(session, model),
       TranslatorSharedNetwork(session, model) {
-}
-
-TranslatorSharedNetworks::~TranslatorSharedNetworks() {
 }
 
 ElementPtr

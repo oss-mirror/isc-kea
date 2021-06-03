@@ -33,7 +33,10 @@ public:
     ///
     /// Lock mutex object on destructor.
     ~UnlockGuard() {
-        lock_.lock();
+        try {
+            lock_.lock();
+        } catch (...) {
+        }
     }
 
 private:

@@ -53,12 +53,14 @@ TestHooks testHooks;
 /// @brief Test fixture for testing callouts called by the flex-option library
 class CalloutTest : public ::testing::Test {
 public:
+
     /// @brief Constructor
     CalloutTest() {
         reset();
     }
 
     /// @brief Destructor
+    ///
     /// Removes files that may be left over from previous tests
     virtual ~CalloutTest() {
         try {

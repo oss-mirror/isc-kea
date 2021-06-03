@@ -76,7 +76,10 @@ DStubProcess::configure(isc::data::ConstElementPtr config_set, bool check_only) 
 }
 
 DStubProcess::~DStubProcess() {
-    Daemon::setVerbose(false);
+    try {
+        Daemon::setVerbose(false);
+    } catch (...) {
+    }
 };
 
 //************************** DStubController *************************
@@ -162,9 +165,6 @@ DStubController::parseFile(const std::string& /*file_name*/) {
     }
 
     return (elements);
-}
-
-DStubController::~DStubController() {
 }
 
 //************************** DControllerTest *************************
@@ -294,18 +294,9 @@ const char* DControllerTest::CFG_TEST_FILE = "d2-test-config.json";
 
 //************************** DStubContext *************************
 
-DStubContext::DStubContext() {
-}
-
-DStubContext::~DStubContext() {
-}
-
 ConfigPtr
 DStubContext::clone() {
     return (ConfigPtr(new DStubContext(*this)));
-}
-
-DStubContext::DStubContext(const DStubContext& rhs): ConfigBase(rhs) {
 }
 
 isc::data::ElementPtr
@@ -317,9 +308,6 @@ DStubContext::toElement() const {
 
 DStubCfgMgr::DStubCfgMgr()
     : DCfgMgrBase(ConfigPtr(new DStubContext())) {
-}
-
-DStubCfgMgr::~DStubCfgMgr() {
 }
 
 ConfigPtr

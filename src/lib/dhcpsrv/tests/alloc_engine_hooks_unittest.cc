@@ -33,12 +33,15 @@ public:
     }
 
     virtual ~HookAllocEngine6Test() {
-        resetCalloutBuffers();
-        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
-            "lease6_select");
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            cerr << "(fixture dtor) unloadLibraries failed" << endl;
+        try {
+            resetCalloutBuffers();
+            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
+                "lease6_select");
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                cerr << "(fixture dtor) unloadLibraries failed" << endl;
+            }
+        } catch (...) {
         }
     }
 
@@ -351,12 +354,15 @@ public:
     }
 
     virtual ~HookAllocEngine4Test() {
-        resetCalloutBuffers();
-        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
-            "lease4_select");
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            cerr << "(fixture dtor) unloadLibraries failed" << endl;
+        try {
+            resetCalloutBuffers();
+            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
+                "lease4_select");
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                cerr << "(fixture dtor) unloadLibraries failed" << endl;
+            }
+        } catch (...) {
         }
     }
 

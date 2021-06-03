@@ -46,7 +46,7 @@ public:
     }
 
     /// @brief virtual Destructor.
-    virtual ~TestConfigBackendDHCPv4(){};
+    virtual ~TestConfigBackendDHCPv4() = default;
 
     /// @brief Registers the backend type with the given backend manager
     ///

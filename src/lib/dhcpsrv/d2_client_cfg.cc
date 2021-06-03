@@ -112,8 +112,6 @@ D2ClientConfig::D2ClientConfig()
     validateContents();
 }
 
-D2ClientConfig::~D2ClientConfig(){};
-
 void
 D2ClientConfig::enableUpdates(bool enable) {
     enable_updates_ = enable;

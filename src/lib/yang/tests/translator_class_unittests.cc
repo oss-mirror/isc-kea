@@ -33,10 +33,10 @@ class TranslatorClassesTest :
 public:
 
     /// Constructor.
-    TranslatorClassesTest() { }
+    TranslatorClassesTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorClassesTest() { }
+    virtual ~TranslatorClassesTest() = default;
 };
 
 // This test verifies that an empty client class list can be properly

@@ -90,10 +90,19 @@ struct SectionIteratorImpl;
 template <typename T>
 class SectionIterator : public std::iterator<std::input_iterator_tag, T> {
 public:
-    SectionIterator() : impl_(NULL) {}
+    /// @brief Constructor
+    SectionIterator() : impl_(NULL) {
+    }
+
+    /// @brief Copy constructor
     SectionIterator(const SectionIteratorImpl<T>& impl);
-    ~SectionIterator();
+
+    /// @brief Copy constructor
     SectionIterator(const SectionIterator<T>& source);
+
+    /// @brief Destructor
+    ~SectionIterator();
+
     void operator=(const SectionIterator<T>& source);
     SectionIterator<T>& operator++();
     SectionIterator<T> operator++(int);

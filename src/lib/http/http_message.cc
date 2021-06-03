@@ -17,9 +17,6 @@ HttpMessage::HttpMessage(const HttpMessage::Direction& direction)
       created_(false), finalized_(false), headers_() {
 }
 
-HttpMessage::~HttpMessage() {
-}
-
 void
 HttpMessage::requireHttpVersion(const HttpVersion& version) {
     required_versions_.insert(version);

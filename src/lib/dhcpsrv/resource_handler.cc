@@ -20,15 +20,15 @@ mutex ResourceHandler::mutex_;
 
 ResourceHandler::ResourceContainer ResourceHandler::resources_;
 
-ResourceHandler::ResourceHandler() : owned_() {
-}
-
 ResourceHandler::~ResourceHandler() {
-    lock_guard<mutex> lock_(mutex_);
-    for (auto res : owned_) {
-        unLockInternal(res->type_, res->addr_);
+    try {
+        lock_guard<mutex> lock_(mutex_);
+        for (auto res : owned_) {
+            unLockInternal(res->type_, res->addr_);
+        }
+        owned_.clear();
+    } catch (...) {
     }
-    owned_.clear();
 }
 
 ResourceHandler::ResourcePtr

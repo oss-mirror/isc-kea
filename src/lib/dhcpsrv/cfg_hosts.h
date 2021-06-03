@@ -37,9 +37,11 @@ namespace dhcp {
 class CfgHosts : public BaseHostDataSource, public WritableHostDataSource,
                  public isc::data::CfgToElement {
 public:
+    /// @brief Constructor.
+    CfgHosts() = default;
 
     /// @brief Destructor.
-    virtual ~CfgHosts() { }
+    virtual ~CfgHosts() = default;
 
     /// @brief Return all hosts connected to any subnet for which reservations
     /// have been made using a specified identifier.

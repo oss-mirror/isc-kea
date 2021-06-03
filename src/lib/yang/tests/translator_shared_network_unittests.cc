@@ -32,10 +32,10 @@ class TranslatorSharedNetworksTest :
 public:
 
     /// Constructor.
-    TranslatorSharedNetworksTest() { }
+    TranslatorSharedNetworksTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorSharedNetworksTest() { }
+    virtual ~TranslatorSharedNetworksTest() = default;
 };
 
 // This test verifies that an empty shared network list can be properly

@@ -51,7 +51,7 @@ public:
     }
 
     /// @brief virtual Destructor.
-    virtual ~TestConfigBackend(){};
+    virtual ~TestConfigBackend() = default;
 
     /// @brief Returns backend type.
     ///

@@ -141,8 +141,7 @@ public:
     };
 
     /// @brief Virtual destructor.
-    virtual ~PgSqlHostExchange() {
-    }
+    virtual ~PgSqlHostExchange() = default;
 
     /// @brief Reinitializes state information
     ///
@@ -1428,7 +1427,7 @@ public:
     PgSqlHostDataSourceImpl(const DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor.
-    ~PgSqlHostDataSourceImpl();
+    ~PgSqlHostDataSourceImpl() = default;
 
     /// @brief Attempts to reconnect the server to the host DB backend manager.
     ///
@@ -2206,15 +2205,18 @@ PgSqlHostDataSource::PgSqlHostContextAlloc::PgSqlHostContextAlloc(
 }
 
 PgSqlHostDataSource::PgSqlHostContextAlloc::~PgSqlHostContextAlloc() {
-    if (MultiThreadingMgr::instance().getMode()) {
-        // multi-threaded
-        lock_guard<mutex> lock(mgr_.pool_->mutex_);
-        mgr_.pool_->pool_.push_back(ctx_);
-        if (ctx_->conn_.isUnusable()) {
+    try {
+        if (MultiThreadingMgr::instance().getMode()) {
+            // multi-threaded
+            lock_guard<mutex> lock(mgr_.pool_->mutex_);
+            mgr_.pool_->pool_.push_back(ctx_);
+            if (ctx_->conn_.isUnusable()) {
+                mgr_.unusable_ = true;
+            }
+        } else if (ctx_->conn_.isUnusable()) {
             mgr_.unusable_ = true;
         }
-    } else if (ctx_->conn_.isUnusable()) {
-        mgr_.unusable_ = true;
+    } catch (...) {
     }
 }
 
@@ -2282,9 +2284,6 @@ PgSqlHostDataSourceImpl::createContext() const {
     ctx->conn_.makeReconnectCtl(timer_name_);
 
     return (ctx);
-}
-
-PgSqlHostDataSourceImpl::~PgSqlHostDataSourceImpl() {
 }
 
 bool
@@ -2565,9 +2564,6 @@ PgSqlHostDataSourceImpl::checkReadOnly(PgSqlHostContextPtr& ctx) const {
 
 PgSqlHostDataSource::PgSqlHostDataSource(const DatabaseConnection::ParameterMap& parameters)
     : impl_(new PgSqlHostDataSourceImpl(parameters)) {
-}
-
-PgSqlHostDataSource::~PgSqlHostDataSource() {
 }
 
 DatabaseConnection::ParameterMap

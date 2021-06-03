@@ -145,11 +145,12 @@ public:
     /// the thread pool threads will be created and started, with the
     /// operational state being RUNNING.  Applicable only when thread-pool size
     /// is greater than zero.
-    explicit HttpClient(asiolink::IOService& io_service, size_t thread_pool_size = 0,
+    explicit HttpClient(asiolink::IOService& io_service,
+                        size_t thread_pool_size = 0,
                         bool defer_thread_start = false);
 
     /// @brief Destructor.
-    ~HttpClient();
+    ~HttpClient() = default;
 
     /// @brief Queues new asynchronous HTTP request for a given URL.
     ///

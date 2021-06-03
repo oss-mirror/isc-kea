@@ -32,10 +32,10 @@ class TranslatorDatabaseTest :
 public:
 
     /// Constructor.
-    TranslatorDatabaseTest() { }
+    TranslatorDatabaseTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorDatabaseTest() { }
+    virtual ~TranslatorDatabaseTest() = default;
 };
 
 // This test verifies that an empty database can be properly
@@ -149,10 +149,10 @@ class TranslatorDatabasesTest :
 public:
 
     /// Constructor.
-    TranslatorDatabasesTest() { }
+    TranslatorDatabasesTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorDatabasesTest() { }
+    virtual ~TranslatorDatabasesTest() = default;
 };
 
 // This test verifies that an empty database list can be properly

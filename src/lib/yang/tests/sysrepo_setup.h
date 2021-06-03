@@ -50,9 +50,12 @@ public:
     ///
     /// Destroy all objects.
     virtual ~GenericTranslatorTest() {
-        t_obj_.reset();
-        sess_.reset();
-        conn_.reset();
+        try {
+            t_obj_.reset();
+            sess_.reset();
+            conn_.reset();
+        } catch (...) {
+        }
     }
 
     /// @brief Sysrepo connection.

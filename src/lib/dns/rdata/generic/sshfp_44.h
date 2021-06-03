@@ -28,9 +28,12 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     SSHFP(uint8_t algorithm, uint8_t fingerprint_type,
           const std::string& fingerprint);
     SSHFP& operator=(const SSHFP& source);
+
+    /// \brief Destructor
     ~SSHFP();
 
     ///

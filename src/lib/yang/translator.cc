@@ -44,9 +44,6 @@ TranslatorBasic::TranslatorBasic(S_Session session, const string& model)
     : session_(session), model_(model) {
 }
 
-TranslatorBasic::~TranslatorBasic() {
-}
-
 ElementPtr
 #ifndef HAVE_PRE_0_7_6_SYSREPO
 TranslatorBasic::value(sysrepo::S_Val s_val) {

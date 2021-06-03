@@ -40,9 +40,11 @@ namespace {
 /// @c false when setting IP reservations unique/non-unique mode.
 class NonUniqueHostDataSource : public MemHostDataSource {
 public:
+    /// @brief Constructor
+    NonUniqueHostDataSource() = default;
 
     /// @brief Virtual destructor.
-    virtual ~NonUniqueHostDataSource() {}
+    virtual ~NonUniqueHostDataSource() = default;
 
     /// @brief Configure unique/non-unique IP reservations.
     ///
@@ -72,17 +74,20 @@ public:
 
     /// @brief Destructor.
     virtual ~CBControlDHCPTest() {
-        // Unregister the factory to be tidy.
-        ConfigBackendDHCPv4Mgr::instance().unregisterBackendFactory("memfile");
-        CfgMgr::instance().clear();
-        // Unregister hooks.
-        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("cb4_updated");
-        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("cb6_updated");
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            std::cerr << "(fixture dtor) unloadLibraries failed" << std::endl;
+        try {
+            // Unregister the factory to be tidy.
+            ConfigBackendDHCPv4Mgr::instance().unregisterBackendFactory("memfile");
+            CfgMgr::instance().clear();
+            // Unregister hooks.
+            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("cb4_updated");
+            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("cb6_updated");
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                std::cerr << "(fixture dtor) unloadLibraries failed" << std::endl;
+            }
+            HostDataSourceFactory::deregisterFactory("test");
+        } catch (...) {
         }
-        HostDataSourceFactory::deregisterFactory("test");
     }
 
     /// @brief Creates new CREATE audit entry.

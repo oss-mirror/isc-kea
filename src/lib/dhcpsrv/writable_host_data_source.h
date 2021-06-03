@@ -20,9 +20,11 @@ namespace dhcp {
 /// return the const objects.
 class WritableHostDataSource {
 public:
+    /// @brief Constructor
+    WritableHostDataSource() = default;
 
     /// @brief Default destructor implementation.
-    virtual ~WritableHostDataSource() { }
+    virtual ~WritableHostDataSource() = default;
 
     /// @brief Non-const version of the @c getAll const method.
     ///

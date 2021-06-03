@@ -25,9 +25,6 @@ TranslatorOptionDef::TranslatorOptionDef(S_Session session,
     : TranslatorBasic(session, model) {
 }
 
-TranslatorOptionDef::~TranslatorOptionDef() {
-}
-
 ElementPtr
 TranslatorOptionDef::getOptionDef(const string& xpath) {
     try {
@@ -138,9 +135,6 @@ TranslatorOptionDefList::TranslatorOptionDefList(S_Session session,
                                                  const string& model)
     : TranslatorBasic(session, model),
       TranslatorOptionDef(session, model) {
-}
-
-TranslatorOptionDefList::~TranslatorOptionDefList() {
 }
 
 ConstElementPtr

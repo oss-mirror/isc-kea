@@ -115,8 +115,7 @@ protected:
         }
 
         /// @brief Virtual destructor
-        virtual ~Allocator() {
-        }
+        virtual ~Allocator() = default;
 
     private:
         virtual isc::asiolink::IOAddress
@@ -285,7 +284,7 @@ public:
     AllocEngine(AllocType engine_type, uint64_t attempts, bool ipv6 = true);
 
     /// @brief Destructor.
-    virtual ~AllocEngine() { }
+    virtual ~AllocEngine() = default;
 
     /// @brief Returns allocator for a given pool type
     ///

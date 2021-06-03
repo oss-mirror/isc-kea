@@ -30,8 +30,9 @@ using namespace isc::dns::rdata;
 namespace {
 class RRParamRegistryTest : public ::testing::Test {
 protected:
-    RRParamRegistryTest()
-    {
+
+    /// @brief Constructor
+    RRParamRegistryTest() {
         ostringstream oss1;
         oss1 << test_class_code;
         // cppcheck-suppress useInitializationList
@@ -41,16 +42,20 @@ protected:
         oss2 << test_type_code;
         test_type_unknown_str = "TYPE" + oss2.str();
     }
-    ~RRParamRegistryTest()
-    {
-        // cleanup any non well-known parameters that possibly remain
-        // as a side effect.
-        RRParamRegistry::getRegistry().removeType(test_type_code);
-        RRParamRegistry::getRegistry().removeClass(test_class_code);
-        RRParamRegistry::getRegistry().removeRdataFactory(
-            RRType(test_type_code), RRClass(test_class_code));
-        RRParamRegistry::getRegistry().removeRdataFactory(
-            RRType(test_type_code));
+
+    /// @brief Destructor
+    ~RRParamRegistryTest() {
+        try {
+            // cleanup any non well-known parameters that possibly remain
+            // as a side effect.
+            RRParamRegistry::getRegistry().removeType(test_type_code);
+            RRParamRegistry::getRegistry().removeClass(test_class_code);
+            RRParamRegistry::getRegistry().removeRdataFactory(
+                RRType(test_type_code), RRClass(test_class_code));
+            RRParamRegistry::getRegistry().removeRdataFactory(
+                RRType(test_type_code));
+        } catch (...) {
+        }
     }
 
     string test_class_unknown_str;

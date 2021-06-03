@@ -81,7 +81,7 @@ public:
           const StatePausing& state_pausing = STATE_PAUSE_NEVER);
 
     /// @brief Destructor
-    virtual ~State();
+    virtual ~State() = default;
 
     /// @brief Invokes the State's handler.
     void run();
@@ -118,10 +118,10 @@ typedef boost::shared_ptr<State> StatePtr;
 class StateSet : public LabeledValueSet {
 public:
     /// @brief Constructor
-    StateSet();
+    StateSet() = default;
 
     /// @brief Destructor
-    virtual ~StateSet();
+    virtual ~StateSet() = default;
 
     /// @brief Adds a state definition to the set of states.
     ///
@@ -308,7 +308,7 @@ public:
     StateModel();
 
     /// @brief Destructor
-    virtual ~StateModel();
+    virtual ~StateModel() = default;
 
     /// @brief Begins execution of the model.
     ///

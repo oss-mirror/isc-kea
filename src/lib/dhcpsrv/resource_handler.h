@@ -28,7 +28,7 @@ class ResourceHandler : public boost::noncopyable {
 public:
 
     /// @brief Constructor.
-    ResourceHandler();
+    ResourceHandler() = default;
 
     /// @brief Destructor.
     ///
@@ -171,11 +171,13 @@ private:
 /// @brief Resource race avoidance RAII handler for DHCPv4.
 class ResourceHandler4 : public ResourceHandler {
 public:
+    /// @brief Constructor.
+    ResourceHandler4() = default;
 
     /// @brief Destructor.
     ///
     /// Releases owned resources.
-    virtual ~ResourceHandler4() { }
+    virtual ~ResourceHandler4() = default;
 
     /// @brief Tries to acquires a resource.
     ///

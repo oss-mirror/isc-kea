@@ -66,9 +66,11 @@ typedef std::list<BasicHttpAuthClient> BasicHttpAuthClientList;
 /// @brief Basic HTTP authentication configuration.
 class BasicHttpAuthConfig : public HttpAuthConfig {
 public:
+    /// @brief Constructor
+    BasicHttpAuthConfig() = default;
 
     /// @brief Destructor.
-    virtual ~BasicHttpAuthConfig() { }
+    virtual ~BasicHttpAuthConfig() = default;
 
     /// @brief Add a client configuration.
     ///

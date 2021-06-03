@@ -136,11 +136,22 @@ NAPTR::NAPTR(const NAPTR& naptr) :  Rdata(),
 NAPTR&
 NAPTR::operator=(const NAPTR& source)
 {
-    impl_.reset(new NAPTRImpl(*source.impl_));
+    if (this == &source) {
+        return (*this);
+    }
+
+    NAPTRImpl* newimpl = new NAPTRImpl(*source.impl_);
+    delete impl_;
+    impl_ = newimpl;
+
     return (*this);
 }
 
 NAPTR::~NAPTR() {
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void

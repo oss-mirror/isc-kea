@@ -87,8 +87,7 @@ public:
 
 
     /// @brief Destructor.
-    virtual ~SrvConfigTest() {
-    }
+    virtual ~SrvConfigTest() = default;
 
     /// @brief Convenience function which adds IPv4 subnet to the configuration.
     ///

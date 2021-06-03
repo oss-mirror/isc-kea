@@ -30,6 +30,9 @@ namespace dhcp {
 /// @brief Forward declaration to the implementation of @ref CqlHostDataSource.
 class CqlHostDataSourceImpl;
 
+/// @brief CqlHostDataSourceImpl pointer
+typedef boost::shared_ptr<CqlHostDataSourceImpl> CqlHostDataSourceImplPtr;
+
 /// @brief Cassandra host data source
 ///
 /// Implements @ref isc::dhcp::BaseHostDataSource interface customized to
@@ -91,7 +94,7 @@ public:
     /// @brief Virtual destructor.
     ///
     /// Releases prepared CQL statements used by the backend.
-    virtual ~CqlHostDataSource();
+    virtual ~CqlHostDataSource() = default;
 
     /// @brief Adds a new host to the collection.
     ///
@@ -461,7 +464,7 @@ public:
 
 private:
     /// @brief Pointer to the implementation of the @ref CqlHostDataSource.
-    CqlHostDataSourceImpl* impl_;
+    CqlHostDataSourceImplPtr impl_;
 };  // class CqlHostDataSource
 
 }  // namespace dhcp

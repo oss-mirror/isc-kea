@@ -243,7 +243,10 @@ CSVFileTest::CSVFileTest()
 }
 
 CSVFileTest::~CSVFileTest() {
-    static_cast<void>(removeFile());
+    try {
+        static_cast<void>(removeFile());
+    } catch (...) {
+    }
 }
 
 std::string

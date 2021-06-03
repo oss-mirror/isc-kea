@@ -30,10 +30,14 @@ using namespace std;
 namespace isc {
 namespace dhcp {
 
-Dhcp4o6IpcBase::Dhcp4o6IpcBase() : port_(0), socket_fd_(-1) {}
+Dhcp4o6IpcBase::Dhcp4o6IpcBase() : port_(0), socket_fd_(-1) {
+}
 
 Dhcp4o6IpcBase::~Dhcp4o6IpcBase() {
-    close();
+    try {
+        close();
+    } catch (...) {
+    }
 }
 
 int Dhcp4o6IpcBase::open(uint16_t port, EndpointType endpoint_type) {

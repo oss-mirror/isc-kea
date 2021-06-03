@@ -62,9 +62,12 @@ public:
 
     /// @brief Virtual destructor.
     virtual ~ConfigTest() {
-        session_.reset();
-        connection_.reset();
-        model_.clear();
+        try {
+            session_.reset();
+            connection_.reset();
+            model_.clear();
+        } catch (...) {
+        }
     }
 
     /// @brief Set model.

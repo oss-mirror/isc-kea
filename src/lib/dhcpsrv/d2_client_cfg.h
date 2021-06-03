@@ -108,7 +108,7 @@ public:
     D2ClientConfig();
 
     /// @brief Destructor
-    virtual ~D2ClientConfig();
+    virtual ~D2ClientConfig() = default;
 
     /// @brief Return whether or not DHCP-DDNS updating is enabled.
     bool getEnableUpdates() const {

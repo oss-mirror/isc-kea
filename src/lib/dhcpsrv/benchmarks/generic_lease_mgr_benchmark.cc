@@ -37,9 +37,6 @@ namespace bench {
 GenericLeaseMgrBenchmark::GenericLeaseMgrBenchmark() : lmptr_(NULL) {
 }
 
-GenericLeaseMgrBenchmark::~GenericLeaseMgrBenchmark() {
-}
-
 void
 GenericLeaseMgrBenchmark::setUp4(::benchmark::State& state, size_t const& lease_count) {
     state.PauseTiming();

@@ -80,11 +80,14 @@ RRCollator::Impl::addRR(const Name& name, const RRClass& rrclass,
 }
 
 RRCollator::RRCollator(const AddRRsetCallback& callback) :
-    impl_(new Impl(callback))
-{}
+    impl_(new Impl(callback)) {
+}
 
 RRCollator::~RRCollator() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 AddRRCallback

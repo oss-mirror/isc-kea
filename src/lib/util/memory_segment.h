@@ -53,8 +53,11 @@ public:
 /// MemorySegmentLocal should be used in code.
 class MemorySegment {
 public:
+    /// \brief Constructor
+    MemorySegment() = default;
+
     /// \brief Destructor
-    virtual ~MemorySegment() {}
+    virtual ~MemorySegment() = default;
 
     /// \brief Allocate/acquire a fragment of memory.
     ///

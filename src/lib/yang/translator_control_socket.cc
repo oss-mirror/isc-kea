@@ -25,9 +25,6 @@ TranslatorControlSocket::TranslatorControlSocket(S_Session session,
     : TranslatorBasic(session, model) {
 }
 
-TranslatorControlSocket::~TranslatorControlSocket() {
-}
-
 ConstElementPtr
 TranslatorControlSocket::getControlSocket(const string& xpath) {
     try {

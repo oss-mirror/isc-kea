@@ -395,7 +395,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorConfig();
+    virtual ~TranslatorConfig() = default;
 
     /// @brief Get and translate the whole DHCP server configuration
     /// from YANG to JSON.

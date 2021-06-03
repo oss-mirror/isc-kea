@@ -51,10 +51,10 @@ public:
     typedef Dictionary::const_iterator  const_iterator;
 
     /// \brief Constructor
-    MessageDictionary();
+    MessageDictionary() = default;
 
     /// \brief Virtual Destructor
-    virtual ~MessageDictionary();
+    virtual ~MessageDictionary() = default;
 
     /// \brief Add Message
     ///

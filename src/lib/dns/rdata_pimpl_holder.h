@@ -18,12 +18,17 @@ namespace rdata {
 template <typename T>
 class RdataPimplHolder : boost::noncopyable {
 public:
+    /// @brief Constructor
     RdataPimplHolder(T* obj = NULL) :
-        obj_(obj)
-    {}
+        obj_(obj) {
+    }
 
+    /// @brief Destructor
     ~RdataPimplHolder() {
-        delete obj_;
+        try {
+            delete obj_;
+        } catch (...) {
+        }
     }
 
     void reset(T* obj = NULL) {

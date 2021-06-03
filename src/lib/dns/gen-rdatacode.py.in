@@ -131,6 +131,7 @@ class OutputBuffer;\n'''
 class AbstractMessageRenderer;\n\n'''
         if re.match('\s+// BEGIN_COMMON_MEMBERS$', line):
             content += '''
+    /// \\brief Constructor
     explicit ''' + type_utxt + '''(const std::string& type_str);
     ''' + type_utxt + '''(isc::util::InputBuffer& buffer, size_t rdata_len);
     ''' + type_utxt + '''(const ''' + type_utxt + '''& other);

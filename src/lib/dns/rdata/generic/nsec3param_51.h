@@ -31,6 +31,8 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
     NSEC3PARAM& operator=(const NSEC3PARAM& source);
+
+    /// \brief Destructor
     ~NSEC3PARAM();
 
     ///

@@ -21,14 +21,18 @@ using namespace std;
 
 class MessageReaderTest : public ::testing::Test {
 protected:
-    MessageReaderTest() : dictionary_(), reader_()
-    {
+    /// @brief Constructor
+    MessageReaderTest() : dictionary_(), reader_() {
         dictionary_ = new MessageDictionary();
         reader_.setDictionary(dictionary_);
     }
 
+    /// @brief Destructor
     ~MessageReaderTest() {
-        delete dictionary_;
+        try {
+            delete dictionary_;
+        } catch (...) {
+        }
     }
 
     MessageDictionary*  dictionary_;    // Dictionary to add messages to

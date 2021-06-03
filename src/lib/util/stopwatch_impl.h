@@ -38,7 +38,7 @@ public:
     ///
     /// This destructor is virtual because the @c StopwatchImpl::getCurrentTime
     /// is virtual.
-    virtual ~StopwatchImpl();
+    virtual ~StopwatchImpl() = default;
 
     /// @brief Starts the stopwatch.
     ///

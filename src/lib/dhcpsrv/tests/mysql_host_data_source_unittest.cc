@@ -92,7 +92,10 @@ public:
     /// Rolls back all pending transactions.  The deletion of hdsptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~MySqlHostDataSourceTest() {
-        destroyTest();
+        try {
+            destroyTest();
+        } catch (...) {
+        }
     }
 
     /// @brief Reopen the database

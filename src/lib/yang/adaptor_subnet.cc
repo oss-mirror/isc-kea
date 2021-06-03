@@ -15,12 +15,6 @@ using namespace isc::dhcp;
 namespace isc {
 namespace yang {
 
-AdaptorSubnet::AdaptorSubnet() {
-}
-
-AdaptorSubnet::~AdaptorSubnet() {
-}
-
 bool
 AdaptorSubnet::collectID(ConstElementPtr subnet, SubnetIDSet& set) {
     ConstElementPtr id = subnet->get("id");

@@ -33,10 +33,10 @@ class TranslatorOptionDataListTest :
 public:
 
     /// Constructor.
-    TranslatorOptionDataListTest() { }
+    TranslatorOptionDataListTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorOptionDataListTest() { }
+    virtual ~TranslatorOptionDataListTest() = default;
 };
 
 // This test verifies that an empty option data list can be properly

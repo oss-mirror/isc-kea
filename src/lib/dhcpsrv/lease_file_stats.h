@@ -25,8 +25,7 @@ public:
     }
 
     /// @brief Destructor
-    ~LeaseFileStats() {
-    }
+    ~LeaseFileStats() = default;
 
     /// @brief Gets the number of attempts to read a lease
     uint32_t getReads() const {

@@ -166,10 +166,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
-    AbstractRRset() {}
+    AbstractRRset() = default;
 public:
     /// The destructor.
-    virtual ~AbstractRRset() {}
+    virtual ~AbstractRRset() = default;
     //@}
 
     ///
@@ -567,10 +567,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
-    RdataIterator() {}
+    RdataIterator() = default;
 public:
     /// \brief Destructor
-    virtual ~RdataIterator() {}
+    virtual ~RdataIterator() = default;
 private:
     RdataIterator(const RdataIterator& source);
     RdataIterator& operator=(const RdataIterator& source);
@@ -651,6 +651,7 @@ public:
     /// \param ttl The TTL of the RRset.
     BasicRRset(const Name& name, const RRClass& rrclass,
                const RRType& rrtype, const RRTTL& ttl);
+
     /// \brief The destructor.
     virtual ~BasicRRset();
     //@}
@@ -846,10 +847,12 @@ private:
 /// QNAME/QTYPE/QCLASS as a single object.
 class RRset : public BasicRRset {
 public:
+    /// \brief Constructor
     RRset(const Name& name, const RRClass& rrclass,
           const RRType& rrtype, const RRTTL& ttl);
 
-    virtual ~RRset();
+    /// \brief Destructor
+    virtual ~RRset() = default;
 
     /// \brief Get the wire format length of the \c RRset.
     ///

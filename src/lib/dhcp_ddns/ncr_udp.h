@@ -469,7 +469,6 @@ public:
     /// @brief Destructor
     virtual ~NameChangeUDPSender();
 
-
     /// @brief Opens a UDP socket using the given IOService.
     ///
     /// Creates a NameChangeUDPSocket bound to the sender's IP address
@@ -479,7 +478,6 @@ public:
     ///
     /// @throw NcrUDPError if the open fails.
     virtual void open(isc::asiolink::IOService& io_service);
-
 
     /// @brief Closes the UDPSocket.
     ///

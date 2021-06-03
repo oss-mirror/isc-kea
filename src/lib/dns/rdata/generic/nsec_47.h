@@ -29,6 +29,8 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
     NSEC& operator=(const NSEC& source);
+
+    /// \brief Destructor
     ~NSEC();
 
     // specialized methods

@@ -28,7 +28,10 @@ public:
 
     /// @brief Destructor (disable multi threading).
     ~MultiThreadingTest() {
-        isc::util::MultiThreadingMgr::instance().setMode(false);
+        try {
+            isc::util::MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 };
 

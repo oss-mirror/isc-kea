@@ -33,10 +33,10 @@ class TranslatorPoolsTest :
 public:
 
     /// Constructor.
-    TranslatorPoolsTest() { }
+    TranslatorPoolsTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorPoolsTest() { }
+    virtual ~TranslatorPoolsTest() = default;
 };
 
 // This test verifies that an empty pool list can be properly

@@ -39,10 +39,10 @@ public:
     };
 
     /// @brief Constructor
-    WatchedThread(){};
+    WatchedThread() = default;
 
     /// @brief Virtual destructor
-    virtual ~WatchedThread(){}
+    virtual ~WatchedThread() = default;
 
     /// @brief Fetches the fd of a watch socket
     ///

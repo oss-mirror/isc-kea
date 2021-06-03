@@ -46,10 +46,10 @@ class AdaptorOption {
 public:
 
     /// @brief Constructor.
-    AdaptorOption();
+    AdaptorOption() = default;
 
     /// @brief Destructor.
-    virtual ~AdaptorOption();
+    virtual ~AdaptorOption() = default;
 
     /// @brief Set space.
     ///

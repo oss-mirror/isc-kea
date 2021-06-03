@@ -32,10 +32,10 @@ public:
     VersionedColumn(const std::string& name, const std::string& version,
                const std::string& default_value = "")
         : name_(name), version_(version), default_value_(default_value) {
-    };
+    }
 
     /// @brief Destructor
-    virtual ~VersionedColumn(){};
+    virtual ~VersionedColumn() = default;
 
     /// @brief Name of the column.
     std::string name_;
@@ -135,7 +135,7 @@ public:
     VersionedCSVFile(const std::string& filename);
 
     /// @brief Destructor
-    virtual ~VersionedCSVFile();
+    virtual ~VersionedCSVFile() = default;
 
     /// @brief Adds metadata for a single column to the schema.
     ///

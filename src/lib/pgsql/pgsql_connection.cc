@@ -64,8 +64,11 @@ PgSqlResult::rowCheck(int row) const {
 }
 
 PgSqlResult::~PgSqlResult() {
-    if (result_)  {
-        PQclear(result_);
+    try {
+        if (result_) {
+            PQclear(result_);
+        }
+    } catch (...) {
     }
 }
 
@@ -104,9 +107,12 @@ PgSqlTransaction::PgSqlTransaction(PgSqlConnection& conn)
 }
 
 PgSqlTransaction::~PgSqlTransaction() {
-    // If commit() wasn't explicitly called, rollback.
-    if (!committed_) {
-        conn_.rollback();
+    try {
+        // If commit() wasn't explicitly called, rollback.
+        if (!committed_) {
+            conn_.rollback();
+        }
+    } catch (...) {
     }
 }
 
@@ -117,16 +123,19 @@ PgSqlTransaction::commit() {
 }
 
 PgSqlConnection::~PgSqlConnection() {
-    if (conn_) {
-        // Deallocate the prepared queries.
-        if (PQstatus(conn_) == CONNECTION_OK) {
-            PgSqlResult r(PQexec(conn_, "DEALLOCATE all"));
-            if (PQresultStatus(r) != PGRES_COMMAND_OK) {
-                // Highly unlikely but we'll log it and go on.
-                DB_LOG_ERROR(PGSQL_DEALLOC_ERROR)
-                    .arg(PQerrorMessage(conn_));
+    try {
+        if (conn_) {
+            // Deallocate the prepared queries.
+            if (PQstatus(conn_) == CONNECTION_OK) {
+                PgSqlResult r(PQexec(conn_, "DEALLOCATE all"));
+                if (PQresultStatus(r) != PGRES_COMMAND_OK) {
+                    // Highly unlikely but we'll log it and go on.
+                    DB_LOG_ERROR(PGSQL_DEALLOC_ERROR)
+                        .arg(PQerrorMessage(conn_));
+                }
             }
         }
+    } catch (...) {
     }
 }
 
@@ -138,7 +147,7 @@ PgSqlConnection::getVersion(const ParameterMap& parameters) {
     // Open the database.
     conn.openDatabase();
 
-    const char* version_sql =  "SELECT version, minor FROM schema_version;";
+    const char* version_sql = "SELECT version, minor FROM schema_version;";
     PgSqlResult r(PQexec(conn.conn_, version_sql));
     if (PQresultStatus(r) != PGRES_TUPLES_OK) {
         isc_throw(DbOperationError, "unable to execute PostgreSQL statement <"

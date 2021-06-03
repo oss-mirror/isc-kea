@@ -64,6 +64,7 @@ class TSIG : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit TSIG(const std::string& type_str);
     TSIG(isc::util::InputBuffer& buffer, size_t rdata_len);
     TSIG(const TSIG& other);
@@ -224,6 +225,7 @@ class A : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit A(const std::string& type_str);
     A(isc::util::InputBuffer& buffer, size_t rdata_len);
     A(const A& other);
@@ -288,6 +290,7 @@ class AFSDB : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit AFSDB(const std::string& type_str);
     AFSDB(isc::util::InputBuffer& buffer, size_t rdata_len);
     AFSDB(const AFSDB& other);
@@ -376,6 +379,7 @@ class CAA : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit CAA(const std::string& type_str);
     CAA(isc::util::InputBuffer& buffer, size_t rdata_len);
     CAA(const CAA& other);
@@ -389,8 +393,12 @@ public:
 
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     CAA(uint8_t flags, const std::string& tag, const std::string& value);
+
     CAA& operator=(const CAA& source);
+
+    /// \brief Destructor
     ~CAA();
 
     ///
@@ -458,6 +466,7 @@ class CNAME : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit CNAME(const std::string& type_str);
     CNAME(isc::util::InputBuffer& buffer, size_t rdata_len);
     CNAME(const CNAME& other);
@@ -534,6 +543,7 @@ class DLV : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit DLV(const std::string& type_str);
     DLV(isc::util::InputBuffer& buffer, size_t rdata_len);
     DLV(const DLV& other);
@@ -558,7 +568,7 @@ public:
     /// intact.
     DLV& operator=(const DLV& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~DLV();
 
     /// \brief Return the value of the Tag field.
@@ -612,6 +622,7 @@ class DNAME : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit DNAME(const std::string& type_str);
     DNAME(isc::util::InputBuffer& buffer, size_t rdata_len);
     DNAME(const DNAME& other);
@@ -681,6 +692,7 @@ class DNSKEY : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit DNSKEY(const std::string& type_str);
     DNSKEY(isc::util::InputBuffer& buffer, size_t rdata_len);
     DNSKEY(const DNSKEY& other);
@@ -694,6 +706,8 @@ public:
 
     // END_COMMON_MEMBERS
     DNSKEY& operator=(const DNSKEY& source);
+
+    /// \brief Destructor
     ~DNSKEY();
 
     ///
@@ -771,6 +785,7 @@ class DS : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit DS(const std::string& type_str);
     DS(isc::util::InputBuffer& buffer, size_t rdata_len);
     DS(const DS& other);
@@ -795,7 +810,7 @@ public:
     /// intact.
     DS& operator=(const DS& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~DS();
 
     /// \brief Return the value of the Tag field.
@@ -862,6 +877,7 @@ class HINFO : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit HINFO(const std::string& type_str);
     HINFO(isc::util::InputBuffer& buffer, size_t rdata_len);
     HINFO(const HINFO& other);
@@ -876,6 +892,8 @@ public:
     // END_COMMON_MEMBERS
 
     // HINFO specific methods
+
+    /// \brief Destructor
     ~HINFO();
 
     HINFO& operator=(const HINFO&);
@@ -890,7 +908,7 @@ private:
     template <typename T>
     void toWireHelper(T& outputer) const;
 
-    boost::scoped_ptr<HINFOImpl> impl_;
+    HINFOImpl* impl_;
 };
 
 
@@ -942,6 +960,7 @@ class MINFO : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit MINFO(const std::string& type_str);
     MINFO(isc::util::InputBuffer& buffer, size_t rdata_len);
     MINFO(const MINFO& other);
@@ -1035,6 +1054,7 @@ class MX : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit MX(const std::string& type_str);
     MX(isc::util::InputBuffer& buffer, size_t rdata_len);
     MX(const MX& other);
@@ -1119,6 +1139,7 @@ class NAPTR : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit NAPTR(const std::string& type_str);
     NAPTR(isc::util::InputBuffer& buffer, size_t rdata_len);
     NAPTR(const NAPTR& other);
@@ -1133,6 +1154,7 @@ public:
     // END_COMMON_MEMBERS
 
     // NAPTR specific methods
+    /// \brief Destructor
     ~NAPTR();
 
     NAPTR& operator=(const NAPTR& source);
@@ -1150,7 +1172,7 @@ private:
     template <typename T>
     void toWireHelper(T& outputer) const;
 
-    boost::scoped_ptr<NAPTRImpl> impl_;
+    NAPTRImpl* impl_;
 };
 
 } // end of namespace "generic"
@@ -1195,6 +1217,7 @@ class NS : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit NS(const std::string& type_str);
     NS(isc::util::InputBuffer& buffer, size_t rdata_len);
     NS(const NS& other);
@@ -1269,6 +1292,7 @@ class NSEC3 : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit NSEC3(const std::string& type_str);
     NSEC3(isc::util::InputBuffer& buffer, size_t rdata_len);
     NSEC3(const NSEC3& other);
@@ -1282,6 +1306,8 @@ public:
 
     // END_COMMON_MEMBERS
     NSEC3& operator=(const NSEC3& source);
+
+    /// \brief Destructor
     ~NSEC3();
 
     uint8_t getHashalg() const;
@@ -1346,6 +1372,7 @@ class NSEC3PARAM : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit NSEC3PARAM(const std::string& type_str);
     NSEC3PARAM(isc::util::InputBuffer& buffer, size_t rdata_len);
     NSEC3PARAM(const NSEC3PARAM& other);
@@ -1359,6 +1386,8 @@ public:
 
     // END_COMMON_MEMBERS
     NSEC3PARAM& operator=(const NSEC3PARAM& source);
+
+    /// \brief Destructor
     ~NSEC3PARAM();
 
     ///
@@ -1423,6 +1452,7 @@ class NSEC : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit NSEC(const std::string& type_str);
     NSEC(isc::util::InputBuffer& buffer, size_t rdata_len);
     NSEC(const NSEC& other);
@@ -1436,6 +1466,8 @@ public:
 
     // END_COMMON_MEMBERS
     NSEC& operator=(const NSEC& source);
+
+    /// \brief Destructor
     ~NSEC();
 
     // specialized methods
@@ -1498,6 +1530,7 @@ class OPT : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit OPT(const std::string& type_str);
     OPT(isc::util::InputBuffer& buffer, size_t rdata_len);
     OPT(const OPT& other);
@@ -1511,9 +1544,12 @@ public:
 
     // END_COMMON_MEMBERS
 
-    // The default constructor makes sense for OPT as it can be empty.
+    /// \brief The default constructor makes sense for OPT as it can be empty.
     OPT();
+
     OPT& operator=(const OPT& source);
+
+    /// \brief Destructor
     ~OPT();
 
     /// \brief A class representing a pseudo RR (or option) within an
@@ -1606,6 +1642,7 @@ class PTR : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit PTR(const std::string& type_str);
     PTR(isc::util::InputBuffer& buffer, size_t rdata_len);
     PTR(const PTR& other);
@@ -1679,6 +1716,7 @@ class RP : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit RP(const std::string& type_str);
     RP(isc::util::InputBuffer& buffer, size_t rdata_len);
     RP(const RP& other);
@@ -1785,6 +1823,7 @@ class RRSIG : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit RRSIG(const std::string& type_str);
     RRSIG(isc::util::InputBuffer& buffer, size_t rdata_len);
     RRSIG(const RRSIG& other);
@@ -1798,6 +1837,8 @@ public:
 
     // END_COMMON_MEMBERS
     RRSIG& operator=(const RRSIG& source);
+
+    /// \brief Destructor
     ~RRSIG();
 
     // specialized methods
@@ -1852,6 +1893,7 @@ class SOA : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit SOA(const std::string& type_str);
     SOA(isc::util::InputBuffer& buffer, size_t rdata_len);
     SOA(const SOA& other);
@@ -1937,6 +1979,7 @@ class SPF : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit SPF(const std::string& type_str);
     SPF(isc::util::InputBuffer& buffer, size_t rdata_len);
     SPF(const SPF& other);
@@ -1961,7 +2004,7 @@ public:
     /// intact.
     SPF& operator=(const SPF& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~SPF();
 
     ///
@@ -2025,6 +2068,7 @@ class SSHFP : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit SSHFP(const std::string& type_str);
     SSHFP(isc::util::InputBuffer& buffer, size_t rdata_len);
     SSHFP(const SSHFP& other);
@@ -2038,9 +2082,12 @@ public:
 
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     SSHFP(uint8_t algorithm, uint8_t fingerprint_type,
           const std::string& fingerprint);
     SSHFP& operator=(const SSHFP& source);
+
+    /// \brief Destructor
     ~SSHFP();
 
     ///
@@ -2269,6 +2316,7 @@ class TLSA : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit TLSA(const std::string& type_str);
     TLSA(isc::util::InputBuffer& buffer, size_t rdata_len);
     TLSA(const TLSA& other);
@@ -2282,9 +2330,12 @@ public:
 
     // END_COMMON_MEMBERS
 
+    /// \brief Constructor
     TLSA(uint8_t certificate_usage, uint8_t selector,
          uint8_t matching_type, const std::string& certificate_assoc_data);
     TLSA& operator=(const TLSA& source);
+
+    /// \brief Destructor
     ~TLSA();
 
     ///
@@ -2350,6 +2401,7 @@ class TXT : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit TXT(const std::string& type_str);
     TXT(isc::util::InputBuffer& buffer, size_t rdata_len);
     TXT(const TXT& other);
@@ -2364,6 +2416,8 @@ public:
     // END_COMMON_MEMBERS
 
     TXT& operator=(const TXT& source);
+
+    /// \brief Destructor
     ~TXT();
 
 private:
@@ -2412,6 +2466,7 @@ class A : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit A(const std::string& type_str);
     A(isc::util::InputBuffer& buffer, size_t rdata_len);
     A(const A& other);
@@ -2467,6 +2522,7 @@ class A : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit A(const std::string& type_str);
     A(isc::util::InputBuffer& buffer, size_t rdata_len);
     A(const A& other);
@@ -2480,10 +2536,10 @@ public:
 
     // END_COMMON_MEMBERS
 
-    //We can use the default destructor.
-    //virtual ~A() {}
+    // We can use the default destructor.
+    // virtual ~A() = default
     // notyet:
-    //const struct in_addr& getAddress() const { return (addr_); }
+    // const struct in_addr& getAddress() const { return (addr_); }
 private:
     uint32_t addr_;             // raw IPv4 address (network byte order)
 };
@@ -2530,6 +2586,7 @@ class AAAA : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit AAAA(const std::string& type_str);
     AAAA(isc::util::InputBuffer& buffer, size_t rdata_len);
     AAAA(const AAAA& other);
@@ -2596,6 +2653,7 @@ class DHCID : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit DHCID(const std::string& type_str);
     DHCID(isc::util::InputBuffer& buffer, size_t rdata_len);
     DHCID(const DHCID& other);
@@ -2674,6 +2732,7 @@ class SRV : public Rdata {
 public:
     // BEGIN_COMMON_MEMBERS
 
+    /// \brief Constructor
     explicit SRV(const std::string& type_str);
     SRV(isc::util::InputBuffer& buffer, size_t rdata_len);
     SRV(const SRV& other);
@@ -2698,7 +2757,7 @@ public:
     /// intact.
     SRV& operator=(const SRV& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~SRV();
 
     ///

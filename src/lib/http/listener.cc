@@ -29,7 +29,10 @@ HttpListener::HttpListener(IOService& io_service,
 }
 
 HttpListener::~HttpListener() {
-    stop();
+    try {
+        stop();
+    } catch (...) {
+    }
 }
 
 IOAddress

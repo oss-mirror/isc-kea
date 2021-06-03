@@ -59,7 +59,7 @@ public:
     ClientClassDef(const ClientClassDef& rhs);
 
     /// @brief Destructor
-    virtual ~ClientClassDef();
+    virtual ~ClientClassDef() = default;
 
     /// @brief Fetches the class's name
     std::string getName() const;
@@ -287,10 +287,11 @@ public:
     /// @brief Constructor
     ClientClassDictionary();
 
+    /// @brief Constructor
     ClientClassDictionary(const ClientClassDictionary& rhs);
 
     /// @brief Destructor
-    ~ClientClassDictionary();
+    ~ClientClassDictionary() = default;
 
     /// @brief Adds a new class to the list
     ///

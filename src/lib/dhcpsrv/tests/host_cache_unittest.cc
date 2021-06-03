@@ -31,11 +31,12 @@ namespace {
 class TestHostCache : public MemHostDataSource, public CacheHostDataSource {
 public:
 
-    /// Constructor
-    TestHostCache() : adds_(0), inserts_(0) { }
+    /// @brief Constructor
+    TestHostCache() : adds_(0), inserts_(0) {
+    }
 
-    /// Destructor
-    virtual ~TestHostCache() { }
+    /// @brief Destructor
+    virtual ~TestHostCache() = default;
 
     /// Override add
     void add(const HostPtr& host) {
@@ -99,11 +100,13 @@ typedef boost::shared_ptr<TestHostCache> TestHostCachePtr;
 /// @brief Test data source class.
 class TestHostDataSource : public MemHostDataSource {
 public:
+    /// @brief Constructor
+    TestHostDataSource() = default;
 
-    /// Destructor
-    virtual ~TestHostDataSource() { }
+    /// @brief Destructor
+    virtual ~TestHostDataSource() = default;
 
-    /// Type
+    /// @brief Type
     string getType() const {
         return ("test");
     }
@@ -139,8 +142,11 @@ public:
 
     /// @brief Destructor.
     virtual ~HostCacheTest() {
-        HostDataSourceFactory::deregisterFactory("test");
-        HostDataSourceFactory::deregisterFactory("cache");
+        try {
+            HostDataSourceFactory::deregisterFactory("test");
+            HostDataSourceFactory::deregisterFactory("cache");
+        } catch (...) {
+        }
     }
 
     /// @brief Test host cache.
@@ -593,10 +599,10 @@ class TestOneBackend : public BaseHostDataSource {
 public:
 
     /// Constructor
-    TestOneBackend() : value_() { }
+    TestOneBackend() = default;
 
     /// Destructor
-    virtual ~TestOneBackend() { }
+    virtual ~TestOneBackend() = default;
 
     ConstHostCollection getAll(const Host::IdentifierType&, const uint8_t*,
                                const size_t) const {
@@ -738,9 +744,11 @@ typedef boost::shared_ptr<TestOneBackend> TestOneBackendPtr;
 /// This class looks like a cache but throws when insert() is called.
 class TestNoCache : public MemHostDataSource, public CacheHostDataSource {
 public:
+    /// Constructor
+    TestNoCache() = default;
 
     /// Destructor
-    virtual ~TestNoCache() { }
+    virtual ~TestNoCache() = default;
 
     /// Override add
     void add(const HostPtr& host) {
@@ -812,8 +820,11 @@ public:
 
     /// @brief Destructor.
     virtual ~NegativeCacheTest() {
-        HostDataSourceFactory::deregisterFactory("one");
-        HostDataSourceFactory::deregisterFactory("nocache");
+        try {
+            HostDataSourceFactory::deregisterFactory("one");
+            HostDataSourceFactory::deregisterFactory("nocache");
+        } catch (...) {
+        }
     }
 
     /// @brief Test one backend.

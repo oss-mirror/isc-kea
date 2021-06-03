@@ -80,7 +80,10 @@ public:
     ///
     /// Unloads all loaded libraries.
     ~LibraryManagerCollection() {
-        static_cast<void>(unloadLibraries());
+        try {
+            static_cast<void>(unloadLibraries());
+        } catch (...) {
+        }
     }
 
     /// @brief Load libraries

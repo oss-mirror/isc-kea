@@ -48,7 +48,7 @@ public:
     /// intact.
     DS& operator=(const DS& source);
 
-    /// \brief The destructor.
+    /// \brief Destructor
     ~DS();
 
     /// \brief Return the value of the Tag field.

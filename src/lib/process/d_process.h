@@ -151,7 +151,7 @@ public:
               bool check_only = false) = 0;
 
     /// @brief Destructor
-    virtual ~DProcessBase(){};
+    virtual ~DProcessBase() = default;
 
     /// @brief Checks if the process has been instructed to shut down.
     ///

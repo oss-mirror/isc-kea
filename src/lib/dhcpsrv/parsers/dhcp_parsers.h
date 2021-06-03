@@ -289,9 +289,11 @@ typedef boost::shared_ptr<PoolStorage> PoolStoragePtr;
 class PoolParser : public isc::data::SimpleParser {
 public:
 
-    /// @brief destructor.
-    virtual ~PoolParser() {
-    }
+    /// @brief Constructor.
+    PoolParser() = default;
+
+    /// @brief Destructor.
+    virtual ~PoolParser() = default;
 
     /// @brief parses the actual structure
     ///
@@ -366,9 +368,11 @@ protected:
 class PoolsListParser : public isc::data::SimpleParser {
 public:
 
-    /// @brief destructor.
-    virtual ~PoolsListParser() {
-    }
+    /// @brief Constructor.
+    PoolsListParser() = default;
+
+    /// @brief Destructor.
+    virtual ~PoolsListParser() = default;
 
     /// @brief parses the actual structure
     ///
@@ -476,7 +480,7 @@ public:
     explicit SubnetConfigParser(uint16_t family, bool check_iface = true);
 
     /// @brief virtual destructor (does nothing)
-    virtual ~SubnetConfigParser() { }
+    virtual ~SubnetConfigParser() = default;
 
 protected:
     /// @brief parses a subnet description and returns Subnet{4,6} structure

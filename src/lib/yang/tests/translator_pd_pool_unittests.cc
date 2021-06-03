@@ -33,10 +33,10 @@ class TranslatorPdPoolsTest :
 public:
 
     /// Constructor.
-    TranslatorPdPoolsTest() { }
+    TranslatorPdPoolsTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorPdPoolsTest() { }
+    virtual ~TranslatorPdPoolsTest() = default;
 };
 
 // This test verifies that an empty pd pool list can be properly

@@ -32,10 +32,10 @@ class TranslatorControlSocketTest :
 public:
 
     /// Constructor.
-    TranslatorControlSocketTest() { }
+    TranslatorControlSocketTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorControlSocketTest() { }
+    virtual ~TranslatorControlSocketTest() = default;
 };
 
 // This test verifies that an empty control socket can be properly

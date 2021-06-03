@@ -47,7 +47,10 @@ public:
     /// @note: do not check that state is 0 as there is nothing very
     /// useful to do in this case...
     virtual ~ReadWriteMutex() {
-        std::lock_guard<std::mutex> lk(mutex_);
+        try {
+            std::lock_guard<std::mutex> lk(mutex_);
+        } catch (...) {
+        }
     }
 
     /// @brief Lock write.
@@ -149,7 +152,10 @@ public:
 
     /// @brief Destructor.
     virtual ~ReadLockGuard() {
-        rw_mutex_.readUnlock();
+        try {
+            rw_mutex_.readUnlock();
+        } catch (...) {
+        }
     }
 
 private:
@@ -173,7 +179,10 @@ public:
 
     /// @brief Destructor.
     virtual ~WriteLockGuard() {
-        rw_mutex_.writeUnlock();
+        try {
+            rw_mutex_.writeUnlock();
+        } catch (...) {
+        }
     }
 
 private:

@@ -32,10 +32,10 @@ class TranslatorLoggersTest :
 public:
 
     /// Constructor.
-    TranslatorLoggersTest() { }
+    TranslatorLoggersTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorLoggersTest() { }
+    virtual ~TranslatorLoggersTest() = default;
 };
 
 // This test verifies that an empty logger list can be properly

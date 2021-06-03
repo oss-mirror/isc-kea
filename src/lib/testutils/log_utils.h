@@ -40,7 +40,9 @@ namespace test {
 class LogContentTest : public ::testing::Test {
 public:
 
-    /// @brief Initializes the logger setup for using
+    /// @brief Constructor
+    ///
+    /// Initializes the logger setup for using
     /// in checking log statements
     ///
     /// @todo add support to adjust the severity and debug level
@@ -48,6 +50,7 @@ public:
     /// get logged.
     LogContentTest();
 
+    /// @brief Destructor
     virtual ~LogContentTest();
 
     /// @brief check that the requested strings are in the

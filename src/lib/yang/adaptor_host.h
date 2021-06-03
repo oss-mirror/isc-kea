@@ -26,10 +26,10 @@ public:
     static const std::string STD_CHARACTERS;
 
     /// @brief Constructor.
-    AdaptorHost();
+    AdaptorHost() = default;
 
     /// @brief Destructor.
-    virtual ~AdaptorHost();
+    virtual ~AdaptorHost() = default;
 
     /// @brief Quote when needed a host identifier.
     ///

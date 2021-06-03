@@ -19,9 +19,6 @@ State::State(const int value, const std::string& label, StateHandler handler,
       was_paused_(false) {
 }
 
-State::~State() {
-}
-
 void
 State::run() {
     (handler_)();
@@ -38,12 +35,6 @@ State::shouldPause() {
 }
 
 /********************************** StateSet *******************************/
-
-StateSet::StateSet() {
-}
-
-StateSet::~StateSet() {
-}
 
 void
 StateSet::add(const int value, const std::string& label, StateHandler handler,
@@ -91,9 +82,6 @@ StateModel::StateModel() : events_(), states_(), dictionaries_initted_(false),
                            last_event_(NOP_EVT), next_event_(NOP_EVT),
                            on_entry_flag_(false), on_exit_flag_(false),
                            paused_(false), mutex_(new std::mutex) {
-}
-
-StateModel::~StateModel(){
 }
 
 void

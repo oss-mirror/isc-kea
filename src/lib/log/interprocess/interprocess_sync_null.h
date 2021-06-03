@@ -32,7 +32,7 @@ public:
     {}
 
     /// \brief Destructor
-    virtual ~InterprocessSyncNull();
+    virtual ~InterprocessSyncNull() = default;
 
 protected:
     /// \brief Acquire the lock (never blocks)

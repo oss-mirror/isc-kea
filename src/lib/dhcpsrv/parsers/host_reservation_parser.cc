@@ -351,10 +351,6 @@ HostReservationParser6::getSupportedParameters(const bool identifiers_only) cons
     return (getSupportedParams6(identifiers_only));
 }
 
-HostReservationIdsParser::HostReservationIdsParser()
-    : staging_cfg_() {
-}
-
 void
 HostReservationIdsParser::parse(isc::data::ConstElementPtr ids_list) {
     parseInternal(ids_list);

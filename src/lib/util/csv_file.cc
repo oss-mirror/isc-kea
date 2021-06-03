@@ -116,7 +116,10 @@ CSVFile::CSVFile(const std::string& filename)
 }
 
 CSVFile::~CSVFile() {
-    close();
+    try {
+        close();
+    } catch (...) {
+    }
 }
 
 void

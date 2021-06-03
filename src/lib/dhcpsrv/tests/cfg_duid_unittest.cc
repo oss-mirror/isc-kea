@@ -44,7 +44,10 @@ public:
     ///
     /// Removes DUID file if present.
     virtual ~CfgDUIDTest() {
-        static_cast<void>(remove(absolutePath(DUID_FILE_NAME).c_str()));
+        try {
+            static_cast<void>(remove(absolutePath(DUID_FILE_NAME).c_str()));
+        } catch (...) {
+        }
     }
 
     /// @brief Returns absolute path to a file used by tests.

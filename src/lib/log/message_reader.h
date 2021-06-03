@@ -53,12 +53,11 @@ public:
     /// The ownership of the dictionary object is not transferred - the caller
     /// is responsible for managing the lifetime of the dictionary.
     MessageReader(MessageDictionary* dictionary = NULL) :
-        dictionary_(dictionary), lineno_(0)
-    {}
+        dictionary_(dictionary), lineno_(0) {
+    }
 
     /// \brief Virtual Destructor
-    virtual ~MessageReader()
-    {}
+    virtual ~MessageReader() = default;
 
     /// \brief Get Dictionary
     ///

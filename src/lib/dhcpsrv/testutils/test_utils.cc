@@ -142,9 +142,12 @@ FillFdHoles::FillFdHoles(int limit) : fds_() {
 }
 
 FillFdHoles::~FillFdHoles() {
-    while (!fds_.empty()) {
-        static_cast<void>(close(fds_.back()));
-        fds_.pop_back();
+    try {
+        while (!fds_.empty()) {
+            static_cast<void>(close(fds_.back()));
+            fds_.pop_back();
+        }
+    } catch (...) {
     }
 }
 

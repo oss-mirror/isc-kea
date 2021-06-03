@@ -29,11 +29,14 @@ namespace log {
 namespace interprocess {
 
 InterprocessSyncFile::~InterprocessSyncFile() {
-    if (fd_ != -1) {
-        // This will also release any applied locks.
-        close(fd_);
-        // The lockfile will continue to exist, and we must not delete
-        // it.
+    try {
+        if (fd_ != -1) {
+            // This will also release any applied locks.
+            close(fd_);
+            // The lockfile will continue to exist, and we must not delete
+            // it.
+        }
+    } catch (...) {
     }
 }
 

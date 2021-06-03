@@ -114,7 +114,7 @@ public:
     MySqlLeaseMgr(const db::DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor (closes database)
-    virtual ~MySqlLeaseMgr();
+    virtual ~MySqlLeaseMgr() = default;
 
     /// @brief Create a new context.
     ///

@@ -99,7 +99,10 @@ public:
     /// Rolls back all pending transactions.  The deletion of hdsptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~CqlHostDataSourceTest() {
-        destroyTest();
+        try {
+            destroyTest();
+        } catch (...) {
+        }
     }
 
     /// @brief Reopen the database
@@ -772,6 +775,11 @@ TEST_F(CqlHostDataSourceTest, testMultipleHosts6) {
 /// CQL as alternate host data source.
 class CQLHostMgrTest : public HostMgrTest {
 protected:
+    /// @brief Constructor
+    CQLHostMgrTest() = default;
+
+    /// @brief Destructor
+    virtual ~CQLHostMgrTest() = default;
 
     /// @brief Build CQL schema for a test.
     virtual void SetUp();

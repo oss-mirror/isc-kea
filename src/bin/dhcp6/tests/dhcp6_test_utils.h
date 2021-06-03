@@ -549,10 +549,12 @@ public:
 
     class Dhcpv6SrvMTTestGuard {
     public:
+
         /// @brief Constructor
         Dhcpv6SrvMTTestGuard(Dhcpv6SrvTest& test, bool mt_enabled) : test_(test) {
             test_.setMultiThreading(mt_enabled);
         }
+
         /// @brief Destructor
         ~Dhcpv6SrvMTTestGuard() {
             try{
@@ -560,6 +562,7 @@ public:
             } catch (...) {
             }
         }
+
         Dhcpv6SrvTest& test_;
     };
 

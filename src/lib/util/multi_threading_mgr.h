@@ -234,7 +234,7 @@ protected:
     MultiThreadingMgr();
 
     /// @brief Destructor.
-    virtual ~MultiThreadingMgr();
+    virtual ~MultiThreadingMgr() = default;
 
 private:
 

@@ -171,10 +171,13 @@ public:
 /// See description of \c SocketSessionForwarder for the expected interface.
 class BaseSocketSessionForwarder  {
 protected:
-    BaseSocketSessionForwarder() {}
+    /// @brief Constructor
+    BaseSocketSessionForwarder() = default;
 
 public:
-    virtual ~BaseSocketSessionForwarder() {}
+    /// @brief Destructor
+    virtual ~BaseSocketSessionForwarder() = default;
+
     virtual void connectToReceiver() = 0;
     virtual void close() = 0;
     virtual void push(int sock, int family, int type, int protocol,

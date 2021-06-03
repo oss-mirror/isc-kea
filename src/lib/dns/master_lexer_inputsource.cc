@@ -122,13 +122,15 @@ InputSource::InputSource(const char* filename) :
     total_pos_(0),
     name_(filename),
     input_(openFileStream(file_stream_, filename)),
-    input_size_(getStreamSize(input_))
-{}
+    input_size_(getStreamSize(input_)) {
+}
 
-InputSource::~InputSource()
-{
-    if (file_stream_.is_open()) {
-        file_stream_.close();
+InputSource::~InputSource() {
+    try {
+        if (file_stream_.is_open()) {
+            file_stream_.close();
+        }
+    } catch (...) {
     }
 }
 

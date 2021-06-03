@@ -111,7 +111,7 @@ public:
     DControllerBase(const char* app_name, const char* bin_name);
 
     /// @brief Destructor
-    virtual ~DControllerBase();
+    virtual ~DControllerBase() = default;
 
     /// @brief returns Kea version on stdout and exit.
     /// redeclaration/redefinition. @ref isc::process::Daemon::getVersion()

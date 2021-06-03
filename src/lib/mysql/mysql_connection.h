@@ -53,18 +53,22 @@ public:
     /// way, any error from mysql_stmt_free_result is ignored. (Generating
     /// an exception is not much help, as it will only confuse things if the
     /// method calling mysql_stmt_fetch is exiting via an exception.)
-    MySqlFreeResult(MYSQL_STMT* statement) : statement_(statement)
-    {}
+    MySqlFreeResult(MYSQL_STMT* statement) : statement_(statement) {
+    }
 
     /// @brief Destructor
     ///
     /// Frees up fetch context if a fetch has been successfully executed.
     ~MySqlFreeResult() {
-        (void) mysql_stmt_free_result(statement_);
+        try {
+            (void) mysql_stmt_free_result(statement_);
+        } catch (...) {
+        }
     }
 
 private:
-    MYSQL_STMT*     statement_;     ///< Statement for which results are freed
+    /// @brief Statement for which results are freed
+    MYSQL_STMT* statement_;
 };
 
 /// @brief MySQL Selection Statements
@@ -147,8 +151,11 @@ public:
     ///
     /// Frees up resources allocated by the initialization of MySql.
     ~MySqlHolder() {
-        if (mysql_ != NULL) {
-            mysql_close(mysql_);
+        try {
+            if (mysql_ != NULL) {
+                mysql_close(mysql_);
+            }
+        } catch (...) {
         }
     }
 

@@ -25,8 +25,11 @@ D2ClientMgr::D2ClientMgr() : d2_client_config_(new D2ClientConfig()),
     // Default constructor initializes with a disabled configuration.
 }
 
-D2ClientMgr::~D2ClientMgr(){
-    stopSender();
+D2ClientMgr::~D2ClientMgr() {
+    try {
+        stopSender();
+    } catch (...) {
+    }
 }
 
 void

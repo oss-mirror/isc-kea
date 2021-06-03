@@ -58,7 +58,7 @@ public:
                     const isc::dns::RRClass& rrclass);
 
     /// \brief Destructor
-    virtual ~RRsetCollection() {}
+    virtual ~RRsetCollection() = default;
 
     /// \brief Add an RRset to the collection.
     ///

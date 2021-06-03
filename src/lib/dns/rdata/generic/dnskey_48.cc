@@ -218,7 +218,10 @@ DNSKEY::operator=(const DNSKEY& source) {
 }
 
 DNSKEY::~DNSKEY() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string

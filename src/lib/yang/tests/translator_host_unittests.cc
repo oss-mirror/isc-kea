@@ -33,10 +33,10 @@ class TranslatorHostsTest :
 public:
 
     /// Constructor.
-    TranslatorHostsTest() { }
+    TranslatorHostsTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorHostsTest() { }
+    virtual ~TranslatorHostsTest() = default;
 };
 
 // This test verifies that an empty host reservation list can be properly

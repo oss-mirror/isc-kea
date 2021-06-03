@@ -15,12 +15,6 @@ using namespace isc::data;
 namespace isc {
 namespace yang {
 
-AdaptorPool::AdaptorPool() {
-}
-
-AdaptorPool::~AdaptorPool() {
-}
-
 void
 AdaptorPool::canonizePool(ElementPtr pool) {
     const string& orig = pool->get("pool")->stringValue();

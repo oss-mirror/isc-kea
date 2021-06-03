@@ -31,10 +31,10 @@ class Adaptor {
 public:
 
     /// @brief Constructor.
-    Adaptor();
+    Adaptor() = default;
 
     /// @brief Destructor.
-    virtual ~Adaptor();
+    virtual ~Adaptor() = default;
 
     /// @brief Get user context.
     ///

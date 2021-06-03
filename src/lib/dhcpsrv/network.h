@@ -195,7 +195,7 @@ public:
     /// @brief Virtual destructor.
     ///
     /// Does nothing at the moment.
-    virtual ~Network() { };
+    virtual ~Network() = default;
 
     /// @brief Sets the optional callback function used to fetch globally
     /// configured parameters.

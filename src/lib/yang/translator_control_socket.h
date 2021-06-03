@@ -82,7 +82,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorControlSocket();
+    virtual ~TranslatorControlSocket() = default;
 
     /// @brief Get and translate a control socket from YANG to JSON.
     ///

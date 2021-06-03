@@ -28,17 +28,21 @@ namespace {
 /// has the name "kea") but as the only other logger mentioned here ("wombat")
 /// is not used elsewhere, that is sufficient.
 class LoggingTest : public ::testing::Test {
-    public:
-        /// @brief Constructor
-        LoggingTest() {}
+public:
 
-        /// @brief Destructor
-        ///
-        /// Reset root logger back to defaults.
-        ~LoggingTest() {
+    /// @brief Constructor
+    LoggingTest() = default;
+
+    /// @brief Destructor
+    ///
+    /// Reset root logger back to defaults.
+    ~LoggingTest() {
+        try {
             isc::log::initLogger();
             wipeFiles();
+        } catch (...) {
         }
+    }
 
     /// @brief Generates a log file name suffixed with a rotation number
     /// @param rotation number to the append to the end of the file

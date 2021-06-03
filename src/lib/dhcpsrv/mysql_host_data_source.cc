@@ -148,11 +148,10 @@ public:
         columns_[13] = "auth_key";
 
         BOOST_STATIC_ASSERT(13 < HOST_COLUMNS);
-    };
+    }
 
     /// @brief Virtual destructor.
-    virtual ~MySqlHostExchange() {
-    }
+    virtual ~MySqlHostExchange() = default;
 
     /// @brief Returns index of the first uninitialized column name.
     ///
@@ -179,7 +178,7 @@ public:
     /// This method is used by derived classes.
     uint64_t getHostId() const {
         return (host_id_);
-    };
+    }
 
     /// @brief Set error indicators
     ///
@@ -197,7 +196,7 @@ public:
             error[i] = MLM_FALSE;
             bind[i].error = reinterpret_cast<my_bool*>(&error[i]);
         }
-    };
+    }
 
     /// @brief Return columns in error
     ///
@@ -231,7 +230,7 @@ public:
         }
 
         return (result);
-    };
+    }
 
     /// @brief Create MYSQL_BIND objects for Host Pointer
     ///
@@ -399,7 +398,7 @@ public:
             vec.push_back(bind_[3]); // subnet_id
         }
         return (vec);
-    };
+    }
 
     /// @brief Create BIND array to receive Host data.
     ///
@@ -531,7 +530,7 @@ public:
         // Add the data to the vector.  Note the end element is one after the
         // end of the array.
         return (bind_);
-    };
+    }
 
     /// @brief Copy received data into Host object
     ///
@@ -651,7 +650,7 @@ public:
         }
 
         return (h);
-    };
+    }
 
     /// @brief Processes one row of data fetched from a database.
     ///
@@ -691,7 +690,7 @@ public:
     ///         "(None)".
     std::string getErrorColumns() {
         return (getColumnsInError(error_, columns_));
-    };
+    }
 
 protected:
 
@@ -1316,7 +1315,7 @@ public:
         setErrorIndicators(bind_, error_);
 
         return (bind_);
-    };
+    }
 
 private:
 
@@ -1401,7 +1400,7 @@ public:
             return (reservation_id_);
         }
         return (0);
-    };
+    }
 
     /// @brief Creates IPv6 reservation from the data contained in the
     /// currently processed row.
@@ -1433,7 +1432,7 @@ public:
         std::string address = ipv6_address_buffer_;
         IPv6Resrv r(type, IOAddress(address), prefix_len_);
         return (r);
-    };
+    }
 
     /// @brief Processes one row of data fetched from a database.
     ///
@@ -1529,7 +1528,7 @@ public:
         setErrorIndicators(bind_, error_);
 
         return (bind_);
-    };
+    }
 
 private:
 
@@ -2067,7 +2066,7 @@ public:
     MySqlHostDataSourceImpl(const DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor.
-    ~MySqlHostDataSourceImpl();
+    ~MySqlHostDataSourceImpl() = default;
 
     /// @brief Attempts to reconnect the server to the host DB backend manager.
     ///
@@ -2766,15 +2765,18 @@ MySqlHostDataSource::MySqlHostContextAlloc::MySqlHostContextAlloc(
 }
 
 MySqlHostDataSource::MySqlHostContextAlloc::~MySqlHostContextAlloc() {
-    if (MultiThreadingMgr::instance().getMode()) {
-        // multi-threaded
-        lock_guard<mutex> lock(mgr_.pool_->mutex_);
-        mgr_.pool_->pool_.push_back(ctx_);
-        if (ctx_->conn_.isUnusable()) {
+    try {
+        if (MultiThreadingMgr::instance().getMode()) {
+            // multi-threaded
+            lock_guard<mutex> lock(mgr_.pool_->mutex_);
+            mgr_.pool_->pool_.push_back(ctx_);
+            if (ctx_->conn_.isUnusable()) {
+                mgr_.unusable_ = true;
+            }
+        } else if (ctx_->conn_.isUnusable()) {
             mgr_.unusable_ = true;
         }
-    } else if (ctx_->conn_.isUnusable()) {
-        mgr_.unusable_ = true;
+    } catch (...) {
     }
 }
 
@@ -2847,9 +2849,6 @@ MySqlHostDataSourceImpl::createContext() const {
     ctx->conn_.makeReconnectCtl(timer_name_);
 
     return (ctx);
-}
-
-MySqlHostDataSourceImpl::~MySqlHostDataSourceImpl() {
 }
 
 bool
@@ -3157,9 +3156,6 @@ MySqlHostDataSourceImpl::checkReadOnly(MySqlHostContextPtr& ctx) const {
 
 MySqlHostDataSource::MySqlHostDataSource(const DatabaseConnection::ParameterMap& parameters)
     : impl_(new MySqlHostDataSourceImpl(parameters)) {
-}
-
-MySqlHostDataSource::~MySqlHostDataSource() {
 }
 
 DatabaseConnection::ParameterMap

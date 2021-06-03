@@ -116,7 +116,7 @@ public:
     DCfgMgrBase(ConfigPtr context);
 
     /// @brief Destructor
-    virtual ~DCfgMgrBase();
+    virtual ~DCfgMgrBase() = default;
 
     /// @brief Acts as the receiver of new configurations.
     ///

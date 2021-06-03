@@ -200,7 +200,10 @@ struct MySqlHostDataSourceInit {
 
     // Destructor deregisters
     ~MySqlHostDataSourceInit() {
-        HostDataSourceFactory::deregisterFactory("mysql", true);
+        try {
+            HostDataSourceFactory::deregisterFactory("mysql", true);
+        } catch (...) {
+        }
     }
 
     // Factory class method
@@ -225,7 +228,10 @@ struct PgSqlHostDataSourceInit {
 
     // Destructor deregisters
     ~PgSqlHostDataSourceInit() {
-        HostDataSourceFactory::deregisterFactory("postgresql", true);
+        try {
+            HostDataSourceFactory::deregisterFactory("postgresql", true);
+        } catch (...) {
+        }
     }
 
     // Factory class method
@@ -250,7 +256,10 @@ struct CqlHostDataSourceInit {
 
     // Destructor deregisters
     ~CqlHostDataSourceInit() {
-        HostDataSourceFactory::deregisterFactory("cql", true);
+        try {
+            HostDataSourceFactory::deregisterFactory("cql", true);
+        } catch (...) {
+        }
     }
 
     // Factory class method

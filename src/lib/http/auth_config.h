@@ -23,8 +23,11 @@ class HttpAuthConfig : public isc::data::UserContext,
                        public isc::data::CfgToElement {
 public:
 
+    /// @brief Constructor.
+    HttpAuthConfig() = default;
+
     /// @brief Destructor.
-    virtual ~HttpAuthConfig() { }
+    virtual ~HttpAuthConfig() = default;
 
     /// @brief Set the realm.
     ///

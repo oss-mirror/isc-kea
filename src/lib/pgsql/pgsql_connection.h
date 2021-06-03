@@ -161,9 +161,14 @@ public:
     }
 
 private:
-    PGresult*     result_;     ///< Result set to be freed
-    int rows_;   ///< Number of rows in the result set
-    int cols_;   ///< Number of columns in the result set
+    /// @brief Result set to be freed
+    PGresult* result_;
+
+    /// @brief Number of rows in the result set
+    int rows_;
+
+    /// @brief Number of columns in the result set
+    int cols_;
 };
 
 
@@ -192,8 +197,11 @@ public:
     ///
     /// Frees up resources allocated by the connection.
     ~PgSqlHolder() {
-        if (pgconn_ != NULL) {
-            PQfinish(pgconn_);
+        try {
+            if (pgconn_ != NULL) {
+                PQfinish(pgconn_);
+            }
+        } catch (...) {
         }
     }
 
@@ -226,7 +234,8 @@ public:
     }
 
 private:
-    PGconn* pgconn_;      ///< Postgresql connection
+    /// @brief Postgresql connection
+    PGconn* pgconn_;
 };
 
 /// @brief Forward declaration to @ref PgSqlConnection.

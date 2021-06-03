@@ -56,35 +56,38 @@ MessageInitializer::MessageInitializer(const char* values[])
 }
 
 MessageInitializer::~MessageInitializer() {
-    // Search for the pointer to pending messages belonging to our instance.
-    LoggerValuesList::iterator my_messages = std::find(global_logger_values_->begin(),
-                                                       global_logger_values_->end(),
-                                                       values_);
-    bool pending = (my_messages != global_logger_values_->end());
-    // Our messages are still pending, so let's remove them from the list
-    // of pending messages.
-    if (pending) {
-        global_logger_values_->erase(my_messages);
+    try {
+        // Search for the pointer to pending messages belonging to our instance.
+        LoggerValuesList::iterator my_messages = std::find(global_logger_values_->begin(),
+                                                           global_logger_values_->end(),
+                                                           values_);
+        bool pending = (my_messages != global_logger_values_->end());
+        // Our messages are still pending, so let's remove them from the list
+        // of pending messages.
+        if (pending) {
+            global_logger_values_->erase(my_messages);
 
-    } else {
-        // Our messages are not pending, so they might have been loaded to
-        // the dictionary and/or duplicates.
-        int i = 0;
-        while (values_[i]) {
-            // Check if the unloaded message is registered as duplicate. If it is,
-            // remove it from the duplicates list.
-            LoggerDuplicatesList::iterator dup =
-                std::find(global_logger_duplicates_->begin(),
-                          global_logger_duplicates_->end(),
-                          values_[i]);
-            if (dup != global_logger_duplicates_->end()) {
-                global_logger_duplicates_->erase(dup);
+        } else {
+            // Our messages are not pending, so they might have been loaded to
+            // the dictionary and/or duplicates.
+            int i = 0;
+            while (values_[i]) {
+                // Check if the unloaded message is registered as duplicate. If it is,
+                // remove it from the duplicates list.
+                LoggerDuplicatesList::iterator dup =
+                    std::find(global_logger_duplicates_->begin(),
+                              global_logger_duplicates_->end(),
+                              values_[i]);
+                if (dup != global_logger_duplicates_->end()) {
+                    global_logger_duplicates_->erase(dup);
 
-            } else {
-                global_dictionary_->erase(values_[i], values_[i + 1]);
+                } else {
+                    global_dictionary_->erase(values_[i], values_[i + 1]);
+                }
+                i += 2;
             }
-            i += 2;
         }
+    } catch (...) {
     }
 }
 

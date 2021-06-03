@@ -20,9 +20,6 @@ LabeledValue::LabeledValue(const int value, const std::string& label)
     }
 }
 
-LabeledValue::~LabeledValue(){
-}
-
 int
 LabeledValue::getValue() const {
     return (value_);
@@ -56,12 +53,6 @@ std::ostream& operator<<(std::ostream& os, const LabeledValue& vlp) {
 /**************************** LabeledValueSet ****************************/
 
 const char* LabeledValueSet::UNDEFINED_LABEL = "UNDEFINED";
-
-LabeledValueSet::LabeledValueSet(){
-}
-
-LabeledValueSet::~LabeledValueSet() {
-}
 
 void
 LabeledValueSet::add(LabeledValuePtr entry) {

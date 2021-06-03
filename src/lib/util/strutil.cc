@@ -309,6 +309,7 @@ decodeFormattedHexString(const std::string& hex_string,
 
 class StringSanitizerImpl {
 public:
+    /// @brief Constructor
     StringSanitizerImpl(const std::string& char_set, const std::string& char_replacement)
         : char_set_(char_set), char_replacement_(char_replacement) {
         if (char_set.size() > StringSanitizer::MAX_DATA_SIZE) {
@@ -342,9 +343,12 @@ public:
 
     /// @brief Destructor.
     ~StringSanitizerImpl() {
+        try {
 #ifndef USE_REGEX
-        regfree(&scrub_exp_);
+            regfree(&scrub_exp_);
 #endif
+        } catch (...) {
+        }
     }
 
     std::string scrub(const std::string& original) {
@@ -440,7 +444,10 @@ StringSanitizer::StringSanitizer(const std::string& char_set,
 }
 
 StringSanitizer::~StringSanitizer() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 std::string

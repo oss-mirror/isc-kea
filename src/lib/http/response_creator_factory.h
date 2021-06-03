@@ -34,9 +34,11 @@ namespace http {
 /// if creating new instance for each request is not required or undesired.
 class HttpResponseCreatorFactory {
 public:
+    /// @brief Constructor.
+    HttpResponseCreatorFactory() = default;
 
     /// @brief Virtual destructor.
-    virtual ~HttpResponseCreatorFactory() { }
+    virtual ~HttpResponseCreatorFactory() = default;
 
     /// @brief Returns an instance of the @ref HttpResponseCreator.
     ///
@@ -46,7 +48,6 @@ public:
     /// @return Pointer to the instance of the @ref HttpResponseCreator to
     /// be used to generate HTTP response.
     virtual HttpResponseCreatorPtr create() const = 0;
-
 };
 
 /// @brief Pointer to the @ref HttpResponseCreatorFactory.

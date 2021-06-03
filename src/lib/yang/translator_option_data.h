@@ -86,7 +86,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorOptionData();
+    virtual ~TranslatorOptionData() = default;
 
     /// @brief Get and translate an option data from YANG to JSON.
     ///
@@ -138,7 +138,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorOptionDataList();
+    virtual ~TranslatorOptionDataList() = default;
 
     /// @brief Get and translate option data list from YANG to JSON.
     ///

@@ -266,7 +266,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorSubnet();
+    virtual ~TranslatorSubnet() = default;
 
     /// @brief Get and translate a subnet from YANG to JSON.
     ///
@@ -329,7 +329,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorSubnets();
+    virtual ~TranslatorSubnets() = default;
 
     /// @brief Get and translate subnets from YANG to JSON.
     ///

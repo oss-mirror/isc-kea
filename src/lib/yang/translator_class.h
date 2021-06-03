@@ -84,7 +84,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorClass();
+    virtual ~TranslatorClass() = default;
 
     /// @brief Get and translate a client class from YANG to JSON.
     ///
@@ -134,7 +134,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorClasses();
+    virtual ~TranslatorClasses() = default;
 
     /// @brief Get and translate client classes from YANG to JSON.
     ///

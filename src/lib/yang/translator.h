@@ -38,7 +38,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorBasic();
+    virtual ~TranslatorBasic() = default;
 
     /// @brief Translate basic value from YANG to JSON.
     ///

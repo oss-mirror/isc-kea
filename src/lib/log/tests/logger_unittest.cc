@@ -32,11 +32,17 @@ using namespace std;
 
 class LoggerTest : public ::testing::Test {
 public:
+    /// @brief Constructor
     LoggerTest() {
         // Initialization of logging is done in main()
     }
+
+    /// @brief Destructor
     ~LoggerTest() {
-        LoggerManager::reset();
+        try {
+            LoggerManager::reset();
+        } catch (...) {
+        }
     }
 };
 

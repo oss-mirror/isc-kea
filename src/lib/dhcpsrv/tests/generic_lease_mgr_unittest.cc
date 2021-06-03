@@ -75,11 +75,6 @@ GenericLeaseMgrTest::GenericLeaseMgrTest()
     }
 }
 
-GenericLeaseMgrTest::~GenericLeaseMgrTest() {
-    // Does nothing. The derived classes are expected to clean up, i.e.
-    // remove the lmptr_ pointer.
-}
-
 Lease4Ptr
 GenericLeaseMgrTest::initializeLease4(std::string address) {
     Lease4Ptr lease(new Lease4());

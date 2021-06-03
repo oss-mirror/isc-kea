@@ -44,10 +44,6 @@ namespace isc {
 namespace dhcp {
 namespace test {
 
-GenericHostDataSourceTest::GenericHostDataSourceTest()
-    : GenericBackendTest(), hdsptr_() {
-}
-
 bool
 GenericHostDataSourceTest::compareHostsForSort4(const ConstHostPtr& host1,
                                                 const ConstHostPtr& host2) {

@@ -84,9 +84,11 @@ namespace dhcp {
 /// however, be properly documented.
 class ConfigBackendDHCPv4 : public cb::BaseConfigBackend {
 public:
+    /// @brief Constructor
+    ConfigBackendDHCPv4() = default;
 
     /// @brief Virtual destructor.
-    virtual ~ConfigBackendDHCPv4() { }
+    virtual ~ConfigBackendDHCPv4() = default;
 
     /// @brief Retrieves a single subnet by subnet_prefix.
     ///

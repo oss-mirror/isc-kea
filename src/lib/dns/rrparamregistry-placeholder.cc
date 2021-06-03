@@ -214,7 +214,10 @@ RRParamRegistry::RRParamRegistry() {
 }
 
 RRParamRegistry::~RRParamRegistry() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 RRParamRegistry&

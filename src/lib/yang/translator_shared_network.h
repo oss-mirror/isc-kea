@@ -156,7 +156,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorSharedNetwork();
+    virtual ~TranslatorSharedNetwork() = default;
 
     /// @brief Get and translate a shared network from YANG to JSON.
     ///
@@ -214,7 +214,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorSharedNetworks();
+    virtual ~TranslatorSharedNetworks() = default;
 
     /// @brief Get and translate shared networks from YANG to JSON.
     ///

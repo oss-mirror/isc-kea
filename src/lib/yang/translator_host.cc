@@ -26,9 +26,6 @@ TranslatorHost::TranslatorHost(S_Session session, const string& model)
       TranslatorOptionDataList(session, model) {
 }
 
-TranslatorHost::~TranslatorHost() {
-}
-
 ElementPtr
     TranslatorHost::getHost(const string& xpath) {
     try {
@@ -186,9 +183,6 @@ TranslatorHosts::TranslatorHosts(S_Session session, const string& model)
       TranslatorOptionData(session, model),
       TranslatorOptionDataList(session, model),
       TranslatorHost(session, model) {
-}
-
-TranslatorHosts::~TranslatorHosts() {
 }
 
 ElementPtr

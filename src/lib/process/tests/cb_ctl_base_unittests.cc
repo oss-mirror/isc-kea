@@ -369,7 +369,10 @@ public:
     ///
     /// Removes audit entries created in the test.
     ~CBControlBaseTest() {
-        CBControlBackend::clearAuditEntries();
+        try {
+            CBControlBackend::clearAuditEntries();
+        } catch (...) {
+        }
     }
 
     /// @brief Initialize posix time values used in tests.

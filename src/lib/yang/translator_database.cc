@@ -24,9 +24,6 @@ TranslatorDatabase::TranslatorDatabase(S_Session session, const string& model)
     : TranslatorBasic(session, model) {
 }
 
-TranslatorDatabase::~TranslatorDatabase() {
-}
-
 ElementPtr
 TranslatorDatabase::getDatabase(const string& xpath) {
     try {
@@ -256,9 +253,6 @@ TranslatorDatabases::TranslatorDatabases(S_Session session,
                                          const string& model)
     : TranslatorBasic(session, model),
       TranslatorDatabase(session, model) {
-}
-
-TranslatorDatabases::~TranslatorDatabases() {
 }
 
 ConstElementPtr

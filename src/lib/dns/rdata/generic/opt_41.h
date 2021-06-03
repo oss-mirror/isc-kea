@@ -28,9 +28,12 @@ public:
     // BEGIN_COMMON_MEMBERS
     // END_COMMON_MEMBERS
 
-    // The default constructor makes sense for OPT as it can be empty.
+    /// \brief The default constructor makes sense for OPT as it can be empty.
     OPT();
+
     OPT& operator=(const OPT& source);
+
+    /// \brief Destructor
     ~OPT();
 
     /// \brief A class representing a pseudo RR (or option) within an

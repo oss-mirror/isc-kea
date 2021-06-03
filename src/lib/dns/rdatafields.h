@@ -246,7 +246,7 @@ public:
     /// \param rdata The RDATA for which the \c RdataFields to be constructed.
     RdataFields(const Rdata& rdata);
 
-    /// Constructor from field parameters.
+    /// \brief Constructor from field parameters.
     ///
     /// The intended usage of this version of constructor is to form a
     /// structured representation of \c RDATA encoded by the other
@@ -295,7 +295,7 @@ public:
     RdataFields(const void* fields, const unsigned int fields_length,
                 const void* data, const size_t data_length);
 
-    /// The destructor.
+    /// \brief The destructor.
     ~RdataFields();
     //@}
 

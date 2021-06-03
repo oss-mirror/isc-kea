@@ -45,12 +45,14 @@ struct ThreadPool {
     typedef typename boost::shared_ptr<WorkItem> WorkItemPtr;
 
     /// @brief Constructor
-    ThreadPool() {
-    }
+    ThreadPool() = default;
 
     /// @brief Destructor
     ~ThreadPool() {
-        reset();
+        try {
+            reset();
+        } catch (...) {
+        }
     }
 
     /// @brief reset the thread pool stopping threads and clearing the internal
@@ -249,8 +251,11 @@ private:
         ///
         /// Destroys the thread pool queue
         ~ThreadPoolQueue() {
-            disable();
-            clear();
+            try {
+                disable();
+                clear();
+            } catch (...) {
+            }
         }
 
         /// @brief set maximum number of work items in the queue

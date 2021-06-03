@@ -17,12 +17,6 @@ using namespace isc::data;
 namespace isc {
 namespace yang {
 
-Adaptor::Adaptor() {
-}
-
-Adaptor::~Adaptor() {
-}
-
 ConstElementPtr
 Adaptor::getContext(ConstElementPtr parent)
 {

@@ -41,12 +41,17 @@ using namespace std;
 /// \brief LoggerManager Test
 class LoggerManagerTest : public ::testing::Test {
 public:
+    /// @brief Constructor
     LoggerManagerTest() {
         // Initialization of logging is done in main()
     }
 
+    /// @brief Destructor
     ~LoggerManagerTest() {
-        LoggerManager::reset();
+        try {
+            LoggerManager::reset();
+        } catch (...) {
+        }
     }
 };
 
@@ -73,12 +78,15 @@ public:
 
     // Destructor, remove the file.  This is only a test, so ignore failures
     ~SpecificationForFileLogger() {
-        if (! name_.empty()) {
-            static_cast<void>(remove(name_.c_str()));
+        try {
+            if (!name_.empty()) {
+                static_cast<void>(remove(name_.c_str()));
 
-            // Depending on the log4cplus version, a lock file may also be
-            // created.
-            static_cast<void>(remove((name_ + ".lock").c_str()));
+                // Depending on the log4cplus version, a lock file may also be
+                // created.
+                static_cast<void>(remove((name_ + ".lock").c_str()));
+            }
+        } catch (...) {
         }
     }
 
@@ -327,6 +335,7 @@ namespace { // begin unnamed namespace
 
 class RegexHolder {
 public:
+    /// @brief Constructor
     RegexHolder(const char* expr, const int flags = REG_EXTENDED) {
         const int rc = regcomp(&regex_, expr, flags);
         if (rc) {
@@ -335,8 +344,12 @@ public:
         }
     }
 
+    /// @brief Destructor
     ~RegexHolder() {
-        regfree(&regex_);
+        try {
+            regfree(&regex_);
+        } catch (...) {
+        }
     }
 
     regex_t* operator*() {

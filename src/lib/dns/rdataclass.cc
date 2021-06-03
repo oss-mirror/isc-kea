@@ -371,7 +371,10 @@ TSIG::operator=(const TSIG& source) {
 }
 
 TSIG::~TSIG() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Convert the \c TSIG to a string.
@@ -1067,7 +1070,10 @@ CAA::operator=(const CAA& source) {
 }
 
 CAA::~CAA() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void
@@ -1355,7 +1361,10 @@ DLV::operator=(const DLV& source) {
 ///
 /// Deallocates an internal resource.
 DLV::~DLV() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Convert the \c DLV to a string.
@@ -1757,7 +1766,10 @@ DNSKEY::operator=(const DNSKEY& source) {
 }
 
 DNSKEY::~DNSKEY() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -1915,7 +1927,10 @@ DS::operator=(const DS& source) {
 }
 
 DS::~DS() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -2004,8 +2019,7 @@ public:
         }
     }
 
-    HINFOImpl(MasterLexer& lexer)
-    {
+    HINFOImpl(MasterLexer& lexer) {
         parseHINFOData(lexer);
     }
 
@@ -2042,13 +2056,23 @@ HINFO::HINFO(MasterLexer& lexer, const Name*,
 {}
 
 HINFO&
-HINFO::operator=(const HINFO& source)
-{
-    impl_.reset(new HINFOImpl(*source.impl_));
+HINFO::operator=(const HINFO& source) {
+    if (this == &source) {
+        return (*this);
+    }
+
+    HINFOImpl* newimpl = new HINFOImpl(*source.impl_);
+    delete impl_;
+    impl_ = newimpl;
+
     return (*this);
 }
 
 HINFO::~HINFO() {
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 std::string
@@ -2585,11 +2609,22 @@ NAPTR::NAPTR(const NAPTR& naptr) :  Rdata(),
 NAPTR&
 NAPTR::operator=(const NAPTR& source)
 {
-    impl_.reset(new NAPTRImpl(*source.impl_));
+    if (this == &source) {
+        return (*this);
+    }
+
+    NAPTRImpl* newimpl = new NAPTRImpl(*source.impl_);
+    delete impl_;
+    impl_ = newimpl;
+
     return (*this);
 }
 
 NAPTR::~NAPTR() {
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void
@@ -3040,7 +3075,10 @@ NSEC3::operator=(const NSEC3& source) {
 }
 
 NSEC3::~NSEC3() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -3326,7 +3364,10 @@ NSEC3PARAM::operator=(const NSEC3PARAM& source) {
 }
 
 NSEC3PARAM::~NSEC3PARAM() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -3578,7 +3619,10 @@ NSEC::operator=(const NSEC& source) {
 }
 
 NSEC::~NSEC() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -3663,8 +3707,7 @@ namespace generic {
 OPT::PseudoRR::PseudoRR(uint16_t code,
                         boost::shared_ptr<std::vector<uint8_t> >& data) :
     code_(code),
-    data_(data)
-{
+    data_(data) {
 }
 
 uint16_t
@@ -3693,8 +3736,7 @@ struct OPTImpl {
 
 /// \brief Default constructor.
 OPT::OPT() :
-    impl_(new OPTImpl)
-{
+    impl_(new OPTImpl) {
 }
 
 /// \brief Constructor from string.
@@ -3703,8 +3745,7 @@ OPT::OPT() :
 ///
 /// \throw InvalidRdataText OPT RR cannot be constructed from text.
 OPT::OPT(const std::string&) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     isc_throw(InvalidRdataText, "OPT RR cannot be constructed from text");
 }
 
@@ -3715,14 +3756,12 @@ OPT::OPT(const std::string&) :
 /// \throw InvalidRdataText OPT RR cannot be constructed from text.
 OPT::OPT(MasterLexer&, const Name*,
          MasterLoader::Options, MasterLoaderCallbacks&) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     isc_throw(InvalidRdataText, "OPT RR cannot be constructed from text");
 }
 
 OPT::OPT(InputBuffer& buffer, size_t rdata_len) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     std::unique_ptr<OPTImpl> impl_ptr(new OPTImpl);
 
     while (true) {
@@ -3765,8 +3804,7 @@ OPT::OPT(InputBuffer& buffer, size_t rdata_len) :
 }
 
 OPT::OPT(const OPT& other) :
-    Rdata(), impl_(new OPTImpl(*other.impl_))
-{
+    Rdata(), impl_(new OPTImpl(*other.impl_)) {
 }
 
 OPT&
@@ -3783,7 +3821,10 @@ OPT::operator=(const OPT& source) {
 }
 
 OPT::~OPT() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 std::string
@@ -4387,7 +4428,10 @@ RRSIG::operator=(const RRSIG& source) {
 }
 
 RRSIG::~RRSIG() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string
@@ -4752,7 +4796,10 @@ SPF::operator=(const SPF& source) {
 
 /// \brief The destructor
 SPF::~SPF() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Constructor from wire-format data.
@@ -5048,7 +5095,10 @@ SSHFP::operator=(const SSHFP& source) {
 }
 
 SSHFP::~SSHFP() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void
@@ -5988,7 +6038,10 @@ TLSA::operator=(const TLSA& source) {
 }
 
 TLSA::~TLSA() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void
@@ -6145,7 +6198,10 @@ TXT::operator=(const TXT& source) {
 }
 
 TXT::~TXT() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 TXT::TXT(InputBuffer& buffer, size_t rdata_len) :
@@ -6969,7 +7025,10 @@ SRV::operator=(const SRV& source) {
 }
 
 SRV::~SRV() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 /// \brief Convert the \c SRV to a string.

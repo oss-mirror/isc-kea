@@ -26,8 +26,7 @@ using namespace isc::util;
 OPT::PseudoRR::PseudoRR(uint16_t code,
                         boost::shared_ptr<std::vector<uint8_t> >& data) :
     code_(code),
-    data_(data)
-{
+    data_(data) {
 }
 
 uint16_t
@@ -56,8 +55,7 @@ struct OPTImpl {
 
 /// \brief Default constructor.
 OPT::OPT() :
-    impl_(new OPTImpl)
-{
+    impl_(new OPTImpl) {
 }
 
 /// \brief Constructor from string.
@@ -66,8 +64,7 @@ OPT::OPT() :
 ///
 /// \throw InvalidRdataText OPT RR cannot be constructed from text.
 OPT::OPT(const std::string&) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     isc_throw(InvalidRdataText, "OPT RR cannot be constructed from text");
 }
 
@@ -78,14 +75,12 @@ OPT::OPT(const std::string&) :
 /// \throw InvalidRdataText OPT RR cannot be constructed from text.
 OPT::OPT(MasterLexer&, const Name*,
          MasterLoader::Options, MasterLoaderCallbacks&) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     isc_throw(InvalidRdataText, "OPT RR cannot be constructed from text");
 }
 
 OPT::OPT(InputBuffer& buffer, size_t rdata_len) :
-    impl_(NULL)
-{
+    impl_(NULL) {
     std::unique_ptr<OPTImpl> impl_ptr(new OPTImpl);
 
     while (true) {
@@ -128,8 +123,7 @@ OPT::OPT(InputBuffer& buffer, size_t rdata_len) :
 }
 
 OPT::OPT(const OPT& other) :
-    Rdata(), impl_(new OPTImpl(*other.impl_))
-{
+    Rdata(), impl_(new OPTImpl(*other.impl_)) {
 }
 
 OPT&
@@ -146,7 +140,10 @@ OPT::operator=(const OPT& source) {
 }
 
 OPT::~OPT() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 std::string

@@ -131,7 +131,7 @@ public:
     CqlHostExchange();
 
     /// @brief Virtual destructor.
-    virtual ~CqlHostExchange();
+    virtual ~CqlHostExchange() = default;
 
     /// @brief Binds member variables to data array to receive @ref Host data.
     ///
@@ -1450,9 +1450,6 @@ CqlHostExchange::CqlHostExchange()
       option_scope_id_(NULL_OPTION_SCOPE_ID) {
 }
 
-CqlHostExchange::~CqlHostExchange() {
-}
-
 void
 CqlHostExchange::createBindForSelect(AnyArray& data, StatementTag /* not used */) {
     // Start with a fresh array.
@@ -2055,7 +2052,10 @@ public:
     explicit CqlHostDataSourceImpl(const DatabaseConnection::ParameterMap& parameters);
 
     /// @brief Destructor.
-    virtual ~CqlHostDataSourceImpl();
+    ///
+    /// There is no need to close the database in this destructor: it is
+    /// closed in the destructor of the dbconn_ member variable.
+    virtual ~CqlHostDataSourceImpl() = default;
 
     /// @brief Implementation of @ref CqlHostDataSource::add() and del()
     ///
@@ -2527,11 +2527,6 @@ CqlHostDataSourceImpl::CqlHostDataSourceImpl(const DatabaseConnection::Parameter
 
     // Prepare all possible statements.
     dbconn_.prepareStatements(CqlHostExchange::tagged_statements_);
-}
-
-CqlHostDataSourceImpl::~CqlHostDataSourceImpl() {
-    // There is no need to close the database in this destructor: it is
-    // closed in the destructor of the dbconn_ member variable.
 }
 
 bool
@@ -3449,10 +3444,6 @@ CqlHostDataSourceImpl::mergeHosts(const ConstHostPtr& source_host,
 
 CqlHostDataSource::CqlHostDataSource(const DatabaseConnection::ParameterMap& parameters)
     : impl_(new CqlHostDataSourceImpl(parameters)) {
-}
-
-CqlHostDataSource::~CqlHostDataSource() {
-    delete impl_;
 }
 
 void

@@ -64,18 +64,35 @@ namespace {
 // it's hopefully an acceptable practice.
 class RdataFieldComposer : public AbstractMessageRenderer {
 public:
+    /// @brief Constructor
     RdataFieldComposer() :
         truncated_(false), length_limit_(65535),
-        mode_(CASE_INSENSITIVE), last_data_pos_(0)
-    {}
-    virtual ~RdataFieldComposer() {}
-    virtual bool isTruncated() const { return (truncated_); }
-    virtual size_t getLengthLimit() const { return (length_limit_); }
-    virtual CompressMode getCompressMode() const { return (mode_); }
-    virtual void setTruncated() { truncated_ = true; }
-    virtual void setLengthLimit(size_t len) { length_limit_ = len; }
-    virtual void setCompressMode(CompressMode mode) { mode_ = mode; }
-    virtual void writeName(const LabelSequence&, bool) {}
+        mode_(CASE_INSENSITIVE), last_data_pos_(0) {
+    }
+
+    /// @brief Destructor
+    virtual ~RdataFieldComposer() = default;
+
+    virtual bool isTruncated() const {
+        return (truncated_);
+    }
+    virtual size_t getLengthLimit() const {
+        return (length_limit_);
+    }
+    virtual CompressMode getCompressMode() const {
+        return (mode_);
+    }
+    virtual void setTruncated() {
+        truncated_ = true;
+    }
+    virtual void setLengthLimit(size_t len) {
+        length_limit_ = len;
+    }
+    virtual void setCompressMode(CompressMode mode) {
+        mode_ = mode;
+    }
+    virtual void writeName(const LabelSequence&, bool) {
+    }
     virtual void writeName(const Name& name, bool compress) {
         extendData();
         const RdataFields::Type field_type =
@@ -148,8 +165,7 @@ RdataFields::RdataFields(const void* fields, const unsigned int fields_length,
     nfields_(fields_length / sizeof(*fields_)),
     data_(static_cast<const uint8_t*>(data)),
     data_length_(data_length),
-    detail_(NULL)
-{
+    detail_(NULL) {
     if ((fields_ == NULL && nfields_ > 0) ||
         (fields_ != NULL && nfields_ == 0)) {
         isc_throw(InvalidParameter,
@@ -176,7 +192,10 @@ RdataFields::RdataFields(const void* fields, const unsigned int fields_length,
 }
 
 RdataFields::~RdataFields() {
-    delete detail_;
+    try {
+        delete detail_;
+    } catch (...) {
+    }
 }
 
 RdataFields::FieldSpec

@@ -487,7 +487,10 @@ public:
     ///
     /// Closes all connections.
     ~ConnectionPool() {
-        closeAll();
+        try {
+            closeAll();
+        } catch (...) {
+        }
     }
 
     /// @brief Process next queued request for the given URL and TLS context.
@@ -818,7 +821,10 @@ private:
 
         /// @brief Destructor
         ~Destination() {
-            closeAllConnections();
+            try {
+                closeAllConnections();
+            } catch (...) {
+            }
         }
 
         /// @brief Adds a new connection
@@ -1103,7 +1109,10 @@ Connection::Connection(IOService& io_service,
 }
 
 Connection::~Connection() {
-    close();
+    try {
+        close();
+    } catch (...) {
+    }
 }
 
 void
@@ -1775,7 +1784,10 @@ public:
     ///
     /// Calls stop().
     ~HttpClientImpl() {
-        stop();
+        try {
+            stop();
+        } catch (...) {
+        }
     }
 
     /// @brief Starts running the client's thread pool, if multi-threaded.
@@ -1912,9 +1924,6 @@ HttpClient::HttpClient(IOService& io_service, size_t thread_pool_size,
 
     impl_.reset(new HttpClientImpl(io_service, thread_pool_size,
                                    defer_thread_start));
-}
-
-HttpClient::~HttpClient() {
 }
 
 void

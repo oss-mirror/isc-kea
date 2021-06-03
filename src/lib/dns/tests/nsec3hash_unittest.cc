@@ -43,8 +43,11 @@ protected:
     }
 
     ~NSEC3HashTest() {
-        // Make sure we reset the hash creator to the default
-        setNSEC3HashCreator(NULL);
+        try {
+            // Make sure we reset the hash creator to the default
+            setNSEC3HashCreator(NULL);
+        } catch (...) {
+        }
     }
 
     // An NSEC3Hash object commonly used in tests.  Parameters are borrowed

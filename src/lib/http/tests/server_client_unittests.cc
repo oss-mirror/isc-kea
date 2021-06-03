@@ -409,9 +409,12 @@ public:
     ///
     /// Removes active HTTP clients.
     virtual ~HttpListenerTest() {
-        for (auto client = clients_.begin(); client != clients_.end();
-             ++client) {
-            (*client)->close();
+        try {
+            for (auto client = clients_.begin(); client != clients_.end();
+                 ++client) {
+                (*client)->close();
+            }
+        } catch (...) {
         }
     }
 
@@ -1019,11 +1022,14 @@ public:
 
     /// @brief Destructor.
     ~HttpClientTest() {
-        listener_.stop();
-        listener2_.stop();
-        listener3_.stop();
-        io_service_.poll();
-        MultiThreadingMgr::instance().setMode(false);
+        try {
+            listener_.stop();
+            listener2_.stop();
+            listener3_.stop();
+            io_service_.poll();
+            MultiThreadingMgr::instance().setMode(false);
+        } catch (...) {
+        }
     }
 
     /// @brief Creates HTTP request with JSON body.

@@ -57,7 +57,10 @@ WatchSocket::WatchSocket()
 }
 
 WatchSocket::~WatchSocket() {
-    closeSocket();
+    try {
+        closeSocket();
+    } catch (...) {
+    }
 }
 
 void

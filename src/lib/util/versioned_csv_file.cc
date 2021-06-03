@@ -17,9 +17,6 @@ VersionedCSVFile::VersionedCSVFile(const std::string& filename)
       input_schema_state_(CURRENT) {
 }
 
-VersionedCSVFile::~VersionedCSVFile() {
-}
-
 void
 VersionedCSVFile::addColumn(const std::string& name,
                             const std::string& version,

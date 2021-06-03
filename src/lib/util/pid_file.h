@@ -45,7 +45,7 @@ public:
     PIDFile(const std::string& filename);
 
     /// @brief Destructor
-    ~PIDFile();
+    ~PIDFile() = default;
 
     /// @brief Read the PID in from the file and check it.
     ///

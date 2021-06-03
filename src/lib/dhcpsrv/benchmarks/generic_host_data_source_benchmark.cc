@@ -45,8 +45,11 @@ GenericHostDataSourceBenchmark::GenericHostDataSourceBenchmark() : hdsptr_() {
 }
 
 GenericHostDataSourceBenchmark::~GenericHostDataSourceBenchmark() {
-    LibDHCP::clearRuntimeOptionDefs();
-    hdsptr_.reset();
+    try {
+        LibDHCP::clearRuntimeOptionDefs();
+        hdsptr_.reset();
+    } catch (...) {
+    }
 }
 
 void

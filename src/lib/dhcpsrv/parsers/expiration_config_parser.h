@@ -39,8 +39,11 @@ namespace dhcp {
 class ExpirationConfigParser : public isc::data::SimpleParser {
 public:
 
+    /// @brief Constructor.
+    ExpirationConfigParser() = default;
+
     /// @brief Destructor.
-    virtual ~ExpirationConfigParser() { }
+    virtual ~ExpirationConfigParser() = default;
 
     /// @brief Parses parameters in the JSON map, pertaining to the processing
     /// of the expired leases.
@@ -50,7 +53,6 @@ public:
     /// @throw DhcpConfigError if unknown parameter specified or the
     /// parameter contains invalid value..
     void parse(isc::data::ConstElementPtr expiration_config);
-
 };
 
 } // end of namespace isc::dhcp

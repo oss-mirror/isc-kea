@@ -196,32 +196,35 @@ public:
     /// Stops D2 client (if running), clears configuration and removes
     /// an instance of the lease manager.
     virtual ~ExpirationAllocEngineTest() {
-        // Stop D2 client if running and remove all queued name change
-        // requests.
-        D2ClientMgr& mgr = CfgMgr::instance().getD2ClientMgr();
-        if (mgr.amSending()) {
-            mgr.stopSender();
-            mgr.clearQueue();
-        }
+        try {
+            // Stop D2 client if running and remove all queued name change
+            // requests.
+            D2ClientMgr& mgr = CfgMgr::instance().getD2ClientMgr();
+            if (mgr.amSending()) {
+                mgr.stopSender();
+                mgr.clearQueue();
+            }
 
-        // Clear configuration.
-        CfgMgr::instance().clear();
-        D2ClientConfigPtr cfg(new D2ClientConfig());
-        CfgMgr::instance().setD2ClientConfig(cfg);
+            // Clear configuration.
+            CfgMgr::instance().clear();
+            D2ClientConfigPtr cfg(new D2ClientConfig());
+            CfgMgr::instance().setD2ClientConfig(cfg);
 
-        // Remove all statistics.
-        StatsMgr::instance().resetAll();
+            // Remove all statistics.
+            StatsMgr::instance().resetAll();
 
-        // Kill lease manager.
-        LeaseMgrFactory::destroy();
+            // Kill lease manager.
+            LeaseMgrFactory::destroy();
 
-        // Remove callouts executed.
-        callouts_.clear();
+            // Remove callouts executed.
+            callouts_.clear();
 
-        // Unload libraries.
-        bool status = HooksManager::unloadLibraries();
-        if (!status) {
-            cerr << "(fixture dtor) unloadLibraries failed" << endl;
+            // Unload libraries.
+            bool status = HooksManager::unloadLibraries();
+            if (!status) {
+                cerr << "(fixture dtor) unloadLibraries failed" << endl;
+            }
+        } catch (...) {
         }
     }
 
@@ -1119,8 +1122,11 @@ public:
     ///
     /// Clears up static fields that may be modified by hooks.
     virtual ~ExpirationAllocEngine6Test() {
-        callout_lease_.reset();
-        callout_name_ = string("");
+        try {
+            callout_lease_.reset();
+            callout_name_ = string("");
+        } catch (...) {
+        }
     }
 
     /// @brief Creates collection of leases for a test.
@@ -1665,8 +1671,11 @@ public:
     ///
     /// Clears up static fields that may be modified by hooks.
     virtual ~ExpirationAllocEngine4Test() {
-        callout_lease_.reset();
-        callout_name_ = string("");
+        try {
+            callout_lease_.reset();
+            callout_name_ = string("");
+        } catch (...) {
+        }
     }
 
     /// @brief Creates collection of leases for a test.

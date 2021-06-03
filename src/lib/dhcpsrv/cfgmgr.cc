@@ -226,8 +226,5 @@ CfgMgr::CfgMgr()
     // See AM_CPPFLAGS definition in Makefile.am
 }
 
-CfgMgr::~CfgMgr() {
-}
-
 } // end of isc::dhcp namespace
 } // end of isc namespace

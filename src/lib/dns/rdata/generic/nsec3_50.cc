@@ -206,7 +206,10 @@ NSEC3::operator=(const NSEC3& source) {
 }
 
 NSEC3::~NSEC3() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 string

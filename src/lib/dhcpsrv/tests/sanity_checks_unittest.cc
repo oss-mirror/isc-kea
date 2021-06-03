@@ -26,7 +26,7 @@ using namespace isc::dhcp::test;
 
 class SanityChecksTest : public ::testing::Test {
 public:
-
+    /// @brief Constructor
     SanityChecksTest() {
         LeaseMgrFactory::destroy();
     }
@@ -42,9 +42,13 @@ public:
         CfgMgr::instance().getCurrentCfg()->getConsistency()->setLeaseSanityCheck(sanity);
     }
 
+    /// @brief Destructor
     ~SanityChecksTest() {
-        CfgMgr::instance().clear();
-        LeaseMgrFactory::destroy();
+        try {
+            CfgMgr::instance().clear();
+            LeaseMgrFactory::destroy();
+        } catch (...) {
+        }
     }
 
     /// @brief Generates a simple IPv4 lease.

@@ -74,7 +74,7 @@ public:
     explicit HttpMessage(const Direction& direction);
 
     /// @brief Destructor.
-    virtual ~HttpMessage();
+    virtual ~HttpMessage() = default;
 
     /// @brief Returns HTTP message direction.
     Direction getDirection() const {

@@ -261,6 +261,7 @@ TEST(ValueStorageTest, StringTesting) {
 
 class CfgMgrTest : public ::testing::Test {
 public:
+    /// @brief Constructor.
     CfgMgrTest() {
         // make sure we start with a clean configuration
         original_datadir_ = CfgMgr::instance().getDataDir();
@@ -277,11 +278,16 @@ public:
         return OptionPtr(new Option(Option::V6, D6O_INTERFACE_ID, buffer));
     }
 
+    /// @brief Destructor.
     ~CfgMgrTest() {
-        // clean up after the test
-        clear();
+        try {
+            // clean up after the test
+            clear();
+        } catch (...) {
+        }
     }
 
+    /// @brief Clean up function.
     void clear() {
         CfgMgr::instance().setFamily(AF_INET);
         CfgMgr::instance().setDataDir(original_datadir_);

@@ -64,10 +64,10 @@ protected:
     ///
     /// This is intentionally defined as \c protected as this base class should
     /// never be instantiated (except as part of a derived class).
-    AbstractRdataFactory() {}
+    AbstractRdataFactory() = default;
 public:
     /// The destructor.
-    virtual ~AbstractRdataFactory() {};
+    virtual ~AbstractRdataFactory() = default;
     //@}
 
     ///
@@ -175,8 +175,13 @@ class RRParamRegistry {
     /// These are intentionally hidden (see the class description).
     //@{
 private:
+    /// @brief Constructor
     RRParamRegistry();
+
+    /// @brief Copy constructor
     RRParamRegistry(const RRParamRegistry& orig);
+
+    /// @brief Destructor
     ~RRParamRegistry();
     //@}
 public:

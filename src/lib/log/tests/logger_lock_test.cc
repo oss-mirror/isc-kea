@@ -44,10 +44,14 @@ public:
     ///
     /// Unlocks the mutex.
     ~CheckMutex() {
-        mutex_.unlock();
+        try {
+            mutex_.unlock();
+        } catch (...) {
+        }
     }
 
 private:
+    /// @brief The mutex used for testing
     mutex& mutex_;
 };
 

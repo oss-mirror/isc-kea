@@ -23,7 +23,10 @@ UnixControlClient::UnixControlClient() {
 }
 
 UnixControlClient::~UnixControlClient() {
-    disconnectFromServer();
+    try {
+        disconnectFromServer();
+    } catch (...) {
+    }
 }
 
     /// @brief Closes the Control Channel socket

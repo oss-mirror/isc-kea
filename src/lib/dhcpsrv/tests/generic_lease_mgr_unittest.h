@@ -40,7 +40,10 @@ public:
     GenericLeaseMgrTest();
 
     /// @brief Virtual destructor.
-    virtual ~GenericLeaseMgrTest();
+    ///
+    /// Does nothing. The derived classes are expected to clean up, i.e.
+    /// remove the lmptr_ pointer.
+    virtual ~GenericLeaseMgrTest() = default;
 
     /// @brief Reopen the database
     ///
@@ -523,6 +526,7 @@ public:
 
 class LeaseMgrDbLostCallbackTest : public ::testing::Test {
 public:
+    /// @brief Constructor
     LeaseMgrDbLostCallbackTest()
         : db_lost_callback_called_(0), db_recovered_callback_called_(0),
           db_failed_callback_called_(0),
@@ -534,12 +538,16 @@ public:
         TimerMgr::instance()->setIOService(io_service_);
     }
 
+    /// @brief Destructor
     virtual ~LeaseMgrDbLostCallbackTest() {
-        db::DatabaseConnection::db_lost_callback_ = 0;
-        db::DatabaseConnection::db_recovered_callback_ = 0;
-        db::DatabaseConnection::db_failed_callback_ = 0;
-        LeaseMgr::setIOService(isc::asiolink::IOServicePtr());
-        TimerMgr::instance()->unregisterTimers();
+        try {
+            db::DatabaseConnection::db_lost_callback_ = 0;
+            db::DatabaseConnection::db_recovered_callback_ = 0;
+            db::DatabaseConnection::db_failed_callback_ = 0;
+            LeaseMgr::setIOService(isc::asiolink::IOServicePtr());
+            TimerMgr::instance()->unregisterTimers();
+        } catch (...) {
+        }
     }
 
     /// @brief Prepares the class for a test.

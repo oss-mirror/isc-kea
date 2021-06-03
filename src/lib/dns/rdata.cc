@@ -307,17 +307,19 @@ Generic::Generic(const std::string& rdata_string) :
 Generic::Generic(MasterLexer& lexer, const Name*,
                  MasterLoader::Options,
                  MasterLoaderCallbacks&) :
-    impl_(constructFromLexer(lexer))
-{
+    impl_(constructFromLexer(lexer)) {
 }
 
 Generic::~Generic() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 Generic::Generic(const Generic& source) :
-    Rdata(), impl_(new GenericImpl(*source.impl_))
-{}
+    Rdata(), impl_(new GenericImpl(*source.impl_)) {
+}
 
 Generic&
 // Our check is better than the usual if (this == &source),

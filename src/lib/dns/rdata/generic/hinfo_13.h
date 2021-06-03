@@ -37,6 +37,8 @@ public:
     // END_COMMON_MEMBERS
 
     // HINFO specific methods
+
+    /// \brief Destructor
     ~HINFO();
 
     HINFO& operator=(const HINFO&);
@@ -51,7 +53,7 @@ private:
     template <typename T>
     void toWireHelper(T& outputer) const;
 
-    boost::scoped_ptr<HINFOImpl> impl_;
+    HINFOImpl* impl_;
 };
 
 

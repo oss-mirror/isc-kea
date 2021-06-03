@@ -36,28 +36,32 @@ public:
 
 class BufferAppenderTest : public ::testing::Test {
 protected:
+    /// @brief Constructor
     BufferAppenderTest() : buffer_appender1(new TestBufferAppender()),
                       appender1(buffer_appender1),
                       buffer_appender2(new TestBufferAppender()),
                       appender2(buffer_appender2),
-                      logger(log4cplus::Logger::getInstance("buffer"))
-    {
+                      logger(log4cplus::Logger::getInstance("buffer")) {
         logger.setLogLevel(log4cplus::TRACE_LOG_LEVEL);
     }
 
+    /// @brief Destructor
     ~BufferAppenderTest() {
-        // If any log messages are left, we don't care, get rid of them,
-        // by flushing them to a null appender
-        // Given the 'messages should not get lost' approach of the logging
-        // system, not flushing them to a null appender would cause them
-        // to be dumped to stdout as the test is destroyed, making
-        // unnecessarily messy test output.
-        log4cplus::SharedAppenderPtr null_appender(
-            new log4cplus::NullAppender());
-        logger.removeAllAppenders();
-        logger.addAppender(null_appender);
-        buffer_appender1->flush();
-        buffer_appender2->flush();
+        try {
+            // If any log messages are left, we don't care, get rid of them,
+            // by flushing them to a null appender
+            // Given the 'messages should not get lost' approach of the logging
+            // system, not flushing them to a null appender would cause them
+            // to be dumped to stdout as the test is destroyed, making
+            // unnecessarily messy test output.
+            log4cplus::SharedAppenderPtr null_appender(
+                new log4cplus::NullAppender());
+            logger.removeAllAppenders();
+            logger.addAppender(null_appender);
+            buffer_appender1->flush();
+            buffer_appender2->flush();
+        } catch (...) {
+        }
     }
 
     TestBufferAppender* buffer_appender1;

@@ -78,7 +78,7 @@ public:
     virtual void evaluate(Pkt& pkt, ValueStack& values) = 0;
 
     /// @brief Virtual destructor
-    virtual ~Token() {}
+    virtual ~Token() = default;
 
     /// @brief Coverts a (string) value to a boolean
     ///

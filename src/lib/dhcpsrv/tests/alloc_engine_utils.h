@@ -500,8 +500,12 @@ public:
         ASSERT_EQ(lease->cltt_, from_mgr->cltt_);
     }
 
+    /// @brief Destructor
     virtual ~AllocEngine6Test() {
-        factory_.destroy();
+        try {
+            factory_.destroy();
+        } catch (...) {
+        }
     }
 
     DuidPtr duid_;            ///< client-identifier (value used in tests)
@@ -608,8 +612,12 @@ public:
     void initSubnet(const asiolink::IOAddress& pool_start,
                     const asiolink::IOAddress& pool_end);
 
+    /// @brief Destructor.
     virtual ~AllocEngine4Test() {
-        factory_.destroy();
+        try {
+            factory_.destroy();
+        } catch (...) {
+        }
     }
 
     ClientIdPtr clientid_;      ///< Client-identifier (value used in tests)

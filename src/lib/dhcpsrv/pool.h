@@ -75,8 +75,7 @@ public:
     /// We need Pool to be a polymorphic class, so we could dynamic cast
     /// from PoolPtr to Pool6Ptr if we need to. A class becomes polymorphic,
     /// when there is at least one virtual method.
-    virtual ~Pool() {
-    }
+    virtual ~Pool() = default;
 
     /// @brief Returns the number of all leases in this pool.
     ///

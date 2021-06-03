@@ -135,7 +135,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorPool();
+    virtual ~TranslatorPool() = default;
 
     /// @brief Get and translate a pool from YANG to JSON.
     ///
@@ -209,7 +209,7 @@ public:
 #endif
 
     /// @brief Destructor.
-    virtual ~TranslatorPools();
+    virtual ~TranslatorPools() = default;
 
     /// @brief Get and translate pools from YANG to JSON.
     ///

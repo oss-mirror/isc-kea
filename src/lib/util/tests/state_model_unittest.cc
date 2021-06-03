@@ -70,8 +70,7 @@ public:
                        failure_explanation_("") {
     }
     /// @brief Destructor
-    virtual ~StateModelTest() {
-    }
+    virtual ~StateModelTest() = default;
 
     /// @brief Fetches the value of the dummy called flag.
     bool getDummyCalled() {

@@ -92,7 +92,10 @@ public:
     /// Rolls back all pending transactions.  The deletion of hdsptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~PgSqlHostDataSourceTest() {
-        destroyTest();
+        try {
+            destroyTest();
+        } catch (...) {
+        }
     }
 
     /// @brief Reopen the database
@@ -1428,6 +1431,12 @@ TEST_F(PgSqlHostDataSourceTest, testMultipleHosts6MultiThreading) {
 /// PostgreSQL as alternate host data source.
 class PgSQLHostMgrTest : public HostMgrTest {
 protected:
+
+    /// @brief Constructor
+    PgSQLHostMgrTest() = default;
+
+    /// @brief Destructor
+    virtual ~PgSQLHostMgrTest() = default;
 
     /// @brief Build PostgreSQL schema for a test.
     virtual void SetUp();

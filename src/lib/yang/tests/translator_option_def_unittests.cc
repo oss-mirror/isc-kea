@@ -33,10 +33,10 @@ class TranslatorOptionDefListTest :
 public:
 
     /// Constructor.
-    TranslatorOptionDefListTest() { }
+    TranslatorOptionDefListTest() = default;
 
     /// Destructor (does nothing).
-    virtual ~TranslatorOptionDefListTest() { }
+    virtual ~TranslatorOptionDefListTest() = default;
 };
 
 // This test verifies that an empty option definition list can be properly

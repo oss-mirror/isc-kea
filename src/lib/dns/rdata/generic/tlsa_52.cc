@@ -228,7 +228,10 @@ TLSA::operator=(const TLSA& source) {
 }
 
 TLSA::~TLSA() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 void

@@ -163,9 +163,12 @@ public:
 
     /// @brief Destructor.
     virtual ~CfgMySQLDbAccessTest() {
-        // If data wipe enabled, delete transient data otherwise destroy the schema
-        db::test::destroyMySQLSchema();
-        LeaseMgrFactory::destroy();
+        try {
+            // If data wipe enabled, delete transient data otherwise destroy the schema
+            db::test::destroyMySQLSchema();
+            LeaseMgrFactory::destroy();
+        } catch (...) {
+        }
     }
 };
 
@@ -259,9 +262,12 @@ public:
 
     /// @brief Destructor.
     virtual ~CfgPgSQLDbAccessTest() {
-        // If data wipe enabled, delete transient data otherwise destroy the schema
-        db::test::destroyPgSQLSchema();
-        LeaseMgrFactory::destroy();
+        try {
+            // If data wipe enabled, delete transient data otherwise destroy the schema
+            db::test::destroyPgSQLSchema();
+            LeaseMgrFactory::destroy();
+        } catch (...) {
+        }
     }
 };
 
@@ -355,9 +361,12 @@ public:
 
     /// @brief Destructor.
     virtual ~CfgCQLDbAccessTest() {
-        // If data wipe enabled, delete transient data otherwise destroy the schema
-        db::test::destroyCqlSchema();
-        LeaseMgrFactory::destroy();
+        try {
+            // If data wipe enabled, delete transient data otherwise destroy the schema
+            db::test::destroyCqlSchema();
+            LeaseMgrFactory::destroy();
+        } catch (...) {
+        }
     }
 };
 

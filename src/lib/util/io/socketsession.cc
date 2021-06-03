@@ -121,10 +121,13 @@ SocketSessionForwarder::SocketSessionForwarder(const std::string& unix_file) :
 }
 
 SocketSessionForwarder::~SocketSessionForwarder() {
-    if (impl_->fd_ != -1) {
-        close();
+    try {
+        if (impl_->fd_ != -1) {
+            close();
+        }
+        delete impl_;
+    } catch (...) {
     }
-    delete impl_;
 }
 
 void
@@ -306,12 +309,14 @@ struct SocketSessionReceiver::ReceiverImpl {
 };
 
 SocketSessionReceiver::SocketSessionReceiver(int fd) :
-    impl_(new ReceiverImpl(fd))
-{
+    impl_(new ReceiverImpl(fd)) {
 }
 
 SocketSessionReceiver::~SocketSessionReceiver() {
-    delete impl_;
+    try {
+        delete impl_;
+    } catch (...) {
+    }
 }
 
 namespace {
@@ -331,17 +336,26 @@ readFail(int actual_len, int expected_len) {
 // SocketSessionReceiver::pop that ensures the socket is closed unless it
 // can be safely passed to the caller via release().
 struct ScopedSocket : boost::noncopyable {
-    ScopedSocket(int fd) : fd_(fd) {}
+    /// @brief Constructor
+    ScopedSocket(int fd) : fd_(fd) {
+    }
+
+    /// @brief Destructor
     ~ScopedSocket() {
-        if (fd_ >= 0) {
-            close(fd_);
+        try {
+            if (fd_ >= 0) {
+                close(fd_);
+            }
+        } catch (...) {
         }
     }
+
     int release() {
         const int fd = fd_;
         fd_ = -1;
         return (fd);
     }
+
     int fd_;
 };
 }

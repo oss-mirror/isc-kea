@@ -32,9 +32,6 @@ TranslatorSubnet::TranslatorSubnet(S_Session session, const string& model)
       TranslatorHosts(session, model) {
 }
 
-TranslatorSubnet::~TranslatorSubnet() {
-}
-
 ElementPtr
 TranslatorSubnet::getSubnet(const string& xpath) {
     try {
@@ -457,9 +454,6 @@ TranslatorSubnets::TranslatorSubnets(S_Session session, const string& model)
       TranslatorHost(session, model),
       TranslatorHosts(session, model),
       TranslatorSubnet(session, model) {
-}
-
-TranslatorSubnets::~TranslatorSubnets() {
 }
 
 ElementPtr

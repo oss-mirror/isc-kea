@@ -29,10 +29,10 @@ class AdaptorPool {
 public:
 
     /// @brief Constructor.
-    AdaptorPool();
+    AdaptorPool() = default;
 
     /// @brief Destructor.
-    virtual ~AdaptorPool();
+    virtual ~AdaptorPool() = default;
 
     /// @brief Canonize pool.
     ///
