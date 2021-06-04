@@ -21,10 +21,6 @@ D2ParserContext::D2ParserContext()
   : sfile_(0), ctx_(NO_KEYWORD), trace_scanning_(false), trace_parsing_(false) {
 }
 
-D2ParserContext::~D2ParserContext()
-{
-}
-
 isc::data::ElementPtr
 D2ParserContext::parseString(const std::string& str, ParserType parser_type) {
     scanStringBegin(str, parser_type);
