@@ -46,7 +46,7 @@ class NetconfAgent {
 public:
 
     /// @brief Constructor.
-    NetconfAgent();
+    NetconfAgent() = default;
 
     /// @brief Destructor (call clear).
     virtual ~NetconfAgent();

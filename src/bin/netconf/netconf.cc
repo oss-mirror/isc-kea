@@ -125,9 +125,6 @@ public:
 namespace isc {
 namespace netconf {
 
-NetconfAgent::NetconfAgent() : cancel_(false) {
-}
-
 NetconfAgent::~NetconfAgent() {
     clear();
 }

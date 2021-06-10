@@ -771,13 +771,15 @@ TEST_F(CqlHostDataSourceTest, testMultipleHosts6) {
 /// @brief Test fixture class for validating @c HostMgr using
 /// CQL as alternate host data source.
 class CQLHostMgrTest : public HostMgrTest {
-protected:
+public:
 
     /// @brief Constructor
     CQLHostMgrTest() = default;
 
     /// @brief Destructor
     virtual ~CQLHostMgrTest() = default;
+
+protected:
 
     /// @brief Build CQL schema for a test.
     virtual void SetUp();

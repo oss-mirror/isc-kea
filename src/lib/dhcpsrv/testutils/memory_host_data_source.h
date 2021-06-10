@@ -28,10 +28,6 @@ public:
     MemHostDataSource() : next_host_id_(0) {
     }
 
-    /// @brief Constructor.
-    MemHostDataSource() : next_host_id_(0) {
-    }
-
     /// @brief Destructor.
     virtual ~MemHostDataSource() = default;
 

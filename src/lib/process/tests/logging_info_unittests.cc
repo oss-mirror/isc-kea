@@ -57,12 +57,6 @@ public:
     /// @brief Destructor
     virtual ~LoggingInfoTest() = default;
 
-    /// @brief Constructor
-    LoggingInfoTest() = default;
-
-    /// @brief Destructor
-    virtual ~LoggingInfoTest() = default;
-
     /// @brief Setup the test.
     virtual void SetUp() {
         Daemon::setVerbose(false);

@@ -695,12 +695,6 @@ public:
 
 protected:
 
-    /// @brief Constructor
-    HostMgrTest() = default;
-
-    /// @brief Destructor
-    virtual ~HostMgrTest() = default;
-
     /// @brief Prepares the class for a test.
     ///
     /// This method crates a handful of unique HW address and DUID objects

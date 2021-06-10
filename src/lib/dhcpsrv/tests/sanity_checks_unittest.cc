@@ -45,11 +45,8 @@ public:
 
     /// @brief Destructor
     ~SanityChecksTest() {
-        try {
-            CfgMgr::instance().clear();
-            LeaseMgrFactory::destroy();
-        } catch (...) {
-        }
+        CfgMgr::instance().clear();
+        LeaseMgrFactory::destroy();
     }
 
     /// @brief Generates a simple IPv4 lease.

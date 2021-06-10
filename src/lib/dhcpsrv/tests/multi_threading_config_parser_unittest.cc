@@ -33,12 +33,6 @@ public:
 
 protected:
 
-    /// @brief Constructor
-    MultiThreadingConfigParserTest() = default;
-
-    /// @brief Destructor
-    virtual ~MultiThreadingConfigParserTest() = default;
-
     /// @brief Setup for each test.
     virtual void SetUp();
 

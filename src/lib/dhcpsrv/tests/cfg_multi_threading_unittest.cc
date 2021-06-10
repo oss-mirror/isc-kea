@@ -30,12 +30,6 @@ public:
 
 protected:
 
-    /// @brief Constructor
-    CfgMultiThreadingTest() = default;
-
-    /// @brief Destructor
-    virtual ~CfgMultiThreadingTest() = default;
-
     /// @brief Setup for each test.
     ///
     /// Clears the configuration in the @c MultiThreadingMgr.

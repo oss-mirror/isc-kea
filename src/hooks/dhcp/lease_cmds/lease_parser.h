@@ -93,7 +93,7 @@ public:
                                        const isc::data::ConstElementPtr& lease_info,
                                        bool& force_create);
 
-        /// @brief Constructor
+    /// @brief Constructor
     Lease6Parser() = default;
 
     /// @brief virtual Destructor (does nothing)

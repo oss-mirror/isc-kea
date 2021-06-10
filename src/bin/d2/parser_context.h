@@ -78,7 +78,7 @@ public:
     D2ParserContext();
 
     /// @brief destructor.
-    virtual ~D2ParserContext();
+    virtual ~D2ParserContext() = default;
 
     /// @brief JSON elements being parsed.
     std::vector<isc::data::ElementPtr> stack_;

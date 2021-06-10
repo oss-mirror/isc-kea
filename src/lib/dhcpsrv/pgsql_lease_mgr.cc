@@ -1206,15 +1206,12 @@ PgSqlLeaseMgr::PgSqlLeaseContextAlloc::PgSqlLeaseContextAlloc(
 }
 
 PgSqlLeaseMgr::PgSqlLeaseContextAlloc::~PgSqlLeaseContextAlloc() {
-    try {
-        if (MultiThreadingMgr::instance().getMode()) {
-            // multi-threaded
-            lock_guard<mutex> lock(mgr_.pool_->mutex_);
-            mgr_.pool_->pool_.push_back(ctx_);
-        }
-        // If running in single-threaded mode, there's nothing to do here.
-    } catch (...) {
+    if (MultiThreadingMgr::instance().getMode()) {
+        // multi-threaded
+        lock_guard<mutex> lock(mgr_.pool_->mutex_);
+        mgr_.pool_->pool_.push_back(ctx_);
     }
+    // If running in single-threaded mode, there's nothing to do here.
 }
 
 // PgSqlLeaseMgr Constructor and Destructor
