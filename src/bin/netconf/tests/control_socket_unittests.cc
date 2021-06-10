@@ -146,18 +146,15 @@ public:
 
     /// @brief Destructor.
     virtual ~UnixControlSocketTest() {
-        try {
-            if (thread_) {
-                thread_->join();
-                thread_.reset();
-            }
-            // io_service must be stopped after the thread returns,
-            // otherwise the thread may never return if it is
-            // waiting for the completion of some asynchronous tasks.
-            io_service_.stop();
-            removeUnixSocketFile();
-        } catch (...) {
+        if (thread_) {
+            thread_->join();
+            thread_.reset();
         }
+        // io_service must be stopped after the thread returns,
+        // otherwise the thread may never return if it is
+        // waiting for the completion of some asynchronous tasks.
+        io_service_.stop();
+        removeUnixSocketFile();
     }
 
     /// @brief Returns socket file path.
@@ -513,17 +510,14 @@ public:
 
     /// @brief Destructor.
     virtual ~HttpControlSocketTest() {
-        try {
-            if (thread_) {
-                thread_->join();
-                thread_.reset();
-            }
-            // io_service must be stopped after the thread returns,
-            // otherwise the thread may never return if it is
-            // waiting for the completion of some asynchronous tasks.
-            io_service_.stop();
-        } catch (...) {
+        if (thread_) {
+            thread_->join();
+            thread_.reset();
         }
+        // io_service must be stopped after the thread returns,
+        // otherwise the thread may never return if it is
+        // waiting for the completion of some asynchronous tasks.
+        io_service_.stop();
     }
 
     /// @brief Returns socket URL.

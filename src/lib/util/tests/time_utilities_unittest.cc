@@ -36,10 +36,7 @@ protected:
 
     /// @brief Destructor
     ~DNSSECTimeTest() {
-        try {
-            detail::gettimeFunction = NULL;
-        } catch (...) {
-        }
+        detail::gettimeFunction = NULL;
     }
 };
 

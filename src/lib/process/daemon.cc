@@ -52,11 +52,8 @@ Daemon::Daemon()
 }
 
 Daemon::~Daemon() {
-    try {
-        if (pid_file_ && am_file_author_) {
-            pid_file_->deleteFile();
-        }
-    } catch (...) {
+    if (pid_file_ && am_file_author_) {
+        pid_file_->deleteFile();
     }
 }
 

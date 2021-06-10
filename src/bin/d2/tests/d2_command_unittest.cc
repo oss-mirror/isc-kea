@@ -56,10 +56,7 @@ public:
 
     /// @brief Destructor
     virtual ~NakedD2Controller() {
-        try {
-            deregisterCommands();
-        } catch (...) {
-        }
+        deregisterCommands();
     }
 
     using DControllerBase::getIOService;
@@ -96,10 +93,7 @@ public:
     ///
     /// Stops IO service.
     ~IOServiceWork() {
-        try {
-            io_service_->stop();
-        } catch (...) {
-        }
+        io_service_->stop();
     }
 
 private:
@@ -144,19 +138,16 @@ public:
 
     /// @brief Destructor.
     ~CtrlChannelD2Test() {
-        try {
-            // Deregister & co.
-            server_.reset();
+        // Deregister & co.
+        server_.reset();
 
-            // Remove files.
-            ::remove(CFG_TEST_FILE);
-            ::remove(socket_path_.c_str());
+        // Remove files.
+        ::remove(CFG_TEST_FILE);
+        ::remove(socket_path_.c_str());
 
-            // Reset command manager.
-            CommandMgr::instance().deregisterAll();
-            CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
-        } catch (...) {
-        }
+        // Reset command manager.
+        CommandMgr::instance().deregisterAll();
+        CommandMgr::instance().setConnectionTimeout(TIMEOUT_DHCP_SERVER_RECEIVE_COMMAND);
     }
 
     /// @brief Returns pointer to the server's IO service.

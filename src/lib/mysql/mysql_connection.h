@@ -60,10 +60,7 @@ public:
     ///
     /// Frees up fetch context if a fetch has been successfully executed.
     ~MySqlFreeResult() {
-        try {
-            (void) mysql_stmt_free_result(statement_);
-        } catch (...) {
-        }
+        (void) mysql_stmt_free_result(statement_);
     }
 
 private:
@@ -151,11 +148,8 @@ public:
     ///
     /// Frees up resources allocated by the initialization of MySql.
     ~MySqlHolder() {
-        try {
-            if (mysql_ != NULL) {
-                mysql_close(mysql_);
-            }
-        } catch (...) {
+        if (mysql_ != NULL) {
+            mysql_close(mysql_);
         }
     }
 

@@ -34,10 +34,7 @@ Dhcp4o6IpcBase::Dhcp4o6IpcBase() : port_(0), socket_fd_(-1) {
 }
 
 Dhcp4o6IpcBase::~Dhcp4o6IpcBase() {
-    try {
-        close();
-    } catch (...) {
-    }
+    close();
 }
 
 int Dhcp4o6IpcBase::open(uint16_t port, EndpointType endpoint_type) {

@@ -99,11 +99,8 @@ public:
 
     /// \brief Destructor
     ~InterprocessSyncLocker() {
-        try {
-            if (isLocked()) {
-                unlock();
-            }
-        } catch (...) {
+        if (isLocked()) {
+            unlock();
         }
     }
 

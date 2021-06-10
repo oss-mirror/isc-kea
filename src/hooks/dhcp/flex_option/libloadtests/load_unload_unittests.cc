@@ -39,10 +39,7 @@ public:
     ///
     /// Removes files that may be left over from previous tests
     virtual ~LibLoadTest() {
-        try {
-            reset();
-        } catch (...) {
-        }
+        reset();
     }
 
     /// @brief Removes files that may be left over from previous tests

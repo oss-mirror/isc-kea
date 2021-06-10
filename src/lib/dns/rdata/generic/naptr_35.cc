@@ -148,10 +148,7 @@ NAPTR::operator=(const NAPTR& source)
 }
 
 NAPTR::~NAPTR() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

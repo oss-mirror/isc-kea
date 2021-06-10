@@ -21,14 +21,11 @@ mutex ResourceHandler::mutex_;
 ResourceHandler::ResourceContainer ResourceHandler::resources_;
 
 ResourceHandler::~ResourceHandler() {
-    try {
-        lock_guard<mutex> lock_(mutex_);
-        for (auto res : owned_) {
-            unLockInternal(res->type_, res->addr_);
-        }
-        owned_.clear();
-    } catch (...) {
+    lock_guard<mutex> lock_(mutex_);
+    for (auto res : owned_) {
+        unLockInternal(res->type_, res->addr_);
     }
+    owned_.clear();
 }
 
 ResourceHandler::ResourcePtr

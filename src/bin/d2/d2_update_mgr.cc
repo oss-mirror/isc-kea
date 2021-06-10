@@ -43,10 +43,7 @@ D2UpdateMgr::D2UpdateMgr(D2QueueMgrPtr& queue_mgr, D2CfgMgrPtr& cfg_mgr,
 }
 
 D2UpdateMgr::~D2UpdateMgr() {
-    try {
-        transaction_list_.clear();
-    } catch (...) {
-    }
+    transaction_list_.clear();
 }
 
 void D2UpdateMgr::sweep() {

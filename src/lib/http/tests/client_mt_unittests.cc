@@ -207,20 +207,17 @@ public:
 
     /// @brief Destructor.
     ~MtHttpClientTest() {
-        try {
-            // Stop the client.
-            if (client_) {
-                client_->stop();
-            }
-
-            // Stop all listeners.
-            for (const auto& listener : listeners_) {
-                listener->stop();
-            }
-
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
+        // Stop the client.
+        if (client_) {
+            client_->stop();
         }
+
+        // Stop all listeners.
+        for (const auto& listener : listeners_) {
+            listener->stop();
+        }
+
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Callback function to invoke upon test timeout.

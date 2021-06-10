@@ -33,10 +33,7 @@ public:
 
     /// @brief Destructor
     ~LoggerNameTest() {
-        try {
-            setRootLoggerName(name_);
-        } catch (...) {
-        }
+        setRootLoggerName(name_);
     }
 
 private:

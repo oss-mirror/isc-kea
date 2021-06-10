@@ -45,17 +45,14 @@ protected:
 
     /// @brief Destructor
     ~RRParamRegistryTest() {
-        try {
-            // cleanup any non well-known parameters that possibly remain
-            // as a side effect.
-            RRParamRegistry::getRegistry().removeType(test_type_code);
-            RRParamRegistry::getRegistry().removeClass(test_class_code);
-            RRParamRegistry::getRegistry().removeRdataFactory(
-                RRType(test_type_code), RRClass(test_class_code));
-            RRParamRegistry::getRegistry().removeRdataFactory(
-                RRType(test_type_code));
-        } catch (...) {
-        }
+        // cleanup any non well-known parameters that possibly remain
+        // as a side effect.
+        RRParamRegistry::getRegistry().removeType(test_type_code);
+        RRParamRegistry::getRegistry().removeClass(test_class_code);
+        RRParamRegistry::getRegistry().removeRdataFactory(
+            RRType(test_type_code), RRClass(test_class_code));
+        RRParamRegistry::getRegistry().removeRdataFactory(
+            RRType(test_type_code));
     }
 
     string test_class_unknown_str;

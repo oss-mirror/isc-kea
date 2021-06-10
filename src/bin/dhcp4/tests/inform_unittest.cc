@@ -143,11 +143,8 @@ public:
     ///
     /// Cleans up statistics after the test.
     ~InformTest() {
-        try {
-            // Let's wipe all existing statistics.
-            isc::stats::StatsMgr::instance().removeAll();
-        } catch (...) {
-        }
+        // Let's wipe all existing statistics.
+        isc::stats::StatsMgr::instance().removeAll();
     }
 
     /// @brief Interface Manager's fake configuration control.

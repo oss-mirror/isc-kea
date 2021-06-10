@@ -448,10 +448,7 @@ TimerMgr::TimerMgr()
 }
 
 TimerMgr::~TimerMgr() {
-    try {
-        impl_->unregisterTimers();
-    } catch (...) {
-    }
+    impl_->unregisterTimers();
 }
 
 void

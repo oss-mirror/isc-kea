@@ -72,12 +72,9 @@ ClientHandler::del(const DuidPtr& duid) {
 }
 
 ClientHandler::~ClientHandler() {
-    try {
-        if (locked_) {
-            lock_guard<mutex> lk(mutex_);
-            unLock();
-        }
-    } catch (...) {
+    if (locked_) {
+        lock_guard<mutex> lk(mutex_);
+        unLock();
     }
 }
 

@@ -392,15 +392,12 @@ public:
 
     /// @brief Destructor
     ~Dhcp6ParserTest() {
-        try {
-            // Reset configuration database after each test.
-            resetConfiguration();
+        // Reset configuration database after each test.
+        resetConfiguration();
 
-            // ... and delete the hooks library marker files if present
-            static_cast<void>(remove(LOAD_MARKER_FILE));
-            static_cast<void>(remove(UNLOAD_MARKER_FILE));
-        } catch (...) {
-        }
+        // ... and delete the hooks library marker files if present
+        static_cast<void>(remove(LOAD_MARKER_FILE));
+        static_cast<void>(remove(UNLOAD_MARKER_FILE));
     }
 
     // Checks if config_result (result of DHCP server configuration) has

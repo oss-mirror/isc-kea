@@ -224,10 +224,7 @@ MessageRenderer::MessageRenderer() :
 }
 
 MessageRenderer::~MessageRenderer() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

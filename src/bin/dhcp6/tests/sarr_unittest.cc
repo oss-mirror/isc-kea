@@ -236,14 +236,11 @@ public:
     ///
     /// Clear the DHCP-DDNS configuration.
     virtual ~SARRTest() {
-        try {
-            D2ClientConfigPtr cfg(new D2ClientConfig());
-            CfgMgr::instance().setD2ClientConfig(cfg);
+        D2ClientConfigPtr cfg(new D2ClientConfig());
+        CfgMgr::instance().setD2ClientConfig(cfg);
 
-            // Let's wipe all existing statistics.
-            isc::stats::StatsMgr::instance().removeAll();
-        } catch (...) {
-        }
+        // Let's wipe all existing statistics.
+        isc::stats::StatsMgr::instance().removeAll();
     }
 
     /// @brief Check that server processes correctly a prefix hint sent by the

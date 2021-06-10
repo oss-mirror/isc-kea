@@ -126,11 +126,8 @@ InputSource::InputSource(const char* filename) :
 }
 
 InputSource::~InputSource() {
-    try {
-        if (file_stream_.is_open()) {
-            file_stream_.close();
-        }
-    } catch (...) {
+    if (file_stream_.is_open()) {
+        file_stream_.close();
     }
 }
 

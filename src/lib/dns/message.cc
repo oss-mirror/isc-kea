@@ -384,10 +384,7 @@ Message::Message(Mode mode) :
 }
 
 Message::~Message() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 bool
@@ -1045,10 +1042,7 @@ SectionIterator<T>::SectionIterator(const SectionIteratorImpl<T>& impl) {
 
 template <typename T>
 SectionIterator<T>::~SectionIterator() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 template <typename T>

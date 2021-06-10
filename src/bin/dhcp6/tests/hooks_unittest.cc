@@ -139,28 +139,25 @@ public:
 
     /// @brief Destructor (deletes Dhcpv6Srv)
     ~HooksDhcpv6SrvTest() {
-        try {
-            // Clear static buffers
-            resetCalloutBuffers();
+        // Clear static buffers
+        resetCalloutBuffers();
 
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_receive");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt6_receive");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt6_send");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_send");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("subnet6_select");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("leases6_committed");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_renew");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_release");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_rebind");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_decline");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("host6_identifier");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_receive");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt6_receive");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt6_send");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer6_send");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("subnet6_select");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("leases6_committed");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_renew");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_release");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_rebind");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease6_decline");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("host6_identifier");
 
-            HooksManager::setTestMode(false);
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        HooksManager::setTestMode(false);
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 
@@ -997,12 +994,9 @@ public:
 
     /// @brief Destructor
     ~LoadUnloadDhcpv6SrvTest() {
-        try {
-            server_.reset();
-            reset();
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        server_.reset();
+        reset();
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Reset hooks data

@@ -64,15 +64,12 @@ public:
     /// settings (when configureLogger is called), the logging is reset to
     /// the default after each test completes.
     ~DaemonTest() {
-        try {
-            isc::log::setDefaultLoggingOutput();
-            // Restore KEA_PIDFILE_DIR environment variable value
-            if (env_copy_.empty()) {
-                static_cast<void>(unsetenv("KEA_PIDFILE_DIR"));
-            } else {
-                static_cast<void>(setenv("KEA_PIDFILE_DIR", env_copy_.c_str(), 1));
-            }
-        } catch (...) {
+        isc::log::setDefaultLoggingOutput();
+        // Restore KEA_PIDFILE_DIR environment variable value
+        if (env_copy_.empty()) {
+            static_cast<void>(unsetenv("KEA_PIDFILE_DIR"));
+        } else {
+            static_cast<void>(setenv("KEA_PIDFILE_DIR", env_copy_.c_str(), 1));
         }
     }
 

@@ -61,13 +61,10 @@ public:
 
     /// @brief Destructor
     ~HMACImpl() {
-        try {
-            if (md_) {
-                HMAC_CTX_free(md_);
-            }
-            md_ = 0;
-        } catch (...) {
+        if (md_) {
+            HMAC_CTX_free(md_);
         }
+        md_ = 0;
     }
 
     /// @brief Returns the HashAlgorithm of the object
@@ -186,10 +183,7 @@ HMAC::HMAC(const void* secret, size_t secret_length,
 }
 
 HMAC::~HMAC() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 HashAlgorithm

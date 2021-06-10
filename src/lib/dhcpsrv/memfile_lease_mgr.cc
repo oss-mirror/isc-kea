@@ -145,7 +145,6 @@ LFCSetup::~LFCSetup() {
         // we don't want an error message output during shutdown.
         LOG_DEBUG(dhcpsrv_logger, DHCPSRV_DBG_TRACE,
                   DHCPSRV_MEMFILE_LFC_UNREGISTER_TIMER_FAILED).arg(ex.what());
-    } catch (...) {
     }
 }
 
@@ -672,16 +671,13 @@ Memfile_LeaseMgr::Memfile_LeaseMgr(const DatabaseConnection::ParameterMap& param
 }
 
 Memfile_LeaseMgr::~Memfile_LeaseMgr() {
-    try {
-        if (lease_file4_) {
-            lease_file4_->close();
-            lease_file4_.reset();
-        }
-        if (lease_file6_) {
-            lease_file6_->close();
-            lease_file6_.reset();
-        }
-    } catch (...) {
+    if (lease_file4_) {
+        lease_file4_->close();
+        lease_file4_.reset();
+    }
+    if (lease_file6_) {
+        lease_file6_->close();
+        lease_file6_.reset();
     }
 }
 

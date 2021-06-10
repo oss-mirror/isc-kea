@@ -106,13 +106,10 @@ HAService::HAService(const IOServicePtr& io_service, const NetworkStatePtr& netw
 }
 
 HAService::~HAService() {
-    try {
-        // Stop client and/or listener.
-        stopClientAndListener();
+    // Stop client and/or listener.
+    stopClientAndListener();
 
-        network_state_->reset(NetworkState::Origin::HA_COMMAND);
-    } catch (...) {
-    }
+    network_state_->reset(NetworkState::Origin::HA_COMMAND);
 }
 
 void

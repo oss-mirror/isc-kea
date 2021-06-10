@@ -76,11 +76,8 @@ DStubProcess::configure(isc::data::ConstElementPtr config_set, bool check_only) 
 }
 
 DStubProcess::~DStubProcess() {
-    try {
-        Daemon::setVerbose(false);
-    } catch (...) {
-    }
-};
+    Daemon::setVerbose(false);
+}
 
 //************************** DStubController *************************
 

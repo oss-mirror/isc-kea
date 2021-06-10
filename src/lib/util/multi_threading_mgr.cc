@@ -175,10 +175,7 @@ MultiThreadingCriticalSection::MultiThreadingCriticalSection() {
 }
 
 MultiThreadingCriticalSection::~MultiThreadingCriticalSection() {
-    try {
-        MultiThreadingMgr::instance().exitCriticalSection();
-    } catch (...) {
-    }
+    MultiThreadingMgr::instance().exitCriticalSection();
 }
 
 void

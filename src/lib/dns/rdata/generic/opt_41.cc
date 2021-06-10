@@ -140,10 +140,7 @@ OPT::operator=(const OPT& source) {
 }
 
 OPT::~OPT() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 std::string

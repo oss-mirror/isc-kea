@@ -553,15 +553,12 @@ public:
 
     /// @brief Destructor
     virtual ~HostMgrDbLostCallbackTest() {
-        try {
-            isc::db::DatabaseConnection::db_lost_callback_ = 0;
-            isc::db::DatabaseConnection::db_recovered_callback_ = 0;
-            isc::db::DatabaseConnection::db_failed_callback_ = 0;
-            isc::dhcp::HostMgr::setIOService(isc::asiolink::IOServicePtr());
-            isc::dhcp::TimerMgr::instance()->unregisterTimers();
-            isc::dhcp::CfgMgr::instance().clear();
-        } catch (...) {
-        }
+        isc::db::DatabaseConnection::db_lost_callback_ = 0;
+        isc::db::DatabaseConnection::db_recovered_callback_ = 0;
+        isc::db::DatabaseConnection::db_failed_callback_ = 0;
+        isc::dhcp::HostMgr::setIOService(isc::asiolink::IOServicePtr());
+        isc::dhcp::TimerMgr::instance()->unregisterTimers();
+        isc::dhcp::CfgMgr::instance().clear();
     }
 
     /// @brief Prepares the class for a test.

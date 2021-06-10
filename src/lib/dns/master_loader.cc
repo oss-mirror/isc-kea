@@ -1044,10 +1044,7 @@ MasterLoader::MasterLoader(std::istream& stream,
 }
 
 MasterLoader::~MasterLoader() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 bool

@@ -101,10 +101,7 @@ HINFO::operator=(const HINFO& source) {
 }
 
 HINFO::~HINFO() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 std::string

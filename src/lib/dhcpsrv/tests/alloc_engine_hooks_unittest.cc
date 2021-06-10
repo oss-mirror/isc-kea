@@ -36,15 +36,12 @@ public:
 
     /// @brief Destructor
     virtual ~HookAllocEngine6Test() {
-        try {
-            resetCalloutBuffers();
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
-                "lease6_select");
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        resetCalloutBuffers();
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
+            "lease6_select");
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 
@@ -360,15 +357,12 @@ public:
 
     /// @brief Destructor
     virtual ~HookAllocEngine4Test() {
-        try {
-            resetCalloutBuffers();
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
-                "lease4_select");
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        resetCalloutBuffers();
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts(
+            "lease4_select");
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 

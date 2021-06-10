@@ -114,10 +114,7 @@ public:
 
     /// @brief Destructor.
     ~HttpConnectionPoolTest() {
-        try {
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Verifies that connections can be added to the pool and removed.

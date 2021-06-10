@@ -193,10 +193,7 @@ RdataFields::RdataFields(const void* fields, const unsigned int fields_length,
 }
 
 RdataFields::~RdataFields() {
-    try {
-        delete detail_;
-    } catch (...) {
-    }
+    delete detail_;
 }
 
 RdataFields::FieldSpec

@@ -46,11 +46,8 @@ protected:
 
     /// @brief Destructor
     ~NSEC3HashTest() {
-        try {
-            // Make sure we reset the hash creator to the default
-            setNSEC3HashCreator(NULL);
-        } catch (...) {
-        }
+        // Make sure we reset the hash creator to the default
+        setNSEC3HashCreator(NULL);
     }
 
     // An NSEC3Hash object commonly used in tests.  Parameters are borrowed

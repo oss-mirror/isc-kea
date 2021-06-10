@@ -202,10 +202,7 @@ HMAC::HMAC(const void* secret, size_t secret_length,
 }
 
 HMAC::~HMAC() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 HashAlgorithm

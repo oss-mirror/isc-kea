@@ -49,10 +49,7 @@ public:
 
     /// @brief Destructor
     ~LoggerManagerTest() {
-        try {
-            LoggerManager::reset();
-        } catch (...) {
-        }
+        LoggerManager::reset();
     }
 };
 
@@ -79,15 +76,12 @@ public:
 
     // Destructor, remove the file.  This is only a test, so ignore failures
     ~SpecificationForFileLogger() {
-        try {
-            if (!name_.empty()) {
-                static_cast<void>(remove(name_.c_str()));
+        if (!name_.empty()) {
+            static_cast<void>(remove(name_.c_str()));
 
-                // Depending on the log4cplus version, a lock file may also be
-                // created.
-                static_cast<void>(remove((name_ + ".lock").c_str()));
-            }
-        } catch (...) {
+            // Depending on the log4cplus version, a lock file may also be
+            // created.
+            static_cast<void>(remove((name_ + ".lock").c_str()));
         }
     }
 
@@ -348,10 +342,7 @@ public:
 
     /// @brief Destructor
     ~RegexHolder() {
-        try {
-            regfree(&regex_);
-        } catch (...) {
-        }
+        regfree(&regex_);
     }
 
     regex_t* operator*() {

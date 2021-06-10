@@ -37,24 +37,21 @@ BaseServerTest::BaseServerTest()
 }
 
 BaseServerTest::~BaseServerTest() {
-    try {
-        // Remove test DUID file.
-        std::ostringstream s;
-        s << CfgMgr::instance().getDataDir() << "/" << DUID_FILE;
-        static_cast<void>(::remove(s.str().c_str()));
+    // Remove test DUID file.
+    std::ostringstream s;
+    s << CfgMgr::instance().getDataDir() << "/" << DUID_FILE;
+    static_cast<void>(::remove(s.str().c_str()));
 
-        // Remove default lease file.
-        std::ostringstream s2;
-        s2 << CfgMgr::instance().getDataDir() << "/" << "kea-leases6.csv";
-        static_cast<void>(::remove(s2.str().c_str()));
+    // Remove default lease file.
+    std::ostringstream s2;
+    s2 << CfgMgr::instance().getDataDir() << "/" << "kea-leases6.csv";
+    static_cast<void>(::remove(s2.str().c_str()));
 
-        // Revert to original data directory.
-        CfgMgr::instance().setDataDir(original_datadir_);
+    // Revert to original data directory.
+    CfgMgr::instance().setDataDir(original_datadir_);
 
-        // Revert to unit test logging in case the test reconfigured logging.
-        isc::log::initLogger();
-    } catch (...) {
-    }
+    // Revert to unit test logging in case the test reconfigured logging.
+    isc::log::initLogger();
 }
 
 Dhcpv6SrvTest::Dhcpv6SrvTest()
@@ -84,13 +81,10 @@ Dhcpv6SrvTest::Dhcpv6SrvTest()
 }
 
 Dhcpv6SrvTest::~Dhcpv6SrvTest() {
-    try {
-        isc::dhcp::CfgMgr::instance().clear();
+    isc::dhcp::CfgMgr::instance().clear();
 
-        // Reset the thread pool.
-        MultiThreadingMgr::instance().apply(false, 0, 0);
-    } catch (...) {
-    }
+    // Reset the thread pool.
+    MultiThreadingMgr::instance().apply(false, 0, 0);
 }
 
 // Checks that server response (ADVERTISE or REPLY) contains proper IA_NA option
@@ -881,28 +875,25 @@ NakedDhcpv6SrvTest::NakedDhcpv6SrvTest()
 }
 
 NakedDhcpv6SrvTest::~NakedDhcpv6SrvTest() {
-    try {
-        // Let's wipe all existing statistics.
-        isc::stats::StatsMgr::instance().removeAll();
+    // Let's wipe all existing statistics.
+    isc::stats::StatsMgr::instance().removeAll();
 
-        // Let's clean up if there is such a file.
-        static_cast<void>(remove(DUID_FILE));
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("buffer6_receive");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("buffer6_send");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("lease6_renew");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("lease6_release");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("pkt6_receive");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("pkt6_send");
-        isc::hooks::HooksManager::preCalloutsLibraryHandle()
-            .deregisterAllCallouts("subnet6_select");
-    } catch (...) {
-    }
+    // Let's clean up if there is such a file.
+    static_cast<void>(remove(DUID_FILE));
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("buffer6_receive");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("buffer6_send");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("lease6_renew");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("lease6_release");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("pkt6_receive");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("pkt6_send");
+    isc::hooks::HooksManager::preCalloutsLibraryHandle()
+        .deregisterAllCallouts("subnet6_select");
 }
 
 // Generate IA_NA option with specified parameters

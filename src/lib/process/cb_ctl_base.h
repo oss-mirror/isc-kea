@@ -103,10 +103,7 @@ public:
     ///
     /// It is always needed when there are virtual methods.
     virtual ~CBControlBase() {
-        try {
-            databaseConfigDisconnect();
-        } catch (...) {
-        }
+        databaseConfigDisconnect();
     }
 
     /// @brief Resets the state of this object.

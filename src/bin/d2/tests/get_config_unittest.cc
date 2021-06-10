@@ -125,10 +125,7 @@ public:
 
     /// @brief Destructor
     ~D2GetConfigTest() {
-        try {
-            resetConfiguration();
-        } catch (...) {
-        }
+        resetConfiguration();
     }
 
     /// @brief Parse and Execute configuration

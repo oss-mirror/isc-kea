@@ -75,15 +75,12 @@ public:
     ///
     /// Various cleanups.
     virtual ~Dhcp4to6IpcTest() {
-        try {
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_send");
-            callback_recv_pkt_.reset();
-            callback_sent_pkt_.reset();
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_send");
+        callback_recv_pkt_.reset();
+        callback_sent_pkt_.reset();
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 

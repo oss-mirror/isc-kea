@@ -64,14 +64,11 @@ public:
     ///
     /// Disables options copying on a packets.
     ~ScopedEnableOptionsCopy() {
-        try {
-            if (pkts_.first) {
-                pkts_.first->setCopyRetrievedOptions(false);
-            }
-            if (pkts_.second) {
-                pkts_.second->setCopyRetrievedOptions(false);
-            }
-        } catch (...) {
+        if (pkts_.first) {
+            pkts_.first->setCopyRetrievedOptions(false);
+        }
+        if (pkts_.second) {
+            pkts_.second->setCopyRetrievedOptions(false);
         }
     }
 

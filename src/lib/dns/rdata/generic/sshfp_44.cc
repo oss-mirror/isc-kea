@@ -202,10 +202,7 @@ SSHFP::operator=(const SSHFP& source) {
 }
 
 SSHFP::~SSHFP() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

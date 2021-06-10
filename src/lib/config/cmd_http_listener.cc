@@ -33,10 +33,7 @@ CmdHttpListener::CmdHttpListener(const IOAddress& address, const uint16_t port,
 }
 
 CmdHttpListener::~CmdHttpListener() {
-    try {
-        stop();
-    } catch (...) {
-    }
+    stop();
 }
 
 void

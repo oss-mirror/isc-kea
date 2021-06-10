@@ -196,13 +196,10 @@ public:
 
     /// @brief Destructor
     ~JSONFileBackendTest() {
-        try {
-            LeaseMgrFactory::destroy();
-            isc::log::setDefaultLoggingOutput();
-            static_cast<void>(remove(TEST_FILE));
-            static_cast<void>(remove(TEST_INCLUDE));
-        } catch (...) {
-        }
+        LeaseMgrFactory::destroy();
+        isc::log::setDefaultLoggingOutput();
+        static_cast<void>(remove(TEST_FILE));
+        static_cast<void>(remove(TEST_INCLUDE));
     }
 
     void writeFile(const std::string& file_name, const std::string& content) {
@@ -960,11 +957,8 @@ public:
     ///
     /// Destroys MySQL schema.
     virtual ~JSONFileBackendMySQLTest() {
-        try {
-            // If data wipe enabled, delete transient data otherwise destroy the schema.
-            destroyMySQLSchema();
-        } catch (...) {
-        }
+        // If data wipe enabled, delete transient data otherwise destroy the schema.
+        destroyMySQLSchema();
     }
 
     /// @brief Creates server configuration with specified backend type.

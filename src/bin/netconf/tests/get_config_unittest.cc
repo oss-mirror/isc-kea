@@ -131,10 +131,7 @@ public:
 
     /// @brief Destructor
     ~NetconfGetCfgTest() {
-        try {
-            resetConfiguration();
-        } catch (...) {
-        }
+        resetConfiguration();
     }
 
     /// @brief Parse and Execute configuration

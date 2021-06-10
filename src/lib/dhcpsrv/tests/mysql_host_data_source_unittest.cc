@@ -92,10 +92,7 @@ public:
     /// Rolls back all pending transactions.  The deletion of hdsptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~MySqlHostDataSourceTest() {
-        try {
-            destroyTest();
-        } catch (...) {
-        }
+        destroyTest();
     }
 
     /// @brief Reopen the database
@@ -1474,6 +1471,12 @@ TEST_F(MySqlHostDataSourceTest, testMultipleHosts6MultiThreading) {
 /// MySQL as alternate host data source.
 class MySQLHostMgrTest : public HostMgrTest {
 protected:
+
+    /// @brief Constructor
+    MySQLHostMgrTest() = default;
+
+    /// @brief Destructor
+    virtual ~MySQLHostMgrTest() = default;
 
     /// @brief Build MySQL schema for a test.
     virtual void SetUp();

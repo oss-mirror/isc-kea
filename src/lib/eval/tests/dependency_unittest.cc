@@ -37,11 +37,8 @@ public:
     ///
     /// Reset expression and result.
     ~DependencyTest() {
-        try {
-            e_.reset();
-            result_ = false;
-        } catch (...) {
-        }
+        e_.reset();
+        result_ = false;
     }
 
     ExpressionPtr e_; ///< An expression

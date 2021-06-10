@@ -92,10 +92,7 @@ public:
     //
     // Sets the asiodns logging level back to DEBUG.
     virtual ~DNSClientTest() {
-        try {
-            asiodns::logger.setSeverity(isc::log::DEBUG);
-        } catch (...) {
-        }
+        asiodns::logger.setSeverity(isc::log::DEBUG);
     }
 
     /// @brief Exchange completion callback

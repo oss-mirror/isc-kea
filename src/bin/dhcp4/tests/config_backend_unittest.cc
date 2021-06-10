@@ -101,10 +101,7 @@ public:
 
     /// @brief Destructor
     virtual ~Dhcp4CBTest() {
-        try {
-            resetConfiguration();
-        } catch (...) {
-        }
+        resetConfiguration();
     }
 
     /// @brief Reset configuration singletons.

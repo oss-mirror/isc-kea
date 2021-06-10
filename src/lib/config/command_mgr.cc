@@ -90,10 +90,7 @@ public:
     ///
     /// Cancels timeout timer if one is scheduled.
     ~Connection() {
-        try {
-            timeout_timer_.cancel();
-        } catch (...) {
-        }
+        timeout_timer_.cancel();
     }
 
     /// @brief This method schedules timer or reschedules existing timer.

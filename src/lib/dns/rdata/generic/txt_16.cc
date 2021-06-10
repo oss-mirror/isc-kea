@@ -39,10 +39,7 @@ TXT::operator=(const TXT& source) {
 }
 
 TXT::~TXT() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 TXT::TXT(InputBuffer& buffer, size_t rdata_len) :

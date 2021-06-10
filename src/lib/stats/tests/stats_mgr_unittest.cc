@@ -50,12 +50,9 @@ public:
     ///
     /// Removes all statistics and restores class defaults.
     ~StatsMgrTest() {
-        try {
-            StatsMgr::instance().removeAll();
-            StatsMgr::instance().setMaxSampleAgeDefault(StatsDuration::zero());
-            StatsMgr::instance().setMaxSampleCountDefault(20);
-        } catch (...) {
-        }
+        StatsMgr::instance().removeAll();
+        StatsMgr::instance().setMaxSampleAgeDefault(StatsDuration::zero());
+        StatsMgr::instance().setMaxSampleCountDefault(20);
     }
 };
 

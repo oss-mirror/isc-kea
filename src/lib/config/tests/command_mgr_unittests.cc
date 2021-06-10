@@ -52,12 +52,9 @@ public:
 
     /// Default destructor
     virtual ~CommandMgrTest() {
-        try {
-            CommandMgr::instance().deregisterAll();
-            CommandMgr::instance().closeCommandSocket();
-            resetCalloutIndicators();
-        } catch (...) {
-        }
+        CommandMgr::instance().deregisterAll();
+        CommandMgr::instance().closeCommandSocket();
+        resetCalloutIndicators();
     }
 
     /// @brief Returns socket path (using either hardcoded path or env variable)

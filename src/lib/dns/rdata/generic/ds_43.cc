@@ -56,10 +56,7 @@ DS::operator=(const DS& source) {
 }
 
 DS::~DS() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string

@@ -311,10 +311,7 @@ Generic::Generic(MasterLexer& lexer, const Name*,
 }
 
 Generic::~Generic() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 Generic::Generic(const Generic& source) :

@@ -202,12 +202,9 @@ public:
 
     /// @brief Destructor
     ~JSONFileBackendTest() {
-        try {
-            LeaseMgrFactory::destroy();
-            static_cast<void>(remove(TEST_FILE));
-            static_cast<void>(remove(TEST_INCLUDE));
-        } catch (...) {
-        }
+        LeaseMgrFactory::destroy();
+        static_cast<void>(remove(TEST_FILE));
+        static_cast<void>(remove(TEST_INCLUDE));
     }
 
     /// @brief writes specified content to a well known file
@@ -974,11 +971,8 @@ public:
     ///
     /// Destroys MySQL schema.
     virtual ~JSONFileBackendMySQLTest() {
-        try {
-            // If data wipe enabled, delete transient data otherwise destroy the schema.
-            destroyMySQLSchema();
-        } catch (...) {
-        }
+        // If data wipe enabled, delete transient data otherwise destroy the schema.
+        destroyMySQLSchema();
     }
 
     /// @brief Creates server configuration with specified backend type.

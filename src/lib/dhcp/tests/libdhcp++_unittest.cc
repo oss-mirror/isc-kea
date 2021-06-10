@@ -67,10 +67,7 @@ public:
     ///
     /// Removes runtime option definitions.
     virtual ~LibDhcpTest() {
-        try {
-            LibDHCP::clearRuntimeOptionDefs();
-        } catch (...) {
-        }
+        LibDHCP::clearRuntimeOptionDefs();
     }
 
     /// @brief Generic factory function to create any option.

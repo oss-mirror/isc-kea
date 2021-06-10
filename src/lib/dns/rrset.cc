@@ -234,10 +234,7 @@ BasicRRset::BasicRRset(const Name& name, const RRClass& rrclass,
 }
 
 BasicRRset::~BasicRRset() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

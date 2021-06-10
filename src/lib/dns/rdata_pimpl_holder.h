@@ -26,10 +26,7 @@ public:
 
     /// @brief Destructor
     ~RdataPimplHolder() {
-        try {
-            delete obj_;
-        } catch (...) {
-        }
+        delete obj_;
     }
 
     void reset(T* obj = NULL) {

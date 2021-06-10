@@ -71,10 +71,7 @@ DLV::operator=(const DLV& source) {
 ///
 /// Deallocates an internal resource.
 DLV::~DLV() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Convert the \c DLV to a string.

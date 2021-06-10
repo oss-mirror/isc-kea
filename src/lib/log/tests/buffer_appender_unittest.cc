@@ -48,21 +48,18 @@ protected:
 
     /// @brief Destructor
     ~BufferAppenderTest() {
-        try {
-            // If any log messages are left, we don't care, get rid of them,
-            // by flushing them to a null appender
-            // Given the 'messages should not get lost' approach of the logging
-            // system, not flushing them to a null appender would cause them
-            // to be dumped to stdout as the test is destroyed, making
-            // unnecessarily messy test output.
-            log4cplus::SharedAppenderPtr null_appender(
-                new log4cplus::NullAppender());
-            logger.removeAllAppenders();
-            logger.addAppender(null_appender);
-            buffer_appender1->flush();
-            buffer_appender2->flush();
-        } catch (...) {
-        }
+        // If any log messages are left, we don't care, get rid of them,
+        // by flushing them to a null appender
+        // Given the 'messages should not get lost' approach of the logging
+        // system, not flushing them to a null appender would cause them
+        // to be dumped to stdout as the test is destroyed, making
+        // unnecessarily messy test output.
+        log4cplus::SharedAppenderPtr null_appender(
+            new log4cplus::NullAppender());
+        logger.removeAllAppenders();
+        logger.addAppender(null_appender);
+        buffer_appender1->flush();
+        buffer_appender2->flush();
     }
 
     TestBufferAppender* buffer_appender1;

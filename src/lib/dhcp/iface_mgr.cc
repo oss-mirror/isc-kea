@@ -312,10 +312,7 @@ void IfaceMgr::stopDHCPReceiver() {
 }
 
 IfaceMgr::~IfaceMgr() {
-    try {
-        closeSockets();
-    } catch (...) {
-    }
+    closeSockets();
 }
 
 bool

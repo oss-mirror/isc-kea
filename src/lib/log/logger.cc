@@ -49,15 +49,12 @@ Logger::initLoggerImpl() {
 // Destructor.
 
 Logger::~Logger() {
-    try {
-        delete loggerptr_;
+    delete loggerptr_;
 
-        // The next statement is required for the Kea hooks framework, where a
-        // statically-linked Kea loads and unloads multiple libraries. See the hooks
-        // documentation for more details.
-        loggerptr_ = 0;
-    } catch (...) {
-    }
+    // The next statement is required for the Kea hooks framework, where a
+    // statically-linked Kea loads and unloads multiple libraries. See the hooks
+    // documentation for more details.
+    loggerptr_ = 0;
 }
 
 // Get Version

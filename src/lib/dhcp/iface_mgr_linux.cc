@@ -92,10 +92,7 @@ public:
 
     /// @brief Destructor
     ~Netlink() {
-        try {
-            rtnl_close_socket();
-        } catch (...) {
-        }
+        rtnl_close_socket();
     }
 
 

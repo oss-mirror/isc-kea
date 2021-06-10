@@ -53,15 +53,12 @@ public:
         ///
         /// Deallocates wrapped array of C-strings.
         ~ArgvPtr() {
-            try {
-                if (argv_ != NULL) {
-                    for(int i = 0; i < argc_; ++i) {
-                        delete[] (argv_[i]);
-                        argv_[i] = NULL;
-                    }
-                    delete[] (argv_);
+            if (argv_ != NULL) {
+                for(int i = 0; i < argc_; ++i) {
+                    delete[] (argv_[i]);
+                    argv_[i] = NULL;
                 }
-            } catch (...) {
+                delete[] (argv_);
             }
         }
 

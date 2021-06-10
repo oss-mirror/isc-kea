@@ -285,10 +285,7 @@ TSIGContext::TSIGContext(const Name& key_name, const Name& algorithm_name,
 }
 
 TSIGContext::~TSIGContext() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 size_t

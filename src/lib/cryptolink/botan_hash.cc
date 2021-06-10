@@ -161,10 +161,7 @@ Hash::Hash(const HashAlgorithm hash_algorithm) {
 }
 
 Hash::~Hash() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 HashAlgorithm

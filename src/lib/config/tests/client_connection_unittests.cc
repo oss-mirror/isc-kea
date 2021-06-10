@@ -43,10 +43,7 @@ public:
     ///
     /// Removes unix socket descriptor after the test.
     virtual ~ClientConnectionTest() {
-        try {
-            removeUnixSocketFile();
-        } catch (...) {
-        }
+        removeUnixSocketFile();
     }
 
     /// @brief Returns socket file path.

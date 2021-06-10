@@ -23,10 +23,7 @@ Stopwatch::Stopwatch(const bool autostart)
 }
 
 Stopwatch::~Stopwatch() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

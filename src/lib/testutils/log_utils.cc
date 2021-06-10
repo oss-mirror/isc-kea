@@ -42,10 +42,7 @@ LogContentTest::LogContentTest()
 }
 
 LogContentTest:: ~LogContentTest() {
-    try {
-        remFile();
-    } catch (...) {
-    }
+    remFile();
 }
 
 bool LogContentTest::checkFile() {

@@ -99,10 +99,7 @@ public:
     /// Rolls back all pending transactions.  The deletion of hdsptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~CqlHostDataSourceTest() {
-        try {
-            destroyTest();
-        } catch (...) {
-        }
+        destroyTest();
     }
 
     /// @brief Reopen the database

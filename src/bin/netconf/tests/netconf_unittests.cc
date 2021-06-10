@@ -104,27 +104,24 @@ public:
 
     /// @brief Destructor.
     virtual ~NetconfAgentTest() {
-        try {
-            NetconfProcess::shut_down = true;
-            if (thread_) {
-                thread_->join();
-                thread_.reset();
-            }
-            // io_service must be stopped after the thread returns,
-            // otherwise the thread may never return if it is
-            // waiting for the completion of some asynchronous tasks.
-            io_service_->stop();
-            io_service_.reset();
-            if (agent_) {
-                clearYang(agent_);
-                agent_->clear();
-            }
-            agent_.reset();
-            requests_.clear();
-            responses_.clear();
-            removeUnixSocketFile();
-        } catch (...) {
+        NetconfProcess::shut_down = true;
+        if (thread_) {
+            thread_->join();
+            thread_.reset();
         }
+        // io_service must be stopped after the thread returns,
+        // otherwise the thread may never return if it is
+        // waiting for the completion of some asynchronous tasks.
+        io_service_->stop();
+        io_service_.reset();
+        if (agent_) {
+            clearYang(agent_);
+            agent_->clear();
+        }
+        agent_.reset();
+        requests_.clear();
+        responses_.clear();
+        removeUnixSocketFile();
     }
 
     /// @brief Returns socket file path.
@@ -189,22 +186,19 @@ public:
 
     /// @brief Destructor.
     virtual ~NetconfAgentLogTest() {
-        try {
-            NetconfProcess::shut_down = true;
-            // io_service must be stopped to make the thread to return.
-            io_service_->stop();
-            io_service_.reset();
-            if (thread_) {
-                thread_->join();
-                thread_.reset();
-            }
-            if (agent_) {
-                clearYang(agent_);
-                agent_->clear();
-            }
-            agent_.reset();
-        } catch (...) {
+        NetconfProcess::shut_down = true;
+        // io_service must be stopped to make the thread to return.
+        io_service_->stop();
+        io_service_.reset();
+        if (thread_) {
+            thread_->join();
+            thread_.reset();
         }
+        if (agent_) {
+            clearYang(agent_);
+            agent_->clear();
+        }
+        agent_.reset();
     }
 
     /// @brief IOService object.

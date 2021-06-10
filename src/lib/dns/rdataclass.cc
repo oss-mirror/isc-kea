@@ -371,10 +371,7 @@ TSIG::operator=(const TSIG& source) {
 }
 
 TSIG::~TSIG() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Convert the \c TSIG to a string.
@@ -1070,10 +1067,7 @@ CAA::operator=(const CAA& source) {
 }
 
 CAA::~CAA() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void
@@ -1361,10 +1355,7 @@ DLV::operator=(const DLV& source) {
 ///
 /// Deallocates an internal resource.
 DLV::~DLV() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Convert the \c DLV to a string.
@@ -1766,10 +1757,7 @@ DNSKEY::operator=(const DNSKEY& source) {
 }
 
 DNSKEY::~DNSKEY() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -1927,10 +1915,7 @@ DS::operator=(const DS& source) {
 }
 
 DS::~DS() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -2069,10 +2054,7 @@ HINFO::operator=(const HINFO& source) {
 }
 
 HINFO::~HINFO() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 std::string
@@ -2621,10 +2603,7 @@ NAPTR::operator=(const NAPTR& source)
 }
 
 NAPTR::~NAPTR() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void
@@ -3075,10 +3054,7 @@ NSEC3::operator=(const NSEC3& source) {
 }
 
 NSEC3::~NSEC3() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -3364,10 +3340,7 @@ NSEC3PARAM::operator=(const NSEC3PARAM& source) {
 }
 
 NSEC3PARAM::~NSEC3PARAM() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -3619,10 +3592,7 @@ NSEC::operator=(const NSEC& source) {
 }
 
 NSEC::~NSEC() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -3821,10 +3791,7 @@ OPT::operator=(const OPT& source) {
 }
 
 OPT::~OPT() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 std::string
@@ -4428,10 +4395,7 @@ RRSIG::operator=(const RRSIG& source) {
 }
 
 RRSIG::~RRSIG() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string
@@ -4796,10 +4760,7 @@ SPF::operator=(const SPF& source) {
 
 /// \brief The destructor
 SPF::~SPF() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Constructor from wire-format data.
@@ -5095,10 +5056,7 @@ SSHFP::operator=(const SSHFP& source) {
 }
 
 SSHFP::~SSHFP() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void
@@ -6038,10 +5996,7 @@ TLSA::operator=(const TLSA& source) {
 }
 
 TLSA::~TLSA() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void
@@ -6198,10 +6153,7 @@ TXT::operator=(const TXT& source) {
 }
 
 TXT::~TXT() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 TXT::TXT(InputBuffer& buffer, size_t rdata_len) :
@@ -7025,10 +6977,7 @@ SRV::operator=(const SRV& source) {
 }
 
 SRV::~SRV() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Convert the \c SRV to a string.

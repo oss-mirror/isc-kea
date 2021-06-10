@@ -33,19 +33,16 @@ PktFilter6Test::PktFilter6Test(const uint16_t port)
 }
 
 PktFilter6Test::~PktFilter6Test() {
-    try {
-        // Cleanup after each test. This guarantees
-        // that the sockets do not hang after a test.
-        if (sock_info_.sockfd_ >= 0) {
-            close(sock_info_.sockfd_);
-        }
-        if (sock_info_.fallbackfd_ >=0) {
-            close(sock_info_.fallbackfd_);
-        }
-        if (send_msg_sock_ >= 0) {
-            close(send_msg_sock_);
-        }
-    } catch (...) {
+    // Cleanup after each test. This guarantees
+    // that the sockets do not hang after a test.
+    if (sock_info_.sockfd_ >= 0) {
+        close(sock_info_.sockfd_);
+    }
+    if (sock_info_.fallbackfd_ >=0) {
+        close(sock_info_.fallbackfd_);
+    }
+    if (send_msg_sock_ >= 0) {
+        close(send_msg_sock_);
     }
 }
 

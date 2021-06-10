@@ -40,10 +40,7 @@ public:
 
     /// @brief Destructor.
     ~QueryFilterTest() {
-        try {
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief This test verifies that client identifier is used for load

@@ -88,13 +88,10 @@ public:
 
     /// @brief Destructor
     virtual ~FqdnDhcpv6SrvTest() {
-        try {
-            // Default constructor creates a config with DHCP-DDNS updates
-            // disabled.
-            D2ClientConfigPtr cfg(new D2ClientConfig());
-            CfgMgr::instance().setD2ClientConfig(cfg);
-        } catch (...) {
-        }
+        // Default constructor creates a config with DHCP-DDNS updates
+        // disabled.
+        D2ClientConfigPtr cfg(new D2ClientConfig());
+        CfgMgr::instance().setD2ClientConfig(cfg);
     }
 
     /// @brief Sets the server's DDNS configuration to ddns updates disabled.

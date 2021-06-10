@@ -594,11 +594,8 @@ public:
     ///
     /// Cleans up statistics after the test.
     ~DORATest() {
-        try {
-            // Let's wipe all existing statistics.
-            isc::stats::StatsMgr::instance().removeAll();
-        } catch (...) {
-        }
+        // Let's wipe all existing statistics.
+        isc::stats::StatsMgr::instance().removeAll();
     }
 
     /// @brief Test that server returns the same lease for the client which is
@@ -2714,11 +2711,8 @@ public:
     ///
     /// Destroys MySQL schema.
     virtual ~DORAMySQLTest() {
-        try {
-            // If data wipe enabled, delete transient data otherwise destroy the schema.
-            db::test::destroyMySQLSchema();
-        } catch (...) {
-        }
+        // If data wipe enabled, delete transient data otherwise destroy the schema.
+        db::test::destroyMySQLSchema();
     }
 };
 
@@ -2761,11 +2755,8 @@ public:
     ///
     /// Destroys PgSQL schema.
     virtual ~DORAPgSQLTest() {
-        try {
-            // If data wipe enabled, delete transient data otherwise destroy the schema
-            db::test::destroyPgSQLSchema();
-        } catch (...) {
-        }
+        // If data wipe enabled, delete transient data otherwise destroy the schema
+        db::test::destroyPgSQLSchema();
     }
 };
 
@@ -2807,11 +2798,8 @@ public:
     ///
     /// Destroys CQL schema.
     virtual ~DORACQLTest() {
-        try {
-            // If data wipe enabled, delete transient data otherwise destroy the schema
-            db::test::destroyCqlSchema();
-        } catch (...) {
-        }
+        // If data wipe enabled, delete transient data otherwise destroy the schema
+        db::test::destroyCqlSchema();
     }
 };
 

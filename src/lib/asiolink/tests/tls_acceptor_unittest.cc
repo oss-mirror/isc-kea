@@ -72,10 +72,7 @@ public:
     ///
     /// Closes the underlying socket if it is open.
     ~TLSClient() {
-        try {
-            close();
-        } catch (...) {
-        }
+        close();
     }
 
     /// @brief Connect to the test server address and port.
@@ -164,10 +161,7 @@ public:
     ///
     /// Closes socket.
     ~Acceptor() {
-        try {
-            socket_.close();
-        } catch (...) {
-        }
+        socket_.close();
     }
 
     /// @brief Asynchronous accept new connection.

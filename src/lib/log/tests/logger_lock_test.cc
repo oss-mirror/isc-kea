@@ -44,10 +44,7 @@ public:
     ///
     /// Unlocks the mutex.
     ~CheckMutex() {
-        try {
-            mutex_.unlock();
-        } catch (...) {
-        }
+        mutex_.unlock();
     }
 
 private:

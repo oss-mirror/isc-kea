@@ -38,10 +38,7 @@ public:
 
     /// @brief Destructor
     ~DataFileTest() {
-        try {
-            static_cast<void>(remove(TEMP_FILE));
-        } catch (...) {
-        }
+        static_cast<void>(remove(TEMP_FILE));
     }
 
     /// Name of the temporary file

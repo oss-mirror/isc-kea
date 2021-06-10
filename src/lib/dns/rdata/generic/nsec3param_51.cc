@@ -145,10 +145,7 @@ NSEC3PARAM::operator=(const NSEC3PARAM& source) {
 }
 
 NSEC3PARAM::~NSEC3PARAM() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string

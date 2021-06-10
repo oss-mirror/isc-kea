@@ -80,10 +80,7 @@ FlexOptionImpl::OptionConfig::OptionConfig(uint16_t code,
 }
 
 FlexOptionImpl::~FlexOptionImpl() {
-    try {
-        option_config_map_.clear();
-    } catch (...) {
-    }
+    option_config_map_.clear();
 }
 
 void

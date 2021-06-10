@@ -56,15 +56,12 @@ public:
     ///
     /// Unload all libraries.
     ~HooksManagerTest() {
-        try {
-            static_cast<void>(remove(MARKER_FILE));
-            HooksManager::setTestMode(false);
-            HooksManager::prepareUnloadLibraries();
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        static_cast<void>(remove(MARKER_FILE));
+        HooksManager::setTestMode(false);
+        HooksManager::prepareUnloadLibraries();
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 

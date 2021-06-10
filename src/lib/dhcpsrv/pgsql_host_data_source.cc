@@ -2205,18 +2205,15 @@ PgSqlHostDataSource::PgSqlHostContextAlloc::PgSqlHostContextAlloc(
 }
 
 PgSqlHostDataSource::PgSqlHostContextAlloc::~PgSqlHostContextAlloc() {
-    try {
-        if (MultiThreadingMgr::instance().getMode()) {
-            // multi-threaded
-            lock_guard<mutex> lock(mgr_.pool_->mutex_);
-            mgr_.pool_->pool_.push_back(ctx_);
-            if (ctx_->conn_.isUnusable()) {
-                mgr_.unusable_ = true;
-            }
-        } else if (ctx_->conn_.isUnusable()) {
+    if (MultiThreadingMgr::instance().getMode()) {
+        // multi-threaded
+        lock_guard<mutex> lock(mgr_.pool_->mutex_);
+        mgr_.pool_->pool_.push_back(ctx_);
+        if (ctx_->conn_.isUnusable()) {
             mgr_.unusable_ = true;
         }
-    } catch (...) {
+    } else if (ctx_->conn_.isUnusable()) {
+        mgr_.unusable_ = true;
     }
 }
 

@@ -49,10 +49,7 @@ SPF::operator=(const SPF& source) {
 
 /// \brief The destructor
 SPF::~SPF() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief Constructor from wire-format data.

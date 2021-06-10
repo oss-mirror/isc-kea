@@ -131,10 +131,7 @@ MasterLexer::MasterLexer() : impl_(new MasterLexerImpl) {
 }
 
 MasterLexer::~MasterLexer() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 bool

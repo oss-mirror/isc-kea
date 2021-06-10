@@ -158,11 +158,8 @@ public:
     ///
     /// Destroys the table. The database resources are freed and the connection
     /// closed by the destruction of conn_.
-    virtual ~PgSqlBasicsTest () {
-        try {
-            destroySchema();
-        } catch (...) {
-        }
+    virtual ~PgSqlBasicsTest() {
+        destroySchema();
     }
 
     /// @brief Gets the expected name of the column for a given column index

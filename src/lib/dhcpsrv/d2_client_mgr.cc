@@ -26,10 +26,7 @@ D2ClientMgr::D2ClientMgr() : d2_client_config_(new D2ClientConfig()),
 }
 
 D2ClientMgr::~D2ClientMgr() {
-    try {
-        stopSender();
-    } catch (...) {
-    }
+    stopSender();
 }
 
 void

@@ -345,12 +345,9 @@ public:
 
     /// @brief Destructor
     virtual ~NameDhcpv4SrvTest() {
-        try {
-            // CfgMgr singleton doesn't get wiped between tests, so  we'll
-            // disable D2 explicitly between tests.
-            disableD2();
-        } catch (...) {
-        }
+        // CfgMgr singleton doesn't get wiped between tests, so  we'll
+        // disable D2 explicitly between tests.
+        disableD2();
     }
 
     /// @brief Sets the server's DDNS configuration to ddns updates disabled.

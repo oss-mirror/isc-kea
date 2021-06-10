@@ -64,11 +64,8 @@ PgSqlResult::rowCheck(int row) const {
 }
 
 PgSqlResult::~PgSqlResult() {
-    try {
-        if (result_) {
-            PQclear(result_);
-        }
-    } catch (...) {
+    if (result_) {
+        PQclear(result_);
     }
 }
 
@@ -107,12 +104,9 @@ PgSqlTransaction::PgSqlTransaction(PgSqlConnection& conn)
 }
 
 PgSqlTransaction::~PgSqlTransaction() {
-    try {
-        // If commit() wasn't explicitly called, rollback.
-        if (!committed_) {
-            conn_.rollback();
-        }
-    } catch (...) {
+    // If commit() wasn't explicitly called, rollback.
+    if (!committed_) {
+        conn_.rollback();
     }
 }
 
@@ -123,19 +117,16 @@ PgSqlTransaction::commit() {
 }
 
 PgSqlConnection::~PgSqlConnection() {
-    try {
-        if (conn_) {
-            // Deallocate the prepared queries.
-            if (PQstatus(conn_) == CONNECTION_OK) {
-                PgSqlResult r(PQexec(conn_, "DEALLOCATE all"));
-                if (PQresultStatus(r) != PGRES_COMMAND_OK) {
-                    // Highly unlikely but we'll log it and go on.
-                    DB_LOG_ERROR(PGSQL_DEALLOC_ERROR)
-                        .arg(PQerrorMessage(conn_));
-                }
+    if (conn_) {
+        // Deallocate the prepared queries.
+        if (PQstatus(conn_) == CONNECTION_OK) {
+            PgSqlResult r(PQexec(conn_, "DEALLOCATE all"));
+            if (PQresultStatus(r) != PGRES_COMMAND_OK) {
+                // Highly unlikely but we'll log it and go on.
+                DB_LOG_ERROR(PGSQL_DEALLOC_ERROR)
+                    .arg(PQerrorMessage(conn_));
             }
         }
-    } catch (...) {
     }
 }
 

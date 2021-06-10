@@ -71,10 +71,7 @@ public:
 
     /// \brief The destructor.
     virtual ~UDPEndpoint() {
-        try {
-            delete asio_endpoint_placeholder_;
-        } catch (...) {
-        }
+        delete asio_endpoint_placeholder_;
     }
     //@}
 

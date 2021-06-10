@@ -71,12 +71,9 @@ public:
     ///
     /// Removes registered commands from the command manager.
     virtual ~CtrlAgentResponseCreatorTest() {
-        try {
-            CtrlAgentCommandMgr::instance().deregisterAll();
-            HooksManager::prepareUnloadLibraries();
-            static_cast<void>(HooksManager::unloadLibraries());
-        } catch (...) {
-        }
+        CtrlAgentCommandMgr::instance().deregisterAll();
+        HooksManager::prepareUnloadLibraries();
+        static_cast<void>(HooksManager::unloadLibraries());
     }
 
     /// @brief Fills request context with required data to create new request.

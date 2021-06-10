@@ -106,13 +106,10 @@ public:
 
     /// @brief Destructor
     virtual ~CloseHATest() {
-        try {
-            HooksManager::prepareUnloadLibraries();
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        HooksManager::prepareUnloadLibraries();
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 

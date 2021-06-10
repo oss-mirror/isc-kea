@@ -41,11 +41,8 @@ public:
 
     /// @brief Destructor.
     ~NetworkStateImpl() {
-        try {
-            destroyTimer(NetworkState::Origin::USER_COMMAND);
-            destroyTimer(NetworkState::Origin::HA_COMMAND);
-        } catch (...) {
-        }
+        destroyTimer(NetworkState::Origin::USER_COMMAND);
+        destroyTimer(NetworkState::Origin::HA_COMMAND);
     }
 
     /// @brief Sets appropriate disabled or enabled DHCP service state for the

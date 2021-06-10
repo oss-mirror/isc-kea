@@ -71,10 +71,7 @@ public:
     ///
     /// Stops IO service.
     ~IOServiceWork() {
-        try {
-            io_service_->stop();
-        } catch (...) {
-        }
+        io_service_->stop();
     }
 
 private:
@@ -110,15 +107,12 @@ public:
 
     /// @brief Destructor
     virtual ~CtrlDhcpv6SrvTest() {
-        try {
-            LeaseMgrFactory::destroy();
-            StatsMgr::instance().removeAll();
-            CommandMgr::instance().deregisterAll();
-            CommandMgr::instance().setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
+        LeaseMgrFactory::destroy();
+        StatsMgr::instance().removeAll();
+        CommandMgr::instance().deregisterAll();
+        CommandMgr::instance().setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT);
 
-            reset();
-        } catch (...) {
-        }
+        reset();
     }
 
     /// @brief Reset hooks data
@@ -164,12 +158,9 @@ public:
 
     /// @brief Destructor
     ~CtrlChannelDhcpv6SrvTest() {
-        try {
-            server_.reset();
-            reset();
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        server_.reset();
+        reset();
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Returns pointer to the server's IO service.

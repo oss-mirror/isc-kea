@@ -97,10 +97,7 @@ public:
     /// Rolls back all pending transactions.  The deletion of lmptr_ will close
     /// the database.  Then reopen it and delete everything created by the test.
     virtual ~CqlLeaseMgrTest() {
-        try {
-            destroyTest();
-        } catch (...) {
-        }
+        destroyTest();
     }
 
     /// @brief Reopen the database

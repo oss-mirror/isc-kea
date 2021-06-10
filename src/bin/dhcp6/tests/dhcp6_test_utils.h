@@ -223,11 +223,8 @@ public:
 
     /// @brief Destructor
     virtual ~NakedDhcpv6Srv() {
-        try {
-            // Close the lease database
-            isc::dhcp::LeaseMgrFactory::destroy();
-        } catch (...) {
-        }
+        // Close the lease database
+        isc::dhcp::LeaseMgrFactory::destroy();
     }
 
     /// @brief Processes incoming Request message.
@@ -558,10 +555,7 @@ public:
 
         /// @brief Destructor
         ~Dhcpv6SrvMTTestGuard() {
-            try{
-                test_.setMultiThreading(false);
-            } catch (...) {
-            }
+            test_.setMultiThreading(false);
         }
 
         Dhcpv6SrvTest& test_;

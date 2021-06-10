@@ -11322,10 +11322,7 @@ public:
 
     /// @brief Destructor
     ~Dhcp4GetConfigTest() {
-        try {
-            resetConfiguration();
-        } catch (...) {
-        }
+        resetConfiguration();
     }
 
     /// @brief Parse and Execute configuration

@@ -60,10 +60,7 @@ public:
 
     /// @brief Destructor.
     virtual ~DhcpParserTest() {
-        try {
-            resetIfaceCfg();
-        } catch (...) {
-        }
+        resetIfaceCfg();
     }
 
     /// @brief Resets selection of the interfaces from previous tests.
@@ -175,11 +172,8 @@ public:
 
     /// @brief Destructor
     ~ParseConfigTest() {
-        try {
-            reset_context();
-            CfgMgr::instance().clear();
-        } catch (...) {
-        }
+        reset_context();
+        CfgMgr::instance().clear();
     }
 
     /// @brief Parses a configuration.

@@ -321,10 +321,7 @@ public:
 
         /// @brief Destructor
         ~Dhcpv4SrvMTTestGuard() {
-            try {
-                test_.setMultiThreading(false);
-            } catch (...) {
-            }
+            test_.setMultiThreading(false);
         }
 
         Dhcpv4SrvTest& test_;

@@ -106,10 +106,7 @@ Fuzz::Fuzz(int ipversion, uint16_t port) :
 
 // Destructor
 Fuzz::~Fuzz() {
-    try {
-        static_cast<void>(close(sockfd_));
-    } catch (...) {
-    }
+    static_cast<void>(close(sockfd_));
 }
 
 // Set up address structures.

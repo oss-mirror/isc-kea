@@ -342,20 +342,17 @@ public:
     /// Note the controller singleton is destroyed. This is essential to ensure
     /// a clean start between tests.
     virtual ~DControllerTest() {
-        try {
-            // Some unit tests update the logging configuration which has a side
-            // effect that all subsequent tests print the output to stdout. This
-            // is to ensure that the logging settings are back to default.
-            isc::log::setDefaultLoggingOutput();
+        // Some unit tests update the logging configuration which has a side
+        // effect that all subsequent tests print the output to stdout. This
+        // is to ensure that the logging settings are back to default.
+        isc::log::setDefaultLoggingOutput();
 
-            if (write_timer_) {
-                write_timer_->cancel();
-            }
-
-            getController().reset();
-            static_cast<void>(remove(CFG_TEST_FILE));
-        } catch (...) {
+        if (write_timer_) {
+            write_timer_->cancel();
         }
+
+        getController().reset();
+        static_cast<void>(remove(CFG_TEST_FILE));
     }
 
     /// @brief Convenience method that destructs and then recreates the

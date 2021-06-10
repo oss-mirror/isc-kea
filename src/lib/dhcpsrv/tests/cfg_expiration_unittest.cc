@@ -309,10 +309,7 @@ public:
     /// It stops the @c TimerMgr worker thread and removes any registered
     /// timers.
     virtual ~CfgExpirationTimersTest() {
-        try {
-            cleanupTimerMgr();
-        } catch (...) {
-        }
+        cleanupTimerMgr();
     }
 
     /// @brief Stop @c TimerMgr worker thread and remove the timers.

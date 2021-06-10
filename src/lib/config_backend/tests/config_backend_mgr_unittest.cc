@@ -335,10 +335,7 @@ public:
     ///
     /// Removes backend instances.
     ~ConfigBackendMgrTest() {
-        try {
-            config_mgr_.delAllBackends();
-        } catch (...) {
-        }
+        config_mgr_.delAllBackends();
     }
 
     /// @brief Creates example database backend called "mysql".

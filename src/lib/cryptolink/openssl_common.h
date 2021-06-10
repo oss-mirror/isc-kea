@@ -37,16 +37,13 @@ public:
     SecBuf(const std::vector<T>& x) : vec_(x) {}
 
     ~SecBuf() {
-        try {
 #if defined(__has_feature)
 #if __has_feature(address_sanitizer)
-            // Make the address sanitizer happy assuming this won't reallocate
-            vec_.resize(vec_.capacity());
+        // Make the address sanitizer happy assuming this won't reallocate
+        vec_.resize(vec_.capacity());
 #endif
 #endif
-            std::memset(&vec_[0], 0, vec_.capacity() * sizeof(T));
-        } catch (...) {
-        }
+        std::memset(&vec_[0], 0, vec_.capacity() * sizeof(T));
     }
 
     iterator begin() {

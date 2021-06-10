@@ -49,10 +49,7 @@ struct ThreadPool {
 
     /// @brief Destructor
     ~ThreadPool() {
-        try {
-            reset();
-        } catch (...) {
-        }
+        reset();
     }
 
     /// @brief reset the thread pool stopping threads and clearing the internal
@@ -252,11 +249,8 @@ private:
         ///
         /// Destroys the thread pool queue
         ~ThreadPoolQueue() {
-            try {
-                disable();
-                clear();
-            } catch (...) {
-            }
+            disable();
+            clear();
         }
 
         /// @brief set maximum number of work items in the queue

@@ -40,10 +40,7 @@ public:
 
     /// @brief Destructor
     ~LoggerTest() {
-        try {
-            LoggerManager::reset();
-        } catch (...) {
-        }
+        LoggerManager::reset();
     }
 };
 

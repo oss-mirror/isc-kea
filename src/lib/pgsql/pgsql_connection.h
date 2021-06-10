@@ -198,11 +198,8 @@ public:
     ///
     /// Frees up resources allocated by the connection.
     ~PgSqlHolder() {
-        try {
-            if (pgconn_ != NULL) {
-                PQfinish(pgconn_);
-            }
-        } catch (...) {
+        if (pgconn_ != NULL) {
+            PQfinish(pgconn_);
         }
     }
 

@@ -541,14 +541,11 @@ public:
 
     /// @brief Destructor
     virtual ~LeaseMgrDbLostCallbackTest() {
-        try {
-            db::DatabaseConnection::db_lost_callback_ = 0;
-            db::DatabaseConnection::db_recovered_callback_ = 0;
-            db::DatabaseConnection::db_failed_callback_ = 0;
-            LeaseMgr::setIOService(isc::asiolink::IOServicePtr());
-            TimerMgr::instance()->unregisterTimers();
-        } catch (...) {
-        }
+        db::DatabaseConnection::db_lost_callback_ = 0;
+        db::DatabaseConnection::db_recovered_callback_ = 0;
+        db::DatabaseConnection::db_failed_callback_ = 0;
+        LeaseMgr::setIOService(isc::asiolink::IOServicePtr());
+        TimerMgr::instance()->unregisterTimers();
     }
 
     /// @brief Prepares the class for a test.

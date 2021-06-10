@@ -214,10 +214,7 @@ CAA::operator=(const CAA& source) {
 }
 
 CAA::~CAA() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 void

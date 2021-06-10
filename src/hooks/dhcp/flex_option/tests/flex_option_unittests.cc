@@ -76,10 +76,7 @@ public:
 
     /// @brief Destructor.
     virtual ~FlexOptionTest() {
-        try {
-            CfgMgr::instance().setFamily(AF_INET);
-        } catch (...) {
-        }
+        CfgMgr::instance().setFamily(AF_INET);
     }
 
     /// @brief Flex Option implementation.

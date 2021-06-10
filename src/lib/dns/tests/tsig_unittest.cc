@@ -111,10 +111,7 @@ protected:
 
     /// @brief Destructor
     ~TSIGTest() {
-        try {
-            isc::util::detail::gettimeFunction = NULL;
-        } catch (...) {
-        }
+        isc::util::detail::gettimeFunction = NULL;
     }
 
     // Many of the tests below create some DNS message and sign it under

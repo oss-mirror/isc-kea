@@ -22,10 +22,7 @@ class CryptoLinkImpl {
 };
 
 CryptoLink::~CryptoLink() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 /// \brief OpenSSL implementation of RNG.

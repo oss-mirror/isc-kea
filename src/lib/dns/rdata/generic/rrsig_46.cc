@@ -236,10 +236,7 @@ RRSIG::operator=(const RRSIG& source) {
 }
 
 RRSIG::~RRSIG() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 string

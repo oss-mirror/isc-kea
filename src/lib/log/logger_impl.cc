@@ -79,10 +79,7 @@ LoggerImpl::LoggerImpl(const string& name) :
 // Destructor. (Here because of virtual declaration.)
 
 LoggerImpl::~LoggerImpl() {
-    try {
-        delete sync_;
-    } catch (...) {
-    }
+    delete sync_;
 }
 
 /// \brief Version

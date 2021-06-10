@@ -303,14 +303,11 @@ public:
 
     /// @brief Destructor.
     ~HttpsClientTest() {
-        try {
-            listener_->stop();
-            listener2_->stop();
-            listener3_->stop();
-            io_service_.poll();
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        listener_->stop();
+        listener2_->stop();
+        listener3_->stop();
+        io_service_.poll();
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Creates HTTP request with JSON body.

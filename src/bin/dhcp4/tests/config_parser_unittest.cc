@@ -350,14 +350,11 @@ public:
 
     /// @brief Destructor
     ~Dhcp4ParserTest() {
-        try {
-            resetConfiguration();
+        resetConfiguration();
 
-            // ... and delete the hooks library marker files if present
-            static_cast<void>(remove(LOAD_MARKER_FILE));
-            static_cast<void>(remove(UNLOAD_MARKER_FILE));
-        } catch (...) {
-        }
+        // ... and delete the hooks library marker files if present
+        static_cast<void>(remove(LOAD_MARKER_FILE));
+        static_cast<void>(remove(UNLOAD_MARKER_FILE));
     }
 
     /// @brief Returns an interface configuration used by the most of the

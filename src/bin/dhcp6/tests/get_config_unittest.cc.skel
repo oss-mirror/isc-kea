@@ -179,11 +179,8 @@ public:
 
     /// @brief Destructor
     ~Dhcp6GetConfigTest() {
-        try {
-            // Reset configuration database after each test.
-            resetConfiguration();
-        } catch (...) {
-        }
+        // Reset configuration database after each test.
+        resetConfiguration();
     }
 
     /// @brief Parse and Execute configuration

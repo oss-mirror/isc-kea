@@ -27,10 +27,7 @@ struct MySqlResult {
 
     /// @brief Destructor
     ~MySqlResult() {
-        try {
-            mysql_free_result(result_);
-        } catch (...) {
-        }
+        mysql_free_result(result_);
     }
 
     MYSQL_RES* const result_;
@@ -115,11 +112,8 @@ public:
     ///
     /// Removes test table from the database.
     virtual ~MySqlConnectionTest() {
-        try {
-            conn_.rollback();
-            dropTestTable();
-        } catch (...) {
-        }
+        conn_.rollback();
+        dropTestTable();
     }
 
     /// @brief Creates test table @c mysql_connection_test.
@@ -587,10 +581,7 @@ public:
 
     /// @brief Destructor.
     virtual ~MySqlSchemaTest() {
-        try {
-            destroyMySQLSchema();
-        } catch (...) {
-        }
+        destroyMySQLSchema();
     }
 };
 

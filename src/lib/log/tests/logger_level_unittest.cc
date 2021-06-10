@@ -32,10 +32,7 @@ protected:
 
     /// @brief Destructor
     ~LoggerLevelTest() {
-        try {
-            LoggerManager::reset();
-        } catch (...) {
-        }
+        LoggerManager::reset();
     }
 };
 

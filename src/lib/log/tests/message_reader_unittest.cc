@@ -30,10 +30,7 @@ protected:
 
     /// @brief Destructor
     ~MessageReaderTest() {
-        try {
-            delete dictionary_;
-        } catch (...) {
-        }
+        delete dictionary_;
     }
 
     MessageDictionary*  dictionary_;    // Dictionary to add messages to

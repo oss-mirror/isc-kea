@@ -55,18 +55,15 @@ LibraryManager::LibraryManager(const std::string& name)
 
 // Destructor.
 LibraryManager::~LibraryManager() {
-    try {
-        if (index_ >= 0) {
-            // LibraryManager instantiated to load a library, so ensure that
-            // it is unloaded before exiting.
-            static_cast<void>(prepareUnloadLibrary());
-        }
-
-        // LibraryManager instantiated to validate a library, so just ensure
-        // that it is closed before exiting.
-        static_cast<void>(closeLibrary());
-    } catch (...) {
+    if (index_ >= 0) {
+        // LibraryManager instantiated to load a library, so ensure that
+        // it is unloaded before exiting.
+        static_cast<void>(prepareUnloadLibrary());
     }
+
+    // LibraryManager instantiated to validate a library, so just ensure
+    // that it is closed before exiting.
+    static_cast<void>(closeLibrary());
 }
 
 // Open the library

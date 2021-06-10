@@ -80,11 +80,8 @@ NameChangeUDPListener(const isc::asiolink::IOAddress& ip_address,
 }
 
 NameChangeUDPListener::~NameChangeUDPListener() {
-    try {
-        // Clean up.
-        stopListening();
-    } catch (...) {
-    }
+    // Clean up.
+    stopListening();
 }
 
 void
@@ -217,11 +214,8 @@ NameChangeUDPSender(const isc::asiolink::IOAddress& ip_address,
 }
 
 NameChangeUDPSender::~NameChangeUDPSender() {
-    try {
-        // Clean up.
-        stopSending();
-    } catch (...) {
-    }
+    // Clean up.
+    stopSending();
 }
 
 void

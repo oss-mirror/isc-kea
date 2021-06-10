@@ -129,10 +129,7 @@ NetconfAgent::NetconfAgent() : cancel_(false) {
 }
 
 NetconfAgent::~NetconfAgent() {
-    try {
-        clear();
-    } catch (...) {
-    }
+    clear();
 }
 
 void

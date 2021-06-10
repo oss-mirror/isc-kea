@@ -281,11 +281,8 @@ public:
 
     /// @brief Destructor.
     ~CfgMgrTest() {
-        try {
-            // clean up after the test
-            clear();
-        } catch (...) {
-        }
+        // clean up after the test
+        clear();
     }
 
     /// @brief Clean up function.

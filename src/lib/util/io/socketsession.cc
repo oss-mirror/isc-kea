@@ -121,13 +121,10 @@ SocketSessionForwarder::SocketSessionForwarder(const std::string& unix_file) :
 }
 
 SocketSessionForwarder::~SocketSessionForwarder() {
-    try {
-        if (impl_->fd_ != -1) {
-            close();
-        }
-        delete impl_;
-    } catch (...) {
+    if (impl_->fd_ != -1) {
+        close();
     }
+    delete impl_;
 }
 
 void
@@ -313,10 +310,7 @@ SocketSessionReceiver::SocketSessionReceiver(int fd) :
 }
 
 SocketSessionReceiver::~SocketSessionReceiver() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 namespace {
@@ -343,11 +337,8 @@ struct ScopedSocket : boost::noncopyable {
 
     /// @brief Destructor
     ~ScopedSocket() {
-        try {
-            if (fd_ >= 0) {
-                close(fd_);
-            }
-        } catch (...) {
+        if (fd_ >= 0) {
+            close(fd_);
         }
     }
 

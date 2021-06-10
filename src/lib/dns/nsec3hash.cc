@@ -82,10 +82,7 @@ public:
 
     /// @brief Destructor
     virtual ~NSEC3HashRFC5155() {
-        try {
-            std::free(salt_data_);
-        } catch (...) {
-        }
+        std::free(salt_data_);
     }
 
     virtual std::string calculate(const Name& name) const;

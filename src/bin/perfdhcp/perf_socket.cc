@@ -125,12 +125,9 @@ PerfSocket::openSocket(CommandOptions& options) const {
 }
 
 PerfSocket::~PerfSocket() {
-    try {
-        IfacePtr iface = IfaceMgr::instance().getIface(ifindex_);
-        if (iface) {
-            iface->delSocket(sockfd_);
-        }
-    } catch (...) {
+    IfacePtr iface = IfaceMgr::instance().getIface(ifindex_);
+    if (iface) {
+        iface->delSocket(sockfd_);
     }
 }
 

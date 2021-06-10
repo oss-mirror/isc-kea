@@ -43,10 +43,7 @@ public:
     ///
     /// Closes the underlying socket if it is open.
     ~TestHttpClient() {
-        try {
-            close();
-        } catch (...) {
-        }
+        close();
     }
 
     /// @brief Send HTTP request specified in textual format.

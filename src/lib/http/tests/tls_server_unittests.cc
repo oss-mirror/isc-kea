@@ -416,10 +416,7 @@ public:
     ///
     /// Closes the underlying socket if it is open.
     ~TestHttpClient() {
-        try {
-            close();
-        } catch (...) {
-        }
+        close();
     }
 
     /// @brief Send HTTP request specified in textual format.
@@ -660,12 +657,9 @@ public:
     ///
     /// Removes active HTTP clients.
     virtual ~HttpsListenerTest() {
-        try {
-            for (auto client = clients_.begin(); client != clients_.end();
-                 ++client) {
-                (*client)->close();
-            }
-        } catch (...) {
+        for (auto client = clients_.begin(); client != clients_.end();
+             ++client) {
+            (*client)->close();
         }
     }
 

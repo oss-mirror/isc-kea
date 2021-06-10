@@ -47,15 +47,11 @@ Receiver::stop() {
 }
 
 Receiver::~Receiver() {
-    try {
-        if (single_threaded_) {
-            return;
-        }
-        stop();
-    } catch (...) {
+    if (single_threaded_) {
+        return;
     }
+    stop();
 }
-
 
 PktPtr
 Receiver::getPkt() {

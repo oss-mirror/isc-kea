@@ -62,13 +62,10 @@ public:
     ///
     /// Ensures a marker file is removed after each test.
     ~LibraryManagerTest() {
-        try {
-            static_cast<void>(remove(MARKER_FILE));
+        static_cast<void>(remove(MARKER_FILE));
 
-            // Disable multi-threading.
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        // Disable multi-threading.
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Marker file present

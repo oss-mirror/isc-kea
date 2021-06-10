@@ -614,15 +614,12 @@ public:
     ///
     /// Stops all test servers.
     ~HAServiceTest() {
-        try {
-            listener_->stop();
-            listener2_->stop();
-            listener3_->stop();
-            io_service_->get_io_service().reset();
-            io_service_->poll();
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        listener_->stop();
+        listener2_->stop();
+        listener3_->stop();
+        io_service_->get_io_service().reset();
+        io_service_->poll();
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Callback function invoke upon test timeout.

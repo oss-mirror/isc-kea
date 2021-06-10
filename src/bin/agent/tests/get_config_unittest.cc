@@ -131,10 +131,7 @@ public:
 
     /// @brief Destructor
     ~CtrlAgentGetCfgTest() {
-        try {
-            resetConfiguration();
-        } catch (...) {
-        }
+        resetConfiguration();
     }
 
     /// @brief Parse and Execute configuration

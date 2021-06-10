@@ -143,11 +143,8 @@ public:
 
     /// @brief Destructor.
     virtual ~HostCacheTest() {
-        try {
-            HostDataSourceFactory::deregisterFactory("test");
-            HostDataSourceFactory::deregisterFactory("cache");
-        } catch (...) {
-        }
+        HostDataSourceFactory::deregisterFactory("test");
+        HostDataSourceFactory::deregisterFactory("cache");
     }
 
     /// @brief Test host cache.
@@ -822,11 +819,8 @@ public:
 
     /// @brief Destructor.
     virtual ~NegativeCacheTest() {
-        try {
-            HostDataSourceFactory::deregisterFactory("one");
-            HostDataSourceFactory::deregisterFactory("nocache");
-        } catch (...) {
-        }
+        HostDataSourceFactory::deregisterFactory("one");
+        HostDataSourceFactory::deregisterFactory("nocache");
     }
 
     /// @brief Test one backend.

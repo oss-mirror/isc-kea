@@ -106,10 +106,7 @@ IntervalTimerImpl::IntervalTimerImpl(IOService& io_service) :
 }
 
 IntervalTimerImpl::~IntervalTimerImpl() {
-    try {
-        interval_ = INVALIDATED_INTERVAL;
-    } catch (...) {
-    }
+    interval_ = INVALIDATED_INTERVAL;
 }
 
 void
@@ -180,11 +177,8 @@ IntervalTimer::IntervalTimer(IOService& io_service) :
 }
 
 IntervalTimer::~IntervalTimer() {
-    try {
-        // Cancel the timer to make sure cbfunc_() will not be called any more.
-        cancel();
-    } catch (...) {
-    }
+    // Cancel the timer to make sure cbfunc_() will not be called any more.
+    cancel();
 }
 
 void

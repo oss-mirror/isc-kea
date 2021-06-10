@@ -37,11 +37,8 @@ public:
     ///
     /// Reset root logger back to defaults.
     ~LoggingTest() {
-        try {
-            isc::log::initLogger();
-            wipeFiles();
-        } catch (...) {
-        }
+        isc::log::initLogger();
+        wipeFiles();
     }
 
     /// @brief Generates a log file name suffixed with a rotation number

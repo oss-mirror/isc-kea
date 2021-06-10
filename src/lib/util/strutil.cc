@@ -344,12 +344,9 @@ public:
 
     /// @brief Destructor.
     ~StringSanitizerImpl() {
-        try {
 #ifndef USE_REGEX
-            regfree(&scrub_exp_);
+        regfree(&scrub_exp_);
 #endif
-        } catch (...) {
-        }
     }
 
     std::string scrub(const std::string& original) {
@@ -445,10 +442,7 @@ StringSanitizer::StringSanitizer(const std::string& char_set,
 }
 
 StringSanitizer::~StringSanitizer() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 std::string

@@ -47,10 +47,7 @@ public:
     /// @brief Destructor
     /// Removes files that may be left over from previous tests
     virtual ~LibLoadTest() {
-        try {
-            unloadLibs();
-        } catch (...) {
-        }
+        unloadLibs();}
     }
 
     /// @brief Adds library/parameters to list of libraries to be loaded

@@ -502,10 +502,7 @@ public:
 
     /// @brief Destructor
     virtual ~AllocEngine6Test() {
-        try {
-            factory_.destroy();
-        } catch (...) {
-        }
+        factory_.destroy();
     }
 
     DuidPtr duid_;            ///< client-identifier (value used in tests)
@@ -614,10 +611,7 @@ public:
 
     /// @brief Destructor.
     virtual ~AllocEngine4Test() {
-        try {
-            factory_.destroy();
-        } catch (...) {
-        }
+        factory_.destroy();
     }
 
     ClientIdPtr clientid_;      ///< Client-identifier (value used in tests)

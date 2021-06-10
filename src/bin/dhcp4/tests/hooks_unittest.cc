@@ -120,28 +120,25 @@ public:
 
     /// @brief Destructor (deletes Dhcpv4Srv)
     virtual ~HooksDhcpv4SrvTest() {
-        try {
-            // clear static buffers
-            resetCalloutBuffers();
+        // clear static buffers
+        resetCalloutBuffers();
 
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("dhcp4_srv_configured");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_receive");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_send");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt4_receive");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt4_send");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("subnet4_select");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_renew");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_release");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_decline");
-            HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("host4_identifier");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("dhcp4_srv_configured");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_receive");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("buffer4_send");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt4_receive");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("pkt4_send");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("subnet4_select");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_renew");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_release");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("lease4_decline");
+        HooksManager::preCalloutsLibraryHandle().deregisterAllCallouts("host4_identifier");
 
-            delete srv_;
-            HooksManager::setTestMode(false);
-            bool status = HooksManager::unloadLibraries();
-            if (!status) {
-                cerr << "(fixture dtor) unloadLibraries failed" << endl;
-            }
-        } catch (...) {
+        delete srv_;
+        HooksManager::setTestMode(false);
+        bool status = HooksManager::unloadLibraries();
+        if (!status) {
+            cerr << "(fixture dtor) unloadLibraries failed" << endl;
         }
     }
 
@@ -882,12 +879,9 @@ public:
 
     /// @brief Destructor
     ~LoadUnloadDhcpv4SrvTest() {
-        try {
-            server_.reset();
-            reset();
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        server_.reset();
+        reset();
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     /// @brief Reset hooks data

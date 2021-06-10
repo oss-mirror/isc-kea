@@ -38,10 +38,7 @@ public:
     /// settings (when the parser's "parse" method is called), ensure that
     /// the logging is reset to the default after each test completes.
     ~DbAccessParserTest() {
-        try {
-            isc::log::setDefaultLoggingOutput();
-        } catch (...) {
-        }
+        isc::log::setDefaultLoggingOutput();
     }
 
     /// @brief Build JSON String

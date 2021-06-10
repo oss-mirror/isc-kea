@@ -51,10 +51,7 @@ HttpThreadPool::HttpThreadPool(IOServicePtr io_service, size_t pool_size,
 }
 
 HttpThreadPool::~HttpThreadPool() {
-    try {
-        stop();
-    } catch (...) {
-    }
+    stop();
 }
 
 void

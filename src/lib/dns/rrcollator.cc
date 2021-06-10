@@ -84,10 +84,7 @@ RRCollator::RRCollator(const AddRRsetCallback& callback) :
 }
 
 RRCollator::~RRCollator() {
-    try {
-        delete impl_;
-    } catch (...) {
-    }
+    delete impl_;
 }
 
 AddRRCallback

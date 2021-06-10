@@ -300,11 +300,8 @@ public:
 
     /// @brief Destructor
     ~NameChangeUDPSenderBasicTest() {
-        try {
-            // Disable multi-threading
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        // Disable multi-threading
+        MultiThreadingMgr::instance().setMode(false);
     }
 };
 
@@ -995,11 +992,8 @@ public:
 
     /// @brief Destructor
     ~NameChangeUDPTest() {
-        try {
-            // Disable multi-threading
-            MultiThreadingMgr::instance().setMode(false);
-        } catch (...) {
-        }
+        // Disable multi-threading
+        MultiThreadingMgr::instance().setMode(false);
     }
 
     void reset_results() {
