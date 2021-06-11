@@ -64,7 +64,7 @@ module kea-types {
 
   grouping hooks-libraries {
     description "Hooks libraries grouping.";
-    list hook-library {
+    list hooks-libraries {
       key library;
       description "List of hook library.";
       leaf library {
@@ -81,7 +81,7 @@ module kea-types {
 
   grouping loggers {
     description "Loggers.";
-    list logger {
+    list loggers {
       key name;
       description "List of loggers.";
       leaf name {

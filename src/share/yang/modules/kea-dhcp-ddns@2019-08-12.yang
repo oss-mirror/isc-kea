@@ -80,7 +80,7 @@ module kea-dhcp-ddns {
   */
 
   container config {
-    // config true;
+    config true;
     description "Contains DHCP-DDNS server configuration.";
 
     leaf ip-address {

@@ -26,7 +26,7 @@ module kea-ctrl-agent {
   */
 
   container config {
-    // config true;
+    config true;
     description "Contains control agent configuration.";
 
     leaf http-host {

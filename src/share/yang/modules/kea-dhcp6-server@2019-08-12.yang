@@ -154,7 +154,7 @@ module kea-dhcp6-server {
       uses dhcp:t1-percent;
       uses dhcp:t2-percent;
       uses option-data-list;
-      list pool {
+      list pools {
         key "start-address end-address";
         ordered-by user;
         description "Pool list.";
@@ -249,7 +249,7 @@ module kea-dhcp6-server {
 
   grouping client-classes {
     description "Client classes grouping.";
-    list client-class {
+    list client-classes {
       key name;
       ordered-by user;
       description "List of client classes.";
@@ -313,7 +313,7 @@ module kea-dhcp6-server {
   */
 
   container config {
-    // config true;
+    config true;
     description "Contains DHCPv6 server configuration.";
 
     uses data-directory;
