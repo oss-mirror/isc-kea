@@ -1,3 +1,10 @@
+1912.	[func]		tomek
+	PostgreSQL database schema has been extended with tables for
+	Config Backend. This is the first step towards PostgreSQL-based Config
+	Backend (CB). However, as there is no code yet to use those new tables,
+	they're not not functional yet.
+	(Gitlab #90)
+
 1911.	[bug]		andrei
 	Fixed a minor regression where kea-admin and keactrl would output
 	technical errors like "unbound variable" instead of more helpful
