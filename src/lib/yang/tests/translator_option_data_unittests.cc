@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -47,7 +47,7 @@ TEST_F(TranslatorOptionDataListTest, getEmpty) {
     // Get the option data list and check if it is empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr options;
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(options);
     ASSERT_EQ(Element::list, options->getType());
     EXPECT_EQ(0, options->size());
@@ -65,14 +65,14 @@ TEST_F(TranslatorOptionDataListTest, get) {
     const string& xdata = xoption + "/data";
     const string& xsend = xoption + "/always-send";
     S_Val s_false(new Val(false));
-    ASSERT_NO_THROW(sess_->set_item(xformat.c_str(), s_false));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xformat.c_str(), s_false));
     S_Val s_data(new Val("12121212"));
-    ASSERT_NO_THROW(sess_->set_item(xdata.c_str(), s_data));
-    ASSERT_NO_THROW(sess_->set_item(xsend.c_str(), s_false));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xdata.c_str(), s_data));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xsend.c_str(), s_false));
 
     // Get the option data.
     ConstElementPtr option;
-    EXPECT_NO_THROW(option = t_obj_->getOptionData(xoption));
+    EXPECT_NO_THROW_LOG(option = t_obj_->getOptionData(xoption));
     ASSERT_TRUE(option);
     EXPECT_EQ("{"
               " \"always-send\": false,"
@@ -85,7 +85,7 @@ TEST_F(TranslatorOptionDataListTest, get) {
 
     // Get the option data list.
     ConstElementPtr options;
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(options);
     ASSERT_EQ(Element::list, options->getType());
     EXPECT_EQ(1, options->size());
@@ -100,17 +100,17 @@ TEST_F(TranslatorOptionDataListTest, setEmpty) {
     // Set empty list.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr options = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setOptionDataList(xpath, options));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDataList(xpath, options));
 
     // Get it back.
     options.reset();
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(options);
     EXPECT_EQ(0, options->size());
 
     // Check that the tree representation is empty.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     EXPECT_FALSE(tree);
 }
 
@@ -129,18 +129,18 @@ TEST_F(TranslatorOptionDataListTest, set) {
     option->set("data", Element::create(string("12121212")));
     option->set("always-send", Element::create(false));
     options->add(option);
-    EXPECT_NO_THROW(t_obj_->setOptionDataList(xpath, options));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDataList(xpath, options));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(1, got->size());
     EXPECT_TRUE(option->equals(*got->get(0)));
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp6-server:config (container)\n"
@@ -159,7 +159,7 @@ TEST_F(TranslatorOptionDataListTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 }; // end of anonymous namespace

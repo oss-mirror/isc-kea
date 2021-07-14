@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,7 +46,7 @@ TEST_F(TranslatorSharedNetworksTest, getEmpty) {
     // Get the shared network list and check if it is empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr networks;
-    EXPECT_NO_THROW(networks = t_obj_->getSharedNetworks(xpath));
+    EXPECT_NO_THROW_LOG(networks = t_obj_->getSharedNetworks(xpath));
     ASSERT_TRUE(networks);
     ASSERT_EQ(Element::list, networks->getType());
     EXPECT_EQ(0, networks->size());
@@ -62,11 +62,11 @@ TEST_F(TranslatorSharedNetworksTest, get) {
     const string& xnetwork = xpath + "/shared-network[name='foo']";
     const string& xsubnet = xnetwork + "/subnet6[id='111']/subnet";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xsubnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xsubnet.c_str(), v_subnet));
 
     // Get the shared network.
     ConstElementPtr network;
-    EXPECT_NO_THROW(network = t_obj_->getSharedNetwork(xnetwork));
+    EXPECT_NO_THROW_LOG(network = t_obj_->getSharedNetwork(xnetwork));
     ASSERT_TRUE(network);
     ElementPtr subnet = Element::createMap();
     subnet->set("id", Element::create(111));
@@ -80,7 +80,7 @@ TEST_F(TranslatorSharedNetworksTest, get) {
 
     // Get the shared network list and check if the shared network is in it.
     ConstElementPtr networks;
-    EXPECT_NO_THROW(networks = t_obj_->getSharedNetworks(xpath));
+    EXPECT_NO_THROW_LOG(networks = t_obj_->getSharedNetworks(xpath));
     ASSERT_TRUE(networks);
     ASSERT_EQ(Element::list, networks->getType());
     ASSERT_EQ(1, networks->size());
@@ -95,18 +95,18 @@ TEST_F(TranslatorSharedNetworksTest, setEmpty) {
     // Set empty list.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr networks = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setSharedNetworks(xpath, networks));
+    EXPECT_NO_THROW_LOG(t_obj_->setSharedNetworks(xpath, networks));
 
     // Get it back.
     networks.reset();
-    EXPECT_NO_THROW(networks = t_obj_->getSharedNetworks(xpath));
+    EXPECT_NO_THROW_LOG(networks = t_obj_->getSharedNetworks(xpath));
     ASSERT_TRUE(networks);
     ASSERT_EQ(Element::list, networks->getType());
     EXPECT_EQ(0, networks->size());
 
     // Check that the tree representation is empty.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     EXPECT_FALSE(tree);
 }
 
@@ -127,11 +127,11 @@ TEST_F(TranslatorSharedNetworksTest, set) {
     share->set("name", Element::create(string("foo")));
     share->set("subnet6", subnets);
     networks->add(share);
-    EXPECT_NO_THROW(t_obj_->setSharedNetworks(xpath, networks));
+    EXPECT_NO_THROW_LOG(t_obj_->setSharedNetworks(xpath, networks));
 
     // Get it back.
     networks.reset();
-    EXPECT_NO_THROW(networks = t_obj_->getSharedNetworks(xpath));
+    EXPECT_NO_THROW_LOG(networks = t_obj_->getSharedNetworks(xpath));
     ASSERT_TRUE(networks);
     ASSERT_EQ(Element::list, networks->getType());
     ASSERT_EQ(1, networks->size());
@@ -139,7 +139,7 @@ TEST_F(TranslatorSharedNetworksTest, set) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp6-server:config (container)\n"
@@ -156,7 +156,7 @@ TEST_F(TranslatorSharedNetworksTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 // This test verifies that several shared networks can be properly
@@ -196,34 +196,34 @@ TEST_F(TranslatorSharedNetworksTest, getList) {
     // Create the subnet1: 2001:db8:1::/48 #1 in shared network foo.
     const string& xsubnet1 = xnetwork1 + "/subnet6[id='1']/subnet";
     S_Val v_subnet1(new Val("2001:db8:1::/48", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xsubnet1.c_str(), v_subnet1));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xsubnet1.c_str(), v_subnet1));
 
     // Create the subnet2: 2001:db8:2::/48 #2 in shared network foo.
     const string& xsubnet2 = xnetwork1 + "/subnet6[id='2']/subnet";
     S_Val v_subnet2(new Val("2001:db8:2::/48", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xsubnet2.c_str(), v_subnet2));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xsubnet2.c_str(), v_subnet2));
 
     // Create the subnet1: 2001:db8:101::/48 #101 in shared network foo.
     const string& xsubnet3 = xnetwork2 + "/subnet6[id='101']/subnet";
     S_Val v_subnet(new Val("2001:db8:101::/48", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xsubnet3.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xsubnet3.c_str(), v_subnet));
 
     // Create the subnet2: 2001:db8:2::/48 #2 in shared network foo.
     const string& xsubnet4 = xnetwork2 + "/subnet6[id='102']/subnet";
     S_Val v_subnet4(new Val("2001:db8:102::/48", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xsubnet4.c_str(), v_subnet4));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xsubnet4.c_str(), v_subnet4));
 
     // Ok, now test the getters. Let's start with the easier ones that
     // return a single network.
     ConstElementPtr network;
 
     // Get the first network.
-    EXPECT_NO_THROW(network = t_obj_->getSharedNetwork(xnetwork1));
+    EXPECT_NO_THROW_LOG(network = t_obj_->getSharedNetwork(xnetwork1));
     ASSERT_TRUE(network);
     EXPECT_EQ(exp_net1, network->str());
 
     // Get the second network.
-    EXPECT_NO_THROW(network = t_obj_->getSharedNetwork(xnetwork2));
+    EXPECT_NO_THROW_LOG(network = t_obj_->getSharedNetwork(xnetwork2));
     ASSERT_TRUE(network);
     EXPECT_EQ(exp_net2, network->str());
 
@@ -232,7 +232,7 @@ TEST_F(TranslatorSharedNetworksTest, getList) {
 
     // Now test returns all networks
     ConstElementPtr networks;
-    EXPECT_NO_THROW(networks = t_obj_->getSharedNetworks(xpath));
+    EXPECT_NO_THROW_LOG(networks = t_obj_->getSharedNetworks(xpath));
     ASSERT_TRUE(networks);
     EXPECT_EQ(exp_both, networks->str());
 }

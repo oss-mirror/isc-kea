@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,7 +46,7 @@ TEST_F(TranslatorDatabaseTest, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp4-server:config/lease-database";
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     EXPECT_FALSE(database);
 }
 
@@ -60,18 +60,18 @@ TEST_F(TranslatorDatabaseTest, get) {
     const string& xtype = xpath + "/database-type";
     const string& xinterval = xpath + "/lfc-interval";
     S_Val s_type(new Val("memfile"));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     uint32_t li = 3600;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_interval(new Val(li));
 #else
     S_Val s_interval(new Val(li, SR_UINT32_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xinterval.c_str(), s_interval));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xinterval.c_str(), s_interval));
 
     // Get empty.
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     ASSERT_TRUE(database);
     EXPECT_EQ(2, database->size());
     ConstElementPtr type = database->get("type");
@@ -94,11 +94,11 @@ TEST_F(TranslatorDatabaseTest, set) {
     ElementPtr database = Element::createMap();
     database->set("type", Element::create(string("memfile")));
     database->set("lfc-interval", Element::create(3600));
-    ASSERT_NO_THROW(t_obj_->setDatabase(xpath, database));
+    ASSERT_NO_THROW_LOG(t_obj_->setDatabase(xpath, database));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getDatabase(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(Element::map, got->getType());
     EXPECT_EQ(2, got->size());
@@ -122,21 +122,21 @@ TEST_F(TranslatorDatabaseTest, setEmpty) {
     const string& xtype = xpath + "/database-type";
     const string& xinterval = xpath + "/lfc-interval";
     S_Val s_type(new Val("memfile"));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     uint32_t li = 3600;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_interval(new Val(li));
 #else
     S_Val s_interval(new Val(li, SR_UINT32_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xinterval.c_str(), s_interval));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xinterval.c_str(), s_interval));
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setDatabase(xpath, ConstElementPtr()));
+    ASSERT_NO_THROW_LOG(t_obj_->setDatabase(xpath, ConstElementPtr()));
 
     // Get it back.
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     EXPECT_FALSE(database);
 }
 
@@ -163,7 +163,7 @@ TEST_F(TranslatorDatabasesTest, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp6-server:config/hosts-database";
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     EXPECT_FALSE(databases);
 }
 
@@ -181,24 +181,24 @@ TEST_F(TranslatorDatabasesTest, get) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
 #else
     S_Val s_port(new Val(mport, SR_UINT16_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
 
     // Get empty.
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     ASSERT_TRUE(databases);
     ASSERT_EQ(1, databases->size());
     ConstElementPtr database = databases->get(0);
@@ -242,11 +242,11 @@ TEST_F(TranslatorDatabasesTest, set) {
     database->set("lfc-interval", Element::create(3600));
     ElementPtr databases = Element::createList();
     databases->add(database);
-    ASSERT_NO_THROW(t_obj_->setDatabases(xpath, databases));
+    ASSERT_NO_THROW_LOG(t_obj_->setDatabases(xpath, databases));
 
     // Get it back.
     ConstElementPtr gots;
-    EXPECT_NO_THROW(gots = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(gots = t_obj_->getDatabases(xpath));
     ASSERT_TRUE(gots);
     ASSERT_EQ(Element::list, gots->getType());
     ASSERT_EQ(1, gots->size());
@@ -264,7 +264,7 @@ TEST_F(TranslatorDatabasesTest, set) {
     EXPECT_EQ(3600, interval->intValue());
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 // This test verifies that an emptied database list can be properly
@@ -281,27 +281,27 @@ TEST_F(TranslatorDatabasesTest, setEmpty) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
 #else
     S_Val s_port(new Val(mport, SR_UINT16_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setDatabase(xdatabase, ConstElementPtr()));
+    ASSERT_NO_THROW_LOG(t_obj_->setDatabase(xdatabase, ConstElementPtr()));
 
     // Get empty.
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     EXPECT_FALSE(databases);
 }
 
@@ -319,27 +319,27 @@ TEST_F(TranslatorDatabasesTest, setEmpties) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
 #else
     S_Val s_port(new Val(mport, SR_UINT16_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setDatabases(xdatabase, ConstElementPtr()));
+    ASSERT_NO_THROW_LOG(t_obj_->setDatabases(xdatabase, ConstElementPtr()));
 
     // Get empty.
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     EXPECT_FALSE(databases);
 }
 

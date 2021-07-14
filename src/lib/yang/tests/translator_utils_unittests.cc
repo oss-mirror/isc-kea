@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -72,15 +72,15 @@ TEST(YangReprTest, getTest) {
 
     // Create a list.
     xpath = "/keatest-module:container/list";
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/string";
     s_val.reset(new Val("str", SR_STRING_T));
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/boolean";
     s_val.reset(new Val(true, SR_BOOL_T));
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/ui8";
     uint8_t u8(8);
@@ -89,7 +89,7 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(u8, SR_UINT8_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/ui16";
     uint16_t u16(16);
@@ -98,7 +98,7 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(u16, SR_UINT16_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/ui32";
     uint32_t u32(32);
@@ -107,7 +107,7 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(u32, SR_UINT32_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/i8";
     int8_t s8(8);
@@ -116,7 +116,7 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(s8, SR_INT8_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/i16";
     int16_t s16(16);
@@ -125,7 +125,7 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(s16, SR_INT16_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/i32";
     int32_t s32(32);
@@ -134,25 +134,25 @@ TEST(YangReprTest, getTest) {
 #else
     s_val.reset(new Val(s32, SR_INT32_T));
 #endif
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/id_ref";
     s_val.reset(new Val("keatest-module:id_1", SR_IDENTITYREF_T));
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     xpath = "/keatest-module:main/enum";
     s_val.reset(new Val("maybe", SR_ENUM_T));
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     // Binary.
     xpath = "/keatest-module:main/raw";
     s_val.reset(new Val("Zm9vYmFy", SR_BINARY_T));
-    EXPECT_NO_THROW(sess->set_item(xpath.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess->set_item(xpath.c_str(), s_val));
 
     // Get it.
     YangRepr repr(testModel);
     YRTree tree;
-    EXPECT_NO_THROW(tree = repr.get(sess));
+    EXPECT_NO_THROW_LOG(tree = repr.get(sess));
 
     // Verify.
     EXPECT_TRUE(repr.verify(testTree, sess, cerr));
@@ -167,7 +167,7 @@ TEST(YangReprTrest, getTestErrors) {
     // Get it.
     YangRepr repr(testModel);
     YRTree tree;
-    EXPECT_NO_THROW(repr.set(testTree, sess));
+    EXPECT_NO_THROW_LOG(repr.set(testTree, sess));
 
     // Verify.
     EXPECT_TRUE(repr.verify(testTree, sess, cerr));
@@ -210,7 +210,7 @@ TEST(YangReprTest, setTest) {
 
     // Set the module content.
     YangRepr repr(testModel);
-    EXPECT_NO_THROW(repr.set(testTree, sess));
+    EXPECT_NO_THROW_LOG(repr.set(testTree, sess));
 
     // Verify it.
     EXPECT_TRUE(repr.verify(testTree, sess, cerr));
@@ -230,10 +230,10 @@ void sanityCheckConfig(const std::string& model, const YRTree& tree) {
     // Get it.
     YangRepr repr(model);
 
-    EXPECT_NO_THROW(repr.set(tree, sess))
+    EXPECT_NO_THROW_LOG(repr.set(tree, sess))
         << " for model " << model;
     bool result = false;
-    EXPECT_NO_THROW(result = repr.verify(tree, sess, cerr))
+    EXPECT_NO_THROW_LOG(result = repr.verify(tree, sess, cerr))
         << " for model " << model;
     EXPECT_TRUE(result);
 }

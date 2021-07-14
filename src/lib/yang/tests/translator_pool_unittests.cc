@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,7 +48,7 @@ TEST_F(TranslatorPoolsTest, getEmptyIetf) {
     const string& xpath = "/ietf-dhcpv6-server:server/server-config/"
         "network-ranges/network-range[network-range-id='111']/address-pools";
     ConstElementPtr pools;
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     EXPECT_EQ(0, pools->size());
@@ -62,7 +62,7 @@ TEST_F(TranslatorPoolsTest, getEmptyKea) {
     // Get the pool list and check if it is empty.
     const string& xpath = "/kea-dhcp6-server:config/subnet6[id='111']";
     ConstElementPtr pools;
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     EXPECT_EQ(0, pools->size());
@@ -78,23 +78,23 @@ TEST_F(TranslatorPoolsTest, getIetf) {
         "network-ranges/network-range[network-range-id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet_subnet = subnet + "/network-prefix";
-    EXPECT_NO_THROW(sess_->set_item(subnet_subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet_subnet.c_str(), v_subnet));
 
     // Create the pool 2001:db8::1:0/112 #222.
     const string& xpath = subnet + "/address-pools";
     const string& prefix = xpath + "/address-pool[pool-id='222']/pool-prefix";
     S_Val s_val(new Val("2001:db8::1:0/112"));
-    EXPECT_NO_THROW(sess_->set_item(prefix.c_str(), s_val));
+    EXPECT_NO_THROW_LOG(sess_->set_item(prefix.c_str(), s_val));
 
     // Get the pool.
     ConstElementPtr pool;
-    EXPECT_NO_THROW(pool = t_obj_->getPool(xpath + "/address-pool[pool-id='222']"));
+    EXPECT_NO_THROW_LOG(pool = t_obj_->getPool(xpath + "/address-pool[pool-id='222']"));
     ASSERT_TRUE(pool);
     EXPECT_EQ("{ \"pool\": \"2001:db8::1:0/112\" }", pool->str());
 
     // Get the pool list and check if the pool is in it.
     ConstElementPtr pools;
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     ASSERT_EQ(1, pools->size());
@@ -111,13 +111,13 @@ TEST_F(TranslatorPoolsTest, getKea) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Create the pool 2001:db8::1:0/112.
     const string& prefix = "2001:db8::1:0/112";
     string start_addr;
     string end_addr;
-    ASSERT_NO_THROW(TranslatorPool::getAddresses(prefix,
+    ASSERT_NO_THROW_LOG(TranslatorPool::getAddresses(prefix,
                                                  start_addr, end_addr));
     EXPECT_EQ("2001:db8::1:0", start_addr);
     EXPECT_EQ("2001:db8::1:ffff", end_addr);
@@ -126,11 +126,11 @@ TEST_F(TranslatorPoolsTest, getKea) {
           << "'][end-address='" << end_addr << "']";
     const string& x_prefix = spool.str() + "/prefix";
     S_Val s_prefix(new Val("2001:db8::1:0/112", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(x_prefix.c_str(), s_prefix));
+    EXPECT_NO_THROW_LOG(sess_->set_item(x_prefix.c_str(), s_prefix));
 
     // Get the pool.
     ConstElementPtr pool;
-    EXPECT_NO_THROW(pool = t_obj_->getPool(spool.str()));
+    EXPECT_NO_THROW_LOG(pool = t_obj_->getPool(spool.str()));
     ASSERT_TRUE(pool);
     ElementPtr expected = Element::createMap();
     expected->set("pool", Element::create(string("2001:db8::1:0/112")));
@@ -138,7 +138,7 @@ TEST_F(TranslatorPoolsTest, getKea) {
 
     // Get the pool list and check if the pool is in it.
     ConstElementPtr pools;
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     ASSERT_EQ(1, pools->size());
@@ -155,16 +155,16 @@ TEST_F(TranslatorPoolsTest, setEmptyIetf) {
         "network-ranges/network-range[network-range-id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet_subnet = subnet + "/network-prefix";
-    EXPECT_NO_THROW(sess_->set_item(subnet_subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet_subnet.c_str(), v_subnet));
 
     // Set empty list.
     const string& xpath = subnet + "/address-pools";
     ConstElementPtr pools = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setPools(xpath, pools));
+    EXPECT_NO_THROW_LOG(t_obj_->setPools(xpath, pools));
 
     // Get it back.
     pools.reset();
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     EXPECT_EQ(0, pools->size());
@@ -180,15 +180,15 @@ TEST_F(TranslatorPoolsTest, setEmptyKea) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Set empty list.
     ConstElementPtr pools = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setPools(xpath, pools));
+    EXPECT_NO_THROW_LOG(t_obj_->setPools(xpath, pools));
 
     // Get it back.
     pools.reset();
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     EXPECT_EQ(0, pools->size());
@@ -204,7 +204,7 @@ TEST_F(TranslatorPoolsTest, setIetf) {
         "network-ranges/network-range[network-range-id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet_subnet = subnet + "/network-prefix";
-    EXPECT_NO_THROW(sess_->set_item(subnet_subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet_subnet.c_str(), v_subnet));
 
     // Set one pool.
     const string& xpath = subnet + "/address-pools";
@@ -212,11 +212,11 @@ TEST_F(TranslatorPoolsTest, setIetf) {
     ElementPtr pool = Element::createMap();
     pool->set("pool", Element::create(string("2001:db8::1:0/112")));
     pools->add(pool);
-    EXPECT_NO_THROW(t_obj_->setPools(xpath, pools));
+    EXPECT_NO_THROW_LOG(t_obj_->setPools(xpath, pools));
 
     // Get it back.
     pools.reset();
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     ASSERT_EQ(1, pools->size());
@@ -224,7 +224,7 @@ TEST_F(TranslatorPoolsTest, setIetf) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/ietf-dhcpv6-server:server"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/ietf-dhcpv6-server:server"));
     ASSERT_TRUE(tree);
     string expected =
         "ietf-dhcpv6-server:server (container)\n"
@@ -265,7 +265,7 @@ TEST_F(TranslatorPoolsTest, setKea) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Set one pool.
     ElementPtr pools = Element::createList();
@@ -273,11 +273,11 @@ TEST_F(TranslatorPoolsTest, setKea) {
     pool->set("pool",
               Element::create(string("2001:db8::1 - 2001:db8::100")));
     pools->add(pool);
-    EXPECT_NO_THROW(t_obj_->setPools(xpath, pools));
+    EXPECT_NO_THROW_LOG(t_obj_->setPools(xpath, pools));
 
     // Get it back.
     pools.reset();
-    EXPECT_NO_THROW(pools = t_obj_->getPools(xpath));
+    EXPECT_NO_THROW_LOG(pools = t_obj_->getPools(xpath));
     ASSERT_TRUE(pools);
     ASSERT_EQ(Element::list, pools->getType());
     ASSERT_EQ(1, pools->size());
@@ -285,7 +285,7 @@ TEST_F(TranslatorPoolsTest, setKea) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp6-server:config (container)\n"
@@ -304,7 +304,7 @@ TEST_F(TranslatorPoolsTest, setKea) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 }; // end of anonymous namespace

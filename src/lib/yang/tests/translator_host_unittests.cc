@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,7 +48,7 @@ TEST_F(TranslatorHostsTest, getEmpty) {
     const string& xpath =
         "/kea-dhcp6-server:config/subnet6[id='111']";
     ConstElementPtr hosts;
-    EXPECT_NO_THROW(hosts = t_obj_->getHosts(xpath));
+    EXPECT_NO_THROW_LOG(hosts = t_obj_->getHosts(xpath));
     ASSERT_TRUE(hosts);
     ASSERT_EQ(Element::list, hosts->getType());
     EXPECT_EQ(0, hosts->size());
@@ -64,7 +64,7 @@ TEST_F(TranslatorHostsTest, get) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Create the host reservation for 2001:db8::1.
     ostringstream shost;
@@ -72,11 +72,11 @@ TEST_F(TranslatorHostsTest, get) {
           << "[identifier='00:01:02:03:04:05']";
     const string& xaddr = shost.str() + "/ip-addresses";
     S_Val s_addr(new Val("2001:db8::1"));
-    EXPECT_NO_THROW(sess_->set_item(xaddr.c_str(), s_addr));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xaddr.c_str(), s_addr));
 
     // Get the host.
     ConstElementPtr host;
-    EXPECT_NO_THROW(host = t_obj_->getHost(shost.str()));
+    EXPECT_NO_THROW_LOG(host = t_obj_->getHost(shost.str()));
     ASSERT_TRUE(host);
     ElementPtr expected = Element::createMap();
     ElementPtr addresses = Element::createList();
@@ -88,7 +88,7 @@ TEST_F(TranslatorHostsTest, get) {
     // Get the host reservation list and check if the host reservation
     // is in it.
     ConstElementPtr hosts;
-    EXPECT_NO_THROW(hosts = t_obj_->getHosts(xpath));
+    EXPECT_NO_THROW_LOG(hosts = t_obj_->getHosts(xpath));
     ASSERT_TRUE(hosts);
     ASSERT_EQ(Element::list, hosts->getType());
     ASSERT_EQ(1, hosts->size());
@@ -105,15 +105,15 @@ TEST_F(TranslatorHostsTest, setEmpty) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Set empty list.
     ConstElementPtr hosts = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setHosts(xpath, hosts));
+    EXPECT_NO_THROW_LOG(t_obj_->setHosts(xpath, hosts));
 
     // Get it back.
     hosts.reset();
-    EXPECT_NO_THROW(hosts = t_obj_->getHosts(xpath));
+    EXPECT_NO_THROW_LOG(hosts = t_obj_->getHosts(xpath));
     ASSERT_TRUE(hosts);
     ASSERT_EQ(Element::list, hosts->getType());
     EXPECT_EQ(0, hosts->size());
@@ -129,7 +129,7 @@ TEST_F(TranslatorHostsTest, set) {
         "/kea-dhcp4-server:config/subnet4[id='111']";
     S_Val v_subnet(new Val("10.0.0.0/24", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Set one host.
     ElementPtr hosts = Element::createList();
@@ -138,11 +138,11 @@ TEST_F(TranslatorHostsTest, set) {
     host->set("ip-address", Element::create(string("10.0.0.1")));
     host->set("hostname", Element::create(string("foo")));
     hosts->add(host);
-    EXPECT_NO_THROW(t_obj_->setHosts(xpath, hosts));
+    EXPECT_NO_THROW_LOG(t_obj_->setHosts(xpath, hosts));
 
     // Get it back.
     hosts.reset();
-    EXPECT_NO_THROW(hosts = t_obj_->getHosts(xpath));
+    EXPECT_NO_THROW_LOG(hosts = t_obj_->getHosts(xpath));
     ASSERT_TRUE(hosts);
     ASSERT_EQ(Element::list, hosts->getType());
     ASSERT_EQ(1, hosts->size());
@@ -150,7 +150,7 @@ TEST_F(TranslatorHostsTest, set) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp4-server:config (container)\n"
@@ -173,7 +173,7 @@ TEST_F(TranslatorHostsTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 // This test verifies that several host reservations can be properly
@@ -186,7 +186,7 @@ TEST_F(TranslatorHostsTest, getMany) {
         "/kea-dhcp6-server:config/subnet6[id='111']";
     S_Val v_subnet(new Val("2001:db8::/48", SR_STRING_T));
     const string& subnet = xpath + "/subnet";
-    EXPECT_NO_THROW(sess_->set_item(subnet.c_str(), v_subnet));
+    EXPECT_NO_THROW_LOG(sess_->set_item(subnet.c_str(), v_subnet));
 
     // Create the host reservation for 2001:db8::1.
     ostringstream shost;
@@ -194,7 +194,7 @@ TEST_F(TranslatorHostsTest, getMany) {
           << "[identifier='00:01:02:03:04:05']";
     const string& xaddr = shost.str() + "/ip-addresses";
     S_Val s_addr(new Val("2001:db8::1"));
-    EXPECT_NO_THROW(sess_->set_item(xaddr.c_str(), s_addr));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xaddr.c_str(), s_addr));
 
     // Create another reservation for 2001:db8::2
     ostringstream shost2;
@@ -202,11 +202,11 @@ TEST_F(TranslatorHostsTest, getMany) {
            << "[identifier='00:01:0a:0b:0c:0d']";
     const string xaddr2 = shost2.str() + "/ip-addresses";
     S_Val s_addr2(new Val("2001:db8::2"));
-    EXPECT_NO_THROW(sess_->set_item(xaddr2.c_str(), s_addr2));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xaddr2.c_str(), s_addr2));
 
     // Get the host.
     ConstElementPtr hosts;
-    EXPECT_NO_THROW(hosts = t_obj_->getHosts(xpath));
+    EXPECT_NO_THROW_LOG(hosts = t_obj_->getHosts(xpath));
     ASSERT_TRUE(hosts);
 
     EXPECT_EQ(hosts->str(),

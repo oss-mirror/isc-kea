@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -24,9 +24,9 @@ TEST(AdaptorPoolTest, canonizePoolPrefixNoSpace) {
         " \"pool\": \"192.0.2.128/28\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorPool::canonizePool(json));
+    EXPECT_NO_THROW_LOG(AdaptorPool::canonizePool(json));
     EXPECT_TRUE(copied->equals(*json));
 }
 
@@ -36,9 +36,9 @@ TEST(AdaptorPoolTest, canonizePoolRange) {
         " \"pool\": \"192.0.2.1 - 192.0.2.200\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorPool::canonizePool(json));
+    EXPECT_NO_THROW_LOG(AdaptorPool::canonizePool(json));
     EXPECT_TRUE(copied->equals(*json));
 }
 
@@ -48,9 +48,9 @@ TEST(AdaptorPoolTest, canonizePoolPrefixSpaces) {
         " \"pool\": \"192.0.2.128 /\t28\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorPool::canonizePool(json));
+    EXPECT_NO_THROW_LOG(AdaptorPool::canonizePool(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr pool = json->get("pool");
     ASSERT_TRUE(pool);
@@ -64,9 +64,9 @@ TEST(AdaptorPoolTest, canonizePoolRangeNoSpace) {
         " \"pool\": \"192.0.2.1-192.0.2.200\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorPool::canonizePool(json));
+    EXPECT_NO_THROW_LOG(AdaptorPool::canonizePool(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr pool = json->get("pool");
     ASSERT_TRUE(pool);
@@ -80,9 +80,9 @@ TEST(AdaptorPoolTest, canonizePoolRangeExtraSpaces) {
         " \"pool\": \"192.0.2.1  -  192.0.2.200\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorPool::canonizePool(json));
+    EXPECT_NO_THROW_LOG(AdaptorPool::canonizePool(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr pool = json->get("pool");
     ASSERT_TRUE(pool);
@@ -105,15 +105,15 @@ TEST(AdaptorPoolTest, fromSubnetKea) {
         " \"rebind-timer\": 2000\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     ConstElementPtr pools = json->get("pools");
 
     // This should be no-op for kea-dhcp4-server and kea-dhcp6-server models
-    EXPECT_NO_THROW(AdaptorPool::fromSubnet(KEA_DHCP4_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::fromSubnet(KEA_DHCP4_SERVER, json, pools));
     EXPECT_TRUE(copied->equals(*json));
     // The model is checked first.
-    EXPECT_NO_THROW(AdaptorPool::fromSubnet(KEA_DHCP6_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::fromSubnet(KEA_DHCP6_SERVER, json, pools));
     EXPECT_TRUE(copied->equals(*json));
 
     // Check that the model name is actually checked.
@@ -137,10 +137,10 @@ TEST(AdaptorPoolTest, fromSubnet) {
         " \"rebind-timer\": 2000\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     ConstElementPtr pools = json->get("pools");
-    EXPECT_NO_THROW(AdaptorPool::fromSubnet(IETF_DHCPV6_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::fromSubnet(IETF_DHCPV6_SERVER, json, pools));
     EXPECT_FALSE(copied->equals(*json));
     pools = json->get("pools");
     ASSERT_TRUE(pools);
@@ -180,13 +180,13 @@ TEST(AdaptorPoolTest, toSubnetKea) {
         " \"rebind-timer\": 2000\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     ConstElementPtr pools = json->get("pools");
-    EXPECT_NO_THROW(AdaptorPool::toSubnet(KEA_DHCP4_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::toSubnet(KEA_DHCP4_SERVER, json, pools));
     EXPECT_TRUE(copied->equals(*json));
     // The model is checked first.
-    EXPECT_NO_THROW(AdaptorPool::toSubnet(KEA_DHCP6_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::toSubnet(KEA_DHCP6_SERVER, json, pools));
     EXPECT_TRUE(copied->equals(*json));
     // Model name is not free: an error is raised if it is not expected.
     EXPECT_THROW(AdaptorPool::toSubnet("keatest-module", json, pools),
@@ -213,10 +213,10 @@ TEST(AdaptorPoolTest, toSubnet) {
         "     } ]\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     ConstElementPtr pools = json->get("pools");
-    EXPECT_NO_THROW(AdaptorPool::toSubnet(IETF_DHCPV6_SERVER, json, pools));
+    EXPECT_NO_THROW_LOG(AdaptorPool::toSubnet(IETF_DHCPV6_SERVER, json, pools));
     EXPECT_FALSE(copied->equals(*json));
     // Check timers.
     ConstElementPtr timer = json->get("valid-lifetime");
@@ -264,7 +264,7 @@ TEST(AdaptorPoolTest, toSubnetBad) {
         "     } ]\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr pools = json->get("pools");
     EXPECT_THROW(AdaptorPool::toSubnet(IETF_DHCPV6_SERVER, json, pools),
                  BadValue);

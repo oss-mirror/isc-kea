@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -25,9 +25,9 @@ TEST(AdaptorHostTest, notFlexId) {
         " \"ip-address\": \"192.0.2.201\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_TRUE(copied->equals(*json));
 }
 
@@ -39,9 +39,9 @@ TEST(AdaptorHostTest, noQuote) {
         " \"ip-address\": \"192.0.2.206\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_TRUE(copied->equals(*json));
 }
 
@@ -52,9 +52,9 @@ TEST(AdaptorHostTest, quotes) {
         " \"ip-addresses\": \"2001:db8:1:cafe::2\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr id = json->get("flex-id");
     ASSERT_TRUE(id);
@@ -70,9 +70,9 @@ TEST(AdaptorHostTest, extraQuote) {
         " \"ip-addresses\": \"2001:db8:1:cafe::2\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr id = json->get("flex-id");
     ASSERT_TRUE(id);
@@ -87,9 +87,9 @@ TEST(AdaptorHostTest, notStandard) {
         " \"ip-addresses\": \"2001:db8:1:cafe::2\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr id = json->get("flex-id");
     ASSERT_TRUE(id);
@@ -105,9 +105,9 @@ TEST(AdaptorHostTest, notQuoted) {
         " \"ip-addresses\": \"2001:db8:1:cafe::2\"\n"
         "}";
     ElementPtr json;
-    ASSERT_NO_THROW(json = Element::fromJSON(config));
+    ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorHost::quoteIdentifier(json));
+    EXPECT_NO_THROW_LOG(AdaptorHost::quoteIdentifier(json));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr id = json->get("flex-id");
     ASSERT_TRUE(id);

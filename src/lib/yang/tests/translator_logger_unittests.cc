@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,7 +46,7 @@ TEST_F(TranslatorLoggersTest, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr loggers;
-    EXPECT_NO_THROW(loggers = t_obj_->getLoggers(xpath));
+    EXPECT_NO_THROW_LOG(loggers = t_obj_->getLoggers(xpath));
     ASSERT_TRUE(loggers);
     EXPECT_EQ(0, loggers->size());
 }
@@ -63,18 +63,18 @@ TEST_F(TranslatorLoggersTest, get) {
    const string& xoption = xlogger + "/output-option[output='/bar']";
     const string& xmaxver = xoption + "/maxver";
     S_Val s_severity(new Val("WARN", SR_ENUM_T));
-    EXPECT_NO_THROW(sess_->set_item(xseverity.c_str(), s_severity));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xseverity.c_str(), s_severity));
     uint32_t max_ver = 10;
 #ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_maxver(new Val(max_ver));
 #else
     S_Val s_maxver(new Val(max_ver, SR_UINT32_T));
 #endif
-    EXPECT_NO_THROW(sess_->set_item(xmaxver.c_str(), s_maxver));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xmaxver.c_str(), s_maxver));
 
     // Get empty.
     ConstElementPtr loggers;
-    EXPECT_NO_THROW(loggers = t_obj_->getLoggers(xpath));
+    EXPECT_NO_THROW_LOG(loggers = t_obj_->getLoggers(xpath));
     ASSERT_TRUE(loggers);
     ASSERT_EQ(1, loggers->size());
     ConstElementPtr logger = loggers->get(0);
@@ -122,11 +122,11 @@ TEST_F(TranslatorLoggersTest, set) {
     logger->set("output_options", options);
     ElementPtr loggers = Element::createList();
     loggers->add(logger);
-    ASSERT_NO_THROW(t_obj_->setLoggers(xpath, loggers));
+    ASSERT_NO_THROW_LOG(t_obj_->setLoggers(xpath, loggers));
 
     // Get it back.
     ConstElementPtr gots;
-    EXPECT_NO_THROW(gots = t_obj_->getLoggers(xpath));
+    EXPECT_NO_THROW_LOG(gots = t_obj_->getLoggers(xpath));
     ASSERT_TRUE(gots);
     ASSERT_EQ(1, gots->size());
     ConstElementPtr got = gots->get(0);
@@ -157,7 +157,7 @@ TEST_F(TranslatorLoggersTest, set) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp4-server:config (container)\n"
@@ -176,7 +176,7 @@ TEST_F(TranslatorLoggersTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 /// @todo: Implement a test that will cover multiple loggers.

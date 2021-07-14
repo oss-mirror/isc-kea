@@ -50,7 +50,7 @@ void testParser(const std::string& txt, ParserContext::ParserType parser_type,
     bool compare = true) {
     ConstElementPtr test_json;
 
-    ASSERT_NO_THROW({
+    ASSERT_NO_THROW_LOG({
             try {
                 ParserContext ctx;
                 test_json = ctx.parseString(txt, parser_type);
@@ -67,7 +67,7 @@ void testParser(const std::string& txt, ParserContext::ParserType parser_type,
 
     // Now compare if both representations are the same.
     ElementPtr reference_json;
-    ASSERT_NO_THROW(reference_json = Element::fromJSON(txt, true));
+    ASSERT_NO_THROW_LOG(reference_json = Element::fromJSON(txt, true));
     compareJSON(reference_json, test_json);
 }
 
@@ -350,13 +350,13 @@ void testFile(const std::string& fname) {
 
     cout << "Parsing file " << fname << "(" << decommented << ")" << endl;
 
-    EXPECT_NO_THROW(json = Element::fromJSONFile(decommented, true));
+    EXPECT_NO_THROW_LOG(json = Element::fromJSONFile(decommented, true));
     reference_json = moveComments(json);
 
     // remove the temporary file
-    EXPECT_NO_THROW(::remove(decommented.c_str()));
+    EXPECT_NO_THROW_LOG(::remove(decommented.c_str()));
 
-    EXPECT_NO_THROW(
+    EXPECT_NO_THROW_LOG(
     try {
         ParserContext ctx;
         test_json = ctx.parseFile(fname, ParserContext::PARSER_NETCONF);
@@ -732,7 +732,7 @@ TEST(ParserTest, unicodeEscapes) {
         ins[1] = c;
         ConstElementPtr e(new StringElement(ins));
         json = e->str();
-        ASSERT_NO_THROW(
+        ASSERT_NO_THROW_LOG(
         try {
             ParserContext ctx;
             result = ctx.parseString(json, ParserContext::PARSER_JSON);
@@ -750,7 +750,7 @@ TEST(ParserTest, unicodeSlash) {
     // check the 4 possible encodings of solidus '/'
     ConstElementPtr result;
     string json = "\"/\\/\\u002f\\u002F\"";
-    ASSERT_NO_THROW(
+    ASSERT_NO_THROW_LOG(
     try {
         ParserContext ctx;
         result = ctx.parseString(json, ParserContext::PARSER_JSON);
@@ -769,7 +769,7 @@ TEST(ParserTest, unicodeSlash) {
 void loadFile(const string& fname, ElementPtr list) {
     ParserContext ctx;
     ElementPtr json;
-    EXPECT_NO_THROW(json = ctx.parseFile(fname, ParserContext::PARSER_NETCONF));
+    EXPECT_NO_THROW_LOG(json = ctx.parseFile(fname, ParserContext::PARSER_NETCONF));
     ASSERT_TRUE(json);
     list->add(json);
 }
@@ -873,7 +873,7 @@ TEST(ParserTest, duplicateMapEntries) {
     sample_fname += "/simple-dhcp6.json";
     ParserContext ctx;
     ElementPtr sample_json;
-    EXPECT_NO_THROW(sample_json =
+    EXPECT_NO_THROW_LOG(sample_json =
         ctx.parseFile(sample_fname, ParserContext::PARSER_NETCONF));
     ASSERT_TRUE(sample_json);
 

@@ -90,7 +90,7 @@ TEST_F(NetconfControllerTest, basicInstanceTesting) {
     // it has the correct type.
     DControllerBasePtr& controller = DControllerTest::getController();
     ASSERT_TRUE(controller);
-    ASSERT_NO_THROW(boost::dynamic_pointer_cast<NetconfController>(controller));
+    ASSERT_NO_THROW_LOG(boost::dynamic_pointer_cast<NetconfController>(controller));
 
     // Verify that controller's app name is correct.
     EXPECT_TRUE(checkAppName(NetconfController::netconf_app_name_));
@@ -121,7 +121,7 @@ TEST_F(NetconfControllerTest, commandLineArgs) {
     EXPECT_TRUE(checkVerbose(false));
 
     // Verify that standard options can be parsed without error.
-    EXPECT_NO_THROW(parseArgs(argc, argv));
+    EXPECT_NO_THROW_LOG(parseArgs(argc, argv));
 
     // Verify that verbose flag is true.
     EXPECT_TRUE(checkVerbose(true));
@@ -139,7 +139,7 @@ TEST_F(NetconfControllerTest, commandLineArgs) {
 // Tests application process creation and initialization.
 // Verifies that the process can be successfully created and initialized.
 TEST_F(NetconfControllerTest, initProcessTesting) {
-    ASSERT_NO_THROW(initProcess());
+    ASSERT_NO_THROW_LOG(initProcess());
     EXPECT_TRUE(checkProcess());
 }
 

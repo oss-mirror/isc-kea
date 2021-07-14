@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2020 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -106,7 +106,7 @@ public:
     /// @param config The JSON tree to load in textual format.
     void load(const string& config) {
         ConstElementPtr json;
-        ASSERT_NO_THROW(json = Element::fromJSON(config));
+        ASSERT_NO_THROW_LOG(json = Element::fromJSON(config));
         load(json);
     }
 
@@ -200,12 +200,12 @@ TEST_F(ConfigTest, emptyIetf6) {
     setModel(IETF_DHCPV6_SERVER);
 
     YRTree tree;
-    ASSERT_NO_THROW(load(tree));
+    ASSERT_NO_THROW_LOG(load(tree));
     EXPECT_TRUE(verify(tree));
 
     ConstElementPtr json = Element::fromJSON(emptyJson6);
     EXPECT_TRUE(verify(json));
-    ASSERT_NO_THROW(load(json));
+    ASSERT_NO_THROW_LOG(load(json));
     EXPECT_TRUE(verify(emptyJson6));
     EXPECT_TRUE(verify(tree));
 }
@@ -216,12 +216,12 @@ TEST_F(ConfigTest, emptyKeaDhcp4) {
     setModel(KEA_DHCP4_SERVER);
 
     YRTree tree;
-    ASSERT_NO_THROW(load(tree));
+    ASSERT_NO_THROW_LOG(load(tree));
     EXPECT_TRUE(verify(tree));
 
     ConstElementPtr json = Element::fromJSON(emptyJson4);
     EXPECT_TRUE(verify(json));
-    ASSERT_NO_THROW(load(json));
+    ASSERT_NO_THROW_LOG(load(json));
     EXPECT_TRUE(verify(emptyJson4));
     EXPECT_TRUE(verify(tree));
 }
@@ -232,12 +232,12 @@ TEST_F(ConfigTest, emptyKeaDhcp6) {
     setModel(KEA_DHCP6_SERVER);
 
     YRTree tree;
-    ASSERT_NO_THROW(load(tree));
+    ASSERT_NO_THROW_LOG(load(tree));
     EXPECT_TRUE(verify(tree));
 
     ConstElementPtr json = Element::fromJSON(emptyJson6);
     EXPECT_TRUE(verify(json));
-    ASSERT_NO_THROW(load(json));
+    ASSERT_NO_THROW_LOG(load(json));
     EXPECT_TRUE(verify(emptyJson6));
     EXPECT_TRUE(verify(tree));
 }
@@ -250,12 +250,12 @@ TEST_F(ConfigTest, subnetTwoPoolsIetf6) {
     // First set the model.
     setModel(subnetTwoPoolsModelIetf6);
 
-    ASSERT_NO_THROW(load(subnetTwoPoolsTreeIetf6));
+    ASSERT_NO_THROW_LOG(load(subnetTwoPoolsTreeIetf6));
     EXPECT_TRUE(verify(subnetTwoPoolsJson6));
 
     resetSession();
 
-    ASSERT_NO_THROW(load(subnetTwoPoolsJson6));
+    ASSERT_NO_THROW_LOG(load(subnetTwoPoolsJson6));
     EXPECT_TRUE(verify(subnetTwoPoolsTreeIetf6));
 
     cout << "validation is expected to fail: please ignore messages" << endl;
@@ -268,12 +268,12 @@ TEST_F(ConfigTest, subnetOptionsKeaDhcp4) {
     // First set the model.
     setModel(subnetOptionsModelKeaDhcp4);
 
-    ASSERT_NO_THROW(load(subnetOptionsTreeKeaDhcp4));
+    ASSERT_NO_THROW_LOG(load(subnetOptionsTreeKeaDhcp4));
     EXPECT_TRUE(verify(subnetOptionsJson4));
 
     resetSession();
 
-    ASSERT_NO_THROW(load(subnetOptionsJson4));
+    ASSERT_NO_THROW_LOG(load(subnetOptionsJson4));
     EXPECT_TRUE(verify(subnetOptionsTreeKeaDhcp4));
 
     EXPECT_TRUE(validate());
@@ -285,12 +285,12 @@ TEST_F(ConfigTest, subnetOptionsKeaDhcp6) {
     // First set the model.
     setModel(subnetOptionsModelKeaDhcp6);
 
-    ASSERT_NO_THROW(load(subnetOptionsTreeKeaDhcp6));
+    ASSERT_NO_THROW_LOG(load(subnetOptionsTreeKeaDhcp6));
     EXPECT_TRUE(verify(subnetOptionsJson6));
 
     resetSession();
 
-    ASSERT_NO_THROW(load(subnetOptionsJson6));
+    ASSERT_NO_THROW_LOG(load(subnetOptionsJson6));
     EXPECT_TRUE(verify(subnetOptionsTreeKeaDhcp6));
 
     EXPECT_TRUE(validate());
@@ -301,12 +301,12 @@ TEST_F(ConfigTest, subnetTimersIetf6) {
     // First set the model.
     setModel(subnetTimersModel);
 
-    ASSERT_NO_THROW(load(subnetTimersIetf6));
+    ASSERT_NO_THROW_LOG(load(subnetTimersIetf6));
     EXPECT_TRUE(verify(subnetTimersJson6));
 
     resetSession();
 
-    ASSERT_NO_THROW(load(subnetTimersJson6));
+    ASSERT_NO_THROW_LOG(load(subnetTimersJson6));
     EXPECT_TRUE(verify(subnetTimersIetf6));
 }
 
@@ -315,7 +315,7 @@ TEST_F(ConfigTest, validateIetf6) {
     // First set the model.
     setModel(validModelIetf6);
 
-    ASSERT_NO_THROW(load(validTreeIetf6));
+    ASSERT_NO_THROW_LOG(load(validTreeIetf6));
     EXPECT_TRUE(verify(validTreeIetf6));
 
     // If this validation fails, make sure you have the model *and its
@@ -361,7 +361,7 @@ TEST_F(ConfigTest, examples4) {
         string path = string(CFG_EXAMPLES) + "/kea4/" + file;
         cout << "Testing file " << path << endl;
         ConstElementPtr json;
-        ASSERT_NO_THROW(json = loadFile(path));
+        ASSERT_NO_THROW_LOG(json = loadFile(path));
         json = isc::test::moveComments(json);
         EXPECT_TRUE(verify(json));
         EXPECT_TRUE(validate());
@@ -406,7 +406,7 @@ TEST_F(ConfigTest, examples6) {
         string path = string(CFG_EXAMPLES) + "/kea6/" + file;
         cout << "Testing file " << path << endl;
         ConstElementPtr json;
-        ASSERT_NO_THROW(json = loadFile(path));
+        ASSERT_NO_THROW_LOG(json = loadFile(path));
         json = isc::test::moveComments(json);
         EXPECT_TRUE(verify(json));
         EXPECT_TRUE(validate());
@@ -418,12 +418,12 @@ TEST_F(ConfigTest, designExample) {
     // First set the model.
     setModel(designExampleModel);
 
-    ASSERT_NO_THROW(load(designExampleTree));
+    ASSERT_NO_THROW_LOG(load(designExampleTree));
     EXPECT_TRUE(verify(designExampleJson));
 
     resetSession();
 
-    ASSERT_NO_THROW(load(designExampleJson));
+    ASSERT_NO_THROW_LOG(load(designExampleJson));
     EXPECT_TRUE(verify(designExampleTree));
 }
 

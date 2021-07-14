@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -47,7 +47,7 @@ TEST_F(TranslatorOptionDefListTest, getEmpty) {
     // Get the option definition list and check if it is empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr options;
-    EXPECT_NO_THROW(options = t_obj_->getOptionDefList(xpath));
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDefList(xpath));
     ASSERT_TRUE(options);
     ASSERT_EQ(Element::list, options->getType());
     EXPECT_EQ(0, options->size());
@@ -65,15 +65,15 @@ TEST_F(TranslatorOptionDefListTest, get) {
     const string& xtype = xdef + "/type";
     const string& xarray = xdef + "/array";
     S_Val s_name(new Val("foo"));
-    ASSERT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_type(new Val("string"));
-    ASSERT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     S_Val s_array(new Val(false));
-    ASSERT_NO_THROW(sess_->set_item(xarray.c_str(), s_array));
+    ASSERT_NO_THROW_LOG(sess_->set_item(xarray.c_str(), s_array));
 
     // Get the option def.
     ConstElementPtr def;
-    EXPECT_NO_THROW(def = t_obj_->getOptionDef(xdef));
+    EXPECT_NO_THROW_LOG(def = t_obj_->getOptionDef(xdef));
     ASSERT_TRUE(def);
     EXPECT_EQ("{ "
               "\"array\": false, "
@@ -85,7 +85,7 @@ TEST_F(TranslatorOptionDefListTest, get) {
 
     // Get the option definition list.
     ConstElementPtr defs;
-    EXPECT_NO_THROW(defs = t_obj_->getOptionDefList(xpath));
+    EXPECT_NO_THROW_LOG(defs = t_obj_->getOptionDefList(xpath));
     ASSERT_TRUE(defs);
     ASSERT_EQ(Element::list, defs->getType());
     EXPECT_EQ(1, defs->size());
@@ -100,17 +100,17 @@ TEST_F(TranslatorOptionDefListTest, setEmpty) {
     // Set empty list.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr defs = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setOptionDefList(xpath, defs));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDefList(xpath, defs));
 
     // Get it back.
     defs.reset();
-    EXPECT_NO_THROW(defs = t_obj_->getOptionDefList(xpath));
+    EXPECT_NO_THROW_LOG(defs = t_obj_->getOptionDefList(xpath));
     ASSERT_TRUE(defs);
     EXPECT_EQ(0, defs->size());
 
     // Check that the tree representation is empty.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     EXPECT_FALSE(tree);
 }
 
@@ -129,18 +129,18 @@ TEST_F(TranslatorOptionDefListTest, set) {
     def->set("type", Element::create(string("string")));
     def->set("array", Element::create(false));
     defs->add(def);
-    EXPECT_NO_THROW(t_obj_->setOptionDefList(xpath, defs));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDefList(xpath, defs));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getOptionDefList(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getOptionDefList(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(1, got->size());
     EXPECT_TRUE(def->equals(*got->get(0)));
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp6-server:config (container)\n"
@@ -159,7 +159,7 @@ TEST_F(TranslatorOptionDefListTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 }; // end of anonymous namespace

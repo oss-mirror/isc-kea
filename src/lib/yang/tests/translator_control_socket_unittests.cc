@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,7 +46,7 @@ TEST_F(TranslatorControlSocketTest, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp4-server:config/control-socket";
     ConstElementPtr sock;
-    EXPECT_NO_THROW(sock = t_obj_->getControlSocket(xpath));
+    EXPECT_NO_THROW_LOG(sock = t_obj_->getControlSocket(xpath));
     EXPECT_FALSE(sock);
 }
 
@@ -61,15 +61,15 @@ TEST_F(TranslatorControlSocketTest, get) {
     const string& xtype = xpath + "/socket-type";
     const string& xcontext = xpath + "/user-context";
     S_Val s_name(new Val("/tmp/kea.sock"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_type(new Val("unix", SR_ENUM_T));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     S_Val s_context(new Val("{ \"foo\": 1 }"));
-    EXPECT_NO_THROW(sess_->set_item(xcontext.c_str(), s_context));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xcontext.c_str(), s_context));
 
     // Get it.
     ConstElementPtr sock;
-    EXPECT_NO_THROW(sock = t_obj_->getControlSocket(xpath));
+    EXPECT_NO_THROW_LOG(sock = t_obj_->getControlSocket(xpath));
     ASSERT_TRUE(sock);
     ASSERT_EQ(Element::map, sock->getType());
     EXPECT_EQ(3, sock->size());
@@ -103,11 +103,11 @@ TEST_F(TranslatorControlSocketTest, set) {
     } catch (const std::exception& ex) {
         cerr << "setControlSocket fail with " << ex.what() << endl;
     }
-    ASSERT_NO_THROW(t_obj_->setControlSocket(xpath, sock));
+    ASSERT_NO_THROW_LOG(t_obj_->setControlSocket(xpath, sock));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getControlSocket(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getControlSocket(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(Element::map, got->getType());
     EXPECT_EQ(3, got->size());
@@ -124,7 +124,7 @@ TEST_F(TranslatorControlSocketTest, set) {
     EXPECT_EQ("{ \"comment\": \"a comment\" }", context->str());
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 // This test verifies that an empty control socket can be properly
@@ -138,18 +138,18 @@ TEST_F(TranslatorControlSocketTest, setEmpty) {
     const string& xtype = xpath + "/socket-type";
     const string& xcontext = xpath + "/user-context";
     S_Val s_name(new Val("/tmp/kea.sock"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_type(new Val("unix", SR_ENUM_T));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     S_Val s_context(new Val("{ \"foo\": 1 }"));
-    EXPECT_NO_THROW(sess_->set_item(xcontext.c_str(), s_context));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xcontext.c_str(), s_context));
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setControlSocket(xpath, ConstElementPtr()));
+    ASSERT_NO_THROW_LOG(t_obj_->setControlSocket(xpath, ConstElementPtr()));
 
     // Get it back.
     ConstElementPtr sock;
-    EXPECT_NO_THROW(sock = t_obj_->getControlSocket(xpath));
+    EXPECT_NO_THROW_LOG(sock = t_obj_->getControlSocket(xpath));
     EXPECT_FALSE(sock);
 }
 

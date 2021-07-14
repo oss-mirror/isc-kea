@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -47,7 +47,7 @@ TEST_F(TranslatorClassesTest, getEmpty) {
     // Get the client class list and check if it is empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr classes;
-    EXPECT_NO_THROW(classes = t_obj_->getClasses(xpath));
+    EXPECT_NO_THROW_LOG(classes = t_obj_->getClasses(xpath));
     EXPECT_FALSE(classes);
 }
 
@@ -61,11 +61,11 @@ TEST_F(TranslatorClassesTest, get) {
     const string& xclass = xpath + "/client-class[name='foo']";
     const string& xtest = xclass + "/test";
     S_Val v_test(new Val("not member('ALL')", SR_STRING_T));
-    EXPECT_NO_THROW(sess_->set_item(xtest.c_str(), v_test));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtest.c_str(), v_test));
 
     // Get the client class.
     ConstElementPtr cclass;
-    EXPECT_NO_THROW(cclass = t_obj_->getClass(xclass));
+    EXPECT_NO_THROW_LOG(cclass = t_obj_->getClass(xclass));
     ASSERT_TRUE(cclass);
     ElementPtr expected = Element::createMap();
     expected->set("name", Element::create(string("foo")));
@@ -74,7 +74,7 @@ TEST_F(TranslatorClassesTest, get) {
 
     // Get the client class list and check if the client class is in it.
     ConstElementPtr classes;
-    EXPECT_NO_THROW(classes = t_obj_->getClasses(xpath));
+    EXPECT_NO_THROW_LOG(classes = t_obj_->getClasses(xpath));
     ASSERT_TRUE(classes);
     ASSERT_EQ(Element::list, classes->getType());
     ASSERT_EQ(1, classes->size());
@@ -89,16 +89,16 @@ TEST_F(TranslatorClassesTest, setEmpty) {
     // Set empty list.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr classes = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setClasses(xpath, classes));
+    EXPECT_NO_THROW_LOG(t_obj_->setClasses(xpath, classes));
 
     // Get it back.
     classes.reset();
-    EXPECT_NO_THROW(classes = t_obj_->getClasses(xpath));
+    EXPECT_NO_THROW_LOG(classes = t_obj_->getClasses(xpath));
     EXPECT_FALSE(classes);
 
     // Check that the tree representation is empty.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
     EXPECT_FALSE(tree);
 }
 
@@ -115,11 +115,11 @@ TEST_F(TranslatorClassesTest, set) {
     cclass->set("test", Element::create(string("''==''")));
     cclass->set("only-if-required", Element::create(false));
     classes->add(cclass);
-    EXPECT_NO_THROW(t_obj_->setClasses(xpath, classes));
+    EXPECT_NO_THROW_LOG(t_obj_->setClasses(xpath, classes));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getClasses(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getClasses(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(Element::list, got->getType());
     ASSERT_EQ(1, got->size());
@@ -127,7 +127,7 @@ TEST_F(TranslatorClassesTest, set) {
 
     // Check the tree representation.
     S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
+    EXPECT_NO_THROW_LOG(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
     ASSERT_TRUE(tree);
     string expected =
         "kea-dhcp6-server:config (container)\n"
@@ -142,7 +142,7 @@ TEST_F(TranslatorClassesTest, set) {
     EXPECT_EQ(expected, tree->to_string(100));
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 }; // end of anonymous namespace
