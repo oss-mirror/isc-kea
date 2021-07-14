@@ -34,9 +34,6 @@ UnixControlSocket::UnixControlSocket(CfgControlSocketPtr ctrl_sock)
     : ControlSocketBase(ctrl_sock) {
 }
 
-UnixControlSocket::~UnixControlSocket() {
-}
-
 ConstElementPtr
 UnixControlSocket::configGet(const string& /*service*/) {
     return (sendCommand(createCommand("config-get")));

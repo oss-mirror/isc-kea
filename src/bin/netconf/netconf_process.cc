@@ -26,14 +26,9 @@ using namespace isc::process;
 namespace isc {
 namespace netconf {
 
-std::atomic<bool> NetconfProcess::shut_down(false);
-
 NetconfProcess::NetconfProcess(const char* name,
                                const asiolink::IOServicePtr& io_service)
     : DProcessBase(name, io_service, DCfgMgrBasePtr(new NetconfCfgMgr())) {
-}
-
-NetconfProcess::~NetconfProcess() {
 }
 
 void
@@ -113,7 +108,6 @@ NetconfProcess::runIO() {
 
 isc::data::ConstElementPtr
 NetconfProcess::shutdown(isc::data::ConstElementPtr /*args*/) {
-    shut_down = true;
     setShutdownFlag(true);
     return (isc::config::createAnswer(0, "Netconf is shutting down"));
 }

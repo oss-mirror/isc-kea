@@ -57,8 +57,8 @@ bool LogContentTest::checkFile() {
     while (getline(file, line) && (i != exp_strings_.size())) {
         exp_line = exp_strings_[i];
         if (verbose_) {
-            cout << "Read line  :" << line << endl;
-            cout << "Looking for:" << exp_line << endl;
+            cout << "Read line  : " << line << endl;
+            cout << "Looking for: " << exp_line << endl;
         }
         i++;
         if (string::npos == line.find(exp_line)) {

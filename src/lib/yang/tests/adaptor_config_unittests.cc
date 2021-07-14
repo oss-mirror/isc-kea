@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,6 +8,7 @@
 
 #include <yang/adaptor_config.h>
 
+#include <testutils/gtest_utils.h>
 #include <testutils/io_utils.h>
 #include <testutils/user_context_utils.h>
 
@@ -37,11 +38,11 @@ void testFile(const std::string& fname, bool v6, ElementPtr& result) {
 
     string decommented = decommentJSONfile(fname);
 
-    EXPECT_NO_THROW(json = Element::fromJSONFile(decommented, true));
+    EXPECT_NO_THROW_LOG(json = Element::fromJSONFile(decommented, true));
     reference_json = moveComments(json);
 
     // remove the temporary file
-    EXPECT_NO_THROW(::remove(decommented.c_str()));
+    EXPECT_NO_THROW_LOG(::remove(decommented.c_str()));
 
     string before = json->str();
     if (v6) {
@@ -141,4 +142,4 @@ TEST_F(AdaptorConfigTest, loadExamples6) {
 /// @todo: Check option data using kea6/with-ddns.json
 /// @todo: Check option defs using kea6/dhcpv4-over-dhcpv6.json
 
-}; // end of anonymous namespace
+}  // namespace

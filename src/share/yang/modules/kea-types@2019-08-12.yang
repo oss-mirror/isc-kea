@@ -89,7 +89,7 @@ module kea-types {
         mandatory true;
         description "Name of the logger.";
       }
-      list output-option {
+      list output_options {
         key output;
         description "List of output options.";
         leaf output {

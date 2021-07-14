@@ -9,8 +9,8 @@
 
 #include <netconf/netconf.h>
 #include <process/d_process.h>
+
 #include <vector>
-#include <atomic>
 
 namespace isc {
 namespace netconf {
@@ -33,7 +33,7 @@ public:
     NetconfProcess(const char* name, const asiolink::IOServicePtr& io_service);
 
     /// @brief Destructor
-    virtual ~NetconfProcess();
+    virtual ~NetconfProcess() = default;
 
     /// @brief Initialize the Netconf process.
     ///
@@ -84,9 +84,6 @@ public:
 
     /// @brief Returns a pointer to the configuration manager.
     NetconfCfgMgrPtr getNetconfCfgMgr();
-
-    /// @brief Global (globally visible) shutdown flag.
-    static std::atomic<bool> shut_down;
 
 private:
 

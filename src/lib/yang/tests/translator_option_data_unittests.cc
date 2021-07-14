@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -18,9 +18,7 @@ using namespace isc;
 using namespace isc::data;
 using namespace isc::yang;
 using namespace isc::yang::test;
-#ifndef HAVE_PRE_0_7_6_SYSREPO
 using namespace sysrepo;
-#endif
 
 namespace {
 
@@ -28,36 +26,39 @@ namespace {
 extern char const option_data_list[] = "option data list";
 
 /// @brief Test fixture class for @ref TranslatorOptionDataList.
-class TranslatorOptionDataListTest :
+class TranslatorOptionDataListTestv4 :
     public GenericTranslatorTest<option_data_list, TranslatorOptionDataList> {
 public:
 
     /// Constructor.
-    TranslatorOptionDataListTest() { }
+    TranslatorOptionDataListTestv4() {
+        model_ = KEA_DHCP4_SERVER;
+     }
+};
 
-    /// Destructor (does nothing).
-    virtual ~TranslatorOptionDataListTest() { }
+class TranslatorOptionDataListTestv6 :
+    public GenericTranslatorTest<option_data_list, TranslatorOptionDataList> {
+public:
+
+    /// Constructor.
+    TranslatorOptionDataListTestv6() {
+        model_ = KEA_DHCP6_SERVER;
+     }
 };
 
 // This test verifies that an empty option data list can be properly
 // translated from YANG to JSON.
-TEST_F(TranslatorOptionDataListTest, getEmpty) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorOptionDataListTestv4, getEmpty) {
     // Get the option data list and check if it is empty.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr options;
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
-    ASSERT_TRUE(options);
-    ASSERT_EQ(Element::list, options->getType());
-    EXPECT_EQ(0, options->size());
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
+    ASSERT_FALSE(options);
 }
 
 // This test verifies that one option data can be properly translated
 // from YANG to JSON.
-TEST_F(TranslatorOptionDataListTest, get) {
-    useModel(KEA_DHCP6_SERVER);
-
+TEST_F(TranslatorOptionDataListTestv6, get) {
     // Create the option code 100.
     const string& xpath = "/kea-dhcp6-server:config";
     const string& xoption = xpath + "/option-data[code='100'][space='dns']";
@@ -72,7 +73,7 @@ TEST_F(TranslatorOptionDataListTest, get) {
 
     // Get the option data.
     ConstElementPtr option;
-    EXPECT_NO_THROW(option = t_obj_->getOptionData(xoption));
+    EXPECT_NO_THROW_LOG(option = t_obj_->getOptionData(xoption));
     ASSERT_TRUE(option);
     EXPECT_EQ("{"
               " \"always-send\": false,"
@@ -85,7 +86,7 @@ TEST_F(TranslatorOptionDataListTest, get) {
 
     // Get the option data list.
     ConstElementPtr options;
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(options);
     ASSERT_EQ(Element::list, options->getType());
     EXPECT_EQ(1, options->size());
@@ -94,31 +95,21 @@ TEST_F(TranslatorOptionDataListTest, get) {
 
 // This test verifies that an empty option data list can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorOptionDataListTest, setEmpty) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorOptionDataListTestv4, setEmpty) {
     // Set empty list.
     const string& xpath = "/kea-dhcp4-server:config";
     ConstElementPtr options = Element::createList();
-    EXPECT_NO_THROW(t_obj_->setOptionDataList(xpath, options));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDataList(xpath, options));
 
     // Get it back.
     options.reset();
-    EXPECT_NO_THROW(options = t_obj_->getOptionDataList(xpath));
-    ASSERT_TRUE(options);
-    EXPECT_EQ(0, options->size());
-
-    // Check that the tree representation is empty.
-    S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp4-server:config"));
-    EXPECT_FALSE(tree);
+    EXPECT_NO_THROW_LOG(options = t_obj_->getOptionDataList(xpath));
+    ASSERT_FALSE(options);
 }
 
 // This test verifies that one option data can be properly translated
 // from JSON to YANG.
-TEST_F(TranslatorOptionDataListTest, set) {
-    useModel(KEA_DHCP6_SERVER);
-
+TEST_F(TranslatorOptionDataListTestv6, set) {
     // Set one option data.
     const string& xpath = "/kea-dhcp6-server:config";
     ElementPtr options = Element::createList();
@@ -129,37 +120,17 @@ TEST_F(TranslatorOptionDataListTest, set) {
     option->set("data", Element::create(string("12121212")));
     option->set("always-send", Element::create(false));
     options->add(option);
-    EXPECT_NO_THROW(t_obj_->setOptionDataList(xpath, options));
+    EXPECT_NO_THROW_LOG(t_obj_->setOptionDataList(xpath, options));
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getOptionDataList(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getOptionDataList(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(1, got->size());
     EXPECT_TRUE(option->equals(*got->get(0)));
 
-    // Check the tree representation.
-    S_Tree tree;
-    EXPECT_NO_THROW(tree = sess_->get_subtree("/kea-dhcp6-server:config"));
-    ASSERT_TRUE(tree);
-    string expected =
-        "kea-dhcp6-server:config (container)\n"
-        " |\n"
-        " -- option-data (list instance)\n"
-        "     |\n"
-        "     -- code = 100\n"
-        "     |\n"
-        "     -- space = dns\n"
-        "     |\n"
-        "     -- data = 12121212\n"
-        "     |\n"
-        "     -- csv-format = false\n"
-        "     |\n"
-        "     -- always-send = false\n";
-    EXPECT_EQ(expected, tree->to_string(100));
-
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
-}; // end of anonymous namespace
+}  // namespace

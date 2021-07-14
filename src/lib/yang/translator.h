@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,15 +10,7 @@
 #include <cc/data.h>
 #include <yang/sysrepo_error.h>
 
-#ifndef HAVE_SYSREPO
-#error "config.h must be included before translator.h"
-#endif
-
-#ifndef HAVE_PRE_0_7_6_SYSREPO
 #include <sysrepo-cpp/Session.hpp>
-#else
-#include <sysrepo-cpp/Session.h>
-#endif
 
 namespace isc {
 namespace yang {
@@ -26,16 +18,13 @@ namespace yang {
 /// @brief Between YANG and JSON translator class for basic values.
 class TranslatorBasic {
 public:
+    using S_Vals = sysrepo::S_Vals;
 
     /// @brief Constructor.
     ///
     /// @param session Sysrepo session.
     /// @param model Model name (used and shared by derived classes).
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorBasic(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorBasic(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorBasic();
@@ -47,11 +36,7 @@ public:
     /// @param s_val The value.
     /// @return The Element representing the sysrepo value.
     /// @throw NotImplemented when the value type is not supported.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     static isc::data::ElementPtr value(sysrepo::S_Val s_val);
-#else
-    static isc::data::ElementPtr value(S_Val s_val);
-#endif
 
     /// @brief Get and translate basic value from YANG to JSON.
     ///
@@ -77,12 +62,8 @@ public:
     ///
     /// @param elem The JSON element.
     /// @param type The sysrepo type.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     static sysrepo::S_Val value(isc::data::ConstElementPtr elem,
                                 sr_type_t type);
-#else
-    static S_Val value(isc::data::ConstElementPtr elem, sr_type_t type);
-#endif
 
     /// @brief Translate and set basic value from JSON to YANG.
     ///
@@ -97,42 +78,62 @@ public:
     /// @param xpath The xpath of the basic value.
     void delItem(const std::string& xpath);
 
-    /// List iterator methods keeping the session private.
-
-    /// @brief Get iterator over a YANG list.
+    /// @brief Run a function for a node and all its children.
     ///
-    /// @param xpath The xpath of the list.
-    /// @return An S_Iter_Value pointer. Null is the list does not exist.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
-    sysrepo::S_Iter_Value getIter(const std::string& xpath);
-#else
-    S_Iter_Value getIter(const std::string& xpath);
-#endif
+    /// @tparam functor_t typename of the function to be called
+    /// @param xpath the xpath to be travelled
+    /// @param f the function to be called
+    template <typename functor_t>
+    void forAll(std::string const& xpath, functor_t f) {
+        libyang::S_Data_Node data_node(session_->get_data(xpath.c_str()));
+        if (!data_node) {
+            return;
+        }
 
-    /// @brief Get xpath of the next YANG list item.
-    ///
-    /// @param iter The iterator pointing to the previous element
-    /// @return The xpath of the next element. Empty string when at
-    /// the end of the list.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
-    std::string getNext(sysrepo::S_Iter_Value iter);
-#else
-    std::string getNext(S_Iter_Value iter);
-#endif
+        for (libyang::S_Data_Node& root : data_node->tree_for()) {
+            for (libyang::S_Data_Node const& n : root->tree_dfs()) {
+                f(n);
+            }
+        }
+    }
+
+    S_Vals getValuesFromItems(std::string const& xpath) {
+        try {
+            return session_->get_items(xpath.c_str());
+        } catch (sysrepo::sysrepo_exception const& exception) {
+            isc_throw(SysrepoError, "sysrepo error getting items: " << exception.what());
+        }
+    }
+
+    template <typename T>
+    isc::data::ElementPtr getList(std::string const& xpath,
+                                  T& t,
+                                  isc::data::ElementPtr (T::*f)(std::string const& xpath)) {
+        isc::data::ElementPtr result;
+        S_Vals values(getValuesFromItems(xpath));
+        if (values) {
+            for (size_t i(0); i < values->val_cnt(); ++i) {
+                isc::data::ElementPtr x((t.*f)(values->val(i)->xpath()));
+                if (x) {
+                    if (!result) {
+                        result = isc::data::Element::createList();
+                    }
+                    result->add(x);
+                }
+            }
+        }
+        return result;
+    }
 
 protected:
     /// @brief The sysrepo session.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     sysrepo::S_Session session_;
-#else
-    S_Session session_;
-#endif
 
     /// @brief The model.
     std::string model_;
 };
 
-}; // end of namespace isc::yang
-}; // end of namespace isc
+}  // namespace yang
+}  // namespace isc
 
 #endif // ISC_TRANSLATOR_H

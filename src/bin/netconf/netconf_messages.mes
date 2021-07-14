@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2018 Internet Systems Consortium, Inc. ("ISC")
+# Copyright (C) 2012-2021 Internet Systems Consortium, Inc. ("ISC")
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,6 +48,9 @@ name of the server and the error are printed.
 This informational message indicates that Netconf is trying to get the
 configuration from a Kea server.
 
+% NETCONF_INFO %1
+Generic NETCONF message
+
 % NETCONF_LOG_CHANGE_FAIL Netconf configuration change logging failed: %1
 The warning message indicates that the configuration change logging
 encountered an unexpected condition. Details of it will be logged.
@@ -66,12 +69,12 @@ the module is printed.
 This warning message indicates that a module used by Kea is not
 available in the sysrepo repository. The name of the module is printed.
 
-% NETCONF_MODULE_REVISION_ERR Essential module %1 does have the right revision: expected %2, got %3
+% NETCONF_MODULE_REVISION_ERR Essential module %1 does NOT have the right revision: expected %2, got %3
 This fatal error message indicates that a module required by Netconf
 configuration is not at the right revision in the sysrepo repository.
 The name, expected and available revisions of the module are printed.
 
-% NETCONF_MODULE_REVISION_WARN Module %1 does have the right revision: expected %2, got %3
+% NETCONF_MODULE_REVISION_WARN Module %1 does NOT have the right revision: expected %2, got %3
 This warning message indicates that a module used by Kea is not at the
 right revision in the sysrepo repository. The name, expected and
 available revisions of the module are printed.
@@ -101,6 +104,11 @@ all configuration information and is ready to begin processing.
 The version is also printed.
 
 % NETCONF_SUBSCRIBE_CONFIG subscribing configuration changes for %1 server with %2 module
+This information message indicates that Netconf is trying to subscribe
+configuration changes for a Kea server. The names of the server and
+the module are printed.
+
+% NETCONF_SUBSCRIBE_NOTIFICATIONS subscribing to notifications for %1 server with %2 module
 This information message indicates that Netconf is trying to subscribe
 configuration changes for a Kea server. The names of the server and
 the module are printed.

@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,9 +17,7 @@ using namespace isc;
 using namespace isc::data;
 using namespace isc::yang;
 using namespace isc::yang::test;
-#ifndef HAVE_PRE_0_7_6_SYSREPO
 using namespace sysrepo;
-#endif
 
 namespace {
 
@@ -27,51 +25,52 @@ namespace {
 extern char const database_access[] = "database access";
 
 /// @brief Test fixture class for @ref TranslatorDatabase.
-class TranslatorDatabaseTest :
+class TranslatorDatabaseTestv4 :
     public GenericTranslatorTest<database_access, TranslatorDatabase> {
 public:
+    TranslatorDatabaseTestv4() {
+        model_ = KEA_DHCP4_SERVER;
+    }
 
-    /// Constructor.
-    TranslatorDatabaseTest() { }
+    virtual ~TranslatorDatabaseTestv4() = default;
+};
 
-    /// Destructor (does nothing).
-    virtual ~TranslatorDatabaseTest() { }
+class TranslatorDatabaseTestv6 :
+    public GenericTranslatorTest<database_access, TranslatorDatabase> {
+public:
+    TranslatorDatabaseTestv6() {
+        model_ = KEA_DHCP6_SERVER;
+    }
+
+    virtual ~TranslatorDatabaseTestv6() = default;
 };
 
 // This test verifies that an empty database can be properly
 // translated from YANG to JSON.
-TEST_F(TranslatorDatabaseTest, getEmpty) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabaseTestv4, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp4-server:config/lease-database";
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     EXPECT_FALSE(database);
 }
 
 // This test verifies that a database can be properly
 // translated from YANG to JSON.
-TEST_F(TranslatorDatabaseTest, get) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabaseTestv4, get) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/lease-database";
     const string& xtype = xpath + "/database-type";
     const string& xinterval = xpath + "/lfc-interval";
     S_Val s_type(new Val("memfile"));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     uint32_t li = 3600;
-#ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_interval(new Val(li));
-#else
-    S_Val s_interval(new Val(li, SR_UINT32_T));
-#endif
-    EXPECT_NO_THROW(sess_->set_item(xinterval.c_str(), s_interval));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xinterval.c_str(), s_interval));
 
     // Get empty.
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     ASSERT_TRUE(database);
     EXPECT_EQ(2, database->size());
     ConstElementPtr type = database->get("type");
@@ -86,9 +85,7 @@ TEST_F(TranslatorDatabaseTest, get) {
 
 // This test verifies that a database can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorDatabaseTest, set) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabaseTestv4, set) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/lease-database";
     ElementPtr database = Element::createMap();
@@ -98,7 +95,7 @@ TEST_F(TranslatorDatabaseTest, set) {
 
     // Get it back.
     ConstElementPtr got;
-    EXPECT_NO_THROW(got = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(got = t_obj_->getDatabase(xpath));
     ASSERT_TRUE(got);
     ASSERT_EQ(Element::map, got->getType());
     EXPECT_EQ(2, got->size());
@@ -114,29 +111,24 @@ TEST_F(TranslatorDatabaseTest, set) {
 
 // This test verifies that an empty database can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorDatabaseTest, setEmpty) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabaseTestv4, setEmpty) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/lease-database";
     const string& xtype = xpath + "/database-type";
     const string& xinterval = xpath + "/lfc-interval";
     S_Val s_type(new Val("memfile"));
-    EXPECT_NO_THROW(sess_->set_item(xtype.c_str(), s_type));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xtype.c_str(), s_type));
     uint32_t li = 3600;
-#ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_interval(new Val(li));
-#else
-    S_Val s_interval(new Val(li, SR_UINT32_T));
-#endif
-    EXPECT_NO_THROW(sess_->set_item(xinterval.c_str(), s_interval));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xinterval.c_str(), s_interval));
+    sess_->apply_changes();
 
     // Reset to empty.
     ASSERT_NO_THROW(t_obj_->setDatabase(xpath, ConstElementPtr()));
 
     // Get it back.
     ConstElementPtr database;
-    EXPECT_NO_THROW(database = t_obj_->getDatabase(xpath));
+    EXPECT_NO_THROW_LOG(database = t_obj_->getDatabase(xpath));
     EXPECT_FALSE(database);
 }
 
@@ -144,34 +136,39 @@ TEST_F(TranslatorDatabaseTest, setEmpty) {
 extern char const database_accesses[] = "database accesses";
 
 /// @brief Test fixture class for @ref TranslatorDatabases.
-class TranslatorDatabasesTest :
+class TranslatorDatabasesTestv4 :
     public GenericTranslatorTest<database_accesses, TranslatorDatabases> {
 public:
 
     /// Constructor.
-    TranslatorDatabasesTest() { }
+    TranslatorDatabasesTestv4() {
+        model_ = KEA_DHCP4_SERVER;
+    }
+};
 
-    /// Destructor (does nothing).
-    virtual ~TranslatorDatabasesTest() { }
+class TranslatorDatabasesTestv6 :
+    public GenericTranslatorTest<database_accesses, TranslatorDatabases> {
+public:
+
+    /// Constructor.
+    TranslatorDatabasesTestv6() {
+        model_ = KEA_DHCP6_SERVER;
+    }
 };
 
 // This test verifies that an empty database list can be properly
 // translated from YANG to JSON.
-TEST_F(TranslatorDatabasesTest, getEmpty) {
-    useModel(KEA_DHCP6_SERVER);
-
+TEST_F(TranslatorDatabasesTestv6, getEmpty) {
     // Get empty.
     const string& xpath = "/kea-dhcp6-server:config/hosts-database";
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     EXPECT_FALSE(databases);
 }
 
 // This test verifies that a database list can be properly
 // translated from YANG to JSON.
-TEST_F(TranslatorDatabasesTest, get) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabasesTestv4, get) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/hosts-database";
     const string& xdatabase = xpath + "[database-type='mysql']";
@@ -181,24 +178,20 @@ TEST_F(TranslatorDatabasesTest, get) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
-#ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
-#else
-    S_Val s_port(new Val(mport, SR_UINT16_T));
-#endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
 
     // Get empty.
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     ASSERT_TRUE(databases);
     ASSERT_EQ(1, databases->size());
     ConstElementPtr database = databases->get(0);
@@ -232,9 +225,7 @@ TEST_F(TranslatorDatabasesTest, get) {
 
 // This test verifies that a database list can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorDatabasesTest, set) {
-    useModel(KEA_DHCP6_SERVER);
-
+TEST_F(TranslatorDatabasesTestv6, set) {
     // Set a value.
     const string& xpath = "/kea-dhcp6-server:config/hosts-database";
     ElementPtr database = Element::createMap();
@@ -246,7 +237,7 @@ TEST_F(TranslatorDatabasesTest, set) {
 
     // Get it back.
     ConstElementPtr gots;
-    EXPECT_NO_THROW(gots = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(gots = t_obj_->getDatabases(xpath));
     ASSERT_TRUE(gots);
     ASSERT_EQ(Element::list, gots->getType());
     ASSERT_EQ(1, gots->size());
@@ -264,14 +255,12 @@ TEST_F(TranslatorDatabasesTest, set) {
     EXPECT_EQ(3600, interval->intValue());
 
     // Check it validates.
-    EXPECT_NO_THROW(sess_->validate());
+    EXPECT_NO_THROW_LOG(sess_->validate());
 }
 
 // This test verifies that an emptied database list can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorDatabasesTest, setEmpty) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabasesTestv4, setEmpty) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/hosts-database";
     const string& xdatabase = xpath + "[database-type='mysql']";
@@ -281,35 +270,30 @@ TEST_F(TranslatorDatabasesTest, setEmpty) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
-#ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
-#else
-    S_Val s_port(new Val(mport, SR_UINT16_T));
-#endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
+    sess_->apply_changes();
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setDatabase(xdatabase, ConstElementPtr()));
+    EXPECT_NO_THROW(t_obj_->setDatabase(xdatabase, ConstElementPtr()));
 
     // Get empty.
     ConstElementPtr databases;
-    EXPECT_NO_THROW(databases = t_obj_->getDatabases(xpath));
+    EXPECT_NO_THROW_LOG(databases = t_obj_->getDatabases(xpath));
     EXPECT_FALSE(databases);
 }
 
 // This test verifies that an empty database list can be properly
 // translated from JSON to YANG.
-TEST_F(TranslatorDatabasesTest, setEmpties) {
-    useModel(KEA_DHCP4_SERVER);
-
+TEST_F(TranslatorDatabasesTestv4, setEmpties) {
     // Set a value.
     const string& xpath = "/kea-dhcp4-server:config/hosts-database";
     const string& xdatabase = xpath + "[database-type='mysql']";
@@ -319,23 +303,20 @@ TEST_F(TranslatorDatabasesTest, setEmpties) {
     const string& xhost = xdatabase + "/host";
     const string& xport = xdatabase + "/port";
     S_Val s_name(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xname.c_str(), s_name));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xname.c_str(), s_name));
     S_Val s_user(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xuser.c_str(), s_user));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xuser.c_str(), s_user));
     S_Val s_password(new Val("kea"));
-    EXPECT_NO_THROW(sess_->set_item(xpassword.c_str(), s_password));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xpassword.c_str(), s_password));
     S_Val s_host(new Val("localhost"));
-    EXPECT_NO_THROW(sess_->set_item(xhost.c_str(), s_host));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xhost.c_str(), s_host));
     uint16_t mport = 3306;
-#ifdef HAVE_POST_0_7_7_SYSREPO
     S_Val s_port(new Val(mport));
-#else
-    S_Val s_port(new Val(mport, SR_UINT16_T));
-#endif
-    EXPECT_NO_THROW(sess_->set_item(xport.c_str(), s_port));
+    EXPECT_NO_THROW_LOG(sess_->set_item(xport.c_str(), s_port));
+    sess_->apply_changes();
 
     // Reset to empty.
-    ASSERT_NO_THROW(t_obj_->setDatabases(xdatabase, ConstElementPtr()));
+    EXPECT_NO_THROW_LOG(t_obj_->setDatabases(xdatabase, ConstElementPtr()));
 
     // Get empty.
     ConstElementPtr databases;
@@ -343,4 +324,4 @@ TEST_F(TranslatorDatabasesTest, setEmpties) {
     EXPECT_FALSE(databases);
 }
 
-}; // end of anonymous namespace
+}  // namespace

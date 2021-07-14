@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -190,7 +190,7 @@ TEST(NetconfCfgMgr, contextGlobals) {
     }
 }
 
-/// Netconf configurations used in tests.
+/// @brief Netconf configurations used in tests.
 const char* NETCONF_CONFIGS[] = {
 
     // configuration 0: empty (nothing specified)
@@ -731,4 +731,4 @@ TEST_F(NetconfParserTest, comments) {
     EXPECT_EQ("1", ctx6->get("version")->str());
 }
 
-}; // end of anonymous namespace
+}  // namespace

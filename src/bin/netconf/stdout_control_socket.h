@@ -32,7 +32,7 @@ public:
     StdoutControlSocket(CfgControlSocketPtr ctrl_sock);
 
     /// @brief Destructor (does nothing).
-    virtual ~StdoutControlSocket();
+    virtual ~StdoutControlSocket() = default;
 
     /// @brief Get configuration.
     ///

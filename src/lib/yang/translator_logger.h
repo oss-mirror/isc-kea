@@ -43,7 +43,7 @@ namespace yang {
 ///  +--rw logger               (list)
 ///     |
 ///     +--rw name?             string
-///     +--rw output-option*
+///     +--rw output_options*
 ///     |     +--rw output      string
 ///     |     +--rw maxver?     uint32
 ///     |     +--rw maxsize?    uint32
@@ -99,11 +99,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorLogger(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorLogger(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorLogger();
@@ -177,11 +173,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorLoggers(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorLoggers(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorLoggers();
@@ -217,7 +209,7 @@ protected:
                        isc::data::ConstElementPtr elem);
 };
 
-}; // end of namespace isc::yang
-}; // end of namespace isc
+}  // namespace yang
+}  // namespace isc
 
 #endif // ISC_TRANSLATOR_LOGGER_H

@@ -6,6 +6,7 @@
 
 #include <config.h>
 
+#include <testutils/gtest_utils.h>
 #include <yang/adaptor_option.h>
 #include <dhcp/dhcp4.h>
 #include <dhcp/dhcp6.h>
@@ -29,7 +30,7 @@ TEST(AdaptorOptionTest, setSpaceNoSpace) {
     ElementPtr json;
     ASSERT_NO_THROW(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorOption::setSpace(json, "foo"));
+    EXPECT_NO_THROW_LOG(AdaptorOption::setSpace(json, "foo"));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr space = json->get("space");
     ASSERT_TRUE(space);
@@ -45,7 +46,7 @@ TEST(AdaptorOptionTest, setSpace) {
     ElementPtr json;
     ASSERT_NO_THROW(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
-    EXPECT_NO_THROW(AdaptorOption::setSpace(json, "foo"));
+    EXPECT_NO_THROW_LOG(AdaptorOption::setSpace(json, "foo"));
     EXPECT_TRUE(copied->equals(*json));
 }
 
@@ -56,7 +57,7 @@ TEST(AdaptorOptionTest, checkType) {
         "}";
     ConstElementPtr json;
     ASSERT_NO_THROW(json = Element::fromJSON(config));
-    EXPECT_NO_THROW(AdaptorOption::checkType(json));
+    EXPECT_NO_THROW_LOG(AdaptorOption::checkType(json));
 }
 
 // Verifies that checkType does not accept an option without type.
@@ -75,7 +76,7 @@ TEST(AdaptorOptionTest, checkCode) {
         "}";
     ConstElementPtr json;
     ASSERT_NO_THROW(json = Element::fromJSON(config));
-    EXPECT_NO_THROW(AdaptorOption::checkCode(json));
+    EXPECT_NO_THROW_LOG(AdaptorOption::checkCode(json));
 }
 
 // Verifies that checkCode does not accept an option without code.
@@ -129,7 +130,7 @@ TEST(AdaptorOptionTest, setCodeNoCode) {
     ASSERT_NO_THROW(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     OptionCodes codes = { { "bar@foo", 123 } };
-    EXPECT_NO_THROW(AdaptorOption::setCode(json, codes));
+    EXPECT_NO_THROW_LOG(AdaptorOption::setCode(json, codes));
     EXPECT_FALSE(copied->equals(*json));
     ConstElementPtr code = json->get("code");
     ASSERT_TRUE(code);
@@ -146,7 +147,7 @@ TEST(AdaptorOptionTest, setCode) {
     ASSERT_NO_THROW(json = Element::fromJSON(config));
     ConstElementPtr copied = copy(json);
     OptionCodes codes;
-    EXPECT_NO_THROW(AdaptorOption::setCode(json, codes));
+    EXPECT_NO_THROW_LOG(AdaptorOption::setCode(json, codes));
     EXPECT_TRUE(copied->equals(*json));
 }
 

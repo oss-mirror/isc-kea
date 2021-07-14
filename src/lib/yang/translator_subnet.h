@@ -226,24 +226,24 @@ namespace yang {
 ///  /kea-dhcp4-server:config/subnet4[id='123'] (list instance)
 ///  /kea-dhcp4-server:config/subnet4[id='123']/id = 123
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.0'][end-address='10.0.1.15'] (list instance)
+///     pools[start-address='10.0.1.0'][end-address='10.0.1.15'] (list instance)
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.0'][end-address='10.0.1.15']/
+///     pools[start-address='10.0.1.0'][end-address='10.0.1.15']/
 ///     start-address = 10.0.1.0
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.0'][end-address='10.0.1.15']/
+///     pools[start-address='10.0.1.0'][end-address='10.0.1.15']/
 ///     end-address = 10.0.1.15
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.0'][end-address='10.0.1.15']/
+///     pools[start-address='10.0.1.0'][end-address='10.0.1.15']/
 ///     prefix = 10.0.1.0/28
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.200'][end-address='10.0.1.222']
+///     pools[start-address='10.0.1.200'][end-address='10.0.1.222']
 ///     (list instance)
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.200'][end-address='10.0.1.222']/
+///     pools[start-address='10.0.1.200'][end-address='10.0.1.222']/
 ///     start-address = 10.0.1.200
 ///  /kea-dhcp4-server:config/subnet4[id='123']/
-///     pool[start-address='10.0.1.200'][end-address='10.0.1.222']/
+///     pools[start-address='10.0.1.200'][end-address='10.0.1.222']/
 ///     end-address = 10.0.1.222
 ///  /kea-dhcp4-server:config/subnet4[id='123']/subnet = 10.0.1.0/24
 /// @endcode
@@ -259,11 +259,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorSubnet(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorSubnet(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorSubnet();
@@ -322,11 +318,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorSubnets(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorSubnets(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorSubnets();
@@ -369,7 +361,7 @@ protected:
                        const std::string& subsel);
 };
 
-}; // end of namespace isc::yang
-}; // end of namespace isc
+}  // namespace yang
+}  // namespace isc
 
 #endif // ISC_TRANSLATOR_SUBNET_H

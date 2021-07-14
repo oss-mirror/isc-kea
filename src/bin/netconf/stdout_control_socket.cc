@@ -33,9 +33,6 @@ StdoutControlSocket::StdoutControlSocket(CfgControlSocketPtr ctrl_sock,
     : ControlSocketBase(ctrl_sock), output_(output) {
 }
 
-StdoutControlSocket::~StdoutControlSocket() {
-}
-
 ConstElementPtr
 StdoutControlSocket::configGet(const string& /*service*/) {
     isc_throw(NotImplemented, "No config-get for stdout control socket");

@@ -1,4 +1,4 @@
-// Copyright (C) 2018-2019 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -112,13 +112,13 @@ namespace yang {
 ///  /kea-dhcp6-server:config/subnet6[id='111']/id = 111
 ///  /kea-dhcp6-server:config/subnet6[id='111']/subnet = 2001:db8::/48
 ///  /kea-dhcp6-server:config/subnet6[id='111']/
-///     pool[start-address='2001:db8::1'][end-address='2001:db8::100']
+///     pools[start-address='2001:db8::1'][end-address='2001:db8::100']
 ///     (list instance)
 ///  /kea-dhcp6-server:config/subnet6[id='111']/
-///     pool[start-address='2001:db8::1'][end-address='2001:db8::100']/
+///     pools[start-address='2001:db8::1'][end-address='2001:db8::100']/
 ///     start-address = 2001:db8::1
 ///  /kea-dhcp6-server:config/subnet6[id='111']/
-///     pool[start-address='2001:db8::1'][end-address='2001:db8::100']/
+///     pools[start-address='2001:db8::1'][end-address='2001:db8::100']/
 ///     end-address = 2001:db8::100
 /// @endcode
 class TranslatorPool : virtual public TranslatorOptionDataList {
@@ -128,11 +128,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorPool(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorPool(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorPool();
@@ -202,11 +198,7 @@ public:
     ///
     /// @param session Sysrepo session.
     /// @param model Model name.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     TranslatorPools(sysrepo::S_Session session, const std::string& model);
-#else
-    TranslatorPools(S_Session session, const std::string& model);
-#endif
 
     /// @brief Destructor.
     virtual ~TranslatorPools();
@@ -250,7 +242,7 @@ protected:
                              isc::data::ConstElementPtr elem);
 };
 
-}; // end of namespace isc::yang
-}; // end of namespace isc
+}  // namespace yang
+}  // namespace isc
 
 #endif // ISC_TRANSLATOR_POOL_H

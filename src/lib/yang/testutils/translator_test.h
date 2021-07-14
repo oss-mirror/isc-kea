@@ -1,4 +1,4 @@
-// Copyright (C) 2018 Internet Systems Consortium, Inc. ("ISC")
+// Copyright (C) 2018-2021 Internet Systems Consortium, Inc. ("ISC")
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,12 +46,8 @@ public:
         /// @param xpath The xpath of an element to be retrieved.
         /// @param session Sysrepo session.
         /// @return YangReprItem instance representing configuration parameter.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
         static YangReprItem get(const std::string& xpath,
                                 sysrepo::S_Session session);
-#else
-        static YangReprItem get(const std::string& xpath, S_Session session);
-#endif
 
         /// @brief The xpath.
         std::string xpath_;
@@ -85,16 +81,12 @@ public:
     };
 
     /// @brief Tree type.
-    typedef std::vector<YangReprItem> Tree;
+    using Tree = std::unordered_map<std::string, YangReprItem>;
 
     /// @brief Get tree from session.
     ///
     /// @param session Sysrepo session.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     Tree get(sysrepo::S_Session session) const;
-#else
-    Tree get(S_Session session) const;
-#endif
 
     /// @brief Verifies a tree.
     ///
@@ -103,13 +95,8 @@ public:
     /// @param errs Error stream.
     /// @return true if verification succeeds, false with errors displayed.
     /// on errs if it fails.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     bool verify(const Tree& expected, sysrepo::S_Session session,
                 std::ostream& errs) const;
-#else
-    bool verify(const Tree& expected, S_Session session,
-                std::ostream& errs) const;
-#endif
 
     /// @brief Sets specified tree in a sysrepo.
     ///
@@ -117,11 +104,7 @@ public:
     ///
     /// @param tree The tree to install.
     /// @param session Sysrepo session.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     void set(const Tree& tree, sysrepo::S_Session session) const;
-#else
-    void set(const Tree& tree, S_Session session) const;
-#endif
 
     /// @brief Validate.
     ///
@@ -129,11 +112,15 @@ public:
     /// @param errs Error stream.
     /// @return True if validation succeeds, false with errors displayed
     /// on errs if it fails.
-#ifndef HAVE_PRE_0_7_6_SYSREPO
     bool validate(sysrepo::S_Session session, std::ostream& errs) const;
-#else
-    bool validate(S_Session session, std::ostream& errs) const;
-#endif
+
+    static Tree buildTreeFromVector(std::vector<YangReprItem> const& v) {
+        Tree tree;
+        for (YangReprItem const& item : v) {
+            tree.emplace(item.xpath_, item);
+        }
+        return tree;
+    }
 
     /// @brief The model name.
     std::string model_;
@@ -154,8 +141,8 @@ std::ostream& operator<<(std::ostream& os, const YRItem& item);
 /// @brief Overrides standard output operator for @c Tree object.
 std::ostream& operator<<(std::ostream& os, const YRTree& tree);
 
-}; // end of namespace isc::yang::test
-}; // end of namespace isc::yang
-}; // end of namespace isc
+}  // namespace test
+}  // namespace yang
+}  // namespace isc
 
 #endif // ISC_TRANSLATOR_TEST_H
