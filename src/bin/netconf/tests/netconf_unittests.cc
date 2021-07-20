@@ -18,6 +18,7 @@
 #include <yang/yang_revisions.h>
 #include <yang/translator_config.h>
 #include <yang/testutils/translator_test.h>
+#include <testutils/gtest_utils.h>
 #include <testutils/log_utils.h>
 #include <testutils/threaded_test.h>
 #include <testutils/sandbox.h>
@@ -318,11 +319,7 @@ NetconfAgentTest::fakeServer() {
 
 /// Verifies the initSysrepo method opens sysrepo connection and sessions.
 TEST_F(NetconfAgentTest, initSysrepo) {
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     EXPECT_TRUE(agent_->conn_);
     EXPECT_TRUE(agent_->startup_sess_);
     EXPECT_TRUE(agent_->running_sess_);
@@ -342,11 +339,7 @@ TEST_F(NetconfAgentLogTest, checkModule) {
     ASSERT_EQ(1, YANG_REVISIONS.count("kea-dhcp6-server"));
 
     // kea-dhcp[46]-server should be available.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     EXPECT_EQ(1, agent_->modules_.count("kea-dhcp4-server"));
     EXPECT_EQ(1, agent_->modules_.count("kea-dhcp6-server"));
     EXPECT_TRUE(agent_->checkModule("kea-dhcp4-server"));
@@ -386,11 +379,7 @@ TEST_F(NetconfAgentLogTest, checkModules) {
     ASSERT_EQ(1, YANG_REVISIONS.count("kea-dhcp6-server"));
 
     // kea-dhcp[46]-server should be available.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     EXPECT_EQ(1, agent_->modules_.count("kea-dhcp4-server"));
     EXPECT_EQ(1, agent_->modules_.count("kea-dhcp6-server"));
 
@@ -460,11 +449,7 @@ TEST_F(NetconfAgentLogTest, logChanges) {
           "10.0.2.0/24", SR_STRING_T, true }
     };
     // Load initial YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree0, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
@@ -531,11 +516,7 @@ TEST_F(NetconfAgentLogTest, logChanges2) {
           "10.0.2.0/24", SR_STRING_T, true }
     };
     // Load initial YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree0, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
@@ -703,11 +684,7 @@ TEST_F(NetconfAgentTest, yangConfig) {
           "10.0.2.0/24", SR_STRING_T, true }
     };
     // Load YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
@@ -840,11 +817,7 @@ TEST_F(NetconfAgentTest, subscribeConfig) {
 
     // Try subscribeConfig.
     EXPECT_EQ(0, agent_->subscriptions_.size());
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     EXPECT_EQ(1, agent_->subscriptions_.size());
     EXPECT_NO_THROW(agent_->subscribeConfig(service_pair));
     EXPECT_EQ(2, agent_->subscriptions_.size());
@@ -871,11 +844,7 @@ TEST_F(NetconfAgentTest, update) {
           "10.0.2.0/24", SR_STRING_T, true }
     };
     // Load initial YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree0, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
@@ -1007,11 +976,7 @@ TEST_F(NetconfAgentTest, validate) {
           "10.0.2.0/24", SR_STRING_T, true }
     };
     // Load initial YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree0, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
@@ -1169,11 +1134,7 @@ TEST_F(NetconfAgentTest, noValidate) {
           "10.0.0.0/24", SR_STRING_T, true }
     };
     // Load initial YANG configuration.
-    try {
-        agent_->initSysrepo();
-    } catch (const std::exception& ex) {
-        FAIL() << "initSysrepo failed with: " << ex.what();
-    }
+    ASSERT_NO_THROW_LOG(agent_->initSysrepo());
     YangRepr repr(KEA_DHCP4_SERVER);
     ASSERT_NO_THROW(repr.set(tree0, agent_->startup_sess_));
     EXPECT_NO_THROW(agent_->startup_sess_->commit());
