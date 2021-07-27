@@ -70,6 +70,30 @@ messages eval_messages.h eval_messages.cc:
 
 endif
 
+if GENERATE_MESSAGES
+
+remove-messages:
+	rm -f eval_messages.h eval_messages.cc
+
+else
+
+remove-messages:
+	@echo Messages generation disabled. Configure with --enable-generate-messages to enable it.
+
+endif
+
+if GENERATE_PARSER
+
+remove-parsers:
+	rm -f location.hh lexer.cc parser.cc parser.h
+
+else
+
+remove-parsers:
+	@echo Parser generation disabled. Configure with --enable-generate-parser to enable it.
+
+endif
+
 # If we want to get rid of all generated messages files, we need to use
 # make maintainer-clean. The proper way to introduce custom commands for
 # that operation is to define maintainer-clean-local target. However,
@@ -83,9 +107,7 @@ endif
 # make maintainer-clean also removes Makefile, so running configure script
 # is required. To make it easy to rebuild flex/bison without going through
 # reconfigure, a new target parser-clean has been added.
-maintainer-clean-local:
-	rm -f eval_messages.h eval_messages.cc
-	rm -f location.hh lexer.cc parser.cc parser.h
+maintainer-clean-local: remove-messages remove-parsers
 
 # To regenerate flex/bison files, one can do:
 #
@@ -94,8 +116,7 @@ maintainer-clean-local:
 #
 # This is needed only when the lexer.ll or parser.yy files are modified.
 # Make sure you have both flex and bison installed.
-parser-clean:
-	rm -f location.hh lexer.cc parser.cc parser.h
+parser-clean: remove-parsers
 
 if GENERATE_PARSER
 
