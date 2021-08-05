@@ -161,7 +161,7 @@ public:
     }
 
 private:
-    static bool atexit_; ///< Flag to call atexit once.
+    static int atexit_; ///< Flag to call atexit once.
 
     MYSQL* mysql_;       ///< Initialization context
 };
