@@ -206,7 +206,7 @@ PktFilterLPF::openSocket(Iface& iface,
         close(fallback);
         isc_throw(SocketConfigError, "failed to set SO_NONBLOCK option on the"
                   " LPF socket '" << sock << "' to interface '"
-                  << iface.getName() << "'" << ", reason: " << errmsg);
+                  << iface.getName() << "', reason: " << errmsg);
     }
 
     return (SocketInfo(addr, port, sock, fallback));

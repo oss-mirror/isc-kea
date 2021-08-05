@@ -427,7 +427,7 @@ std::string
 Option6ClientFqdn::toText(int indent) const {
     std::ostringstream stream;
     std::string in(indent, ' '); // base indentation
-    stream << in  << "type=" << type_ << "(CLIENT_FQDN)" << ", "
+    stream << in  << "type=" << type_ << "(CLIENT_FQDN), "
            << "flags: ("
            << "N=" << (getFlag(FLAG_N) ? "1" : "0") << ", "
            << "O=" << (getFlag(FLAG_O) ? "1" : "0") << ", "
