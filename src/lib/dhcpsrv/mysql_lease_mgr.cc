@@ -178,11 +178,11 @@ tagged_statements = { {
                         "valid_lifetime, expire, subnet_id, "
                         "fqdn_fwd, fqdn_rev, hostname, "
                         "state, user_context "
-                            "FROM lease4 FORCE INDEX (lease4_by_state_expire)"
+                            "FROM lease4 "
                             "WHERE state != ? "
                             "AND expire < ? "
                             "AND valid_lifetime != 4294967295 "
-                            "ORDER BY state, expire ASC "
+                            "ORDER BY expire ASC "
                             "LIMIT ?"},
     {MySqlLeaseMgr::GET_LEASE6,
                     "SELECT address, duid, valid_lifetime, "

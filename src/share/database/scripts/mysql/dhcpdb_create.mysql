@@ -252,7 +252,8 @@ ALTER TABLE lease6
 # by the expiration time. One of the applications is to retrieve all
 # expired leases. However, these indexes can be also used to retrieve
 # leases in a given state regardless of the expiration time.
-CREATE INDEX lease4_by_state_expire ON lease4 (state ASC, expire ASC);
+# CREATE INDEX lease4_by_state_expire ON lease4 (state ASC, expire ASC);
+CREATE INDEX lease4_by_expire_state ON lease4 (expire ASC, state ASC);
 CREATE INDEX lease6_by_state_expire ON lease6 (state ASC, expire ASC);
 
 # Create table holding mapping of the lease states to their names.
