@@ -107,11 +107,11 @@ namespace yang {
 ///  +--rw t1-percent?               decimal64
 ///  +--rw t2-percent?               decimal64
 ///  +--rw option-data*
-///  +--rw pool*
+///  +--rw pools*
 ///  +--rw subnet                    inet:ip-prefix
 ///  +--rw interface?                string
 ///  +--rw id                        uint32
-///  +--rw client-class?             string
+///  +--rw client-classes?           string
 ///  +--rw require-client-classes*   string
 ///  +--rw host*
 ///  +--rw reservation-mode?         enumeration
@@ -130,7 +130,7 @@ namespace yang {
 ///  +--rw preferred-lifetime?       uint32
 ///  +--rw min-preferred-lifetime?   uint32
 ///  +--rw max-preferred-lifetime?   uint32
-///  +--rw pd-pool*
+///  +--rw pd-pools*
 ///  +--rw interface-id?             string
 ///  +--rw rapid-commit?             boolean
 /// @endcode

@@ -192,7 +192,7 @@ TranslatorClasses::getClasses(const string& xpath) {
 
 ElementPtr
 TranslatorClasses::getClassesKea(const string& xpath) {
-    return getList<TranslatorClass>(xpath + "/client-class", *this,
+    return getList<TranslatorClass>(xpath + "/client-classes", *this,
                                     &TranslatorClass::getClass);
 }
 
@@ -222,7 +222,7 @@ TranslatorClasses::setClassesKea(const string& xpath, ConstElementPtr elem) {
         }
         string name = cclass->get("name")->stringValue();
         ostringstream key;
-        key << xpath << "/client-class[name='" << name << "']";
+        key << xpath << "/client-classes[name='" << name << "']";
         setClass(key.str(), cclass);
     }
 }

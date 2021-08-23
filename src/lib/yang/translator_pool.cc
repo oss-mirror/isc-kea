@@ -302,7 +302,7 @@ TranslatorPools::getPoolsIetf(const string& xpath) {
 
 ElementPtr
 TranslatorPools::getPoolsKea(const string& xpath) {
-    return getList<TranslatorPool>(xpath + "/pool", *this,
+    return getList<TranslatorPool>(xpath + "/pools", *this,
                                    &TranslatorPool::getPool);
 }
 
@@ -349,7 +349,7 @@ TranslatorPools::setPoolsByAddresses(const string& xpath,
         string end_addr;
         getAddresses(pref, start_addr, end_addr);
         ostringstream prefix;
-        prefix << xpath << "/pool[start-address='" << start_addr
+        prefix << xpath << "/pools[start-address='" << start_addr
                << "'][end-address='" << end_addr << "']";
         setPool(prefix.str(), pool);
     }

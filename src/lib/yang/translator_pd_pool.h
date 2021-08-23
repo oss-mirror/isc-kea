@@ -41,7 +41,7 @@ namespace yang {
 ///  +--rw rebind-time                 yang:timeticks
 ///  +--rw preferred-lifetime          yang:timeticks
 ///  +--rw rapid-commit?               boolean
-///  +--rw client-class?               string
+///  +--rw client-classes?             string
 ///  +--rw max-pd-space-utilization?   threshold
 ///  +--rw option-set-id?
 ///     /server/server-config/option-sets/option-set/option-set-id
@@ -53,7 +53,7 @@ namespace yang {
 ///  +--rw delegated-len?           uint8
 ///  +--rw excluded-prefix?         inet:ipv6-prefix
 ///  +--rw option-data*
-///  +--rw client-class?            string
+///  +--rw client-classes?          string
 ///  +--rw require-client-classes*  string
 ///  +--rw user-context?            string
 /// @endcode

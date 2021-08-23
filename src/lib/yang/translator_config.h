@@ -93,10 +93,10 @@ namespace yang {
 /// +--rw lease-database!                <database>
 /// +--rw hosts-database*
 /// +--rw host-reservation-identifiers*  enumeration
-/// +--rw client-class*
+/// +--rw client-classes*
 /// +--rw option-def*
 /// +--rw option-data*
-/// +--rw hook-library*
+/// +--rw hooks-libraries*
 ///    +--rw library                     string
 ///    +--rw parameters?                 string
 /// +--rw expired-leases-processing      <expired-leases-processing>
@@ -121,7 +121,7 @@ namespace yang {
 ///    +--rw config-database*
 /// +--rw server-tag                     string
 /// +--rw dhcp-queue-control             string
-/// +--rw logger*
+/// +--rw loggers*
 /// @endcode
 ///
 /// Example of kea-dhcp6 simple configuration:
@@ -251,10 +251,10 @@ namespace yang {
 /// +--rw relay-supplied-options*        string
 /// +--rw mac-sources*                   string
 /// +--rw host-reservation-identifiers*  enumeration
-/// +--rw client-class*
+/// +--rw client-classes*
 /// +--rw option-def*
 /// +--rw option-data*
-/// +--rw hook-library*
+/// +--rw hooks-libraries*
 ///    +--rw library                     string
 ///    +--rw parameters?                 string
 /// +--rw expired-leases-processing      <expired-leases-processing>
@@ -275,7 +275,7 @@ namespace yang {
 ///    +--rw config-database*
 /// +--rw server-tag                     string
 /// +--rw dhcp-queue-control             string
-/// +--rw logger*
+/// +--rw loggers*
 /// @endcode
 ///
 /// Example of kea-dhcp6 simple configuration:

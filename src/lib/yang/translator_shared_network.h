@@ -87,7 +87,7 @@ namespace yang {
 ///  +--rw t2-percent?               decimal64
 ///  +--rw option-data*
 ///  +--rw interface?                string
-///  +--rw client-class?             string
+///  +--rw client-classes?           string
 ///  +--rw require-client-classes*   string
 ///  +--rw reservation-mode?         enumeration
 ///  +--rw relay                     ip-addresses*

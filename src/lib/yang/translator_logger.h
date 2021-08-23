@@ -40,10 +40,10 @@ namespace yang {
 ///
 /// YANG syntax for loggers is:
 /// @code
-///  +--rw logger               (list)
+///  +--rw loggers              (list)
 ///     |
 ///     +--rw name?             string
-///     +--rw output-option*
+///     +--rw output_options*
 ///     |     +--rw output      string
 ///     |     +--rw maxver?     uint32
 ///     |     +--rw maxsize?    uint32
