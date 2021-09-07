@@ -245,8 +245,21 @@ def get_system_revision():
                         if '=' in l:
                             key, val = l.split('=', 1)
                             vals[key.strip()] = val.strip()
-                system = vals['ID']
-                revision = vals['VERSION_ID']
+
+                for i in ['ID_LIKE', 'ID']:
+                    if i in vals:
+                        system = vals[i]
+                        break
+                if system is None:
+                    raise Exception('cannot determine system')
+
+                for i in ['VERSION_ID', 'BUILD_ID']:
+                    if i in vals:
+                        revision = vals[i]
+                        break
+                if revision is None:
+                    raise Exception('cannot determine revision')
+
                 if system == 'alpine':
                     revision = revision.rsplit('.', 1)[0]
             else:
@@ -464,6 +477,8 @@ def install_pkgs(pkgs, timeout=60, env=None, check_times=False, pkg_cache={}):
         cmd = 'sudo pkg install -y'
     elif system == 'alpine':
         cmd = 'sudo apk add'
+    elif system == 'arch':
+        cmd = 'sudo pacman -S --needed --noconfirm --overwrite \'*\''
     else:
         raise NotImplementedError('no implementation for %s' % system)
 
@@ -1332,7 +1347,7 @@ def _install_freeradius_client(system, revision, features, env, check_times):
         install_pkgs('nettle-devel', env=env, check_times=check_times)
     elif system in ['alpine', 'debian', 'ubuntu']:
         install_pkgs('nettle-dev', env=env, check_times=check_times)
-    elif system in ['freebsd']:
+    elif system in ['arch', 'freebsd']:
         install_pkgs('nettle', env=env, check_times=check_times)
     else:
         raise NotImplementedError('no implementation for %s' % system)
@@ -1787,6 +1802,13 @@ def prepare_system_local(features, check_times):
         else:
             execute('sudo adduser %s abuild' % current_user)
 
+    elif system == 'arch':
+        if 'netconf' in features:
+            deferred_functions.extend([
+                _install_libyang_from_sources,
+                _install_sysrepo_from_sources,
+            ])
+
     else:
         raise NotImplementedError('no implementation for %s' % system)
 
@@ -1883,6 +1905,8 @@ def _build_binaries_and_run_ut(system, revision, features, tarball_path, env, ch
                 cmd += ' --with-gtest-source=/usr/src/googletest-release-1.10.0/googletest/'
             else:
                 cmd += ' --with-gtest-source=/usr/src/googletest/googletest'
+        elif system == 'arch':
+            pass
         else:
             raise NotImplementedError('no implementation for %s' % system)
     if 'docs' in features and not (system == 'rhel' and revision == '8'):
@@ -2245,6 +2269,9 @@ def _build_native_pkg(system, revision, features, tarball_path, env, check_times
         _build_alpine_apk(system, revision, features, tarball_path, env, check_times, dry_run,
                           pkg_version, pkg_isc_version, repo_url)
 
+    elif system in ['arch']:
+        pass
+
     else:
         raise NotImplementedError('no implementation for %s' % system)
 
@@ -2257,6 +2284,8 @@ def _build_native_pkg(system, revision, features, tarball_path, env, check_times
     elif system in ['alpine']:
         #execute('mv kea-src/* %s' % pkgs_dir)
         execute('mv kea-pkg/* %s' % pkgs_dir)
+    elif system in ['arch']:
+        pass
     else:
         raise NotImplementedError('no implementation for %s' % self.system)
 
@@ -2385,6 +2414,8 @@ def _install_vagrant(ver='2.2.16', upgrade=False):
         execute(cmd)
         execute('sudo dpkg -i /tmp/%s' % deb)
         os.unlink('/tmp/%s' % deb)
+    elif system in ['arch']:
+        pass
     else:
         # TODO: check for packages here: https://www.vagrantup.com/downloads.html
         raise NotImplementedError('no implementation for %s' % system)
