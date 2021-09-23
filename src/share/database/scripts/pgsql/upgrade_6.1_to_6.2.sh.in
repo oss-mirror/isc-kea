@@ -35,6 +35,8 @@ fi
 
 psql "$@" >/dev/null <<EOF
 
+START TRANSACTION;
+
 -- Starting from this version we allow specifying multiple IP reservations
 -- for the same address in certain DHCP configurations. The server may check
 -- uniqueness of the IP addresses on its own. This is no longer checked at

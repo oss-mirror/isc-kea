@@ -1,4 +1,4 @@
--- Copyright (C) 2012-2020 Internet Systems Consortium, Inc. ("ISC")
+-- Copyright (C) 2012-2021 Internet Systems Consortium, Inc. ("ISC")
 
 -- This Source Code Form is subject to the terms of the Mozilla Public
 -- License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -1015,6 +1015,10 @@ UPDATE schema_version
 -- Commit the script transaction
 COMMIT;
 
+-- Upgrade to schema 6.2 begins here:
+
+START TRANSACTION;
+
 -- Starting from this version we allow specifying multiple IP reservations
 -- for the same address in certain DHCP configurations. The server may check
 -- uniqueness of the IP addresses on its own. This is no longer checked at
@@ -1038,6 +1042,97 @@ UPDATE schema_version
     SET version = '6', minor = '2';
 
 -- Schema 6.2 specification ends here.
+
+-- Commit the script transaction
+COMMIT;
+
+-- Upgrade to schema 7.0 begins here:
+
+START TRANSACTION;
+
+-- Drop unused composite index by state and lease4 expiration time.
+DROP INDEX IF EXISTS lease4_by_state_expire;
+
+-- Add a column which allows for applying a composite index to search
+-- for reclaimed leases by expiration time.
+ALTER TABLE lease4 ADD COLUMN reclaimed BOOLEAN;
+UPDATE lease4 SET reclaimed = (state = 2);
+
+-- Add an index for searching reclaimed leases by lease expiration time.
+CREATE INDEX lease4_by_reclaimed_expire ON lease4 (reclaimed, expire);
+
+-- Create a trigger function setting reclaimed column value based on the
+-- lease state.
+CREATE FUNCTION proc_lease4_set_reclaimed()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    AS $function$
+BEGIN
+    NEW.reclaimed = (NEW.state = 2);
+    RETURN NEW;
+END;
+$function$;
+
+-- Create a trigger setting reclaimed column value based on the lease state
+-- when lease is inserted.
+CREATE TRIGGER lease4_set_reclaimed_insert
+BEFORE INSERT ON lease4
+    FOR EACH ROW
+        WHEN (NEW.reclaimed IS NULL)
+            EXECUTE PROCEDURE proc_lease4_set_reclaimed();
+
+-- Create a trigger setting reclaimed column value based on the lease state
+-- when lease is updated.
+CREATE TRIGGER lease4_set_reclaimed_update
+BEFORE UPDATE ON lease4
+    FOR EACH ROW
+        WHEN (OLD.state IS DISTINCT FROM NEW.state)
+            EXECUTE PROCEDURE proc_lease4_set_reclaimed();
+
+-- Drop unused composite index by state and lease6 expiration time.
+DROP INDEX IF EXISTS lease6_by_state_expire;
+
+-- Add a column which allows for applying a composite index to search
+-- for reclaimed leases by expiration time.
+ALTER TABLE lease6 ADD COLUMN reclaimed BOOLEAN;
+UPDATE lease6 SET reclaimed = (state = 2);
+
+-- Add an index for searching reclaimed leases by lease expiration time.
+CREATE INDEX lease6_by_reclaimed_expire ON lease6 (reclaimed, expire);
+
+-- Create a trigger function setting reclaimed column value based on the
+-- lease state.
+CREATE FUNCTION proc_lease6_set_reclaimed ()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    AS $function$
+BEGIN
+    NEW.reclaimed = (NEW.state = 2);
+    RETURN NEW;
+END;
+$function$;
+
+-- Create a trigger setting reclaimed column value based on the lease state
+-- when lease is inserted.
+CREATE TRIGGER lease6_set_reclaimed_insert
+BEFORE INSERT ON lease6
+    FOR EACH ROW
+        WHEN (NEW.reclaimed IS NULL)
+            EXECUTE PROCEDURE proc_lease6_set_reclaimed();
+
+-- Create a trigger setting reclaimed column value based on the lease state
+-- when lease is updated.
+CREATE TRIGGER lease6_set_reclaimed_update
+BEFORE UPDATE ON lease6
+    FOR EACH ROW
+        WHEN (OLD.state IS DISTINCT FROM NEW.state)
+            EXECUTE PROCEDURE proc_lease6_set_reclaimed();
+
+-- Set 7.0 schema version.
+UPDATE schema_version
+    SET version = '7', minor = '0';
+
+-- Schema 7.0 specification ends here.
 
 -- Commit the script transaction
 COMMIT;

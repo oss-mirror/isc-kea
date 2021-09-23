@@ -143,7 +143,7 @@ pgsql_db_version_test() {
     run_command \
         "${kea_admin}" db-version pgsql -u "${db_user}" -p "${db_password}" -n "${db_name}"
     version="${OUTPUT}"
-    assert_str_eq "6.2" "${version}" "Expected kea-admin to return %s, returned value was %s"
+    assert_str_eq "7.0" "${version}" "Expected kea-admin to return %s, returned value was %s"
 
     # Let's wipe the whole database
     pgsql_wipe
@@ -280,16 +280,67 @@ pgsql_upgrade_3_0_to_6_1() {
 }
 
 pgsql_upgrade_6_1_to_6_2() {
-    # Verify upgraded schema reports version 6.2.
-    version=$("${kea_admin}" db-version pgsql -u "${db_user}" -p "${db_password}" -n "${db_name}" -d "${db_scripts_dir}")
-    assert_str_eq "6.2" "${version}" "Expected kea-admin to return %s, returned value was %s"
-
     insert_sql="\
 insert into hosts(dhcp_identifier, dhcp_identifier_type, dhcp4_subnet_id, ipv4_address) values (decode('010101010101', 'hex'), 0, 1, x'FFAF0002'::int);\
 insert into hosts(dhcp_identifier, dhcp_identifier_type, dhcp4_subnet_id, ipv4_address) values (decode('010101010102', 'hex'), 0, 1, x'FFAF0002'::int);"
     run_command \
         pgsql_execute "$insert_sql"
     assert_eq 0 "${EXIT_CODE}" "insert into hosts failed, expected exit code %d, actual %d"
+}
+
+pgsql_upgrade_6_2_to_7_0() {
+    # Verify upgraded schema reports version 7.0.
+    version=$("${kea_admin}" db-version pgsql -u "${db_user}" -p "${db_password}" -n "${db_name}" -d "${db_scripts_dir}")
+    assert_str_eq "7.0" "${version}" "Expected kea-admin to return %s, returned value was %s"
+
+    # Get all Kea specific indexes.
+    run_command \
+        pgsql_execute "select * from pg_indexes where tablename not like 'pg%';"
+    assert_eq 0 "${EXIT_CODE}" "select indexes on lease4 table failed. (expected status code %d, returned %d)"
+
+    # Verify that an old index by state and expiration time was deleted from lease4,
+    # and that the new index by reclaimed flag and the expiration time was added.
+    count=$(echo "${OUTPUT}" | grep -Fci 'lease4_by_state_expire') || true
+    assert_eq 0 "${count}" "lease4_by_state_expire index is present"
+
+    count=$(echo "${OUTPUT}" | grep -Fci 'lease4_by_reclaimed_expire') || true
+    assert_eq 1 "${count}" "lease4_by_reclaimed_expire index is missing"
+
+    # Verify that an old index by state and expiration time was deleted from lease6,
+    # and that the new index by reclaimed flag and the expiration time was added.
+    count=$(echo "${OUTPUT}" | grep -Fci 'lease6_by_state_expire') || true
+    assert_eq 0 "${count}" "lease6_by_state_expire index is present"
+
+    count=$(echo "${OUTPUT}" | grep -Fci 'lease6_by_reclaimed_expire') || true
+    assert_eq 1 "${count}" "lease6_by_reclaimed_expire index is missing"
+
+    # Verify that the triggers setting the reclaimed column work correctly.
+    # Add leases with both expired-reclaimed and some other state to see that
+    # the triggers take the states into account.
+    insert_sql="\
+insert into lease4 (address, hwaddr, valid_lifetime, subnet_id, expire, state) values (1, decode('01', 'hex'), 10, 1, now(), 1);\
+insert into lease4 (address, hwaddr, valid_lifetime, subnet_id, expire, state) values (2, decode('02', 'hex'), 10, 1, now(), 2);\
+insert into lease6 (address, duid, valid_lifetime, pref_lifetime, iaid, lease_type, subnet_id, expire, state) values ('3001::1', decode('01', 'hex'), 10, 9, 1, 0, 1, now(), 1);\
+insert into lease6 (address, duid, valid_lifetime, pref_lifetime, iaid, lease_type, subnet_id, expire, state) values ('3001::2', decode('02', 'hex'), 10, 9, 1, 0, 1, now(), 2);"
+    run_command \
+        pgsql_execute "$insert_sql"
+    assert_eq 0 "${EXIT_CODE}" "insert into lease4 and lease6 failed, expected exit code %d, actual %d"
+
+    # Ensure that the not reclaimed DHCPv4 lease has the flag set to false.
+    select_sql="select count(*) from lease4 where reclaimed = FALSE AND address = 1;"
+    run_statement "count DHCPv4 unreclaimed" "$select_sql" 1
+
+    # Ensure that the reclaimed DHCPv4 lease has the flag set to true.
+    select_sql="select count(*) from lease4 where reclaimed = TRUE AND address = 2;"
+    run_statement "count DHCPv4 reclaimed" "$select_sql" 1
+
+    # Ensure that the not reclaimed DHCPv6 lease has the flag set to false.
+    select_sql="select count(*) from lease6 where reclaimed = FALSE AND address = '3001::1';"
+    run_statement "count DHCPv6 reclaimed" "$select_sql" 1
+
+    # Ensure that the reclaimed DHCPv6 lease has the flag set to true.
+    select_sql="select count(*) from lease6 where reclaimed = TRUE AND address = '3001::2';"
+    run_statement "count DHCPv6 reclaimed" "$select_sql" 1
 }
 
 pgsql_upgrade_test() {
@@ -318,6 +369,9 @@ pgsql_upgrade_test() {
 
     # Check 6.1 to 6.2 upgrade
     pgsql_upgrade_6_1_to_6_2
+
+    # Check 6.2 to 7.0 upgrade
+    pgsql_upgrade_6_2_to_7_0
 
     # Let's wipe the whole database
     pgsql_wipe
