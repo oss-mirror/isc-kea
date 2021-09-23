@@ -47,10 +47,10 @@ PgSqlTaggedStatement tagged_statements[] = {
       "DELETE FROM lease4 WHERE address = $1 AND expire = $2"},
 
     // DELETE_LEASE4_STATE_EXPIRED
-    { 2, { OID_INT8, OID_TIMESTAMP },
+    { 1, { OID_TIMESTAMP },
       "delete_lease4_state_expired",
       "DELETE FROM lease4 "
-          "WHERE state = $1 AND expire < $2"},
+          "WHERE reclaimed = TRUE AND expire < $1"},
 
     // DELETE_LEASE6
     { 2, { OID_VARCHAR, OID_TIMESTAMP },
@@ -58,10 +58,10 @@ PgSqlTaggedStatement tagged_statements[] = {
       "DELETE FROM lease6 WHERE address = $1 AND expire = $2"},
 
     // DELETE_LEASE6_STATE_EXPIRED
-    { 2, { OID_INT8, OID_TIMESTAMP },
+    { 1, { OID_TIMESTAMP },
       "delete_lease6_state_expired",
       "DELETE FROM lease6 "
-          "WHERE state = $1 AND expire < $2"},
+          "WHERE reclaimed = TRUE AND expire < $1"},
 
     // GET_LEASE4
     { 0, { OID_NONE },
@@ -155,16 +155,16 @@ PgSqlTaggedStatement tagged_statements[] = {
       "WHERE lower(hostname) = $1"},
 
     // GET_LEASE4_EXPIRE
-    { 3, { OID_INT8, OID_TIMESTAMP, OID_INT8 },
+    { 2, { OID_TIMESTAMP, OID_INT8 },
       "get_lease4_expire",
       "SELECT address, hwaddr, client_id, "
         "valid_lifetime, extract(epoch from expire)::bigint, subnet_id, "
         "fqdn_fwd, fqdn_rev, hostname, "
         "state, user_context "
       "FROM lease4 "
-      "WHERE state != $1 AND valid_lifetime != 4294967295 AND expire < $2 "
+      "WHERE reclaimed = FALSE AND valid_lifetime != 4294967295 AND expire < $1 "
       "ORDER BY expire "
-      "LIMIT $3"},
+      "LIMIT $2"},
 
     // GET_LEASE6
     { 0, { OID_NONE },
@@ -257,7 +257,7 @@ PgSqlTaggedStatement tagged_statements[] = {
       "WHERE lower(hostname) = $1"},
 
     // GET_LEASE6_EXPIRE
-    { 3, { OID_INT8, OID_TIMESTAMP, OID_INT8 },
+    { 2, { OID_TIMESTAMP, OID_INT8 },
       "get_lease6_expire",
       "SELECT address, duid, valid_lifetime, "
         "extract(epoch from expire)::bigint, subnet_id, pref_lifetime, "
@@ -266,9 +266,9 @@ PgSqlTaggedStatement tagged_statements[] = {
         "hwaddr, hwtype, hwaddr_source, "
         "state, user_context "
       "FROM lease6 "
-      "WHERE state != $1 AND valid_lifetime != 4294967295 AND expire < $2 "
+      "WHERE reclaimed = FALSE AND valid_lifetime != 4294967295 AND expire < $1 "
       "ORDER BY expire "
-      "LIMIT $3"},
+      "LIMIT $2"},
 
     // INSERT_LEASE4
     { 11, { OID_INT8, OID_BYTEA, OID_BYTEA, OID_INT8, OID_TIMESTAMP, OID_INT8,
@@ -1984,10 +1984,6 @@ PgSqlLeaseMgr::getExpiredLeasesCommon(LeaseCollection& expired_leases,
                                       StatementIndex statement_index) const {
     PsqlBindArray bind_array;
 
-    // Exclude reclaimed leases.
-    std::string state_str = boost::lexical_cast<std::string>(Lease::STATE_EXPIRED_RECLAIMED);
-    bind_array.add(state_str);
-
     // Expiration timestamp.
     std::string timestamp_str = PgSqlLeaseExchange::convertToDatabaseTime(time(NULL));
     bind_array.add(timestamp_str);
@@ -2207,10 +2203,6 @@ uint64_t
 PgSqlLeaseMgr::deleteExpiredReclaimedLeasesCommon(const uint32_t secs,
                                                   StatementIndex statement_index) {
     PsqlBindArray bind_array;
-
-    // State is reclaimed.
-    std::string state_str = boost::lexical_cast<std::string>(Lease::STATE_EXPIRED_RECLAIMED);
-    bind_array.add(state_str);
 
     // Expiration timestamp.
     std::string expiration_str = PgSqlLeaseExchange::convertToDatabaseTime(time(NULL) -
